@@ -18,3 +18,8 @@ jobs:
     name: "🔨 Build & Verify"
     needs: validate
     uses: ./.github/workflows/CI-build.yml
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
