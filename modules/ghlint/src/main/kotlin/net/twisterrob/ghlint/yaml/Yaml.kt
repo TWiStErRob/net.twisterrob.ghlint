@@ -8,6 +8,7 @@ import org.snakeyaml.engine.v2.composer.Composer
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
+import org.snakeyaml.engine.v2.schema.JsonSchema
 import java.io.StringWriter
 
 internal object Yaml {
@@ -15,6 +16,7 @@ internal object Yaml {
 	internal fun load(yaml: String): Node {
 		val settings = LoadSettings.builder()
 			.setParseComments(true)
+			.setSchema(JsonSchema())
 			.build()
 		return Composer(settings, ParserImpl(settings, StreamReader(settings, yaml))).singleNode.get()
 	}
