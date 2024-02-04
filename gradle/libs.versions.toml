@@ -9,7 +9,7 @@ kotlin-language = "1.9"
 
 detekt = "1.23.4"
 
-junit-jupiter = "5.10.1"
+junit-jupiter = "5.10.2"
 kotest = "4.0.7"
 mockito = "5.10.0"
 jsr305 = "3.0.2"
