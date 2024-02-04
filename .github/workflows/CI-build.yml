@@ -11,8 +11,8 @@ jobs:
     timeout-minutes: 5
 
     permissions:
-      # actions/checkout
-      contents: read
+      # read: actions/checkout, write: gradle/actions/setup-gradle
+      contents: write
       # EnricoMi/publish-unit-test-result-action
       checks: write
       # github/codeql-action/upload-sarif
@@ -31,6 +31,9 @@ jobs:
 
       - name: "Set up Gradle."
         uses: gradle/actions/setup-gradle@v3
+        with:
+          dependency-graph: generate-and-submit
+          dependency-graph-continue-on-failure: false
 
       - name: "Build & Verify project."
         run: >
