@@ -1,0 +1,71 @@
+name: "🔨 Build & Verify"
+
+on:
+  workflow_call:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: "Build & Verify project."
+        run: >
+          ./gradlew
+          --no-daemon
+          --continue
+          --stacktrace
+          --scan
+          build
+
+      - name: "Upload 'Unit Test Results' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Unit Test Results'
+          path: ${{ github.workspace }}/**/build/reports/tests/*/
+
+      - name: "Publish 'Unit Results' check suite."
+        if: success() || failure()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: '🔔 Test: Unit Results'
+          comment_mode: off
+          report_individual_runs: true
+          test_changes_limit: 0
+          junit_files: ${{ github.workspace }}/**/build/test-results/*/TEST-*.xml
+
+      - name: "Upload 'Detekt Results' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Detekt Results'
+          path: ${{ github.workspace }}/**/build/reports/detekt/detekt.*
+
+      - name: "Upload 'Detekt Merged Results' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Detekt Merged Results'
+          path: ${{ github.workspace }}/build/reports/detekt/merge.*
+
+      - name: "Publish 'detekt' GitHub Code Scanning analysis."
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          checkout_path: ${{ github.workspace }}
+          sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif

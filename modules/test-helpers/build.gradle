@@ -1,0 +1,11 @@
+plugins {
+	id("net.twisterrob.ghlint.library")
+}
+
+dependencies {
+	api(libs.test.jupiter.api)
+	api(libs.test.jupiter.params)
+	runtimeOnly(libs.test.jupiter.engine)
+
+	api(libs.test.kotest.assertions)
+}
