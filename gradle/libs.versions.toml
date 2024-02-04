@@ -1,4 +1,5 @@
 [versions]
+
 java-source = "17"
 java-target = "17"
 java-toolchain = "17"
@@ -11,16 +12,9 @@ detekt = "1.23.4"
 
 junit-jupiter = "5.10.2"
 kotest = "4.0.7"
-mockito = "5.10.0"
-jsr305 = "3.0.2"
+
 
 [libraries]
-plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-build" }
-
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-target" }
-
-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 
 test-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 test-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
