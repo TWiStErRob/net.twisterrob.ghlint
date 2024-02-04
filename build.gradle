@@ -1,0 +1,37 @@
+plugins {
+	id("org.gradle.idea")
+	alias(libs.plugins.detekt) apply false
+	alias(libs.plugins.kotlin) apply false
+}
+
+idea {
+	module {
+		def excludes = [
+				"temp",
+		]
+		excludeDirs.addAll(excludes.collect { new File(rootDir, it) })
+	}
+}
+
+def detektReportMergeSarif =
+		tasks.register("detektReportMergeSarif", io.gitlab.arturbosch.detekt.report.ReportMergeTask) {
+			output = project.layout.buildDirectory.file("reports/detekt/merge.sarif")
+		}
+
+subprojects {
+	plugins.withId("io.gitlab.arturbosch.detekt") {
+
+		tasks.check.configure {
+			dependsOn(tasks.withType(io.gitlab.arturbosch.detekt.Detekt))
+		}
+		tasks.detekt.configure { enabled = false }
+
+		detekt { reports.sarif.required.set(true) }
+		tasks.withType(io.gitlab.arturbosch.detekt.Detekt).configureEach {
+			finalizedBy(detektReportMergeSarif)
+		}
+		detektReportMergeSarif.configure {
+			input.from(tasks.withType(io.gitlab.arturbosch.detekt.Detekt).collect { it.sarifReportFile })
+		}
+	}
+}
