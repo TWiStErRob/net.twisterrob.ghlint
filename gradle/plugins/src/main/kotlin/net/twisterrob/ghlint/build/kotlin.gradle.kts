@@ -13,6 +13,10 @@ kotlin {
 	jvmToolchain(libs.versions.java.toolchain.get().toInt())
 }
 
+dependencies {
+	implementation(libs.kotlin.stdlib)
+}
+
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
 		allWarningsAsErrors.set(true)

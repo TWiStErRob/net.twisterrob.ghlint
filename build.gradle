@@ -20,14 +20,16 @@ def detektReportMergeSarif =
 
 subprojects {
 	plugins.withId("io.gitlab.arturbosch.detekt") {
-		detekt {
-			reports.sarif.required.set(true)
-		}
 
+		tasks.check.configure {
+			dependsOn(tasks.withType(io.gitlab.arturbosch.detekt.Detekt))
+		}
+		tasks.detekt.configure { enabled = false }
+
+		detekt { reports.sarif.required.set(true) }
 		tasks.withType(io.gitlab.arturbosch.detekt.Detekt).configureEach {
 			finalizedBy(detektReportMergeSarif)
 		}
-
 		detektReportMergeSarif.configure {
 			input.from(tasks.withType(io.gitlab.arturbosch.detekt.Detekt).collect { it.sarifReportFile })
 		}
