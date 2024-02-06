@@ -8,7 +8,7 @@ kotlin-build = "1.9.22"
 kotlin-target = { strictly = "1.9.22" }
 kotlin-language = "1.9"
 
-detekt = "1.23.4"
+detekt = "1.23.5"
 
 junit-jupiter = "5.10.2"
 kotest = "4.0.7"
