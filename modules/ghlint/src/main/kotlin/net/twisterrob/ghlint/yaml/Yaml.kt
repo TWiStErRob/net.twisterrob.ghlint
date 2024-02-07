@@ -1,5 +1,8 @@
 package net.twisterrob.ghlint.yaml
 
+import dev.harrel.jsonschema.Error
+import dev.harrel.jsonschema.Validator
+import dev.harrel.jsonschema.ValidatorFactory
 import org.intellij.lang.annotations.Language
 import org.snakeyaml.engine.v2.api.Dump
 import org.snakeyaml.engine.v2.api.DumpSettings
@@ -14,9 +17,21 @@ import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import org.snakeyaml.engine.v2.schema.JsonSchema
 import java.io.StringWriter
+import java.net.URL
 import kotlin.jvm.optionals.getOrElse
 
 internal object Yaml {
+
+	internal fun validate(@Language("yaml") yaml: String): Validator.Result {
+		val url =
+			"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json"
+		val validator = ValidatorFactory()
+			.withDisabledSchemaValidation(true)
+			.withJsonNodeFactory(SnakeYamlJsonNode.Factory())
+			.createValidator()
+		val schema = validator.registerSchema(URL(url).readText())
+		return validator.validate(schema, SnakeYamlJsonNode.Factory().create(yaml))
+	}
 
 	internal fun load(@Language("yaml") yaml: String): Node {
 		val settings = LoadSettings.builder()
@@ -48,3 +63,6 @@ private fun Dump.dumpNodeToString(node: Node): String {
 	output.use { this@dumpNodeToString.dumpNode(node, it) }
 	return output.toString()
 }
+
+public fun Error.toDisplayString(): String =
+	"${this.instanceLocation}: ${this.error}\nvalidated by ${this.evaluationPath} (${this.schemaLocation})"
