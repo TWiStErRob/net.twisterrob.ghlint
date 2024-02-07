@@ -101,6 +101,12 @@ class YamlTest {
 	@Nested
 	inner class Complex {
 
+		@Test fun empty() {
+			val yaml = """
+			""".trimIndent()
+			reserialize(yaml)
+		}
+
 		@Test fun test() {
 			val yaml = """
 				- foo: bar
