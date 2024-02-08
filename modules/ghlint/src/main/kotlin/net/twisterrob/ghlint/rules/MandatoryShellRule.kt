@@ -14,14 +14,14 @@ public class MandatoryShellRule : Rule {
 	}
 
 	override fun visitJob(reporting: Reporting, job: Job) {
-		val shell = job.defaults.shell
+		val shell = job.defaults?.shell
 		reporting.putState(this, "shell", shell)
 		// BRAIS super
 	}
 
 	override fun visitStep(reporting: Reporting, step: Step) {
 		if (step is Step.Run) {
-			val defaultShell = reporting.getState(this, "shell") as String?
+			val defaultShell = reporting.getState(this, "shell") as? String?
 			val shell = step.shell ?: defaultShell
 			if (shell == null) {
 				reporting.report(MandatoryShell, step)

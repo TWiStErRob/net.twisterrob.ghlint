@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.yaml.Yaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
+@Suppress("detekt.TrimMultilineRawString") // See load().
 class WorkflowTest {
 
 	@Test fun `no jobs`() {

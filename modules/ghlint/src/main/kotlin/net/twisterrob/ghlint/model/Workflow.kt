@@ -36,8 +36,8 @@ public class Job internal constructor(
 	public val steps: List<Step>
 		get() = node.getRequired("steps").array.map { Step.from(it as MappingNode) }
 
-	public val defaults: Defaults
-		get() = Defaults.from(node.getOptional("defaults") as MappingNode)
+	public val defaults: Defaults?
+		get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
 
 	public class Defaults internal constructor(
 		private val node: MappingNode,
@@ -66,6 +66,7 @@ public sealed class Step protected constructor(
 		val node: MappingNode,
 	) : Step(node) {
 
+		@Suppress("detekt.MemberNameEqualsClassName")
 		public val run: String
 			get() = node.getRequiredText("run")
 
@@ -77,6 +78,7 @@ public sealed class Step protected constructor(
 		val node: MappingNode,
 	) : Step(node) {
 
+		@Suppress("detekt.MemberNameEqualsClassName")
 		public val uses: String
 			get() = node.getRequiredText("uses")
 	}

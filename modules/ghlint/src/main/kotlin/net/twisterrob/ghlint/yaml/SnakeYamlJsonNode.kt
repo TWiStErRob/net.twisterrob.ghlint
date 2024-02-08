@@ -38,13 +38,13 @@ public class SnakeYamlJsonNode private constructor(
 		BigDecimal((node as ScalarNode).value)
 
 	public override fun asArray(): List<JsonNode> =
-		(node as SequenceNode).value.mapIndexed { index, it ->
-			SnakeYamlJsonNode(factory, it, "${jsonPointer}/${index}")
+		(node as SequenceNode).value.mapIndexed { index, node ->
+			SnakeYamlJsonNode(factory, node, "${jsonPointer}/${index}")
 		}
 
 	public override fun asObject(): Map<String, JsonNode> =
 		(node as MappingNode).value.associate { entry ->
-			val key = (entry.keyNode as ScalarNode).value
+			val key = (entry.keyNode!! as ScalarNode).value
 			val jsonPointer = "${jsonPointer}/${JsonNode.encodeJsonPointer(key)}"
 			val value = SnakeYamlJsonNode(factory, entry.valueNode, jsonPointer)
 			key to value

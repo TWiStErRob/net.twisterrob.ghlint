@@ -45,3 +45,16 @@ style:
   UnnecessaryInnerClass:
     ignoreAnnotated:
       - 'org.junit.jupiter.api.Nested'
+
+  RedundantVisibilityModifierRule:
+    active: false # STOPSHIP review for library
+  UseDataClass:
+    active: false # STOPSHIP review for library
+
+comments:
+  UndocumentedPublicClass:
+    active: false # STOPSHIP review for library
+  UndocumentedPublicFunction:
+    active: false # STOPSHIP review for library
+  UndocumentedPublicProperty:
+    active: false # STOPSHIP review for library
