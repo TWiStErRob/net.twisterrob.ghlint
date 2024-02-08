@@ -33,5 +33,5 @@ class WorkflowTest {
 	}
 
 	private fun load(@Language("yaml") yaml: String): Workflow =
-		Workflow.from(Yaml.load(yaml.trimIndent()))
+		Workflow.from(File(""), Yaml.load(yaml.trimIndent()))
 }

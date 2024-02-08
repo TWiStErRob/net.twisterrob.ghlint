@@ -4,16 +4,16 @@ import net.twisterrob.ghlint.yaml.getOptionalText
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-internal fun Workflow.Companion.from(node: Node): Workflow =
-	Workflow("todo", node as MappingNode)
+internal fun Workflow.Companion.from(file: File, node: Node): Workflow =
+	Workflow(file, node as MappingNode)
 
-internal fun Job.Companion.from(key: String, node: Node): Job =
-	Job(key, node as MappingNode)
+internal fun Job.Companion.from(workflow: Workflow, key: String, node: Node): Job =
+	Job(workflow, key, node as MappingNode)
 
-internal fun Step.Companion.from(node: MappingNode): Step =
+internal fun Step.Companion.from(job: Job, node: MappingNode): Step =
 	when {
-		node.getOptionalText("uses") != null -> Step.Uses(node)
-		node.getOptionalText("run") != null -> Step.Run(node)
+		node.getOptionalText("uses") != null -> Step.Uses(job, node)
+		node.getOptionalText("run") != null -> Step.Run(job, node)
 		else -> error("Unknown step type: $node")
 	}
 

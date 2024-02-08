@@ -10,7 +10,7 @@ import net.twisterrob.ghlint.model.Workflow
 public class IdNamingRule : VisitorRule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
-		if (!isValid(workflow.fileName)) {
+		if (!isValid(workflow.parent.fileName)) {
 			reporting.report(WorkflowIdNaming, workflow)
 		}
 	}

@@ -9,8 +9,12 @@ import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
-public class Workflow internal constructor(
+public class File internal constructor(
 	public val fileName: String,
+)
+
+public class Workflow internal constructor(
+	public val parent: File,
 	private val node: MappingNode,
 ) {
 
@@ -20,12 +24,13 @@ public class Workflow internal constructor(
 	public val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map
 			.mapKeys { (key, _) -> key.text }
-			.mapValues { (key, value) -> Job.from(key, value) }
+			.mapValues { (key, value) -> Job.from(this, key, value) }
 
 	public companion object
 }
 
 public class Job internal constructor(
+	public val parent: Workflow,
 	public val id: String,
 	private val node: MappingNode,
 ) {
@@ -34,7 +39,7 @@ public class Job internal constructor(
 		get() = node.getOptionalText("name")
 
 	public val steps: List<Step>
-		get() = node.getRequired("steps").array.map { Step.from(it as MappingNode) }
+		get() = node.getRequired("steps").array.map { Step.from(this, it as MappingNode) }
 
 	public val defaults: Defaults?
 		get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
@@ -56,6 +61,8 @@ public sealed class Step protected constructor(
 	private val node: MappingNode,
 ) {
 
+	public abstract val parent: Job
+
 	public val name: String?
 		get() = node.getOptionalText("name")
 
@@ -67,6 +74,7 @@ public sealed class Step protected constructor(
 		get() = node.getOptionalText("if")
 
 	public data class Run internal constructor(
+		public override val parent: Job,
 		val node: MappingNode,
 	) : Step(node) {
 
@@ -79,6 +87,7 @@ public sealed class Step protected constructor(
 	}
 
 	public data class Uses internal constructor(
+		public override val parent: Job,
 		val node: MappingNode,
 	) : Step(node) {
 
