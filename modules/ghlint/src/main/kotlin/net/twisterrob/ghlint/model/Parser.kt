@@ -16,3 +16,6 @@ internal fun Step.Companion.from(node: MappingNode): Step =
 		node.getOptionalText("run") != null -> Step.Run(node)
 		else -> error("Unknown step type: $node")
 	}
+
+internal fun Job.Defaults.Companion.from(node: MappingNode): Job.Defaults =
+	Job.Defaults(node)

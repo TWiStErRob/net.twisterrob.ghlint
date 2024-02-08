@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.yaml.array
+import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.getRequiredText
@@ -34,6 +35,19 @@ public class Job internal constructor(
 
 	public val steps: List<Step>
 		get() = node.getRequired("steps").array.map { Step.from(it as MappingNode) }
+
+	public val defaults: Defaults
+		get() = Defaults.from(node.getOptional("defaults") as MappingNode)
+
+	public class Defaults internal constructor(
+		private val node: MappingNode,
+	) {
+
+		public val shell: String?
+			get() = node.getOptionalText("shell")
+
+		public companion object
+	}
 
 	public companion object
 }

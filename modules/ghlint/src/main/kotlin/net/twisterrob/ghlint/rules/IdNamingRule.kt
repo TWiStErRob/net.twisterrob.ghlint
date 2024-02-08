@@ -10,22 +10,25 @@ import net.twisterrob.ghlint.model.Workflow
 public class IdNamingRule : Rule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
-		if (workflow.fileName.lowercase() != workflow.fileName) {
+		if (!isValid(workflow.fileName)) {
 			reporting.report(WorkflowIdNaming, workflow)
 		}
 	}
 
 	public override fun visitJob(reporting: Reporting, job: Job) {
-		if (job.id.lowercase() != job.id) {
+		if (!isValid(job.id)) {
 			reporting.report(JobIdNaming, job)
 		}
 	}
 
 	public override fun visitStep(reporting: Reporting, step: Step) {
-		if (step.id?.lowercase() != step.id) {
+		if (step.id?.let(::isValid) == false) {
 			reporting.report(StepIdNaming, step)
 		}
 	}
+
+	private fun isValid(fileName: String): Boolean =
+		fileName.lowercase() == fileName
 
 	internal companion object {
 
