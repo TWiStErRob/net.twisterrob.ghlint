@@ -3,11 +3,11 @@ package net.twisterrob.ghlint.rules
 import net.twisterrob.ghlint.model.Issue
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Reporting
-import net.twisterrob.ghlint.model.Rule
 import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.VisitorRule
 import net.twisterrob.ghlint.model.Workflow
 
-public class MandatoryNameRule : Rule {
+public class MandatoryNameRule : VisitorRule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		if (workflow.name == null) {

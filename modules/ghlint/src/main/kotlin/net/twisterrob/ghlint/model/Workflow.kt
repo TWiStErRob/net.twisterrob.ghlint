@@ -62,6 +62,10 @@ public sealed class Step protected constructor(
 	public val id: String?
 		get() = node.getOptionalText("id")
 
+	@Suppress("detekt.VariableNaming")
+	public val `if`: String?
+		get() = node.getOptionalText("if")
+
 	public data class Run internal constructor(
 		val node: MappingNode,
 	) : Step(node) {

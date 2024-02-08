@@ -1,10 +1,6 @@
 package net.twisterrob.ghlint.model
 
-public interface Rule : Visitor
+public interface Rule {
 
-public interface Visitor {
-
-	public fun visitWorkflow(reporting: Reporting, workflow: Workflow) {}
-	public fun visitJob(reporting: Reporting, job: Job) {}
-	public fun visitStep(reporting: Reporting, step: Step) {}
+	public fun check(workflow: Workflow): List<Issue>
 }
