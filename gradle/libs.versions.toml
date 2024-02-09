@@ -11,7 +11,7 @@ kotlin-language = "1.9"
 detekt = "1.23.5"
 
 junit-jupiter = "5.10.2"
-kotest = "4.6.4"
+kotest = "5.8.0"
 
 
 [libraries]
