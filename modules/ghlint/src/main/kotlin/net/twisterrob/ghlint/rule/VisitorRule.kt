@@ -2,8 +2,8 @@ package net.twisterrob.ghlint.rule
 
 import net.twisterrob.ghlint.model.Model
 import net.twisterrob.ghlint.model.Workflow
-import net.twisterrob.ghlint.model.problem
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.results.problem
 
 public interface VisitorRule : Rule, Visitor {
 

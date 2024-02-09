@@ -14,7 +14,8 @@ public fun main(vararg args: String) {
 		MandatoryShellRule(),
 	)
 	val files = args.map { File(FileName(it)) }
+	val validation = Validator().validateWorkflows(files)
 	val findings = Analyzer().analyzeWorkflows(files, rules)
 
-	IOReporter(System.out).report(findings)
+	IOReporter(System.out).report(validation + findings)
 }
