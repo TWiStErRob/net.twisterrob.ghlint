@@ -8,7 +8,7 @@ import net.twisterrob.ghlint.rule.VisitorRule
 public class MandatoryShellRule : VisitorRule {
 
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
-		val shell = step.shell ?: step.parent.defaults?.shell
+		val shell = step.shell ?: step.parent.defaults?.run?.shell
 		if (shell == null) {
 			reporting.report(MandatoryShell, step) { "${it} must have a shell defined." }
 		}

@@ -24,3 +24,6 @@ internal fun Step.Companion.from(job: Job.NormalJob, index: Int, node: MappingNo
 
 internal fun Job.NormalJob.Defaults.Companion.from(node: MappingNode): Job.NormalJob.Defaults =
 	Job.NormalJob.Defaults(node)
+
+internal fun Job.NormalJob.Defaults.Run.Companion.from(node: MappingNode): Job.NormalJob.Defaults.Run =
+	Job.NormalJob.Defaults.Run(node)

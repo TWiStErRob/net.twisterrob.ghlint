@@ -18,7 +18,7 @@ jobs:
       # github/codeql-action/upload-sarif
       security-events: write
 
-    defaults: 
+    defaults:
       run:
         shell: bash
 

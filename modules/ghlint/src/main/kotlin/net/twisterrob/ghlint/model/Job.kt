@@ -33,8 +33,18 @@ public sealed class Job protected constructor(
 			private val node: MappingNode,
 		) {
 
-			public val shell: String?
-				get() = node.getOptionalText("shell")
+			public val run: Run?
+				get() = node.getOptional("run")?.let { Run.from(it as MappingNode) }
+
+			public class Run internal constructor(
+				private val node: MappingNode,
+			) {
+
+				public val shell: String?
+					get() = node.getOptionalText("shell")
+
+				public companion object
+			}
 
 			public companion object
 		}
