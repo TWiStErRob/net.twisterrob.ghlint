@@ -64,5 +64,5 @@ private fun Dump.dumpNodeToString(node: Node): String {
 	return output.toString()
 }
 
-public fun Error.toDisplayString(): String =
+internal fun Error.toDisplayString(): String =
 	"${this.instanceLocation}: ${this.error}\nvalidated by ${this.evaluationPath} (${this.schemaLocation})"

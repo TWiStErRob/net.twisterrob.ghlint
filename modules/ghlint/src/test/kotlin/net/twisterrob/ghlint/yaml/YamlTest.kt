@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.yaml
 
 import dev.harrel.jsonschema.Validator
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -125,7 +126,11 @@ class YamlTest {
 
 		private fun validate(yaml: String, expectedValid: Boolean): Validator.Result {
 			val result = Yaml.validate(yaml)
-			result.errors.forEach { println(it.toDisplayString()) }
+			if (expectedValid) {
+				@Suppress("detekt.ForbiddenMethodCall") // Required to diagnose.
+				result.errors.forEach { println(it.toDisplayString()) }
+				result.errors shouldHaveSize 0
+			}
 			result.isValid shouldBe expectedValid
 			return result
 		}

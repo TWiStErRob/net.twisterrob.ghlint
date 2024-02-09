@@ -1,5 +1,12 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.results.ColumnNumber
+import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.results.LineNumber
+import net.twisterrob.ghlint.results.Location
+import net.twisterrob.ghlint.results.Position
+import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.rule.Rule
 import org.snakeyaml.engine.v2.exceptions.Mark
 import java.util.Optional
 

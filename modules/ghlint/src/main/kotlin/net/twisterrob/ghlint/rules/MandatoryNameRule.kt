@@ -1,11 +1,11 @@
 package net.twisterrob.ghlint.rules
 
-import net.twisterrob.ghlint.model.Issue
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Reporting
 import net.twisterrob.ghlint.model.Step
-import net.twisterrob.ghlint.model.VisitorRule
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.rule.Reporting
+import net.twisterrob.ghlint.rule.VisitorRule
 
 public class MandatoryNameRule : VisitorRule {
 

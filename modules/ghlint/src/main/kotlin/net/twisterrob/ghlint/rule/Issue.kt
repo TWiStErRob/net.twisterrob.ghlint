@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.model
+package net.twisterrob.ghlint.rule
 
 public class Issue(
 	public val id: String,

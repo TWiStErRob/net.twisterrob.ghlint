@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.reporting
 
-import net.twisterrob.ghlint.model.Finding
+import net.twisterrob.ghlint.results.Finding
 
 public class IOReporter(
 	private val output: Appendable

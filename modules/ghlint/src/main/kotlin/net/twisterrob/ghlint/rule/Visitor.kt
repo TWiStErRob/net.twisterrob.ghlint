@@ -1,18 +1,8 @@
-package net.twisterrob.ghlint.model
+package net.twisterrob.ghlint.rule
 
-public interface VisitorRule : Rule, Visitor {
-
-	override fun check(workflow: Workflow): List<Finding> {
-		val reporting = object : Reporting {
-			val findings: MutableList<Finding> = mutableListOf()
-			override fun report(issue: Issue, context: Model) {
-				findings.add(issue.problem(context))
-			}
-		}
-		visitWorkflow(reporting, workflow)
-		return reporting.findings
-	}
-}
+import net.twisterrob.ghlint.model.Job
+import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.Workflow
 
 public interface Visitor {
 
@@ -53,9 +43,4 @@ public interface Visitor {
 	public fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		// No children.
 	}
-}
-
-public interface Reporting {
-
-	public fun report(issue: Issue, context: Model)
 }
