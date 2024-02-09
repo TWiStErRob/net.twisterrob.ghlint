@@ -21,3 +21,6 @@ public class Workflow internal constructor(
 
 	public companion object
 }
+
+public val Workflow.id: String
+	get() = parent.file.name

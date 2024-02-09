@@ -15,10 +15,10 @@ internal fun Job.Companion.from(workflow: Workflow, key: String, node: MappingNo
 		else -> error("Unknown job: $node")
 	}
 
-internal fun Step.Companion.from(job: Job.NormalJob, node: MappingNode): Step =
+internal fun Step.Companion.from(job: Job.NormalJob, index: Int, node: MappingNode): Step =
 	when {
-		node.getOptionalText("uses") != null -> Step.Uses(job, node)
-		node.getOptionalText("run") != null -> Step.Run(job, node)
+		node.getOptionalText("uses") != null -> Step.Uses(job, Step.Index(index), node)
+		node.getOptionalText("run") != null -> Step.Run(job, Step.Index(index), node)
 		else -> error("Unknown step type: $node")
 	}
 

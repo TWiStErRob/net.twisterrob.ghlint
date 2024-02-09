@@ -11,19 +11,19 @@ public class IdNamingRule : VisitorRule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		if (!isValid(workflow.parent.file.name)) {
-			reporting.report(WorkflowIdNaming, workflow)
+			reporting.report(WorkflowIdNaming, workflow) { "${it} must have a lowercase id." }
 		}
 	}
 
 	public override fun visitJob(reporting: Reporting, job: Job) {
 		if (!isValid(job.id)) {
-			reporting.report(JobIdNaming, job)
+			reporting.report(JobIdNaming, job) { "${it} must have a lowercase id." }
 		}
 	}
 
 	public override fun visitStep(reporting: Reporting, step: Step) {
 		if (step.id?.let(::isValid) == false) {
-			reporting.report(StepIdNaming, step)
+			reporting.report(StepIdNaming, step) { "${it} must have a lowercase id." }
 		}
 	}
 
@@ -33,12 +33,12 @@ public class IdNamingRule : VisitorRule {
 	internal companion object {
 
 		val WorkflowIdNaming =
-			Issue("WorkflowIdNaming", "Workflow must have a name")
+			Issue("WorkflowIdNaming", "Workflow must have lowercase id.")
 
 		val JobIdNaming =
-			Issue("JobIdNaming", "Job must have a name")
+			Issue("JobIdNaming", "Job must have lowercase id.")
 
 		val StepIdNaming =
-			Issue("StepIdNaming", "Step must have a name")
+			Issue("StepIdNaming", "Step must have lowercase id.")
 	}
 }

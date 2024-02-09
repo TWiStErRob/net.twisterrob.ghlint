@@ -22,7 +22,9 @@ public sealed class Job protected constructor(
 	) : Job() {
 
 		public val steps: List<Step>
-			get() = node.getRequired("steps").array.map { Step.from(this, it as MappingNode) }
+			get() = node.getRequired("steps").array.mapIndexed { index, node ->
+				Step.from(this, index, node as MappingNode)
+			}
 
 		public val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }

@@ -7,6 +7,7 @@ public class Finding(
 	public val rule: Rule,
 	public val issue: Issue,
 	public val location: Location,
+	public val message: String,
 ) {
 
 	public companion object

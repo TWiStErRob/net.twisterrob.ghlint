@@ -9,6 +9,11 @@ public sealed class Step protected constructor(
 
 	public abstract val parent: Job.NormalJob
 
+	public abstract val index: Index
+
+	@JvmInline
+	public value class Index(public val value: Int)
+
 	public val name: String?
 		get() = node.getOptionalText("name")
 
@@ -21,6 +26,7 @@ public sealed class Step protected constructor(
 
 	public class Run internal constructor(
 		public override val parent: Job.NormalJob,
+		public override val index: Index,
 		override val node: MappingNode,
 	) : Step() {
 
@@ -36,6 +42,7 @@ public sealed class Step protected constructor(
 
 	public class Uses internal constructor(
 		public override val parent: Job.NormalJob,
+		public override val index: Index,
 		override val node: MappingNode,
 	) : Step() {
 

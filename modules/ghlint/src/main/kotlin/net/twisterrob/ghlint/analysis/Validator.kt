@@ -21,13 +21,16 @@ internal class Validator {
 		return files.flatMap { file ->
 			val root: Node = Yaml.load(file.readText())
 			val result: Validator.Result = Yaml.validate(file.readText())
-			result.errors.map { error ->
-				Finding(
-					rule,
-					ValidationIssue,
-					error.toLocation(file, root)
-				)
-			}
+			result.errors
+				.filter { it.error != "False schema always fails" }
+				.map { error ->
+					Finding(
+						rule,
+						ValidationIssue,
+						error.toLocation(file, root),
+						"${error.error} (${error.instanceLocation})"
+					)
+				}
 		}
 	}
 
