@@ -37,7 +37,7 @@ public class SarifReporter(
 							name = "GHA-lint",
 							rules = findings.map { it.issue }.distinct().map { issue ->
 								ReportingDescriptor(
-									id = "gha-lint.${issue.id}",
+									id = issue.id,
 									name = issue.description,
 									shortDescription = MultiformatMessageString(
 										text = issue.description,
@@ -55,7 +55,7 @@ public class SarifReporter(
 							message = Message(
 								text = finding.message,
 							),
-							ruleID = "gha-lint.${finding.issue.id}",
+							ruleID = finding.issue.id,
 							locations = listOf(
 								Location(
 									physicalLocation = PhysicalLocation(
