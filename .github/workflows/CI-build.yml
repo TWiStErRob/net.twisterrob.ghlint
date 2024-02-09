@@ -69,7 +69,7 @@ jobs:
         with:
           name: 'Detekt Results'
           path: |
-            **/build/reports/detekt/detekt.*
+            **/build/reports/detekt/
 
       - name: "Upload 'Detekt Merged Results' artifact."
         if: success() || failure()
@@ -87,6 +87,8 @@ jobs:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
 
       - name: "Run validator."
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
         run: >
           ./gradlew
           --no-daemon

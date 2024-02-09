@@ -24,6 +24,7 @@ public class SarifReporter(
 ) : Reporter {
 
 	override fun report(findings: List<Finding>) {
+		val base = rootDir.absolute()
 		val sarif = SarifSchema210(
 			version = Version.The210,
 			schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
@@ -35,9 +36,10 @@ public class SarifReporter(
 						),
 					),
 					originalURIBaseIDS = mapOf(
-						"%SRCROOT%" to ArtifactLocation(uri = rootDir.absolute().toUri().toString()),
+						"%SRCROOT%" to ArtifactLocation(uri = base.toUri().toString()),
 					),
 					results = findings.map { finding ->
+						val file = Path.of(finding.location.file.path).absolute()
 						Result(
 							message = Message(
 								text = finding.message,
@@ -48,7 +50,7 @@ public class SarifReporter(
 									physicalLocation = PhysicalLocation(
 										artifactLocation = ArtifactLocation(
 											uriBaseID = "%SRCROOT%",
-											uri = Path.of(finding.location.file.path).relativeTo(rootDir).toString(),
+											uri = file.relativeTo(base).toString(),
 										),
 										region = with(finding.location) {
 											Region(
