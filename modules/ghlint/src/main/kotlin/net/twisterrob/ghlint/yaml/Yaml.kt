@@ -25,12 +25,13 @@ internal object Yaml {
 	internal fun validate(@Language("yaml") yaml: String): Validator.Result {
 		val url =
 			"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json"
+		val factory = SnakeYamlJsonNode.Factory(Yaml::load)
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
-			.withJsonNodeFactory(SnakeYamlJsonNode.Factory())
+			.withJsonNodeFactory(factory)
 			.createValidator()
 		val schema = validator.registerSchema(URL(url).readText())
-		return validator.validate(schema, SnakeYamlJsonNode.Factory().create(yaml))
+		return validator.validate(schema, factory.create(yaml))
 	}
 
 	internal fun load(@Language("yaml") yaml: String): Node {

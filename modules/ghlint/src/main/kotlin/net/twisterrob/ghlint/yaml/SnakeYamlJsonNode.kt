@@ -11,18 +11,13 @@ import org.snakeyaml.engine.v2.nodes.SequenceNode
 import org.snakeyaml.engine.v2.nodes.Tag
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.Objects
 
 public class SnakeYamlJsonNode private constructor(
-	factory: Factory,
-	node: Node,
-	jsonPointer: String,
+	private val factory: Factory,
+	private val node: Node,
+	private val jsonPointer: String,
+	private val nodeType: SimpleType = Factory.computeNodeType(node),
 ) : JsonNode {
-
-	private val factory: Factory = Objects.requireNonNull(factory)
-	private val node: Node = Objects.requireNonNull(node)
-	private val jsonPointer: String = Objects.requireNonNull(jsonPointer)
-	private val nodeType: SimpleType = Factory.computeNodeType(node)
 
 	public constructor(factory: Factory, node: Node) : this(factory, node, "")
 
@@ -50,7 +45,9 @@ public class SnakeYamlJsonNode private constructor(
 			key to value
 		}
 
-	public class Factory : JsonNodeFactory {
+	public class Factory(
+		private val parse: (String) -> Node,
+	) : JsonNodeFactory {
 
 		public override fun wrap(node: Any): JsonNode =
 			when {
@@ -63,7 +60,7 @@ public class SnakeYamlJsonNode private constructor(
 			}
 
 		public override fun create(rawJson: String): JsonNode =
-			wrap(Yaml.load(rawJson))
+			wrap(parse(rawJson))
 
 		internal companion object {
 
@@ -91,7 +88,7 @@ public class SnakeYamlJsonNode private constructor(
 			private fun isDecimal(node: Node): Boolean =
 				node.tag == Tag.FLOAT
 
-			public fun computeNodeType(node: Node): SimpleType =
+			internal fun computeNodeType(node: Node): SimpleType =
 				if (isNull(node)) {
 					SimpleType.NULL
 				} else if (isBoolean(node)) {
