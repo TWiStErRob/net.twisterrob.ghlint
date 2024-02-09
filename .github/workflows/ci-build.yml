@@ -53,6 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Unit Test Results'
+          if-no-files-found: error
           path: |
             **/build/reports/tests/*/
 
@@ -72,6 +73,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Detekt Results'
+          if-no-files-found: error
           path: |
             **/build/reports/detekt/
 
@@ -80,6 +82,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'Detekt Merged Results'
+          if-no-files-found: error
           path: |
             build/reports/detekt/merge.*
 
@@ -107,6 +110,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 'GHA-lint Results'
+          if-no-files-found: error
           path: |
             report.sarif
 
