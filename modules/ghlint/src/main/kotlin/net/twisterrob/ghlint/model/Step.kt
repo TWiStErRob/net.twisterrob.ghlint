@@ -1,7 +1,10 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredText
+import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public sealed class Step protected constructor(
@@ -36,6 +39,9 @@ public sealed class Step protected constructor(
 
 		public val shell: String?
 			get() = node.getOptionalText("shell")
+
+		public val env: Map<String, String>?
+			get() = node.getOptional("env")?.map?.toTextMap()
 
 		public companion object
 	}
