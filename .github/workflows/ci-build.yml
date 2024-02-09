@@ -18,6 +18,10 @@ jobs:
       # github/codeql-action/upload-sarif
       security-events: write
 
+    defaults: 
+      run:
+        shell: bash
+
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
