@@ -3,3 +3,4 @@
 /modules/**/build/
 .gradle/
 .idea/
+/report.sarif

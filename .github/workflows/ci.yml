@@ -18,7 +18,7 @@ jobs:
     name: "🔨 Build & Verify"
     needs:
       - validate
-    uses: ./.github/workflows/CI-build.yml
+    uses: ./.github/workflows/ci-build.yml
     permissions:
       contents: write
       checks: write

@@ -18,6 +18,10 @@ jobs:
       # github/codeql-action/upload-sarif
       security-events: write
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
@@ -69,7 +73,7 @@ jobs:
         with:
           name: 'Detekt Results'
           path: |
-            **/build/reports/detekt/detekt.*
+            **/build/reports/detekt/
 
       - name: "Upload 'Detekt Merged Results' artifact."
         if: success() || failure()
@@ -85,3 +89,30 @@ jobs:
         with:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
+
+      - name: "Run validator."
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+        run: >
+          ./gradlew
+          --no-daemon
+          --continue
+          --stacktrace
+          --scan
+          :ghlint:run
+          --args="$(find ".github/workflows" -type f -name "*.yml" | xargs echo)"
+
+      - name: "Upload 'GHA-lint Results' artifact."
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'GHA-lint Results'
+          path: |
+            report.sarif
+
+      - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          checkout_path: ${{ github.workspace }}
+          sarif_file: ${{ github.workspace }}/report.sarif
