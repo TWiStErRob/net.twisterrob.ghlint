@@ -47,9 +47,12 @@ style:
       - 'org.junit.jupiter.api.Nested'
 
   RedundantVisibilityModifierRule:
-    active: false # STOPSHIP review for library
+    # It's not redundant with Kotlin's strict explicit API mode.
+    active: false
+
   UseDataClass:
-    active: false # STOPSHIP review for library
+    # Would conflict with libraries:ForbiddenPublicDataClass.
+    active: false
 
 comments:
   UndocumentedPublicClass:
@@ -58,3 +61,8 @@ comments:
     active: false # STOPSHIP review for library
   UndocumentedPublicProperty:
     active: false # STOPSHIP review for library
+
+libraries:
+  LibraryEntitiesShouldNotBePublic:
+    # Calm down, I'm using Kotlin's strict explicit API mode.
+    active: false

@@ -25,10 +25,10 @@ internal class Validator {
 				.filter { it.error != "False schema always fails" }
 				.map { error ->
 					Finding(
-						rule,
-						ValidationIssue,
-						error.toLocation(file, root),
-						"${error.error} (${error.instanceLocation})"
+						rule = rule,
+						issue = ValidationIssue,
+						location = error.toLocation(file, root),
+						message = "${error.error} (${error.instanceLocation})"
 					)
 				}
 		}

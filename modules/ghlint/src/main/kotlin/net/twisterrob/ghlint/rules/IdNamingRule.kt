@@ -7,6 +7,7 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule
 
+@Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
 public class IdNamingRule : VisitorRule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
