@@ -30,7 +30,7 @@ public class MandatoryNameRule : VisitorRule {
 	internal companion object {
 
 		val MandatoryWorkflowName =
-			Issue("MandatoryWorkflowName", "Job must have a name")
+			Issue("MandatoryWorkflowName", "Workflow must have a name")
 
 		val MandatoryJobName =
 			Issue("MandatoryJobName", "Job must have a name")
