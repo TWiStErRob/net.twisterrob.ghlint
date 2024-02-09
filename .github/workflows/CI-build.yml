@@ -94,7 +94,7 @@ jobs:
           --stacktrace
           --scan
           :ghlint:run
-          --args="$(find "$(pwd)/.github/workflows" -type f -name "*.yml" | xargs echo)"
+          --args="$(find ".github/workflows" -type f -name "*.yml" | xargs echo)"
 
       - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
