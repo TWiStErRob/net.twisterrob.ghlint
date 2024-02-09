@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.build
 
 import io.gitlab.arturbosch.detekt.Detekt
+import net.twisterrob.ghlint.build.dsl.isCI
 import net.twisterrob.ghlint.build.dsl.libs
 
 plugins {
@@ -8,7 +9,7 @@ plugins {
 }
 
 detekt {
-	ignoreFailures = false
+	ignoreFailures = !isCI.get()
 	allRules = true
 	basePath = rootProject.projectDir.absolutePath
 

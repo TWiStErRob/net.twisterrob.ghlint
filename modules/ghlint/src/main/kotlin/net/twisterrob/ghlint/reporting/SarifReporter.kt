@@ -37,25 +37,27 @@ public class SarifReporter(
 					originalURIBaseIDS = mapOf(
 						"%SRCROOT%" to ArtifactLocation(uri = rootDir.absolute().toUri().toString()),
 					),
-					results = findings.map {
+					results = findings.map { finding ->
 						Result(
 							message = Message(
-								text = it.message,
+								text = finding.message,
 							),
-							ruleID = "gha-lint.${it.issue.id}",
+							ruleID = "gha-lint.${finding.issue.id}",
 							locations = listOf(
 								Location(
 									physicalLocation = PhysicalLocation(
 										artifactLocation = ArtifactLocation(
 											uriBaseID = "%SRCROOT%",
-											uri = Path.of(it.location.file.path).relativeTo(rootDir).toString(),
+											uri = Path.of(finding.location.file.path).relativeTo(rootDir).toString(),
 										),
-										region = Region(
-											startLine = 1 + it.location.start.line.number.toLong(),
-											startColumn = 1 + it.location.start.column.number.toLong(),
-											endLine = 1 + it.location.end.line.number.toLong(),
-											endColumn = 1 + it.location.end.column.number.toLong(),
-										),
+										region = with(finding.location) {
+											Region(
+												startLine = 1L + start.line.number,
+												startColumn = 1L + start.column.number,
+												endLine = 1L + end.line.number,
+												endColumn = 1L + end.column.number,
+											)
+										},
 									),
 								),
 							),
