@@ -11,18 +11,21 @@ import net.twisterrob.ghlint.rule.VisitorRule
 public class IdNamingRule : VisitorRule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
+		super.visitWorkflow(reporting, workflow)
 		if (!isValid(workflow.parent.file.name)) {
 			reporting.report(WorkflowIdNaming, workflow) { "${it} must have a lowercase id." }
 		}
 	}
 
 	public override fun visitJob(reporting: Reporting, job: Job) {
+		super.visitJob(reporting, job)
 		if (!isValid(job.id)) {
 			reporting.report(JobIdNaming, job) { "${it} must have a lowercase id." }
 		}
 	}
 
 	public override fun visitStep(reporting: Reporting, step: Step) {
+		super.visitStep(reporting, step)
 		if (step.id?.let(::isValid) == false) {
 			reporting.report(StepIdNaming, step) { "${it} must have a lowercase id." }
 		}
