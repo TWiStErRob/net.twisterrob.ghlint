@@ -33,7 +33,7 @@ public class IdNamingRule : VisitorRule {
 	internal companion object {
 
 		val WorkflowIdNaming =
-			Issue("WorkflowIdNaming", "Job must have a name")
+			Issue("WorkflowIdNaming", "Workflow must have a name")
 
 		val JobIdNaming =
 			Issue("JobIdNaming", "Job must have a name")
