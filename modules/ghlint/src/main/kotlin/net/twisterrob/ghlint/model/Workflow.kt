@@ -13,7 +13,10 @@ import kotlin.io.path.name
 
 public class File internal constructor(
 	public val file: FileName,
-)
+) {
+
+	public companion object
+}
 
 @JvmInline
 public value class FileName(
@@ -22,12 +25,23 @@ public value class FileName(
 
 	public val name: String
 		get() = Path.of(path).name
+
+	public companion object
+}
+
+public sealed interface Model {
+	public companion object
+}
+
+internal interface InternalModel : Model {
+
+	val node: MappingNode
 }
 
 public class Workflow internal constructor(
 	public val parent: File,
-	internal val node: MappingNode,
-) {
+	override val node: MappingNode,
+) : InternalModel {
 
 	public val name: String?
 		get() = node.getOptionalText("name")
@@ -43,8 +57,8 @@ public class Workflow internal constructor(
 public class Job internal constructor(
 	public val parent: Workflow,
 	public val id: String,
-	internal val node: MappingNode,
-) {
+	override val node: MappingNode,
+) : InternalModel {
 
 	public val name: String?
 		get() = node.getOptionalText("name")
@@ -69,9 +83,8 @@ public class Job internal constructor(
 }
 
 public sealed class Step protected constructor(
-) {
+) : InternalModel {
 
-	internal abstract val node: MappingNode
 	public abstract val parent: Job
 
 	public val name: String?

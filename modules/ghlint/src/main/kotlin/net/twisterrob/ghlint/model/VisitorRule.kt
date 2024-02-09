@@ -6,7 +6,7 @@ public interface VisitorRule : Rule, Visitor {
 		val reporting = object : Reporting {
 			val findings: MutableList<Finding> = mutableListOf()
 			private val state: MutableMap<Rule, MutableMap<String, Any?>> = mutableMapOf()
-			override fun report(issue: Issue, context: Any) {
+			override fun report(issue: Issue, context: Model) {
 				findings.add(issue.problem(context))
 			}
 
@@ -44,7 +44,7 @@ public interface Visitor {
 
 public interface Reporting {
 
-	public fun report(issue: Issue, context: Any)
+	public fun report(issue: Issue, context: Model)
 
 	public fun putState(rule: Rule, key: String, value: Any?)
 	public fun getState(rule: Rule, key: String): Any?

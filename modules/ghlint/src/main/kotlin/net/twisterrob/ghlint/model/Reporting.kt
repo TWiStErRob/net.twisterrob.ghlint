@@ -5,34 +5,28 @@ import java.util.Optional
 
 context(Rule)
 public fun Issue.problem(
-	context: Any,
+	context: Model,
 ): Finding = Finding(
 	rule = this@Rule,
 	issue = this,
 	location = Location.from(context),
 )
 
-public fun Location.Companion.from(context: Any): Location =
+public fun Location.Companion.from(context: Model): Location =
 	when (context) {
-		is Workflow -> Location(
-			file = context.parent.file,
+		is InternalModel -> Location(
+			file = FileName.from(context),
 			start = context.node.startMark.toPosition(),
 			end = context.node.endMark.toPosition(),
 		)
+	}
 
-		is Job -> Location(
-			file = context.parent.parent.file,
-			start = context.node.startMark.toPosition(),
-			end = context.node.endMark.toPosition(),
-		)
-
-		is Step -> Location(
-			file = context.parent.parent.parent.file,
-			start = context.node.startMark.toPosition(),
-			end = context.node.endMark.toPosition(),
-		)
-
-		else -> error("Location from ${context} is not implemented yet.")
+public fun FileName.Companion.from(context: Model): FileName =
+	when (context) {
+		is Workflow -> context.parent.file
+		is Job -> context.parent.parent.file
+		is Step -> context.parent.parent.parent.file
+		is InternalModel -> error("Location from ${context} is not implemented yet.")
 	}
 
 private fun Optional<Mark>.toPosition(): Position =
