@@ -56,6 +56,9 @@ public sealed class Step protected constructor(
 		public val uses: String
 			get() = node.getRequiredText("uses")
 
+		public val with: Map<String, String>?
+			get() = node.getOptional("with")?.map?.toTextMap()
+
 		public companion object
 	}
 
