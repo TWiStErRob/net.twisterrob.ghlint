@@ -38,6 +38,9 @@ public sealed class Job protected constructor(
 		public val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
 
+		public val timeoutMinutes: Int?
+			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
+
 		public class Defaults internal constructor(
 			private val node: MappingNode,
 		) {

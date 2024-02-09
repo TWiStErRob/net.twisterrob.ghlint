@@ -9,6 +9,8 @@ import net.twisterrob.ghlint.rules.CreatePullRequestRule
 import net.twisterrob.ghlint.rules.IdNamingRule
 import net.twisterrob.ghlint.rules.MandatoryNameRule
 import net.twisterrob.ghlint.rules.MandatoryShellRule
+import net.twisterrob.ghlint.rules.MissingJobTimeoutRule
+import net.twisterrob.ghlint.rules.NeverUseAlwaysRule
 import net.twisterrob.ghlint.rules.QuoteGithubEnvRule
 import net.twisterrob.ghlint.rules.QuoteGithubOutputRule
 import net.twisterrob.ghlint.rules.RemoveEmptyEnvRule
@@ -26,6 +28,8 @@ public fun main(vararg args: String) {
 		IdNamingRule(),
 		MandatoryNameRule(),
 		MandatoryShellRule(),
+		MissingJobTimeoutRule(),
+		NeverUseAlwaysRule(),
 		QuoteGithubOutputRule(),
 		QuoteGithubEnvRule(),
 		RemoveEmptyEnvRule(),
