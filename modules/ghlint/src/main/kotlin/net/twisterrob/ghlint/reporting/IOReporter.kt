@@ -21,5 +21,5 @@ private fun Finding.render(): String {
 			else -> "${start.line.number}:${start.column.number}-${end.line.number}:${end.column.number}"
 		}
 	}
-	return "${rule} found ${issue.id} at ${location.file.path}:${loc}\n${issue.description}"
+	return "${issue.id} at ${location.file.name}:${loc}: ${issue.description}"
 }
