@@ -1,5 +1,6 @@
 plugins {
 	id("net.twisterrob.ghlint.library")
+	id("org.gradle.application")
 }
 
 dependencies {
@@ -15,3 +16,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 		freeCompilerArgs.add("-Xcontext-receivers")
 	}
 }
+
+application {
+	mainClass = "net.twisterrob.ghlint.analysis.MainKt"
+}
+tasks.named("run").configure { JavaExec task -> task.workingDir = rootDir }

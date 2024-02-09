@@ -8,6 +8,7 @@ import net.twisterrob.ghlint.rules.IdNamingRule
 import net.twisterrob.ghlint.rules.MandatoryNameRule
 import net.twisterrob.ghlint.rules.MandatoryShellRule
 import java.nio.file.Path
+import kotlin.io.path.absolute
 import kotlin.io.path.bufferedWriter
 
 public fun main(vararg args: String) {
@@ -24,6 +25,6 @@ public fun main(vararg args: String) {
 
 	TextReporter(System.out).report(allFindings)
 	Path.of("report.sarif").bufferedWriter().use {
-		SarifReporter(it, Path.of(".")).report(allFindings)
+		SarifReporter(it, Path.of(".").absolute()).report(allFindings)
 	}
 }

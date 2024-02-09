@@ -85,3 +85,20 @@ jobs:
         with:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
+
+      - name: "Run validator."
+        run: >
+          ./gradlew
+          --no-daemon
+          --continue
+          --stacktrace
+          --scan
+          :ghlint:run
+          --args="$(find .github/workflows -type f -name "*.yml")"
+
+      - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          checkout_path: ${{ github.workspace }}
+          sarif_file: ${{ github.workspace }}/report.sarif
