@@ -20,6 +20,10 @@ public sealed class Job protected constructor(
 	public val env: Map<String, String>?
 		get() = node.getOptional("env")?.map?.toTextMap()
 
+	@Suppress("detekt.VariableNaming")
+	public val `if`: String?
+		get() = node.getOptionalText("if")
+
 	public class NormalJob internal constructor(
 		public override val parent: Workflow,
 		override val id: String,

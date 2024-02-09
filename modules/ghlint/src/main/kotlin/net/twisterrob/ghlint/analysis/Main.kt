@@ -4,27 +4,35 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileName
 import net.twisterrob.ghlint.reporting.SarifReporter
 import net.twisterrob.ghlint.reporting.TextReporter
+import net.twisterrob.ghlint.rules.AlwaysDoubleCurlyIfRule
 import net.twisterrob.ghlint.rules.CreatePullRequestRule
 import net.twisterrob.ghlint.rules.IdNamingRule
 import net.twisterrob.ghlint.rules.MandatoryNameRule
 import net.twisterrob.ghlint.rules.MandatoryShellRule
+import net.twisterrob.ghlint.rules.QuoteGithubEnvRule
+import net.twisterrob.ghlint.rules.QuoteGithubOutputRule
 import net.twisterrob.ghlint.rules.RemoveEmptyEnvRule
 import net.twisterrob.ghlint.rules.SetDefaultShellRule
 import net.twisterrob.ghlint.rules.UploadArtifactShouldFailOnMissingFilesRule
+import net.twisterrob.ghlint.rules.UseEnvInsteadOfTemplatingRule
 import net.twisterrob.ghlint.rules.UseGhTokenWithGhCliRule
 import java.nio.file.Path
 import kotlin.io.path.bufferedWriter
 
 public fun main(vararg args: String) {
 	val rules = listOf(
+		AlwaysDoubleCurlyIfRule(),
 		CreatePullRequestRule(),
 		IdNamingRule(),
 		MandatoryNameRule(),
 		MandatoryShellRule(),
+		QuoteGithubOutputRule(),
+		QuoteGithubEnvRule(),
 		RemoveEmptyEnvRule(),
 		SetDefaultShellRule(),
 		UploadArtifactShouldFailOnMissingFilesRule(),
 		UseGhTokenWithGhCliRule(),
+		UseEnvInsteadOfTemplatingRule(),
 	)
 	val files = args.map { File(FileName(it)) }
 
