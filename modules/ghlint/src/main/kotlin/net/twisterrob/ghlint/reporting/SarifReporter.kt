@@ -3,8 +3,10 @@ package net.twisterrob.ghlint.reporting
 import io.github.detekt.sarif4k.ArtifactLocation
 import io.github.detekt.sarif4k.Location
 import io.github.detekt.sarif4k.Message
+import io.github.detekt.sarif4k.MultiformatMessageString
 import io.github.detekt.sarif4k.PhysicalLocation
 import io.github.detekt.sarif4k.Region
+import io.github.detekt.sarif4k.ReportingDescriptor
 import io.github.detekt.sarif4k.Result
 import io.github.detekt.sarif4k.Run
 import io.github.detekt.sarif4k.SarifSchema210
@@ -24,7 +26,7 @@ public class SarifReporter(
 ) : Reporter {
 
 	override fun report(findings: List<Finding>) {
-		val base = rootDir.absolute()
+		val base = rootDir.absolute().toRealPath()
 		val sarif = SarifSchema210(
 			version = Version.The210,
 			schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
@@ -33,13 +35,22 @@ public class SarifReporter(
 					tool = Tool(
 						driver = ToolComponent(
 							name = "GHA-lint",
+							rules = findings.map { it.issue }.distinct().map { issue ->
+								ReportingDescriptor(
+									id = "gha-lint.${issue.id}",
+									name = issue.description,
+									shortDescription = MultiformatMessageString(
+										text = issue.description,
+									),
+								)
+							},
 						),
 					),
 					originalURIBaseIDS = mapOf(
 						"%SRCROOT%" to ArtifactLocation(uri = base.toUri().toString()),
 					),
 					results = findings.map { finding ->
-						val file = Path.of(finding.location.file.path).absolute()
+						val file = Path.of(finding.location.file.path).absolute().toRealPath()
 						Result(
 							message = Message(
 								text = finding.message,

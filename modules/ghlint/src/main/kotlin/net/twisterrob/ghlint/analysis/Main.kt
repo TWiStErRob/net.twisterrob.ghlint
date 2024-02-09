@@ -23,7 +23,11 @@ public fun main(vararg args: String) {
 	val allFindings = validation + findings
 
 	TextReporter(System.out).report(allFindings)
-	Path.of("report.sarif").bufferedWriter().use {
-		SarifReporter(it, Path.of(".")).report(allFindings)
+	Path.of("report.sarif").bufferedWriter().use { writer ->
+		val reporter = SarifReporter(
+			target = writer,
+			rootDir = Path.of(".")
+		)
+		reporter.report(allFindings)
 	}
 }
