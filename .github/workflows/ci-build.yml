@@ -107,7 +107,7 @@ jobs:
           --args="$(find ".github/workflows" -type f -name "*.yml" | xargs echo)"
 
       - name: "Upload 'GHA-lint Results' artifact."
-        if: ${{ steps.validate.outcome != 'cancelled' && (success() || failure()) }}
+        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
           name: 'GHA-lint Results'
@@ -117,7 +117,7 @@ jobs:
 
       - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: ${{ steps.validate.outcome != 'cancelled' && (success() || failure()) }}
+        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/report.sarif
