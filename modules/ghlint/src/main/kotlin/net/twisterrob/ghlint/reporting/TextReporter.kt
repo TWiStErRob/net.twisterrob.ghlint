@@ -2,7 +2,7 @@ package net.twisterrob.ghlint.reporting
 
 import net.twisterrob.ghlint.results.Finding
 
-public class IOReporter(
+public class TextReporter(
 	private val output: Appendable
 ) : Reporter {
 
