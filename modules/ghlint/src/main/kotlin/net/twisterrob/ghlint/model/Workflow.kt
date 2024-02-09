@@ -52,32 +52,52 @@ public class Workflow internal constructor(
 	public val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map
 			.mapKeys { (key, _) -> key.text }
-			.mapValues { (key, value) -> Job.from(this, key, value) }
+			.mapValues { (key, value) -> Job.from(this, key, value as MappingNode) }
 
 	public companion object
 }
 
-public class Job internal constructor(
-	public val parent: Workflow,
-	public val id: String,
-	override val node: MappingNode,
+public sealed class Job protected constructor(
 ) : InternalModel {
 
+	public abstract val parent: Workflow
+	public abstract val id: String
 	public val name: String?
 		get() = node.getOptionalText("name")
 
-	public val steps: List<Step>
-		get() = node.getRequired("steps").array.map { Step.from(this, it as MappingNode) }
+	public class NormalJob internal constructor(
+		public override val parent: Workflow,
+		override val id: String,
+		override val node: MappingNode,
+	) : Job() {
 
-	public val defaults: Defaults?
-		get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
+		public val steps: List<Step>
+			get() = node.getRequired("steps").array.map { Step.from(this, it as MappingNode) }
 
-	public class Defaults internal constructor(
-		private val node: MappingNode,
-	) {
+		public val defaults: Defaults?
+			get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
 
-		public val shell: String?
-			get() = node.getOptionalText("shell")
+		public class Defaults internal constructor(
+			private val node: MappingNode,
+		) {
+
+			public val shell: String?
+				get() = node.getOptionalText("shell")
+
+			public companion object
+		}
+
+		public companion object
+	}
+
+	public class ReusableWorkflowCallJob internal constructor(
+		public override val parent: Workflow,
+		override val id: String,
+		override val node: MappingNode,
+	) : Job() {
+
+		public val uses: String
+			get() = node.getRequiredText("uses")
 
 		public companion object
 	}
@@ -88,7 +108,7 @@ public class Job internal constructor(
 public sealed class Step protected constructor(
 ) : InternalModel {
 
-	public abstract val parent: Job
+	public abstract val parent: Job.NormalJob
 
 	public val name: String?
 		get() = node.getOptionalText("name")
@@ -100,8 +120,8 @@ public sealed class Step protected constructor(
 	public val `if`: String?
 		get() = node.getOptionalText("if")
 
-	public data class Run internal constructor(
-		public override val parent: Job,
+	public class Run internal constructor(
+		public override val parent: Job.NormalJob,
 		override val node: MappingNode,
 	) : Step() {
 
@@ -111,16 +131,20 @@ public sealed class Step protected constructor(
 
 		public val shell: String?
 			get() = node.getOptionalText("shell")
+
+		public companion object
 	}
 
-	public data class Uses internal constructor(
-		public override val parent: Job,
+	public class Uses internal constructor(
+		public override val parent: Job.NormalJob,
 		override val node: MappingNode,
 	) : Step() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val uses: String
 			get() = node.getRequiredText("uses")
+
+		public companion object
 	}
 
 	public companion object

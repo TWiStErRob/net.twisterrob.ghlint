@@ -7,12 +7,10 @@ import net.twisterrob.ghlint.model.VisitorRule
 
 public class MandatoryShellRule : VisitorRule {
 
-	override fun visitStep(reporting: Reporting, step: Step) {
-		if (step is Step.Run) {
-			val shell = step.shell ?: step.parent.defaults?.shell
-			if (shell == null) {
-				reporting.report(MandatoryShell, step)
-			}
+	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
+		val shell = step.shell ?: step.parent.defaults?.shell
+		if (shell == null) {
+			reporting.report(MandatoryShell, step)
 		}
 	}
 
