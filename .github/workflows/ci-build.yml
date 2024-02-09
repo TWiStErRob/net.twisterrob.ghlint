@@ -96,6 +96,7 @@ jobs:
       - name: "Run validator."
         env:
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+        id: validate
         run: >
           ./gradlew
           --no-daemon
@@ -106,7 +107,7 @@ jobs:
           --args="$(find ".github/workflows" -type f -name "*.yml" | xargs echo)"
 
       - name: "Upload 'GHA-lint Results' artifact."
-        if: success() || failure()
+        if: steps.validate.outcome != 'cancelled' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: 'GHA-lint Results'
@@ -116,7 +117,7 @@ jobs:
 
       - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: success() || failure()
+        if: steps.validate.outcome != 'cancelled' && (success() || failure())
         with:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/report.sarif
