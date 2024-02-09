@@ -2,12 +2,12 @@ package net.twisterrob.ghlint.model
 
 public interface VisitorRule : Rule, Visitor {
 
-	override fun check(workflow: Workflow): List<Issue> {
+	override fun check(workflow: Workflow): List<Finding> {
 		val reporting = object : Reporting {
-			val issues: MutableList<Issue> = mutableListOf()
+			val findings: MutableList<Finding> = mutableListOf()
 			private val state: MutableMap<Rule, MutableMap<String, Any?>> = mutableMapOf()
 			override fun report(issue: Issue, context: Any) {
-				issues.add(issue)
+				findings.add(issue.problem(context))
 			}
 
 			override fun putState(rule: Rule, key: String, value: Any?) {
@@ -21,7 +21,7 @@ public interface VisitorRule : Rule, Visitor {
 			}
 		}
 		visitWorkflow(reporting, workflow)
-		return reporting.issues
+		return reporting.findings
 	}
 }
 

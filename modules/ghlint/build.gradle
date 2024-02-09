@@ -7,3 +7,10 @@ dependencies {
 	implementation("dev.harrel:json-schema:1.5.0")
 	implementation("org.json:json:20231013")
 }
+
+// TODO kotlin.target.compilerOptions { freeCompilerArgs.add("-Xcontext-receivers") }
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+	compilerOptions {
+		freeCompilerArgs.add("-Xcontext-receivers")
+	}
+}
