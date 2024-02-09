@@ -7,6 +7,7 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule
 
+@Suppress("detekt.StringLiteralDuplication")
 public class RemoveEmptyEnvRule : VisitorRule {
 
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {

@@ -10,11 +10,9 @@ public class UseGhTokenWithGhCliRule : VisitorRule {
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		if (usesGhCli(step.run)) {
-			val hasGhToken = step.env.orEmpty().containsKey("GH_TOKEN")
-					|| step.parent.env.orEmpty().containsKey("GH_TOKEN")
-					|| step.parent.parent.env.orEmpty().containsKey("GH_TOKEN")
+			val hasGhToken = step.env.hasTokenVar || step.parent.env.hasTokenVar || step.parent.parent.env.hasTokenVar
 			if (!hasGhToken) {
-				reporting.report(MissingGhToken, step) { "${it} should have GH_TOKEN" }
+				reporting.report(MissingGhToken, step) { "${it} should have ${TOKEN_ENV_VAR}" }
 			}
 		}
 	}
@@ -26,6 +24,10 @@ public class UseGhTokenWithGhCliRule : VisitorRule {
 
 		private val GH_CLI_START_OF_LINE = Regex("""^\s*gh\s+""")
 		private val GH_CLI_EMBEDDED = Regex("""^\$\(gh\s+""")
+		private const val TOKEN_ENV_VAR = "GH_TOKEN"
+
+		private val Map<String, String>?.hasTokenVar: Boolean
+			get() = orEmpty().containsKey(TOKEN_ENV_VAR)
 
 		val MissingGhToken =
 			Issue("MissingGhToken", "GH_TOKEN is required for using the `gh` CLI tool.")

@@ -18,7 +18,7 @@ public sealed class Job protected constructor(
 		get() = node.getOptionalText("name")
 
 	public val env: Map<String, String>?
-		get() = node.getOptional("env")?.map?.toTextMap()
+		get() = node.getOptional("env")?.run { map.toTextMap() }
 
 	@Suppress("detekt.VariableNaming")
 	public val `if`: String?

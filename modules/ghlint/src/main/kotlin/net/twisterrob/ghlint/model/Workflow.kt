@@ -17,7 +17,7 @@ public class Workflow internal constructor(
 		get() = node.getOptionalText("name")
 
 	public val env: Map<String, String>?
-		get() = node.getOptional("env")?.map?.toTextMap()
+		get() = node.getOptional("env")?.run { map.toTextMap() }
 
 	public val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map

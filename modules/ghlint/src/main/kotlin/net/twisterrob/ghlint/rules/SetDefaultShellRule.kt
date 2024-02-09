@@ -12,13 +12,15 @@ public class SetDefaultShellRule : VisitorRule {
 		super.visitNormalJob(reporting, job)
 		if (job.defaults?.run?.shell == null) {
 			val explicitShells = job.steps.count { it is Step.Run && it.shell != null }
-			if (explicitShells >= 3) {
+			if (explicitShells >= MAX_SHELL_SPECIFICATIONS) {
 				reporting.report(SetDefaultShell, job) { "${it} should have shell defined as defaults." }
 			}
 		}
 	}
 
 	internal companion object {
+
+		private const val MAX_SHELL_SPECIFICATIONS = 3
 
 		val SetDefaultShell =
 			Issue("SetDefaultShell", "Shell should be set on job.")

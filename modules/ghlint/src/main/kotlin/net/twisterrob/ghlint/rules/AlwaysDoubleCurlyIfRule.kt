@@ -25,7 +25,7 @@ public class AlwaysDoubleCurlyIfRule : VisitorRule {
 	}
 
 	private fun isConditionSafe(condition: String?): Boolean =
-		condition == null || (condition.startsWith("\${{") && condition.endsWith("}}"))
+		condition == null || condition.startsWith("\${{") && condition.endsWith("}}")
 
 	internal companion object {
 

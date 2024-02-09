@@ -41,7 +41,7 @@ public sealed class Step protected constructor(
 			get() = node.getOptionalText("shell")
 
 		public val env: Map<String, String>?
-			get() = node.getOptional("env")?.map?.toTextMap()
+			get() = node.getOptional("env")?.run { map.toTextMap() }
 
 		public companion object
 	}
@@ -57,7 +57,7 @@ public sealed class Step protected constructor(
 			get() = node.getRequiredText("uses")
 
 		public val with: Map<String, String>?
-			get() = node.getOptional("with")?.map?.toTextMap()
+			get() = node.getOptional("with")?.run { map.toTextMap() }
 
 		public companion object
 	}

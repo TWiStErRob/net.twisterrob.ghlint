@@ -10,8 +10,8 @@ public class UploadArtifactShouldFailOnMissingFilesRule : VisitorRule {
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
 		if (step.uses.startsWith("actions/upload-artifact@")) {
-			val specified = step.with.orEmpty().containsKey("if-no-files-found")
-			if (!specified) {
+			val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")
+			if (!isSpecified) {
 				reporting.report(ShouldFailOnMissingFiles, step) { "${it} should have if-no-files-found: error." }
 			}
 		}
