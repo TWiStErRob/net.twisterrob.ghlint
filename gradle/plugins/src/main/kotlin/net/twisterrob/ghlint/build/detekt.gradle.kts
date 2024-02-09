@@ -9,7 +9,7 @@ plugins {
 }
 
 detekt {
-	ignoreFailures = !isCI.get()
+	ignoreFailures = isCI.get()
 	allRules = true
 	basePath = rootProject.projectDir.absolutePath
 
