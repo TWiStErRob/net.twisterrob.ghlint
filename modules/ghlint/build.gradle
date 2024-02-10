@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-	implementation(libs.jsr305)
 	implementation(projects.ghlintApi)
 	implementation(projects.ghlintRules)
 	implementation(projects.ghlintSnakeyaml)

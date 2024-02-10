@@ -3,8 +3,7 @@ plugins {
 }
 
 dependencies {
-	// STOPSHIP toml
-	api("org.snakeyaml:snakeyaml-engine:2.7")
+	api(projects.ghlintApi)
+	api(libs.snakeyaml2)
 	implementation(libs.jsr305)
-	implementation(projects.ghlintApi)
 }
