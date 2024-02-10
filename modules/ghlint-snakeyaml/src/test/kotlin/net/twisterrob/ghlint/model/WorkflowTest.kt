@@ -40,6 +40,6 @@ class WorkflowTest {
 
 	private fun load(@Language("yaml") yaml: String): Workflow {
 		val file = tempDir.resolve("workflow.yml").apply { writeText(yaml.trimIndent()) }
-		return Workflow.from(File(FileName(file.toRealPath().toString())))
+		return SnakeWorkflow.from(File(FileName(file.toRealPath().toString())))
 	}
 }

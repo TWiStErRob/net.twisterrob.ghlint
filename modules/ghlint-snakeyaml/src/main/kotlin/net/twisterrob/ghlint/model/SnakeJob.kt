@@ -38,11 +38,21 @@ public sealed class SnakeJob protected constructor(
 
 		override val steps: List<Step>
 			get() = node.getRequired("steps").array.mapIndexed { index, node ->
-				Step.from(this, index, node as MappingNode)
+				node as MappingNode
+				when {
+					node.getOptionalText("uses") != null ->
+						SnakeStep.SnakeUses(this, Step.Index(index), node)
+
+					node.getOptionalText("run") != null ->
+						SnakeStep.SnakeRun(this, Step.Index(index), node)
+
+					else ->
+						error("Unknown step type: ${node}")
+				}
 			}
 
 		override val defaults: Defaults?
-			get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
+			get() = node.getOptional("defaults")?.let { SnakeDefaults(it as MappingNode) }
 
 		override val timeoutMinutes: Int?
 			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
@@ -52,7 +62,7 @@ public sealed class SnakeJob protected constructor(
 		) : Defaults {
 
 			override val run: Run?
-				get() = node.getOptional("run")?.let { Run.from(it as MappingNode) }
+				get() = node.getOptional("run")?.let { SnakeRun(it as MappingNode) }
 
 			public class SnakeRun internal constructor(
 				private val node: MappingNode,
