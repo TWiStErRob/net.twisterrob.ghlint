@@ -3,4 +3,4 @@
 /modules/**/build/
 .gradle/
 .idea/
-/modules/ghlint/report.sarif
+/report.sarif

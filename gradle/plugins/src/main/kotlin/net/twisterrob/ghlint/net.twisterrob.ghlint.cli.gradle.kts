@@ -11,3 +11,5 @@ plugins {
 kotlin {
 	explicitApi = ExplicitApiMode.Strict
 }
+
+tasks.named<JavaExec>("run").configure { setWorkingDir(rootProject.layout.projectDirectory) }

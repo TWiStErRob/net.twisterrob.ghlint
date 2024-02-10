@@ -113,11 +113,11 @@ jobs:
           name: 'GHA-lint Results'
           if-no-files-found: error
           path: |
-            modules/ghlint/report.sarif
+            report.sarif
 
       - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: ${{ github.workspace }}/modules/ghlint/report.sarif
+          sarif_file: ${{ github.workspace }}/report.sarif
