@@ -1,0 +1,11 @@
+plugins {
+	id("net.twisterrob.ghlint.library")
+}
+
+dependencies {
+	implementation("dev.harrel:json-schema:1.5.0")
+	implementation("org.json:json:20240205")
+	implementation("org.snakeyaml:snakeyaml-engine:2.7")
+	implementation(projects.ghlintApi)
+	implementation(projects.ghlintSnakeyaml)
+}

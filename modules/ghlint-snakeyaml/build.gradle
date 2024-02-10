@@ -1,0 +1,10 @@
+plugins {
+	id("net.twisterrob.ghlint.library")
+}
+
+dependencies {
+	// STOPSHIP toml
+	api("org.snakeyaml:snakeyaml-engine:2.7")
+	implementation(libs.jsr305)
+	implementation(projects.ghlintApi)
+}

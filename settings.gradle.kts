@@ -27,6 +27,11 @@ dependencyResolutionManagement {
 }
 
 includeModule(":ghlint")
+includeModule(":ghlint-api")
+includeModule(":ghlint-jsonschema")
+includeModule(":ghlint-reporting-sarif")
+includeModule(":ghlint-rules")
+includeModule(":ghlint-snakeyaml")
 includeModule(":test-helpers")
 
 fun includeModule(path: String) {

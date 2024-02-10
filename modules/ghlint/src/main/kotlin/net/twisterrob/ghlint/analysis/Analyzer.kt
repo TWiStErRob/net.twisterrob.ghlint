@@ -20,3 +20,6 @@ internal class Analyzer {
 		return findings
 	}
 }
+
+private fun File.readText(): String =
+	java.io.File(file.path).readText()
