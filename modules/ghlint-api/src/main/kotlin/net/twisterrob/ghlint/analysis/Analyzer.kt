@@ -12,11 +12,18 @@ public class Analyzer {
 		val findings = workflows.flatMap { workflow ->
 			ruleSets
 				.flatMap { it.createRules() }
-				.flatMap {
+				.flatMap { rule ->
 					try {
-						it.check(workflow)
-					} catch (e: Exception) {
-						listOf(Finding(it, RuleErrored, workflow.location, e.stackTraceToString()))
+						rule.check(workflow)
+					} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Throwable) {
+						// detekt.TooGenericExceptionCaught: Can't know what's wrong, so we can't handle it more specifically.
+						val errorFinding = Finding(
+							rule = rule,
+							issue = RuleErrored,
+							location = workflow.location,
+							message = ex.stackTraceToString()
+						)
+						listOf(errorFinding)
 					}
 				}
 		}
