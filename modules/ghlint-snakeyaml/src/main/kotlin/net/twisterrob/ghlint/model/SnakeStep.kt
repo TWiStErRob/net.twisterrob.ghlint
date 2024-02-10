@@ -20,7 +20,6 @@ public sealed class SnakeStep protected constructor(
 	override val id: String?
 		get() = node.getOptionalText("id")
 
-	@Suppress("detekt.VariableNaming")
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 

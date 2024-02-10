@@ -1,5 +1,7 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.model.Job.NormalJob.Defaults
+import net.twisterrob.ghlint.model.Job.NormalJob.Defaults.Run
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.array
 import net.twisterrob.ghlint.yaml.getOptional
@@ -25,7 +27,6 @@ public sealed class SnakeJob protected constructor(
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
 
-	@Suppress("detekt.VariableNaming")
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
@@ -40,22 +41,22 @@ public sealed class SnakeJob protected constructor(
 				Step.from(this, index, node as MappingNode)
 			}
 
-		override val defaults: Job.NormalJob.Defaults?
-			get() = node.getOptional("defaults")?.let { Job.NormalJob.Defaults.from(it as MappingNode) }
+		override val defaults: Defaults?
+			get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
 
 		override val timeoutMinutes: Int?
 			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
 
 		public class SnakeDefaults internal constructor(
 			private val node: MappingNode,
-		) : Job.NormalJob.Defaults {
+		) : Defaults {
 
-			override val run: Job.NormalJob.Defaults.Run?
-				get() = node.getOptional("run")?.let { Job.NormalJob.Defaults.Run.from(it as MappingNode) }
+			override val run: Run?
+				get() = node.getOptional("run")?.let { Run.from(it as MappingNode) }
 
 			public class SnakeRun internal constructor(
 				private val node: MappingNode,
-			) : Job.NormalJob.Defaults.Run {
+			) : Run {
 
 				override val shell: String?
 					get() = node.getOptionalText("shell")

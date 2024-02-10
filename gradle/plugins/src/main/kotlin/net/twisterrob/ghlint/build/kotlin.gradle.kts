@@ -17,7 +17,7 @@ dependencies {
 	implementation(libs.kotlin.stdlib)
 }
 
-// TODO kotlin.target.compilerOptions { freeCompilerArgs.add("-Xcontext-receivers") }
+// TODO kotlin.target.compilerOptions { ... }
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
 		allWarningsAsErrors.set(true)
