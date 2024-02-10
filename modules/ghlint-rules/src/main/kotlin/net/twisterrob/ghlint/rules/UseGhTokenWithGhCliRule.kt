@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.results.report
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule

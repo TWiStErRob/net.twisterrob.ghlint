@@ -8,11 +8,18 @@ import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.file
 import net.twisterrob.ghlint.model.id
 import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.yaml.toLocation
 
 context(Rule)
-public fun Issue.problem(
+public fun Reporting.report(issue: Issue, context: Model, message: (String) -> String): Finding {
+	val finalMessage = message(context.toTarget())
+	return issue.problem(context, finalMessage)
+}
+
+context(Rule)
+private fun Issue.problem(
 	context: Model,
 	finalMessage: String,
 ): Finding = Finding(
@@ -22,7 +29,7 @@ public fun Issue.problem(
 	message = finalMessage,
 )
 
-public fun Model.toTarget(): String =
+private fun Model.toTarget(): String =
 	when (this) {
 		is Workflow -> "workflow ${this.id}"
 		is Job -> "job ${this.id}"

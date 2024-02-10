@@ -4,4 +4,6 @@ plugins {
 
 dependencies {
 	implementation(projects.ghlintApi)
+	// TODO remove dependency on net.twisterrob.ghlint.results.report somehow.
+	implementation(projects.ghlintSnakeyaml)
 }

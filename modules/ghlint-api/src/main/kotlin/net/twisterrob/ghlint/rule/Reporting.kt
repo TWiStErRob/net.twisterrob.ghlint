@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.rule
 
-import net.twisterrob.ghlint.model.Model
+import net.twisterrob.ghlint.results.Finding
 
 public interface Reporting {
 
-	public fun report(issue: Issue, context: Model, message: (target: String) -> String)
+	public fun report(finding: Finding)
 }
