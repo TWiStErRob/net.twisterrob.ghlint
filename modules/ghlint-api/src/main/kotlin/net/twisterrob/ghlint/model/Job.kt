@@ -16,9 +16,10 @@ public sealed interface Job : Component {
 
 	public companion object;
 
+	// TODO find a way to remove this from the API.
 	public interface BaseJob : Job
 
-	public interface NormalJob : Job {
+	public interface NormalJob : BaseJob {
 
 		public val steps: List<Step>
 		public val defaults: Defaults?
@@ -41,7 +42,7 @@ public sealed interface Job : Component {
 		public companion object
 	}
 
-	public interface ReusableWorkflowCallJob : Job {
+	public interface ReusableWorkflowCallJob : BaseJob {
 
 		public val uses: String
 

@@ -19,7 +19,7 @@ public interface Visitor {
 		when (job) {
 			is Job.NormalJob -> visitNormalJob(reporting, job)
 			is Job.ReusableWorkflowCallJob -> visitReusableWorkflowCallJob(reporting, job)
-			is Job.BaseJob -> error("Unknown job type: ${job}") // STOPSHIP
+			is Job.BaseJob -> error("Unknown job type: ${job}")
 		}
 	}
 
@@ -40,7 +40,7 @@ public interface Visitor {
 		when (step) {
 			is Step.Run -> visitRunStep(reporting, step)
 			is Step.Uses -> visitUsesStep(reporting, step)
-			is Step.BaseStep -> error("Unknown step type: ${step}") // STOPSHIP
+			is Step.BaseStep -> error("Unknown step type: ${step}")
 		}
 	}
 

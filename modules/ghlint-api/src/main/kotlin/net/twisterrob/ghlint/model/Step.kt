@@ -18,9 +18,10 @@ public sealed interface Step : Component {
 	@JvmInline
 	public value class Index(public val value: Int)
 
+	// TODO find a way to remove this from the API.
 	public interface BaseStep : Step
 
-	public interface Run : Step {
+	public interface Run : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val run: String
@@ -30,7 +31,7 @@ public sealed interface Step : Component {
 		public companion object
 	}
 
-	public interface Uses : Step {
+	public interface Uses : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val uses: String
