@@ -4,10 +4,10 @@ import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.name
-import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule
+import net.twisterrob.ghlint.rule.report
 
 @Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
 public class IdNamingRule : VisitorRule {
