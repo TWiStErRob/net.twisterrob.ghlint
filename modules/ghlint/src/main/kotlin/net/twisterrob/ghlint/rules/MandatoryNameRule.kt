@@ -11,18 +11,21 @@ import net.twisterrob.ghlint.rule.VisitorRule
 public class MandatoryNameRule : VisitorRule {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
+		super.visitWorkflow(reporting, workflow)
 		if (workflow.name == null) {
 			reporting.report(MandatoryWorkflowName, workflow) { "${it} must have a name." }
 		}
 	}
 
 	public override fun visitJob(reporting: Reporting, job: Job) {
+		super.visitJob(reporting, job)
 		if (job.name == null) {
 			reporting.report(MandatoryJobName, job) { "${it} must have a name." }
 		}
 	}
 
 	public override fun visitStep(reporting: Reporting, step: Step) {
+		super.visitStep(reporting, step)
 		if (step.name == null) {
 			reporting.report(MandatoryStepName, step) { "${it} must have a name." }
 		}

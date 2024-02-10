@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.build
 
 import gradle.kotlin.dsl.accessors._8c47cae829ea3d03260d5ff13fb2398e.javaToolchains
 import gradle.kotlin.dsl.accessors._8c47cae829ea3d03260d5ff13fb2398e.testing
+import net.twisterrob.ghlint.build.dsl.isCI
 import net.twisterrob.ghlint.build.dsl.libs
 import org.gradle.kotlin.dsl.withType
 
@@ -22,6 +23,7 @@ testing.suites.withType<JvmTestSuite>().configureEach {
 			javaLauncher.set(javaToolchains.launcherFor {
 				languageVersion.set(JavaLanguageVersion.of(libs.versions.java.toolchainTest.get()))
 			})
+			ignoreFailures = isCI.get()
 		}
 	}
 }

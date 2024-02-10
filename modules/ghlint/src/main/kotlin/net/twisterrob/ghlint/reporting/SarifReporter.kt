@@ -18,6 +18,7 @@ import net.twisterrob.ghlint.results.Finding
 import java.io.Writer
 import java.nio.file.Path
 import kotlin.io.path.absolute
+import kotlin.io.path.bufferedWriter
 import kotlin.io.path.relativeTo
 
 public class SarifReporter(
@@ -80,5 +81,18 @@ public class SarifReporter(
 			),
 		)
 		target.write(SarifSerializer.toJson(sarif))
+	}
+
+	public companion object {
+
+		public fun report(findings: List<Finding>, target: Path, rootDir: Path) {
+			target.bufferedWriter().use { writer ->
+				val reporter = SarifReporter(
+					target = writer,
+					rootDir = rootDir
+				)
+				reporter.report(findings)
+			}
+		}
 	}
 }

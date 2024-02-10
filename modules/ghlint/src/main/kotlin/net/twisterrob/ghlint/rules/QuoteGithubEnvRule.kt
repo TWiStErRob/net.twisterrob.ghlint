@@ -5,19 +5,20 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule
 
-public class MandatoryShellRule : VisitorRule {
+public class QuoteGithubEnvRule : VisitorRule {
 
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
-		val shell = step.shell ?: step.parent.defaults?.run?.shell
-		if (shell == null) {
-			reporting.report(MandatoryShell, step) { "${it} must have a shell defined." }
+		if (step.run.contains(GITHUB_ENV_REGEX)) {
+			reporting.report(QuoteGithubEnv, step) { "${it} must be quoted." }
 		}
 	}
 
 	internal companion object {
 
-		val MandatoryShell =
-			Issue("MandatoryShell", "Run step must have a shell")
+		private val GITHUB_ENV_REGEX = Regex("""(?<!")\$(?!\{)GITHUB_ENV(?!")""")
+
+		val QuoteGithubEnv =
+			Issue("QuoteGithubEnv", "GITHUB_ENV must be quoted.")
 	}
 }

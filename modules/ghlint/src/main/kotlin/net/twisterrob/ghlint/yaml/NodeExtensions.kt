@@ -29,3 +29,6 @@ internal val Node.map: Map<Node, Node>
 		is MappingNode -> this.value.associateBy({ it.keyNode }, { it.valueNode })
 		else -> error("Not a map")
 	}
+
+internal fun Map<Node, Node>.toTextMap(): Map<String, String> =
+	this.entries.associate { (key, value) -> key.text to value.text }

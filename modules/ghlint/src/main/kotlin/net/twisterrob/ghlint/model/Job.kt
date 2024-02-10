@@ -5,6 +5,8 @@ import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.getRequiredText
+import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public sealed class Job protected constructor(
@@ -14,6 +16,16 @@ public sealed class Job protected constructor(
 	public abstract val id: String
 	public val name: String?
 		get() = node.getOptionalText("name")
+
+	public val env: Map<String, String>?
+		get() = node.getOptional("env")?.run { map.toTextMap() }
+
+	public val permissions: Map<String, String>?
+		get() = node.getOptional("permissions")?.run { map.toTextMap() }
+
+	@Suppress("detekt.VariableNaming")
+	public val `if`: String?
+		get() = node.getOptionalText("if")
 
 	public class NormalJob internal constructor(
 		public override val parent: Workflow,
@@ -28,6 +40,9 @@ public sealed class Job protected constructor(
 
 		public val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { Defaults.from(it as MappingNode) }
+
+		public val timeoutMinutes: Int?
+			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
 
 		public class Defaults internal constructor(
 			private val node: MappingNode,
