@@ -32,6 +32,7 @@ includeModule(":ghlint-jsonschema")
 includeModule(":ghlint-reporting-sarif")
 includeModule(":ghlint-rules")
 includeModule(":ghlint-snakeyaml")
+includeModule(":ghlint-testing")
 includeModule(":test-helpers")
 
 fun includeModule(path: String) {

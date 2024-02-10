@@ -4,6 +4,6 @@ plugins {
 
 dependencies {
 	api(projects.ghlintApi)
-	
-	testImplementation(projects.ghlintTesting)
+	implementation(projects.ghlintSnakeyaml)
+	api(libs.test.kotest.assertions)
 }
