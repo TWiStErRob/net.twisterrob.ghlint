@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.reporting.SarifReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.rules.AlwaysDoubleCurlyIfRule
 import net.twisterrob.ghlint.rules.CreatePullRequestRule
+import net.twisterrob.ghlint.rules.ExplicitJobPermissionsRule
 import net.twisterrob.ghlint.rules.IdNamingRule
 import net.twisterrob.ghlint.rules.MandatoryNameRule
 import net.twisterrob.ghlint.rules.MandatoryShellRule
@@ -25,6 +26,7 @@ public fun main(vararg args: String) {
 	val rules = listOf(
 		AlwaysDoubleCurlyIfRule(),
 		CreatePullRequestRule(),
+		ExplicitJobPermissionsRule(),
 		IdNamingRule(),
 		MandatoryNameRule(),
 		MandatoryShellRule(),

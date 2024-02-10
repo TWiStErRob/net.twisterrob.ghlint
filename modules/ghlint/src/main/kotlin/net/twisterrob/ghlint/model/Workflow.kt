@@ -24,6 +24,9 @@ public class Workflow internal constructor(
 			.mapKeys { (key, _) -> key.text }
 			.mapValues { (key, value) -> Job.from(this, key, value as MappingNode) }
 
+	public val permissions: Map<String, String>?
+		get() = node.getOptional("permissions")?.run { map.toTextMap() }
+
 	public companion object
 }
 
