@@ -4,6 +4,8 @@ import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.analysis.Validator
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileName
+import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.from
 import net.twisterrob.ghlint.reporting.SarifReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.rules.AlwaysDoubleCurlyIfRule
@@ -44,10 +46,11 @@ public fun main(vararg args: String) {
 		UseEnvInsteadOfTemplatingRule::class,
 	)
 	val files = args.map { File(FileName(it)) }
+	val workflows = files.map(Workflow::from)
 
-	val validation = Validator().validateWorkflows(files)
-	val findings = Analyzer().analyzeWorkflows(files, defaultRuleSet)
-	val allFindings = validation + findings
+	val validationResults = Validator().validateWorkflows(files)
+	val analysisResults = Analyzer().analyzeWorkflows(workflows, defaultRuleSet)
+	val allFindings = validationResults + analysisResults
 
 	TextReporter(System.out).report(allFindings)
 	SarifReporter.report(allFindings, Path.of("report.sarif"), Path.of("."))

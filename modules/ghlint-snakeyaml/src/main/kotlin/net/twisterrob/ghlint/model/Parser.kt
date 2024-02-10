@@ -1,13 +1,15 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.yaml.Yaml
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
 
-// STOPSHIP public?
-public fun Workflow.Companion.from(file: File, node: Node): Workflow =
-	SnakeWorkflow(file, node as MappingNode)
+public fun Workflow.Companion.from(file: File): Workflow =
+	SnakeWorkflow(file, Yaml.load(file.readText()) as MappingNode)
+
+private fun File.readText(): String =
+	java.io.File(file.path).readText()
 
 public fun Job.Companion.from(workflow: Workflow, key: String, node: MappingNode): Job =
 	when {
