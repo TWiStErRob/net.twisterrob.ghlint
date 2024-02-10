@@ -26,13 +26,13 @@ public fun Reporting.report(issue: Issue, context: Component, message: (String) 
 
 private fun Component.toTarget(): String =
 	when (this) {
-		is Workflow -> "workflow ${this.id}"
-		is Job -> "job ${this.id}"
-		is Step -> "step ${this.identifier} in ${this.parent.toTarget()}"
+		is Workflow -> "Workflow[${this.id}]"
+		is Job -> "Job[${this.id}]"
+		is Step -> "Step[${this.identifier}] in ${this.parent.toTarget()}"
 	}
 
 private val Step.identifier: String
 	get() = this.id
 		?: this.name?.let { "\"${it}\"" }
 		?: (this as? Step.Uses)?.uses
-		?: this.index.toString()
+		?: "#${this.index.value}"
