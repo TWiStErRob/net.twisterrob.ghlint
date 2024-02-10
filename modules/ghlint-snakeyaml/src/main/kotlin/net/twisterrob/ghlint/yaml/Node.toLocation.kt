@@ -11,7 +11,7 @@ import java.util.Optional
 
 public fun Node.toLocation(file: File): Location =
 	Location(
-		file = file.file,
+		file = file.location,
 		start = startMark.toPosition(),
 		end = endMark.toPosition(),
 	)

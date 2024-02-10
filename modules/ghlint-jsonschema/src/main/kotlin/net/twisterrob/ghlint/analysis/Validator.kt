@@ -17,8 +17,8 @@ public class Validator {
 	public fun validateWorkflows(files: List<File>): List<Finding> {
 		val rule = JsonSchemaValidationRule()
 		return files.flatMap { file ->
-			val root: Node = Yaml.load(file.readText())
-			val result: Validator.Result = YamlValidation.validate(file.readText())
+			val root: Node = Yaml.load(file.content)
+			val result: Validator.Result = YamlValidation.validate(file.content)
 			result.errors
 				.filter { it.error != "False schema always fails" }
 				.map { error ->
@@ -43,6 +43,3 @@ public class Validator {
 		private val ValidationIssue = Issue("JsonSchemaValidation", "JSON-Schema based validation problem.")
 	}
 }
-
-private fun File.readText(): String =
-	java.io.File(file.path).readText()

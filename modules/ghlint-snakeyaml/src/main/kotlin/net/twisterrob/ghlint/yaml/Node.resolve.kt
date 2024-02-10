@@ -5,6 +5,9 @@ import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
 public fun Node.resolve(instanceLocation: String): Node {
+	if (instanceLocation == "") {
+		return this
+	}
 	require(instanceLocation.startsWith("/")) { "Instance location (${instanceLocation}) must start with /." }
 	val path = instanceLocation.split("/").drop(1)
 	return path.fold(this) { node, key ->

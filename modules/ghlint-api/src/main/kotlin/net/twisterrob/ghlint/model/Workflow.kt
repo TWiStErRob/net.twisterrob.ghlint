@@ -15,4 +15,4 @@ public interface Workflow : Component {
 }
 
 public val Workflow.id: String
-	get() = parent.file.name
+	get() = parent.location.name

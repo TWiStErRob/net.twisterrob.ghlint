@@ -8,7 +8,6 @@ import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
-import org.intellij.lang.annotations.Language
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public class SnakeWorkflow internal constructor(
@@ -35,13 +34,7 @@ public class SnakeWorkflow internal constructor(
 
 	public companion object {
 
-		public fun from(@Language("yaml") yml: String, fileName: String = "in-memory.yml"): Workflow =
-			SnakeWorkflow(File(FileName(fileName)), Yaml.load(yml) as MappingNode)
-
 		public fun from(file: File): Workflow =
-			SnakeWorkflow(file, Yaml.load(file.readText()) as MappingNode)
-
-		private fun File.readText(): String =
-			java.io.File(file.path).readText()
+			SnakeWorkflow(file, Yaml.load(file.content) as MappingNode)
 	}
 }

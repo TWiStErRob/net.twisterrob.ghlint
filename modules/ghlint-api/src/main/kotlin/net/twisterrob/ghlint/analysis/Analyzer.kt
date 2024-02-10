@@ -7,8 +7,7 @@ import net.twisterrob.ghlint.ruleset.RuleSet
 
 public class Analyzer {
 
-	public fun analyzeWorkflows(workflows: List<Workflow>, vararg ruleSets: RuleSet): List<Finding> {
-
+	public fun analyzeWorkflows(workflows: List<Workflow>, ruleSets: List<RuleSet>): List<Finding> {
 		val findings = workflows.flatMap { workflow ->
 			ruleSets
 				.flatMap { it.createRules() }
