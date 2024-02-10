@@ -4,8 +4,10 @@ import org.intellij.lang.annotations.Language
 
 public class Issue(
 	public val id: String,
-	public val description: String,
-	public val reasoning: String = "", // STOPSHIP
+	@Language("markdown")
+	public val title: String,
+	@Language("markdown")
+	public val description: String = "", // STOPSHIP
 	public val compliant: List<Example> = emptyList(), // STOPSHIP
 	public val nonCompliant: List<Example> = emptyList(), // STOPSHIP
 )
@@ -13,5 +15,6 @@ public class Issue(
 public class Example(
 	@Language("yaml")
 	public val content: String,
-	public val explanation: String? = null,
+	@Language("markdown")
+	public val explanation: String,
 )

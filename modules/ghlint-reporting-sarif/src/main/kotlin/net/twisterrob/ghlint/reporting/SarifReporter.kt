@@ -39,7 +39,7 @@ public class SarifReporter(
 							rules = findings.map { it.issue }.distinct().map { issue ->
 								ReportingDescriptor(
 									id = issue.id,
-									name = issue.description,
+									name = issue.title,
 									shortDescription = MultiformatMessageString(
 										text = issue.description,
 									),
