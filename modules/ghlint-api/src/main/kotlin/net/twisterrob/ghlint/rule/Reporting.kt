@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.rule
 
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Model
+import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.id
@@ -13,7 +13,7 @@ public interface Reporting {
 }
 
 context(Rule)
-public fun Reporting.report(issue: Issue, context: Model, message: (String) -> String): Finding =
+public fun Reporting.report(issue: Issue, context: Component, message: (String) -> String): Finding =
 	Finding(
 		rule = this@Rule,
 		issue = issue,
@@ -21,7 +21,7 @@ public fun Reporting.report(issue: Issue, context: Model, message: (String) -> S
 		message = message(context.toTarget()),
 	)
 
-private fun Model.toTarget(): String =
+private fun Component.toTarget(): String =
 	when (this) {
 		is Workflow -> "workflow ${this.id}"
 		is Job -> "job ${this.id}"

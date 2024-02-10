@@ -1,6 +1,9 @@
 package net.twisterrob.ghlint.model
 
-public sealed interface Job : Model {
+/**
+ * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#jobs
+ */
+public sealed interface Job : Component {
 
 	public val parent: Workflow
 	public val id: String

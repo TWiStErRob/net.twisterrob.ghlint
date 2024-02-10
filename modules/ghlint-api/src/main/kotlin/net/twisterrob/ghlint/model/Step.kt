@@ -1,6 +1,9 @@
 package net.twisterrob.ghlint.model
 
-public sealed interface Step : Model {
+/**
+ * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
+ */
+public sealed interface Step : Component {
 
 	public val parent: Job.NormalJob
 	public val index: Index

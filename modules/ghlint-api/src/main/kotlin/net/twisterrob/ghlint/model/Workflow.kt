@@ -1,6 +1,9 @@
 package net.twisterrob.ghlint.model
 
-public interface Workflow : Model {
+/**
+ * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#workflows
+ */
+public interface Workflow : Component {
 
 	public val parent: File
 	public val name: String?

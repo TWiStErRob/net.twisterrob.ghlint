@@ -2,14 +2,17 @@ package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
 
-public sealed interface Model {
+/**
+ * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#the-components-of-github-actions
+ */
+public sealed interface Component {
 
 	public val location: Location
 
 	public companion object
 }
 
-public val Model.file: File
+public val Component.file: File
 	get() = when (this) {
 		is Workflow -> parent
 		is Job -> parent.parent

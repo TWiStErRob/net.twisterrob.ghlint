@@ -9,5 +9,5 @@ internal interface HasSnakeNode {
 	val node: MappingNode
 
 	val location: Location
-		get() = node.toLocation((this as Model).file)
+		get() = node.toLocation((this as Component).file)
 }
