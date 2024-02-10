@@ -4,9 +4,25 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.validate
 import org.junit.jupiter.api.Test
 
 class MandatoryNameRuleTest {
+
+	@Test
+	fun `MandatoryWorkflowName examples`() {
+		validate<MandatoryNameRule>(MandatoryNameRule.MandatoryWorkflowName)
+	}
+
+	@Test
+	fun `MandatoryJobName examples`() {
+		validate<MandatoryNameRule>(MandatoryNameRule.MandatoryJobName)
+	}
+
+	@Test
+	fun `MandatoryStepName examples`() {
+		validate<MandatoryNameRule>(MandatoryNameRule.MandatoryStepName)
+	}
 
 	@Test fun `reports when workflow is missing a name`() {
 		val result = check<MandatoryNameRule>(
