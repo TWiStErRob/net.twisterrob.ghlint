@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.reporting
 
+import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 
 public class TextReporter(

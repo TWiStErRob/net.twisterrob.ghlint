@@ -1,0 +1,9 @@
+plugins {
+	id("net.twisterrob.ghlint.library")
+}
+
+dependencies {
+	implementation(libs.jsonSchema)
+	implementation(libs.snakeyaml2)
+	implementation(projects.ghlintSnakeyaml)
+}

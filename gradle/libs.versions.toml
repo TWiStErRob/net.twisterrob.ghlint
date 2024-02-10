@@ -10,9 +10,12 @@ kotlin-language = "1.9"
 
 detekt = "1.23.5"
 jsr305 = "3.0.2"
+snakeyaml2 = "2.7"
+sarif4k = "0.5.0"
 
 junit-jupiter = "5.10.2"
 kotest = "5.8.0"
+jsonSchema = "1.5.0"
 
 
 [libraries]
@@ -20,6 +23,9 @@ kotest = "5.8.0"
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
 detekt-rules-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+snakeyaml2 = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml2" }
+sarif4k = { module = "io.github.detekt.sarif4k:sarif4k", version.ref = "sarif4k" }
+jsonSchema = { module = "dev.harrel:json-schema", version.ref = "jsonSchema" }
 
 test-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 test-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }

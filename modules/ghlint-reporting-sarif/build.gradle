@@ -1,0 +1,8 @@
+plugins {
+	id("net.twisterrob.ghlint.library")
+}
+
+dependencies {
+	implementation(projects.ghlintApi)
+	implementation(libs.sarif4k)
+}

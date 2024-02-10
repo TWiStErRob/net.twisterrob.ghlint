@@ -17,10 +17,12 @@ dependencies {
 	implementation(libs.kotlin.stdlib)
 }
 
+// TODO kotlin.target.compilerOptions { ... }
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
 		allWarningsAsErrors.set(true)
 		verbose.set(true)
 		freeCompilerArgs.add("-opt-in=kotlin.ExperimentalStdlibApi")
+		freeCompilerArgs.add("-Xcontext-receivers")
 	}
 }

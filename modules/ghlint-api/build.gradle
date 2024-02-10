@@ -1,0 +1,7 @@
+plugins {
+	id("net.twisterrob.ghlint.library")
+}
+
+dependencies {
+	implementation(libs.jsr305)
+}
