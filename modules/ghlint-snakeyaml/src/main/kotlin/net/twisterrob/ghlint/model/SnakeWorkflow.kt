@@ -9,7 +9,6 @@ import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
-import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeWorkflow internal constructor(
 	override val parent: File,
@@ -36,9 +35,9 @@ public class SnakeWorkflow internal constructor(
 	public companion object {
 
 		public fun from(file: File): Workflow =
-			SnakeWorkflow(file, file.load() as MappingNode)
+			SnakeWorkflow(file, Yaml.load(file.readText()) as MappingNode)
 
-		private fun File.load(): Node =
-			Yaml.load(java.io.File(file.path).readText())
+		private fun File.readText(): String =
+			java.io.File(file.path).readText()
 	}
 }
