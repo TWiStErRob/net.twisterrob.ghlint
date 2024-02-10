@@ -41,11 +41,10 @@ public fun main(vararg args: String) {
 		UseGhTokenWithGhCliRule::class,
 		UseEnvInsteadOfTemplatingRule::class,
 	)
-	val rules = defaultRuleSet.createRules()
 	val files = args.map { File(FileName(it)) }
 
 	val validation = Validator().validateWorkflows(files)
-	val findings = Analyzer().analyzeWorkflows(files, rules)
+	val findings = Analyzer().analyzeWorkflows(files, defaultRuleSet)
 	val allFindings = validation + findings
 
 	TextReporter(System.out).report(allFindings)
