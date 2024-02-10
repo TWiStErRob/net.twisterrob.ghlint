@@ -30,6 +30,22 @@ public sealed class SnakeJob protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
+	public companion object {
+
+		public fun from(parent: Workflow, id: String, node: MappingNode): Job =
+			when {
+
+				node.getOptionalText("uses") != null ->
+					SnakeReusableWorkflowCallJob(parent, id, node)
+
+				node.getOptional("steps") != null ->
+					SnakeNormalJob(parent, id, node)
+
+				else ->
+					error("Unknown job type: ${node}")
+			}
+	}
+
 	public class SnakeNormalJob internal constructor(
 		override val parent: Workflow,
 		override val id: String,
@@ -37,19 +53,8 @@ public sealed class SnakeJob protected constructor(
 	) : Job.NormalJob, SnakeJob() {
 
 		override val steps: List<Step>
-			get() = node.getRequired("steps").array.mapIndexed { index, node ->
-				node as MappingNode
-				when {
-					node.getOptionalText("uses") != null ->
-						SnakeStep.SnakeUses(this, Step.Index(index), node)
-
-					node.getOptionalText("run") != null ->
-						SnakeStep.SnakeRun(this, Step.Index(index), node)
-
-					else ->
-						error("Unknown step type: ${node}")
-				}
-			}
+			get() = node.getRequired("steps").array
+				.mapIndexed { index, node -> SnakeStep.from(this, index, node as MappingNode) }
 
 		override val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { SnakeDefaults(it as MappingNode) }

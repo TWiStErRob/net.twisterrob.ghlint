@@ -28,19 +28,7 @@ public class SnakeWorkflow internal constructor(
 	override val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map
 			.mapKeys { (key, _) -> key.text }
-			.mapValues { (key, node) ->
-				node as MappingNode
-				when {
-					node.getOptionalText("uses") != null ->
-						SnakeJob.SnakeReusableWorkflowCallJob(this, key, node)
-
-					node.getOptional("steps") != null ->
-						SnakeJob.SnakeNormalJob(this, key, node)
-
-					else ->
-						error("Unknown job: ${node}")
-				}
-			}
+			.mapValues { (key, node) -> SnakeJob.from(this, key, node as MappingNode) }
 
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }

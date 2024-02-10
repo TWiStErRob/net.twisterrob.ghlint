@@ -23,6 +23,21 @@ public sealed class SnakeStep protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
+	public companion object {
+
+		public fun from(parent: Job.NormalJob, index: Int, node: MappingNode): Step =
+			when {
+				node.getOptionalText("uses") != null ->
+					SnakeUses(parent, Step.Index(index), node)
+
+				node.getOptionalText("run") != null ->
+					SnakeRun(parent, Step.Index(index), node)
+
+				else ->
+					error("Unknown step type: ${node}")
+			}
+	}
+
 	public class SnakeRun internal constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
