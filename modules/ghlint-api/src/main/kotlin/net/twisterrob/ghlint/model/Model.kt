@@ -1,6 +1,11 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.results.Location
+
 public sealed interface Model {
+
+	public val location: Location
+
 	public companion object
 }
 

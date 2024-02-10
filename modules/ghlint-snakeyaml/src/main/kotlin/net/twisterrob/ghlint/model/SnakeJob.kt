@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.array
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -11,6 +12,9 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public sealed class SnakeJob protected constructor(
 ) : Job.BaseJob, HasSnakeNode {
+
+	override val location: Location
+		get() = super.location
 
 	override val name: String?
 		get() = node.getOptionalText("name")
