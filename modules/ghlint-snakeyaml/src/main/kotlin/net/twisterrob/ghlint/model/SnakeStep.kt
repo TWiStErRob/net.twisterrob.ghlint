@@ -8,7 +8,7 @@ import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public sealed class SnakeStep protected constructor(
-) : Step.BaseStep, InternalModel {
+) : Step.BaseStep, HasSnakeNode {
 
 	override val name: String?
 		get() = node.getOptionalText("name")

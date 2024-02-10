@@ -11,7 +11,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 public class SnakeWorkflow internal constructor(
 	override val parent: File,
 	override val node: MappingNode,
-) : Workflow, InternalModel {
+) : Workflow, HasSnakeNode {
 
 	override val name: String?
 		get() = node.getOptionalText("name")

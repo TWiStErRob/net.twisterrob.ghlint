@@ -10,7 +10,7 @@ import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public sealed class SnakeJob protected constructor(
-) : Job.BaseJob, InternalModel {
+) : Job.BaseJob, HasSnakeNode {
 
 	override val name: String?
 		get() = node.getOptionalText("name")
