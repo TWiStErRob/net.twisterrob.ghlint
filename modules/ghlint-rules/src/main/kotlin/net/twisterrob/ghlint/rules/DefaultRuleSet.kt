@@ -10,7 +10,7 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	CreatePullRequestRule::class,
 	ExplicitJobPermissionsRule::class,
 	IdNamingRule::class,
-	MandatoryShellRule::class,
+	MissingShellRule::class,
 	MissingNameRule::class,
 	MissingJobTimeoutRule::class,
 	NeverUseAlwaysRule::class,

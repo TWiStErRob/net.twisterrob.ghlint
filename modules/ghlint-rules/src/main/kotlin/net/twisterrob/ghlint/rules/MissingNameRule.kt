@@ -42,7 +42,7 @@ public class MissingNameRule : VisitorRule {
 
 		val MissingWorkflowName = Issue(
 			id = "MissingWorkflowName",
-			title = "Missing workflow name.",
+			title = "Workflow is missing a name.",
 			description = """
 				Having a workflow name is important for usability.
 				The default workflow name is the file name, but it's recommended to override it for human consumption:
@@ -83,7 +83,7 @@ public class MissingNameRule : VisitorRule {
 
 		val MissingJobName = Issue(
 			id = "MissingJobName",
-			title = "Missing Job name.",
+			title = "Job is missing a name.",
 			description = """
 				Having a job name is important for usability.
 				The default job name is the id of the job, but it's recommended to override it for human consumption:
@@ -126,7 +126,7 @@ public class MissingNameRule : VisitorRule {
 
 		val MissingStepName = Issue(
 			id = "MissingStepName",
-			title = "Missing Step name.",
+			title = "Step is missing a name.",
 			description = """
 				Having a step name is important for usability.
 				The default step name is the first line of `run:` or the action of `uses:`,
