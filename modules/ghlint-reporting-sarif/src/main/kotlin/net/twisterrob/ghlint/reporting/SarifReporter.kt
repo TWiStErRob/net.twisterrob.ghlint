@@ -5,6 +5,7 @@ import io.github.detekt.sarif4k.Location
 import io.github.detekt.sarif4k.Message
 import io.github.detekt.sarif4k.MultiformatMessageString
 import io.github.detekt.sarif4k.PhysicalLocation
+import io.github.detekt.sarif4k.PropertyBag
 import io.github.detekt.sarif4k.Region
 import io.github.detekt.sarif4k.ReportingDescriptor
 import io.github.detekt.sarif4k.Result
@@ -39,9 +40,22 @@ public class SarifReporter(
 							rules = findings.map { it.issue }.distinct().map { issue ->
 								ReportingDescriptor(
 									id = issue.id,
-									name = issue.title,
+									name = "name `here`",
 									shortDescription = MultiformatMessageString(
-										text = issue.description,
+										text = "short `description`",
+										markdown = "short `description` markdown",
+									),
+									fullDescription = MultiformatMessageString(
+										text = "full `description`",
+										markdown = "full `description` markdown",
+									),
+									help = MultiformatMessageString(
+										text = "help `description`",
+										markdown = "help `description` markdown",
+									),
+									helpURI = "https://example.com/help",
+									properties = PropertyBag(
+										tags = listOf("tag1", "tag2"),
 									),
 								)
 							},
@@ -54,7 +68,8 @@ public class SarifReporter(
 						val file = Path.of(finding.location.file.path).absolute().toRealPath()
 						Result(
 							message = Message(
-								text = finding.message,
+								text = "Message `description`",
+								markdown = "Message `description` markdown",
 							),
 							ruleID = finding.issue.id,
 							locations = listOf(
