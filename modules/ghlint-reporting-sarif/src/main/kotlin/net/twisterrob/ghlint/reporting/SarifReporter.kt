@@ -5,7 +5,6 @@ import io.github.detekt.sarif4k.Location
 import io.github.detekt.sarif4k.Message
 import io.github.detekt.sarif4k.MultiformatMessageString
 import io.github.detekt.sarif4k.PhysicalLocation
-import io.github.detekt.sarif4k.PropertyBag
 import io.github.detekt.sarif4k.Region
 import io.github.detekt.sarif4k.ReportingDescriptor
 import io.github.detekt.sarif4k.Result
@@ -16,6 +15,7 @@ import io.github.detekt.sarif4k.Tool
 import io.github.detekt.sarif4k.ToolComponent
 import io.github.detekt.sarif4k.Version
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.descriptionWithExamples
 import java.io.Writer
 import java.nio.file.Path
 import kotlin.io.path.absolute
@@ -40,23 +40,21 @@ public class SarifReporter(
 							rules = findings.map { it.issue }.distinct().map { issue ->
 								ReportingDescriptor(
 									id = issue.id,
-									name = "name `here`",
+									name = issue.title,
 									shortDescription = MultiformatMessageString(
-										text = "short `description`",
-										markdown = "short `description` markdown",
+										text = issue.title,
 									),
 									fullDescription = MultiformatMessageString(
-										text = "full `description`",
-										markdown = "full `description` markdown",
+										text = "See markdown.", // TODO strip markdown.
+										markdown = issue.description,
 									),
 									help = MultiformatMessageString(
-										text = "help `description`",
-										markdown = "help `description` markdown",
+										text = "See markdown.", // TODO strip markdown.
+										markdown = issue.descriptionWithExamples,
 									),
-									helpURI = "https://example.com/help",
-									properties = PropertyBag(
-										tags = listOf("tag1", "tag2"),
-									),
+									// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
+									// TODO helpURI = "https://example.com/help", // not visible on GH UI.
+									// TODO properties = PropertyBag(tags = listOf("tag1", "tag2")), // visible in detail view on GH UI.
 								)
 							},
 						),
@@ -68,8 +66,7 @@ public class SarifReporter(
 						val file = Path.of(finding.location.file.path).absolute().toRealPath()
 						Result(
 							message = Message(
-								text = "Message `description`",
-								markdown = "Message `description` markdown",
+								markdown = finding.message,
 							),
 							ruleID = finding.issue.id,
 							locations = listOf(

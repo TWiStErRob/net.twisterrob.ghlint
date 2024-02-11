@@ -18,3 +18,27 @@ public class Example(
 	@Language("markdown")
 	public val explanation: String,
 )
+
+public val Issue.descriptionWithExamples: String
+	get() = buildString {
+		append(description)
+		append("\n")
+		renderExamples("Compliant", compliant)
+		renderExamples("Non-compliant", compliant)
+	}
+
+private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
+	if (examples.isNotEmpty()) {
+		append("\n## ${type} ${if (examples.size > 1) "examples" else "example"}\n")
+		examples.forEachIndexed { index, example ->
+			if (examples.size != 1) {
+				append("\n### ${type} example #${index + 1}\n")
+			}
+			append("```yaml\n")
+			append(example.content)
+			append("```\n")
+			append(example.explanation)
+			append("\n")
+		}
+	}
+}
