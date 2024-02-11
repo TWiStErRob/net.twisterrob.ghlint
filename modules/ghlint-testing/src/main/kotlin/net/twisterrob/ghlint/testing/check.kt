@@ -6,7 +6,6 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
 import net.twisterrob.ghlint.yaml.Yaml
 import org.intellij.lang.annotations.Language
 
@@ -14,12 +13,18 @@ public inline fun <reified T : Rule> check(
 	@Language("yaml") yml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {
-	val ruleSet = ReflectiveRuleSet(id = "test-ruleset", name = "Test RuleSet", T::class)
+	val rule = createRule<T>()
+	return rule.check(yml, fileName)
+}
+
+public fun Rule.check(
+	@Language("yaml") yml: String,
+	fileName: String = "test.yml",
+): List<Finding> {
 	require(yml.isNotEmpty()) { "At least one workflow.yml file must be provided." }
-	val analyze = Yaml.analyze(listOf(File(FileLocation(fileName), yml)), listOf(ruleSet))
-	val rule = ruleSet.createRules().single()
-	assertFindingsProducibleByRule(analyze, rule)
-	return analyze
+	val findings = this.check(Yaml.loadWorkflow(File(FileLocation(fileName), yml)))
+	assertFindingsProducibleByRule(findings, this)
+	return findings
 }
 
 public fun assertFindingsProducibleByRule(findings: List<Finding>, rule: Rule) {
