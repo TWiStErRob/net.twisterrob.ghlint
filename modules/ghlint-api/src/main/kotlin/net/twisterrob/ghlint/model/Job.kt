@@ -25,20 +25,6 @@ public sealed interface Job : Component {
 		public val defaults: Defaults?
 		public val timeoutMinutes: Int?
 
-		public interface Defaults {
-
-			public val run: Run?
-
-			public interface Run {
-
-				public val shell: String?
-
-				public companion object
-			}
-
-			public companion object
-		}
-
 		public companion object
 	}
 

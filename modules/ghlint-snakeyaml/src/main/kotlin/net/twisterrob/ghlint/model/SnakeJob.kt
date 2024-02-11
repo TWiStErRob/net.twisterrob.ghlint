@@ -1,7 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.model.Job.NormalJob.Defaults
-import net.twisterrob.ghlint.model.Job.NormalJob.Defaults.Run
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.array
 import net.twisterrob.ghlint.yaml.getOptional
@@ -61,22 +59,6 @@ public sealed class SnakeJob protected constructor(
 
 		override val timeoutMinutes: Int?
 			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
-
-		public class SnakeDefaults internal constructor(
-			private val node: MappingNode,
-		) : Defaults {
-
-			override val run: Run?
-				get() = node.getOptional("run")?.let { SnakeRun(it as MappingNode) }
-
-			public class SnakeRun internal constructor(
-				private val node: MappingNode,
-			) : Run {
-
-				override val shell: String?
-					get() = node.getOptionalText("shell")
-			}
-		}
 	}
 
 	public class SnakeReusableWorkflowCallJob internal constructor(

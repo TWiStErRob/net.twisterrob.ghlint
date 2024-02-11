@@ -32,6 +32,9 @@ public class SnakeWorkflow internal constructor(
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
 
+	override val defaults: Defaults?
+		get() = node.getOptional("defaults")?.let { SnakeDefaults(it as MappingNode) }
+
 	public companion object {
 
 		public fun from(file: File): Workflow =
