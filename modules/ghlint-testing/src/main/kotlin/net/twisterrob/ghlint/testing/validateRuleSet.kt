@@ -1,6 +1,8 @@
 package net.twisterrob.ghlint.testing
 
 import io.kotest.matchers.shouldNot
+import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.junit.jupiter.api.DynamicContainer
 import org.junit.jupiter.api.DynamicNode
@@ -9,6 +11,8 @@ import java.util.stream.Stream
 import kotlin.reflect.KClass
 
 /**
+ * Validates a [RuleSet], it's [Rule]s and their [Issue]s.
+ *
  * Usage:
  * ```
  * @TestFactory

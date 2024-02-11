@@ -66,3 +66,6 @@ libraries:
   LibraryEntitiesShouldNotBePublic:
     # Calm down, I'm using Kotlin's strict explicit API mode.
     active: false
+  
+  LibraryCodeMustSpecifyReturnType:
+    excludes: [ '**/src/test/kotlin/**' ]
