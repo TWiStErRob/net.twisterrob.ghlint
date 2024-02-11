@@ -1,10 +1,9 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.testing.validate
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class DefaultRuleSetTest {
-	@Test fun test() {
-		validate<DefaultRuleSet>()
-	}
+
+	@TestFactory fun test() = validate(DefaultRuleSet::class)
 }

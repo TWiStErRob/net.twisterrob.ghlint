@@ -11,7 +11,6 @@ import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
 import io.kotest.matchers.string.beEmpty as beEmptyString
 
@@ -29,27 +28,43 @@ public inline fun <reified T : Rule> validate(issue: Issue) {
 }
 
 public fun validate(rule: Rule, issue: Issue) {
+	validateIssueDescription(issue)
+	validateIssueReasoning(issue)
+	rule.validateCompliantExamples(issue)
+	rule.validateNonCompliantExamples(issue)
+}
+
+internal fun validateIssueDescription(issue: Issue) {
 	withClue("Issue ${issue.id} description") {
 		issue.title shouldNot beEmptyString()
 	}
+}
+
+internal fun validateIssueReasoning(issue: Issue) {
 	withClue("Issue ${issue.id} reasoning") {
 		issue.description shouldNot beEmptyString()
 	}
-	withClue("Issue ${issue.id} compliant examples") {
-		issue.compliant shouldHave atLeastSize(1)
-		issue.compliant.forEachIndexed { index, example ->
-			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
-				validate(example.content) should beEmpty()
-				rule.check(example.content) shouldNot haveFinding(issue.id)
-			}
-		}
-	}
+}
+
+internal fun Rule.validateNonCompliantExamples(issue: Issue) {
 	withClue("Issue ${issue.id} non-compliant examples") {
 		issue.nonCompliant shouldHave atLeastSize(1)
 		issue.nonCompliant.forEachIndexed { index, example ->
 			withClue("${issue.id} non-compliant example #${index + 1}:\n${example.content}") {
 				validate(example.content) should beEmpty()
-				rule.check(example.content) should haveFinding(issue.id)
+				check(example.content) should haveFinding(issue.id)
+			}
+		}
+	}
+}
+
+internal fun Rule.validateCompliantExamples(issue: Issue) {
+	withClue("Issue ${issue.id} compliant examples") {
+		issue.compliant shouldHave atLeastSize(1)
+		issue.compliant.forEachIndexed { index, example ->
+			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
+				validate(example.content) should beEmpty()
+				check(example.content) shouldNot haveFinding(issue.id)
 			}
 		}
 	}
@@ -59,13 +74,5 @@ public fun validate(rule: Rule) {
 	rule.issues shouldNot io.kotest.matchers.collections.beEmpty() // STOPSHIP rename my beEmpty to something else?
 	rule.issues.forEach { issue ->
 		validate(rule, issue)
-	}
-}
-
-public inline fun <reified T : RuleSet> validate() {
-	val ruleSet = T::class.java.getDeclaredConstructor().newInstance()
-	val rules = ruleSet.createRules()
-	rules.forEach { rule ->
-		validate(rule)
 	}
 }
