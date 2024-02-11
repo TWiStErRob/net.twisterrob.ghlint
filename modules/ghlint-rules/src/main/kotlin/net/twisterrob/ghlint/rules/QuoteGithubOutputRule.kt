@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class QuoteGithubOutputRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(QuoteGithubOutput)
+
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		if (step.run.contains(GITHUB_OUTPUT_REGEX)) {

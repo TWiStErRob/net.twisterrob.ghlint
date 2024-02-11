@@ -34,6 +34,8 @@ public class Validator {
 
 	private class JsonSchemaValidationRule : Rule {
 
+		override val issues: List<Issue> = listOf(ValidationIssue)
+
 		override fun check(workflow: Workflow): List<Finding> =
 			error("Should never be called.")
 	}

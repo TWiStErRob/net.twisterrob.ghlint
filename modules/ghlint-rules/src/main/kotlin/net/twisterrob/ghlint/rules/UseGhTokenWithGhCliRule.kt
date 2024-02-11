@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class UseGhTokenWithGhCliRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(MissingGhToken)
+
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		if (usesGhCli(step.run)) {

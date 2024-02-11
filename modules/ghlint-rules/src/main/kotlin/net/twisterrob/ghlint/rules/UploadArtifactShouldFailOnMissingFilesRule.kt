@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class UploadArtifactShouldFailOnMissingFilesRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(ShouldFailOnMissingFiles)
+
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
 		if (step.uses.startsWith("actions/upload-artifact@")) {

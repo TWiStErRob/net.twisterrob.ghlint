@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class ExplicitJobPermissionsRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(MissingJobPermissions, ExplicitJobPermissions)
+
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
 		if (job.permissions == null && job.parent.permissions == null) {

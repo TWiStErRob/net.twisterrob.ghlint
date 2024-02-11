@@ -12,6 +12,8 @@ import net.twisterrob.ghlint.rule.report
 @Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
 public class MandatoryNameRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(MandatoryWorkflowName, MandatoryJobName, MandatoryStepName)
+
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
 		if (workflow.name == null) {

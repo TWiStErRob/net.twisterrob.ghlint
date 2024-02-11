@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class MandatoryShellRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(MandatoryShell)
+
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		val shell = step.shell ?: step.parent.defaults?.run?.shell

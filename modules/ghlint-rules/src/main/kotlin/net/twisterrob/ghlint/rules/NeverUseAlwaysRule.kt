@@ -9,6 +9,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class NeverUseAlwaysRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(NeverUseAlways)
+
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
 		if (job.`if`?.contains("always()") == true) {

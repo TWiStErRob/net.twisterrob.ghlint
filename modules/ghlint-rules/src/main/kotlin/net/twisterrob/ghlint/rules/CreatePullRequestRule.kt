@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class CreatePullRequestRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(UseGhCliToOpenPr)
+
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
 		if (step.uses.startsWith("peter-evans/create-pull-request@")) {

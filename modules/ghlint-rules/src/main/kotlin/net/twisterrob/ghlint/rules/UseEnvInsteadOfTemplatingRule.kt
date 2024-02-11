@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class UseEnvInsteadOfTemplatingRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(UseEnvInsteadOfTemplating)
+
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		if (step.run.contains("\${{")) {

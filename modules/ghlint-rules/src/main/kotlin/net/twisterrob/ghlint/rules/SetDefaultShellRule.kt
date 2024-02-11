@@ -9,6 +9,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class SetDefaultShellRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(SetDefaultShell)
+
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
 		if (job.defaults?.run?.shell == null) {
