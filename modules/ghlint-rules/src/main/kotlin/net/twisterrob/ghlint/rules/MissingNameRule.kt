@@ -9,37 +9,40 @@ import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule
 import net.twisterrob.ghlint.rule.report
 
-@Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
-public class MandatoryNameRule : VisitorRule {
+public class MissingNameRule : VisitorRule {
 
-	override val issues: List<Issue> = listOf(MandatoryWorkflowName, MandatoryJobName, MandatoryStepName)
+	override val issues: List<Issue> = listOf(MissingWorkflowName, MissingJobName, MissingStepName)
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
 		if (workflow.name == null) {
-			reporting.report(MandatoryWorkflowName, workflow) { "${it} must have a name." }
+			reporting.report(MissingWorkflowName, workflow, Message)
 		}
 	}
 
 	public override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
 		if (job.name == null) {
-			reporting.report(MandatoryJobName, job) { "${it} must have a name." }
+			reporting.report(MissingJobName, job, Message)
 		}
 	}
 
 	public override fun visitStep(reporting: Reporting, step: Step) {
 		super.visitStep(reporting, step)
 		if (step.name == null) {
-			reporting.report(MandatoryStepName, step) { "${it} must have a name." }
+			reporting.report(MissingStepName, step, Message)
 		}
 	}
 
 	internal companion object {
 
-		val MandatoryWorkflowName = Issue(
-			id = "MandatoryWorkflowName",
-			title = "Workflow must have a name.",
+		private val Message: (String) -> String = {
+			"${it} is missing a name, add one to improve developer experience."
+		}
+
+		val MissingWorkflowName = Issue(
+			id = "MissingWorkflowName",
+			title = "Missing workflow name.",
 			description = """
 				Having a workflow name is important for usability.
 				The default workflow name is the file name, but it's recommended to override it for human consumption:
@@ -78,9 +81,9 @@ public class MandatoryNameRule : VisitorRule {
 			)
 		)
 
-		val MandatoryJobName = Issue(
-			id = "MandatoryJobName",
-			title = "Job must have a name.",
+		val MissingJobName = Issue(
+			id = "MissingJobName",
+			title = "Missing Job name.",
 			description = """
 				Having a job name is important for usability.
 				The default job name is the id of the job, but it's recommended to override it for human consumption:
@@ -121,9 +124,9 @@ public class MandatoryNameRule : VisitorRule {
 			)
 		)
 
-		val MandatoryStepName = Issue(
-			id = "MandatoryStepName",
-			title = "Step must have a name.",
+		val MissingStepName = Issue(
+			id = "MissingStepName",
+			title = "Missing Step name.",
 			description = """
 				Having a step name is important for usability.
 				The default step name is the first line of `run:` or the action of `uses:`,

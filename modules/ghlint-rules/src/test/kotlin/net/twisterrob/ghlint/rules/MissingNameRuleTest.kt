@@ -4,41 +4,25 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
-import net.twisterrob.ghlint.testing.validate
 import org.junit.jupiter.api.Test
 
-class MandatoryNameRuleTest {
-
-	@Test
-	fun `MandatoryWorkflowName examples`() {
-		validate<MandatoryNameRule>(MandatoryNameRule.MandatoryWorkflowName)
-	}
-
-	@Test
-	fun `MandatoryJobName examples`() {
-		validate<MandatoryNameRule>(MandatoryNameRule.MandatoryJobName)
-	}
-
-	@Test
-	fun `MandatoryStepName examples`() {
-		validate<MandatoryNameRule>(MandatoryNameRule.MandatoryStepName)
-	}
+class MissingNameRuleTest {
 
 	@Test fun `reports when workflow is missing a name`() {
-		val result = check<MandatoryNameRule>(
+		val result = check<MissingNameRule>(
 			"""
 				jobs:
 			""".trimIndent()
 		)
 
 		result should haveFinding(
-			"MandatoryWorkflowName",
-			"Workflow[test.yml] must have a name."
+			"MissingWorkflowName",
+			"Workflow[test.yml] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when workflow has a name`() {
-		val result = check<MandatoryNameRule>(
+		val result = check<MissingNameRule>(
 			"""
 				name: Test
 				jobs:
@@ -49,7 +33,7 @@ class MandatoryNameRuleTest {
 	}
 
 	@Test fun `reports when job is missing a name`() {
-		val result = check<MandatoryNameRule>(
+		val result = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -61,13 +45,13 @@ class MandatoryNameRuleTest {
 		)
 
 		result should haveFinding(
-			"MandatoryJobName",
-			"Job[test] must have a name."
+			"MissingJobName",
+			"Job[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when job has a name`() {
-		val result = check<MandatoryNameRule>(
+		val result = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -83,7 +67,7 @@ class MandatoryNameRuleTest {
 	}
 
 	@Test fun `reports when step is missing a name`() {
-		val result = check<MandatoryNameRule>(
+		val result = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -95,13 +79,13 @@ class MandatoryNameRuleTest {
 		)
 
 		result should haveFinding(
-			"MandatoryStepName",
-			"Step[#0] in Job[test] must have a name."
+			"MissingStepName",
+			"Step[#0] in Job[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when step has a name`() {
-		val result = check<MandatoryNameRule>(
+		val result = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
