@@ -92,6 +92,7 @@ private fun result(finding: Finding, base: Path): Result {
 	val file = Path.of(finding.location.file.path).absolute().toRealPath()
 	return Result(
 		message = Message(
+			text = "See markdown.", // TODO strip markdown.
 			markdown = finding.message,
 		),
 		ruleID = finding.issue.id,
