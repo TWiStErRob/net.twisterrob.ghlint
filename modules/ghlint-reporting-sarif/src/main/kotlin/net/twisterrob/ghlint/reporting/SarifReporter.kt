@@ -69,9 +69,6 @@ public class SarifReporter(
 	}
 }
 
-// TODO strip markdown.
-private const val TEXT_NOT_YET_PROVIDED = "See markdown."
-
 private fun reportingDescriptor(issue: Issue) = ReportingDescriptor(
 	id = issue.id,
 	name = issue.title,
@@ -79,11 +76,11 @@ private fun reportingDescriptor(issue: Issue) = ReportingDescriptor(
 		text = issue.title,
 	),
 	fullDescription = MultiformatMessageString(
-		text = TEXT_NOT_YET_PROVIDED,
+		text = "See fullDescription markdown.",
 		markdown = issue.description,
 	),
 	help = MultiformatMessageString(
-		text = TEXT_NOT_YET_PROVIDED,
+		text = "See help markdown.",
 		markdown = issue.descriptionWithExamples,
 	),
 	// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
@@ -95,8 +92,7 @@ private fun result(finding: Finding, base: Path): Result {
 	val file = Path.of(finding.location.file.path).absolute().toRealPath()
 	return Result(
 		message = Message(
-			text = TEXT_NOT_YET_PROVIDED,
-			markdown = finding.message,
+			text = finding.message,
 		),
 		ruleID = finding.issue.id,
 		locations = listOf(
