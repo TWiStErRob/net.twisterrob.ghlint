@@ -36,7 +36,7 @@ private fun StringBuilder.renderExamples(type: String, examples: List<Example>) 
 			}
 			append("```yaml\n")
 			append(example.content)
-			append("```\n")
+			append("\n```\n")
 			append(example.explanation)
 			append("\n")
 		}
