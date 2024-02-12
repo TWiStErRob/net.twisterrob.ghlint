@@ -21,7 +21,7 @@ public fun Rule.check(
 	@Language("yaml") yml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {
-	require(yml.isNotEmpty()) { "At least one workflow.yml file must be provided." }
+	require(yml.isNotEmpty()) { "A non-empty workflow.yml file must be provided." }
 	val findings = this.check(Yaml.loadWorkflow(File(FileLocation(fileName), yml)))
 	assertFindingsProducibleByRule(findings, this)
 	return findings
