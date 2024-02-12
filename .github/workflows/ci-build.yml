@@ -110,7 +110,7 @@ jobs:
             | xargs java -jar modules/ghlint/build/libs/ghlint-fat.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
-        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
+        if: steps.validate.outcome != 'skipped' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: 'GHA-lint Results'
