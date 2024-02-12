@@ -28,6 +28,7 @@ dependencyResolutionManagement {
 
 includeModule(":ghlint")
 includeModule(":ghlint-api")
+includeModule(":ghlint-extensions")
 includeModule(":ghlint-jsonschema")
 includeModule(":ghlint-reporting-sarif")
 includeModule(":ghlint-rules")
