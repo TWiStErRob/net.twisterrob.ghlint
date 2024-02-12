@@ -14,17 +14,17 @@ private class ExampleRule : Rule {
 	companion object {
 
 		val IssueName = Issue(
-			id = "IssueName",
-			title = "Object is verb subject.",
+			id = "TODO IssueName",
+			title = "TODO Object is verb subject.",
 			description = """
-				Persuasive sentence about why this is a problem.
-				More details about the problem.
-			    More details about the fix.
-			    List benefits.
+				TODO Persuasive sentence about why this is a problem.
+				TODO More details about the problem.
+				TODO More details about the fix.
+				TODO List benefits.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
-					explanation = "Describe what to focus on succinctly.",
+					explanation = "TODO Describe what to focus on succinctly.",
 					content = """
 						on: push
 						jobs:
@@ -37,7 +37,7 @@ private class ExampleRule : Rule {
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "Describe what to focus on succinctly.",
+					explanation = "TODO Describe what to focus on succinctly.",
 					content = """
 						on: push
 						jobs:

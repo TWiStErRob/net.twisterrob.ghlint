@@ -5,6 +5,8 @@ import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldNotMatch
+import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.analysis.Validator
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
@@ -37,12 +39,15 @@ public fun validate(rule: Rule, issue: Issue) {
 internal fun validateIssueDescription(issue: Issue) {
 	withClue("Issue ${issue.id} description") {
 		issue.title shouldNot beEmptyString()
+		issue.title shouldNotStartWith "TODO"
 	}
 }
 
 internal fun validateIssueReasoning(issue: Issue) {
 	withClue("Issue ${issue.id} reasoning") {
 		issue.description shouldNot beEmptyString()
+		// REPORT missing shouldNotMatch overload.
+		issue.description shouldNotMatch Regex("""(?m)^TODO""").pattern
 	}
 }
 
@@ -53,6 +58,8 @@ internal fun Rule.validateNonCompliantExamples(issue: Issue) {
 			withClue("${issue.id} non-compliant example #${index + 1}:\n${example.content}") {
 				validate(example.content) should beEmpty()
 				check(example.content) should haveFinding(issue.id)
+				example.explanation shouldNot beEmptyString()
+				example.explanation shouldNotStartWith "TODO"
 			}
 		}
 	}
@@ -65,6 +72,8 @@ internal fun Rule.validateCompliantExamples(issue: Issue) {
 			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
 				validate(example.content) should beEmpty()
 				check(example.content) shouldNot haveFinding(issue.id)
+				example.explanation shouldNot beEmptyString()
+				example.explanation shouldNotStartWith "TODO"
 			}
 		}
 	}
