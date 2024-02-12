@@ -13,6 +13,10 @@ import kotlin.io.path.readText
 
 public fun main(vararg args: String) {
 	val defaultRuleSet: RuleSet = DefaultRuleSet()
+	args.forEach {
+		@Suppress("ForbiddenMethodCall") // TODO logging.
+		println("Received ${it} for analysis against JSON-schema and rules.")
+	}
 	val files = args.map { File(FileLocation(it), Path.of(it).readText()) }
 
 	val validationResults = Validator().validateWorkflows(files)
