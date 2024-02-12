@@ -11,6 +11,8 @@ import net.twisterrob.ghlint.rule.report
 @Suppress("detekt.StringLiteralDuplication")
 public class RemoveEmptyEnvRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(RedundantEmptyWorkflowEnv, RedundantEmptyJobEnv, RedundantEmptyStepEnv)
+
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
 		val env = workflow.env

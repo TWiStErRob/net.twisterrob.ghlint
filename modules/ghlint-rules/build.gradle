@@ -4,4 +4,7 @@ plugins {
 
 dependencies {
 	api(projects.ghlintApi)
+	implementation(projects.ghlintExtensions)
+	
+	testImplementation(projects.ghlintTesting)
 }

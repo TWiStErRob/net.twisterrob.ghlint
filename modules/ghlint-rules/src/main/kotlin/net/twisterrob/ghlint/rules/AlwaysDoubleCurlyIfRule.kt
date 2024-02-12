@@ -9,6 +9,8 @@ import net.twisterrob.ghlint.rule.report
 
 public class AlwaysDoubleCurlyIfRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(AlwaysDoubleCurlyIf)
+
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
 		val condition = job.`if`

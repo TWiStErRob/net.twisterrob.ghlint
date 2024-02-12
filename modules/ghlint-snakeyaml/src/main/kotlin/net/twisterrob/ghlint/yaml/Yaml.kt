@@ -1,5 +1,11 @@
 package net.twisterrob.ghlint.yaml
 
+import net.twisterrob.ghlint.analysis.Analyzer
+import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.SnakeWorkflow
+import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
 import org.snakeyaml.engine.v2.api.Dump
 import org.snakeyaml.engine.v2.api.DumpSettings
@@ -17,6 +23,14 @@ import java.io.StringWriter
 import kotlin.jvm.optionals.getOrElse
 
 public object Yaml {
+
+	public fun analyze(files: List<File>, ruleSets: List<RuleSet>): List<Finding> {
+		val workflows = files.map(::loadWorkflow)
+		return Analyzer().analyzeWorkflows(workflows, ruleSets)
+	}
+
+	public fun loadWorkflow(file: File): Workflow =
+		SnakeWorkflow.from(file)
 
 	public fun load(@Language("yaml") yaml: String): Node {
 		val settings = LoadSettings.builder()

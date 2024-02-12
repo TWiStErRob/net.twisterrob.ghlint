@@ -12,9 +12,11 @@ import net.twisterrob.ghlint.rule.report
 @Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
 public class IdNamingRule : VisitorRule {
 
+	override val issues: List<Issue> = listOf(WorkflowIdNaming, JobIdNaming, StepIdNaming)
+
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
-		if (!isValid(workflow.parent.file.name)) {
+		if (!isValid(workflow.parent.location.name)) {
 			reporting.report(WorkflowIdNaming, workflow) { "${it} must have a lowercase id." }
 		}
 	}

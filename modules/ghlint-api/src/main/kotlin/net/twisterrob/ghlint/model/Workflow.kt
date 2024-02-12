@@ -10,9 +10,10 @@ public interface Workflow : Component {
 	public val env: Map<String, String>?
 	public val jobs: Map<String, Job>
 	public val permissions: Map<String, String>?
+	public val defaults: Defaults?
 
 	public companion object
 }
 
 public val Workflow.id: String
-	get() = parent.file.name
+	get() = parent.location.name
