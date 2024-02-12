@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.effectiveShell
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -13,10 +14,7 @@ public class MissingShellRule : VisitorRule {
 
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
-		val shell = step.shell
-			?: step.parent.defaults?.run?.shell
-			?: step.parent.parent.defaults?.run?.shell
-		if (shell == null) {
+		if (step.effectiveShell == null) {
 			reporting.report(MissingShell, step) {
 				"${it} is missing a shell, specify `bash` for better error handling."
 			}
@@ -32,12 +30,11 @@ public class MissingShellRule : VisitorRule {
 				Specifying a shell explicitly has benefits,
 				see the [`shell:` documentation](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell) for what changes.
 				
-				The `shell:` can be specified on 3 levels:
-				 * [`jobs.<job_id>.steps[*].shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell)
-				 * [`jobs.<job_id>.defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun)
+				The `shell:` can be specified on 3 levels, and the lowest wins:
 				 * [`defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#defaultsrun)
+				 * [`jobs.<job_id>.defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun)
+				 * [`jobs.<job_id>.steps[*].shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell)
 				
-
 				For Linux / MacOS runners it's recommended to specify `bash` explicitly, because it adds additional arguments:
 				 * `-e`: to stop on first error (used for both)
 				 * `-o pipefail`: propagate exit code from error inside a pipe

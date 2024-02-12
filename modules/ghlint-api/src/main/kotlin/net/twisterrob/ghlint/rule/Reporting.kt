@@ -24,7 +24,7 @@ public fun Reporting.report(issue: Issue, context: Component, message: (String) 
 	)
 }
 
-private fun Component.toTarget(): String =
+public fun Component.toTarget(): String =
 	when (this) {
 		is Workflow -> "Workflow[${this.id}]"
 		is Job -> "Job[${this.id}]"
