@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rule
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 
+@Suppress("detekt.UnusedPrivateClass", "unused", "NotImplementedDeclaration") // It's an example.
 private class ExampleRule : Rule {
 
 	override val issues: List<Issue> = listOf(IssueName)

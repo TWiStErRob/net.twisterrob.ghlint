@@ -34,7 +34,7 @@ public class RedundantShellRule : VisitorRule {
 			step.parent.parent.defaultShell != null -> step.parent.parent to step.parent.parent.defaultShell
 			else -> null
 		}
-		if (globalShell != null && globalShell.second == myShell) {
+		if (globalShell != null && myShell != null && globalShell.second == myShell) {
 			reporting.report(RedundantShell, step) {
 				"Both ${it} and ${globalShell.first.toTarget()} has ${myShell} shell, the step's shell can be removed."
 			}

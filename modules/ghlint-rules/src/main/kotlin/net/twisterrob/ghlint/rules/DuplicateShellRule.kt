@@ -19,7 +19,7 @@ public class DuplicateShellRule : VisitorRule {
 			val explicitShells = job.steps
 				.filterIsInstance<Step.Run>()
 				.filter { it.shell != null }
-				.groupingBy { it.shell!! }
+				.groupingBy { it.shell ?: error("Just filtered it!") }
 				.eachCount()
 			if (explicitShells.size == 1 && explicitShells.values.single() >= MAX_SHELLS_ON_STEPS) {
 				val (shell, count) = explicitShells.entries.single()

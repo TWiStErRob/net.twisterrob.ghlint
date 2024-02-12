@@ -34,6 +34,7 @@ public class MissingNameRule : VisitorRule {
 		}
 	}
 
+	@Suppress("StringLiteralDuplication") // A bad example is just bad, keep them inline.
 	internal companion object {
 
 		private val Message: (String) -> String = {
