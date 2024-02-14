@@ -48,11 +48,11 @@ public fun validate(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
 									DynamicContainer.dynamicContainer(
 										"Issue ${issue.id} is valid",
 										listOf(
+											DynamicTest.dynamicTest("Issue ${issue.id} title is valid") {
+												validateIssueTitle(issue)
+											},
 											DynamicTest.dynamicTest("Issue ${issue.id} description is valid") {
 												validateIssueDescription(issue)
-											},
-											DynamicTest.dynamicTest("Issue ${issue.id} reasoning is valid") {
-												validateIssueReasoning(issue)
 											},
 											DynamicTest.dynamicTest("Issue ${issue.id} compliant examples are valid") {
 												rule.validateCompliantExamples(issue)
