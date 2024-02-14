@@ -16,10 +16,10 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	NeverUseAlwaysRule::class,
 	QuoteGithubOutputRule::class,
 	QuoteGithubEnvRule::class,
-	RemoveEmptyEnvRule::class,
+	EmptyEnvRule::class,
 	DuplicateShellRule::class,
 	RedundantShellRule::class,
 	UploadArtifactShouldFailOnMissingFilesRule::class,
 	UseGhTokenWithGhCliRule::class,
-	UseEnvInsteadOfTemplatingRule::class,
+	ScriptInjectionRule::class,
 )
