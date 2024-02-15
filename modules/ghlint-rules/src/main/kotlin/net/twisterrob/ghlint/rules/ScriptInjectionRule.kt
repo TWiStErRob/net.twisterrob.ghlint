@@ -73,7 +73,7 @@ public class ScriptInjectionRule : VisitorRule {
 						Warning: Quotation mark (") needs a pair.
 						```
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -113,8 +113,8 @@ public class ScriptInjectionRule : VisitorRule {
 						```
 						is correct, but the remaining code after is meaningless for shells: `) needs a pair."`.
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 
 		val JSScriptInjection = Issue(
@@ -155,7 +155,7 @@ public class ScriptInjectionRule : VisitorRule {
 						            const title = process.env.PR_TITLE;
 						            return title.replaceAll(/JIRA-\d+ /, "");
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -191,8 +191,8 @@ public class ScriptInjectionRule : VisitorRule {
 						```
 						but in the worst case, this can expose secrets or execute arbitrary code.
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 	}
 }

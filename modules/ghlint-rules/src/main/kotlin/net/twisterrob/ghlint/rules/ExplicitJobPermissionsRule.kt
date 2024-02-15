@@ -104,7 +104,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						      - run: echo "Example"
 					""".trimIndent()
 				),
-			)
+			),
 		)
 
 		val ExplicitJobPermissions = Issue(
@@ -191,7 +191,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						      - run: echo "Example"
 					""".trimIndent()
 				),
-			)
+			),
 		)
 	}
 }

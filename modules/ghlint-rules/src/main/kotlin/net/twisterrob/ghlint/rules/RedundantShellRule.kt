@@ -94,7 +94,7 @@ public class RedundantShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -113,8 +113,8 @@ public class RedundantShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 
 		val RedundantShell = Issue(
@@ -144,7 +144,7 @@ public class RedundantShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -176,8 +176,8 @@ public class RedundantShellRule : VisitorRule {
 						      - run: echo "Example"
 						        shell: bash
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 	}
 }

@@ -83,7 +83,7 @@ public class EmptyEnvRule : VisitorRule {
 						      - run: echo "Example"
 					""".trimIndent()
 				),
-			)
+			),
 		)
 
 		val EmptyJobEnv = Issue(
@@ -106,7 +106,7 @@ public class EmptyEnvRule : VisitorRule {
 						      - run: echo "Example"
 					""".trimIndent()
 				),
-			)
+			),
 		)
 
 		val EmptyStepEnv = Issue(
@@ -129,7 +129,7 @@ public class EmptyEnvRule : VisitorRule {
 						        env: {}
 					""".trimIndent()
 				),
-			)
+			),
 		)
 	}
 }

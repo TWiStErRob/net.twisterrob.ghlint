@@ -65,7 +65,7 @@ public class MissingNameRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -78,8 +78,8 @@ public class MissingNameRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 
 		val MissingJobName = Issue(
@@ -108,7 +108,7 @@ public class MissingNameRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -121,8 +121,8 @@ public class MissingNameRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 
 		val MissingStepName = Issue(
@@ -149,7 +149,7 @@ public class MissingNameRule : VisitorRule {
 						      - name: "My Step"
 						        run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -162,8 +162,8 @@ public class MissingNameRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 	}
 }

@@ -72,7 +72,7 @@ public class DuplicateShellRule : VisitorRule {
 						      - run: echo "Example"
 						      - run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -88,8 +88,8 @@ public class DuplicateShellRule : VisitorRule {
 						      - run: echo "Example"
 						        shell: bash
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 	}
 }

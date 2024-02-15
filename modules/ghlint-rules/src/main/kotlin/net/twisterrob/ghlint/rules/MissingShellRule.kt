@@ -76,7 +76,7 @@ public class MissingShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example" | grep "Missing" | sort
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -89,8 +89,8 @@ public class MissingShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example" | grep "Missing" | sort
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 	}
 }
