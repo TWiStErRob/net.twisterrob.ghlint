@@ -12,18 +12,18 @@ class DuplicateShellRuleTest {
 		val result = check<DuplicateShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"DuplicateShellOnSteps",
-			"Job[example] has 2 steps defining bash shell, set default shell on job."
+			"Job[test] has 2 steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -31,20 +31,20 @@ class DuplicateShellRuleTest {
 		val result = check<DuplicateShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"DuplicateShellOnSteps",
-			"Job[example] has 3 steps defining bash shell, set default shell on job."
+			"Job[test] has 3 steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -52,13 +52,13 @@ class DuplicateShellRuleTest {
 		val result = check<DuplicateShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - uses: actions/checkout@v4
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 				      - uses: actions/setup-java@v4
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 				      - uses: actions/upload-artifact@v4
 			""".trimIndent()
@@ -66,7 +66,7 @@ class DuplicateShellRuleTest {
 
 		result should haveFinding(
 			"DuplicateShellOnSteps",
-			"Job[example] has 2 steps defining bash shell, set default shell on job."
+			"Job[test] has 2 steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -74,7 +74,7 @@ class DuplicateShellRuleTest {
 		val result = check<DuplicateShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - uses: actions/checkout@v4
 				      - uses: actions/setup-java@v4
@@ -89,13 +89,13 @@ class DuplicateShellRuleTest {
 		val result = check<DuplicateShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
-				      - run: echo "Example"
+				      - run: echo "Test"
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -106,11 +106,11 @@ class DuplicateShellRuleTest {
 		val result = check<DuplicateShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: sh
 			""".trimIndent()
 		)
@@ -125,11 +125,11 @@ class DuplicateShellRuleTest {
 				  run:
 				    shell: bash
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: sh
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: sh
 			""".trimIndent()
 		)

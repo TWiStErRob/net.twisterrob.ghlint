@@ -12,15 +12,15 @@ class MissingShellRuleTest {
 		val result = check<MissingShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"MissingShell",
-			"Step[#0] in Job[example] is missing a shell, specify `bash` for better error handling."
+			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
 		)
 	}
 
@@ -28,9 +28,9 @@ class MissingShellRuleTest {
 		val result = check<MissingShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
@@ -42,12 +42,12 @@ class MissingShellRuleTest {
 		val result = check<MissingShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
@@ -62,9 +62,9 @@ class MissingShellRuleTest {
 				  run:
 				    shell: bash
 				jobs:
-				  example:
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -80,16 +80,16 @@ class MissingShellRuleTest {
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
-				  example:
+				      - run: echo "Test"
+				  test:
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"MissingShell",
-			"Step[#0] in Job[example] is missing a shell, specify `bash` for better error handling."
+			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
 		)
 	}
 }

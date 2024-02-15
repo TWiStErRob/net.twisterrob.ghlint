@@ -20,7 +20,7 @@ class ScriptInjectionRuleTest {
 					jobs:
 					  test:
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 				""".trimIndent()
 			)
 
@@ -70,7 +70,7 @@ class ScriptInjectionRuleTest {
 					    steps:
 					      - uses: actions/github-script@v7
 					        with:
-					          script: return "Example";
+					          script: return "Test";
 				""".trimIndent()
 			)
 
