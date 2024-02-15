@@ -5,11 +5,15 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
 
 class ScriptInjectionRuleTest {
+
+	@TestFactory fun metadata() = test(ScriptInjectionRule::class)
 
 	@Nested
 	inner class ShellScriptInjectionTest {

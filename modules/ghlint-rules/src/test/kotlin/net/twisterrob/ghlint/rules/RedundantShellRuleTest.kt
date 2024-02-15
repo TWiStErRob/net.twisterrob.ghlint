@@ -4,9 +4,13 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class RedundantShellRuleTest {
+
+	@TestFactory fun metadata() = test(RedundantShellRule::class)
 
 	@Test fun `reports when both job and workflow have the same default shell`() {
 		val result = check<RedundantShellRule>(

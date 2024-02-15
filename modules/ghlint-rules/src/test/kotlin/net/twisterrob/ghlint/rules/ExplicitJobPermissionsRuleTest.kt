@@ -4,10 +4,14 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class ExplicitJobPermissionsRuleTest {
+
+	@TestFactory fun metadata() = test(ExplicitJobPermissionsRule::class)
 
 	@Nested
 	inner class MissingJobPermissionsTest {

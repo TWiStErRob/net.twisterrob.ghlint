@@ -4,9 +4,13 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class DuplicateShellRuleTest {
+
+	@TestFactory fun metadata() = test(DuplicateShellRule::class)
 
 	@Test fun `reports when 2 steps have an explicit shell`() {
 		val result = check<DuplicateShellRule>(
