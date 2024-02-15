@@ -159,7 +159,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						  pull_request:
 						permissions:
 						  contents: read
-						  pull_requests: write
+						  pull-requests: write
 						jobs:
 						  build:
 						    runs-on: ubuntu-latest
