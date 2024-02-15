@@ -83,9 +83,11 @@ private fun test(instance: Rule): List<DynamicNode> = listOf(
 					dynamicTest("Issue ${issue.id} description is valid") {
 						validateIssueDescription(issue)
 					},
+					// STOPSHIP split into multiple tests
 					dynamicTest("Issue ${issue.id} compliant examples are valid") {
 						instance.validateCompliantExamples(issue)
 					},
+					// STOPSHIP split into multiple tests
 					dynamicTest("Issue ${issue.id} non-compliant examples are valid") {
 						instance.validateNonCompliantExamples(issue)
 					},
