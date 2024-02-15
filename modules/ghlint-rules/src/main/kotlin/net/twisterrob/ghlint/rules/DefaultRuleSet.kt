@@ -19,7 +19,7 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	EmptyEnvRule::class,
 	DuplicateShellRule::class,
 	RedundantShellRule::class,
-	UploadArtifactShouldFailOnMissingFilesRule::class,
+	FailFastActionsRule::class,
 	UseGhTokenWithGhCliRule::class,
 	ScriptInjectionRule::class,
 )
