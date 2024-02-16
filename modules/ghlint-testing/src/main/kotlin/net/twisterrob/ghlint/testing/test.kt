@@ -53,7 +53,7 @@ public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
  */
 public fun test(rule: KClass<out Rule>): DynamicNode =
 	dynamicContainer(
-		"Rule ${rule::class.simplerName} is valid",
+		"Rule ${rule.simplerName} is valid",
 		Stream.concat(
 			Stream.of(dynamicTest("Rule ${rule.simplerName} is instantiatable") {
 				rule.java.getDeclaredConstructor().newInstance()
