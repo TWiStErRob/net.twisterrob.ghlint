@@ -34,7 +34,7 @@ private class ExampleRule : Rule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -47,8 +47,8 @@ private class ExampleRule : Rule {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent()
-				)
-			)
+				),
+			),
 		)
 	}
 }
