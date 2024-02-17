@@ -12,19 +12,16 @@ internal fun MappingNode.getOptional(key: String): Node? =
 	this.value.singleOrNull { it.keyNode.text == key }?.valueNode
 
 internal fun MappingNode.getRequiredText(key: String): String =
-	this.getOptionalText(key)
-		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+	this.getOptionalText(key) ?: throwMissingKey(key)
 
 internal fun MappingNode.getOptionalKey(key: String): Node? =
 	this.value.singleOrNull { it.keyNode.text == key }?.keyNode
 
 internal fun MappingNode.getRequiredKey(key: String): Node =
-	this.getOptionalKey(key)
-		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+	this.getOptionalKey(key) ?: throwMissingKey(key)
 
 internal fun MappingNode.getRequired(key: String): Node =
-	this.getOptional(key)
-		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+	this.getOptional(key) ?: throwMissingKey(key)
 
 internal val Node.text: String
 	get() = (this as ScalarNode).value
@@ -41,3 +38,7 @@ internal val Node.map: Map<Node, Node>
 
 internal fun Map<Node, Node>.toTextMap(): Map<String, String> =
 	this.entries.associate { (key, value) -> key.text to value.text }
+
+private fun MappingNode.throwMissingKey(key: String): Nothing {
+	error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+}
