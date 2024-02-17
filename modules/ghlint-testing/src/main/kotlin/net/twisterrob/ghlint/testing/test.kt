@@ -4,6 +4,7 @@ import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -117,7 +118,7 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 					validate(example.content) should beEmpty()
 				},
 				dynamicTest("${name} has no findings") {
-					instance.check(example.content) shouldNot haveOnlyFindings(issue.id)
+					instance.check(example.content) shouldNotHave onlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot io.kotest.matchers.string.beEmpty()
@@ -142,7 +143,7 @@ private fun testNonCompliantExamples(instance: Rule, issue: Issue): List<Dynamic
 			listOf(
 				dynamicTest("${name} has findings") {
 					val findings = validate(example.content) + instance.check(example.content)
-					findings should haveOnlyFindings(issue.id)
+					findings shouldHave onlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot beEmptyString()

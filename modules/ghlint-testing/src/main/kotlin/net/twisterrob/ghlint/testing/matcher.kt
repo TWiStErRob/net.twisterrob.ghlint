@@ -12,7 +12,7 @@ public fun beEmpty(): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	)
 }
 
-public fun haveOnlyFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
+public fun onlyFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 		value.isNotEmpty() && value.all { it.issue.id == issue },
 		{ "Could not find ${issue} among findings:\n${value.testString()}" },
