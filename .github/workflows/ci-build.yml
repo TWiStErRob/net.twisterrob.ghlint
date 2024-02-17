@@ -108,7 +108,7 @@ jobs:
         id: validate
         run: >
           find ".github/workflows" -type f -name "*.yml" \
-            | xargs java -jar modules/ghlint/build/libs/ghlint-fat.jar
+            | xargs modules/ghlint/build/libs/ghlint-fat.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
