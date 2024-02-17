@@ -35,10 +35,10 @@ public sealed class SnakeJob protected constructor(
 			when {
 
 				node.getOptionalText("uses") != null ->
-					SnakeReusableWorkflowCallJob(parent, id, node, target)
+					SnakeReusableWorkflowCallJob(parent = parent, id = id, node = node, target = target)
 
 				node.getOptional("steps") != null ->
-					SnakeNormalJob(parent, id, node, target)
+					SnakeNormalJob(parent = parent, id = id, node = node, target = target)
 
 				else ->
 					error("Unknown job type: ${node}")
