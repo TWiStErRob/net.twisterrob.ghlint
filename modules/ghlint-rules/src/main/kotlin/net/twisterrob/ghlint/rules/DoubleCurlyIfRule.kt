@@ -167,8 +167,39 @@ public class DoubleCurlyIfRule : VisitorRule {
 						        if: ${'$'}{{ steps.calculation.outputs.result }} == 'world'
 					""".trimIndent()
 				),
+				Example(
+					explanation = """
+						The `if:` condition is wrapped in double-curly-braces, but only partially.
+						Looking at the expression, it might be interpreted (by humans) as a valid boolean expression,
+						because the GitHub Actions Context variable accesses are wrapped in an Expression as expected.
+						
+						However, this condition will **always** evaluate to `true`:
+						The way to interpret this expression is as follows:
+						 * Evaluate first `${{ }}` -> for example `true`
+						 * Evaluate second `${{ }}` -> for example `false`
+						 * Substitute expressions -> `if: 'true && false'`
+						 * Evaluate `'true && false'` -> `true`
+						
+						This last step might be surprising, but after substituting the expressions,
+						GitHub Actions just leaves us with a YAML String.
+						That string is then passed to `if`, but it's a non-empty string, which is truthy.
+						
+						To confirm this, you can run a workflow with step debugging turned on, and you'll see this:
+						```
+						Evaluating: (success() && format('{0} && {1}', ..., ...))
+						```
+					""".trimIndent(),
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - run: echo "Example"
+						        if: ${'$'}{{ github.event.pull_request.additions > 10 }} && ${'$'}{{ github.event.pull_request.draft }}
+					""".trimIndent()
+				),
 			),
 		)
 	}
 }
-
