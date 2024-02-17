@@ -30,11 +30,11 @@ tasks.register<Jar>("fatJar") {
 	duplicatesStrategy = DuplicatesStrategy.FAIL
 
 	doLast {
-		// TODO This makes the file polyglot and `./foo-fat.jar`-executable
-		//val file = archiveFile.get().asFile
-		//val bytes = file.readBytes()
-		//file.writeText("#!/usr/bin/env java -jar")
-		//file.appendBytes(bytes)
-		//file.setExecutable(true)
+		// https://www.reddit.com/r/programminghorror/comments/3c4mtn/comment/kqt797p/
+		val file = archiveFile.get().asFile
+		val bytes = file.readBytes()
+		file.writeText("#!/bin/sh\nexec java -jar \$0 \"\$@\"\n")
+		file.appendBytes(bytes)
+		file.setExecutable(true)
 	}
 }
