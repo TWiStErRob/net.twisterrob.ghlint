@@ -54,7 +54,13 @@ public sealed class SnakeJob protected constructor(
 
 		override val steps: List<Step>
 			get() = node.getRequired("steps").array
-				.mapIndexed { index, node -> SnakeStep.from(this, index, node as MappingNode) }
+				.mapIndexed { index, node ->
+					SnakeStep.from(
+						parent = this,
+						index = index,
+						node = node as MappingNode,
+					)
+				}
 
 		override val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { SnakeDefaults(it as MappingNode) }

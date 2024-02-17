@@ -30,10 +30,20 @@ public sealed class SnakeStep protected constructor(
 		public fun from(parent: Job.NormalJob, index: Int, node: MappingNode): Step =
 			when {
 				node.getOptionalText("uses") != null ->
-					SnakeUses(parent, Step.Index(index), node, node.getRequired("uses"))
+					SnakeUses(
+						parent = parent,
+						index = Step.Index(index),
+						node = node,
+						target = node.getRequired("uses"),
+					)
 
 				node.getOptionalText("run") != null ->
-					SnakeRun(parent, Step.Index(index), node, node.getRequired("run"))
+					SnakeRun(
+						parent = parent,
+						index = Step.Index(index),
+						node = node,
+						target = node.getRequired("run"),
+					)
 
 				else ->
 					error("Unknown step type: ${node}")

@@ -28,7 +28,15 @@ public class SnakeWorkflow internal constructor(
 
 	override val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map
-			.map { (key, node) -> key.text to SnakeJob.from(this, key.text, node as MappingNode, key) }
+			.map { (key, node) ->
+				val from = SnakeJob.from(
+					parent = this,
+					id = key.text,
+					node = node as MappingNode,
+					target = key,
+				)
+				key.text to from
+			}
 			.toMap()
 
 	override val permissions: Map<String, String>?
