@@ -73,7 +73,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "To avoid confusion, `if:` is fully wrapped in double-curly-braces.",
@@ -85,7 +85,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        if: ${'$'}{{ steps.calculation.outputs.result == 'world' }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -102,7 +102,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        if: ! startsWith(github.ref, 'refs/tags/')
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = """
@@ -133,7 +133,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						        if: github.context.variable == 'example'
 						#     - run: echo "Example"
 						#       if: 'example' == github.context.variable
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = """
@@ -166,7 +166,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						        id: calculation
 						      - run: echo "Example"
 						        if: ${'$'}{{ steps.calculation.outputs.result }} == 'world'
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = """
@@ -198,7 +198,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        if: ${'$'}{{ github.event.pull_request.additions > 10 }} && ${'$'}{{ github.event.pull_request.draft }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

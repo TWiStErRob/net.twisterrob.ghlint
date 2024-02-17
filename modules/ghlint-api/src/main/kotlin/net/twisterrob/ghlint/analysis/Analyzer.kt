@@ -12,9 +12,7 @@ public class Analyzer {
 				.asSequence()
 				.flatMap { it.createRules() }
 				.map(::SafeRule)
-				.flatMap { rule ->
-					rule.check(workflow)
-				}
+				.flatMap { rule -> rule.check(workflow) }
 		}
 		return findings
 	}

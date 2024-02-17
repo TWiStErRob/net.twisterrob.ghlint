@@ -121,6 +121,7 @@ class DoubleCurlyIfRuleTest {
 
 			result should beEmpty()
 		}
+
 		@MethodSource(
 			"net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions",
 			"net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidButSyntaxErrorConditions"

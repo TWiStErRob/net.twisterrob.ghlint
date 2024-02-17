@@ -76,7 +76,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						      contents: read
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Permissions are explicitly declared on the workflow level.",
@@ -89,7 +89,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -102,7 +102,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -132,7 +132,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						      contents: read
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -170,7 +170,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: some/publish-comment-action@v0
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = """
@@ -189,7 +189,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

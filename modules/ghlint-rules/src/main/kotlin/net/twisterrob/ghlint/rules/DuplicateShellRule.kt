@@ -56,7 +56,7 @@ public class DuplicateShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        shell: bash
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Default shell is defined for the job.",
@@ -71,7 +71,7 @@ public class DuplicateShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -87,7 +87,7 @@ public class DuplicateShellRule : VisitorRule {
 						        shell: bash
 						      - run: echo "Example"
 						        shell: bash
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

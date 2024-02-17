@@ -78,7 +78,7 @@ public class FailFastActionsRule : VisitorRule {
 						          if-no-files-found: error
 						          path: |
 						            build/some/report/
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -94,7 +94,7 @@ public class FailFastActionsRule : VisitorRule {
 						        with:
 						          path: |
 						            build/some/report/
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -133,7 +133,7 @@ public class FailFastActionsRule : VisitorRule {
 						          action_fail_on_inconclusive: true
 						          junit_files: |
 						            **/build/**/TEST-*.xml
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -149,7 +149,7 @@ public class FailFastActionsRule : VisitorRule {
 						        with:
 						          junit_files: |
 						            **/build/**/TEST-*.xml
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -208,7 +208,7 @@ public class FailFastActionsRule : VisitorRule {
 						          --draft
 						          --label "report"
 						          --label "automated pr"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -232,7 +232,7 @@ public class FailFastActionsRule : VisitorRule {
 						            report
 						            automated pr
 						          draft: true
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

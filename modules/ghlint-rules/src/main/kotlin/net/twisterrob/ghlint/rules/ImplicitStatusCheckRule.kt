@@ -69,7 +69,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 						
 						      - uses: actions/upload-artifact@v0
 						        if: ${'$'}{{ success() || failure() }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Step is well-specified when to execute with `if:`.",
@@ -83,7 +83,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 						
 						      - uses: actions/upload-artifact@v0
 						        if: ${'$'}{{ success() || failure() || cancelled() }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -99,7 +99,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 						
 						      - uses: actions/upload-artifact@v0
 						        if: ${'$'}{{ always() }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -147,7 +147,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 						
 						      - uses: actions/upload-artifact@v0
 						        if: ${'$'}{{ success() || failure() }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -163,7 +163,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 						
 						      - uses: actions/upload-artifact@v0
 						        if: ${'$'}{{ !cancelled() }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

@@ -60,7 +60,7 @@ public class EmptyEnvRule : VisitorRule {
 				    runs-on: ubuntu-latest
 				    steps:
 				      - run: echo "Example"
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
 		val EmptyWorkflowEnv = Issue(
@@ -81,7 +81,7 @@ public class EmptyEnvRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -104,7 +104,7 @@ public class EmptyEnvRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -127,7 +127,7 @@ public class EmptyEnvRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        env: {}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

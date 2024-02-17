@@ -57,6 +57,7 @@ jobs:
 ### Troubleshooting
 
 #### Advanced Security must be enabled for this repository to use code scanning.
+
 ```
 Run github/codeql-action/upload-sarif@v3
   with:
@@ -71,4 +72,5 @@ RequestError [HttpError]: Advanced Security must be enabled for this repository 
         data: {
             message: 'Advanced Security must be enabled for this repository to use code scanning.
 ```
+
 https://docs.github.com/en/code-security/code-scanning/troubleshooting-code-scanning/advanced-security-must-be-enabled

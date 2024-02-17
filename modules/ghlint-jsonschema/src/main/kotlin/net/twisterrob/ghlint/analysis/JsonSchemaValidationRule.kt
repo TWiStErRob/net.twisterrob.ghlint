@@ -42,7 +42,7 @@ internal class JsonSchemaValidationRule : Rule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -51,7 +51,7 @@ internal class JsonSchemaValidationRule : Rule {
 					content = """
 						on: push
 						jobs: {}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

@@ -72,7 +72,7 @@ public class ScriptInjectionRule : VisitorRule {
 						```
 						Warning: Quotation mark (") needs a pair.
 						```
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -112,7 +112,7 @@ public class ScriptInjectionRule : VisitorRule {
 						echo "Warning: Quotation mark ("
 						```
 						is correct, but the remaining code after is meaningless for shells: `) needs a pair."`.
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -154,7 +154,7 @@ public class ScriptInjectionRule : VisitorRule {
 						          script: |
 						            const title = process.env.PR_TITLE;
 						            return title.replaceAll(/JIRA-\d+ /, "");
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -190,7 +190,7 @@ public class ScriptInjectionRule : VisitorRule {
 						return title.replaceAll(/JIRA-\d+ /, "");
 						```
 						but in the worst case, this can expose secrets or execute arbitrary code.
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

@@ -53,7 +53,7 @@ public class EnvironmentFileOverwriteRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "result=Example" >> ${'$'}GITHUB_OUTPUT
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -66,7 +66,7 @@ public class EnvironmentFileOverwriteRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "result=Example" > ${'$'}GITHUB_OUTPUT
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

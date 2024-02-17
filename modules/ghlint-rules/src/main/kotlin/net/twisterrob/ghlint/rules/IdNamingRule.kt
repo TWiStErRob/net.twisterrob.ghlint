@@ -70,7 +70,7 @@ public class IdNamingRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -83,7 +83,7 @@ public class IdNamingRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -126,7 +126,7 @@ public class IdNamingRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -145,7 +145,7 @@ public class IdNamingRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
@@ -179,7 +179,7 @@ public class IdNamingRule : VisitorRule {
 						    steps:
 						      - name: "Example"
 						        run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -193,7 +193,7 @@ public class IdNamingRule : VisitorRule {
 						    steps:
 						      - id: example step_NAME
 						        run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

@@ -50,7 +50,7 @@ public class MissingJobTimeoutRule : VisitorRule {
 						    timeout-minutes: 1
 						    steps:
 						      - run: while true; do echo "Infinite"; done
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = """
@@ -79,7 +79,7 @@ public class MissingJobTimeoutRule : VisitorRule {
 						        if: success() || failure()
 						        with:
 						          path: modules/**/test-reports
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -92,7 +92,7 @@ public class MissingJobTimeoutRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: while true; do echo "Infinite"; done
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)

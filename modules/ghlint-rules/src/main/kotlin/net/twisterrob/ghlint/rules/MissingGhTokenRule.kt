@@ -80,7 +80,7 @@ public class MissingGhTokenRule : VisitorRule {
 						      - run: gh pr view
 						        env:
 						          GH_TOKEN: ${'$'}{{ github.token }}
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -101,7 +101,7 @@ public class MissingGhTokenRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: gh pr view
-					""".trimIndent()
+					""".trimIndent(),
 				),
 			),
 		)
