@@ -32,7 +32,7 @@ class EmptyEnvRuleTest {
 
 		result should haveFinding(
 			"EmptyWorkflowEnv",
-			"Workflow[test.yml] should not have empty env."
+			"Workflow[test] should not have empty env."
 		)
 	}
 
