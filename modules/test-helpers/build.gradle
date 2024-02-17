@@ -8,4 +8,5 @@ dependencies {
 	runtimeOnly(libs.test.jupiter.engine)
 
 	api(libs.test.kotest.assertions)
+	api(libs.test.mockito.kotlin)
 }
