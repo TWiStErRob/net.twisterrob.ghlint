@@ -4,4 +4,6 @@ plugins {
 
 dependencies {
 	implementation(libs.jsr305)
+
+	testImplementation(projects.ghlintTesting)
 }

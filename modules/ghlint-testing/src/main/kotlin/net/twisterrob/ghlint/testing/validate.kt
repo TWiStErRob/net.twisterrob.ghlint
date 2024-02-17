@@ -59,8 +59,8 @@ internal fun Rule.validateNonCompliantExamples(issue: Issue) {
 		issue.nonCompliant shouldHave atLeastSize(1)
 		issue.nonCompliant.forEachIndexed { index, example ->
 			withClue("${issue.id} non-compliant example #${index + 1}:\n${example.content}") {
-				validate(example.content) should beEmpty()
-				check(example.content) should haveFinding(issue.id)
+				val findings = validate(example.content) + check(example.content)
+				findings should haveFinding(issue.id)
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}

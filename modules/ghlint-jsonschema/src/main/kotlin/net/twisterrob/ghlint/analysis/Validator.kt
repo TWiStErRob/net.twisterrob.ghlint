@@ -2,10 +2,7 @@ package net.twisterrob.ghlint.analysis
 
 import dev.harrel.jsonschema.Validator
 import net.twisterrob.ghlint.model.File
-import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.rule.Issue
-import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.yaml.Yaml
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.resolve
@@ -24,7 +21,7 @@ public class Validator {
 				.map { error ->
 					Finding(
 						rule = rule,
-						issue = ValidationIssue,
+						issue = JsonSchemaValidationRule.JsonSchemaValidation,
 						location = root.resolve(error.instanceLocation).toLocation(file),
 						message = "${error.error} (${error.instanceLocation})"
 					)
@@ -32,16 +29,5 @@ public class Validator {
 		}
 	}
 
-	private class JsonSchemaValidationRule : Rule {
-
-		override val issues: List<Issue> = listOf(ValidationIssue)
-
-		override fun check(workflow: Workflow): List<Finding> =
-			error("Should never be called.")
-	}
-
-	internal companion object {
-
-		private val ValidationIssue = Issue("JsonSchemaValidation", "JSON-Schema based validation problem.")
-	}
+	public companion object
 }
