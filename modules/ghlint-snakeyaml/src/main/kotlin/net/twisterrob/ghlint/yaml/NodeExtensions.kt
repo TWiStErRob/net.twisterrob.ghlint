@@ -15,6 +15,13 @@ internal fun MappingNode.getRequiredText(key: String): String =
 	this.getOptionalText(key)
 		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
 
+internal fun MappingNode.getOptionalKey(key: String): Node? =
+	this.value.singleOrNull { it.keyNode.text == key }?.keyNode
+
+internal fun MappingNode.getRequiredKey(key: String): Node =
+	this.getOptionalKey(key)
+		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+
 internal fun MappingNode.getRequired(key: String): Node =
 	this.getOptional(key)
 		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")

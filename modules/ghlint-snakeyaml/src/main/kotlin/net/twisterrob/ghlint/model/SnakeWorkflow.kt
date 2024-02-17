@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.yaml.Yaml
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
+import net.twisterrob.ghlint.yaml.getRequiredKey
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
@@ -49,7 +50,7 @@ public class SnakeWorkflow internal constructor(
 
 		public fun from(file: File): Workflow {
 			val node = Yaml.load(file.content) as MappingNode
-			return SnakeWorkflow(file, node, node.getRequired("jobs"))
+			return SnakeWorkflow(file, node, node.getRequiredKey("jobs"))
 		}
 	}
 }
