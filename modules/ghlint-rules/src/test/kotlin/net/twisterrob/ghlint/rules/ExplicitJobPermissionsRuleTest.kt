@@ -5,14 +5,12 @@ import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.test
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 class ExplicitJobPermissionsRuleTest {
 
-	@Disabled("TODO Test framework needs adjustments to make it pass.")
 	@TestFactory fun metadata() = test(ExplicitJobPermissionsRule::class)
 
 	@Nested

@@ -60,7 +60,7 @@ internal fun Rule.validateNonCompliantExamples(issue: Issue) {
 		issue.nonCompliant.forEachIndexed { index, example ->
 			withClue("${issue.id} non-compliant example #${index + 1}:\n${example.content}") {
 				val findings = validate(example.content) + check(example.content)
-				findings should haveFinding(issue.id)
+				findings should haveOnlyFindings(issue.id)
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}
@@ -74,7 +74,7 @@ internal fun Rule.validateCompliantExamples(issue: Issue) {
 		issue.compliant.forEachIndexed { index, example ->
 			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
 				validate(example.content) should beEmpty()
-				check(example.content) shouldNot haveFinding(issue.id)
+				check(example.content) shouldNot haveOnlyFindings(issue.id)
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}

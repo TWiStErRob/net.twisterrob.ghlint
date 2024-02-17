@@ -12,9 +12,9 @@ public fun beEmpty(): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	)
 }
 
-public fun haveFinding(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
+public fun haveOnlyFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
-		value.singleOrNull { it.issue.id == issue } != null,
+		value.isNotEmpty() && value.all { it.issue.id == issue },
 		{ "Could not find ${issue} among findings:\n${value.testString()}" },
 		{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
 	)

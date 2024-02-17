@@ -116,8 +116,8 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 				dynamicTest("${name} syntax") {
 					validate(example.content) should beEmpty()
 				},
-				dynamicTest("${name} no findings") {
-					instance.check(example.content) shouldNot haveFinding(issue.id)
+				dynamicTest("${name} has no findings") {
+					instance.check(example.content) shouldNot haveOnlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot io.kotest.matchers.string.beEmpty()
@@ -140,9 +140,9 @@ private fun testNonCompliantExamples(instance: Rule, issue: Issue): List<Dynamic
 		dynamicContainer(
 			name,
 			listOf(
-				dynamicTest("${name} findings") {
+				dynamicTest("${name} has findings") {
 					val findings = validate(example.content) + instance.check(example.content)
-					findings should haveFinding(issue.id)
+					findings should haveOnlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot beEmptyString()
