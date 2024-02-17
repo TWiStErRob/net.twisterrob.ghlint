@@ -30,7 +30,7 @@ public class DuplicateShellRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		private const val MAX_SHELLS_ON_STEPS = 2
 
@@ -56,7 +56,7 @@ public class DuplicateShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        shell: bash
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Default shell is defined for the job.",
@@ -71,8 +71,8 @@ public class DuplicateShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						      - run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -87,9 +87,9 @@ public class DuplicateShellRule : VisitorRule {
 						        shell: bash
 						      - run: echo "Example"
 						        shell: bash
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 	}
 }

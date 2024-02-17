@@ -1,7 +1,6 @@
 package net.twisterrob.ghlint.build
 
 import net.twisterrob.ghlint.build.dsl.libs
-import org.gradle.kotlin.dsl.withType
 
 plugins {
 	id("org.gradle.java")

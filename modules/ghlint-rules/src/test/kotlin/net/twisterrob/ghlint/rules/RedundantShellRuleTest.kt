@@ -4,9 +4,13 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class RedundantShellRuleTest {
+
+	@TestFactory fun metadata() = test(RedundantShellRule::class)
 
 	@Test fun `reports when both job and workflow have the same default shell`() {
 		val result = check<RedundantShellRule>(
@@ -15,19 +19,19 @@ class RedundantShellRuleTest {
 				  run:
 				    shell: bash
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"RedundantDefaultShell",
-			"Both Job[example] and Workflow[test.yml] has bash shell as default, one of them can be removed."
+			"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
 		)
 	}
 
@@ -38,13 +42,13 @@ class RedundantShellRuleTest {
 				  run:
 				    shell: sh
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -55,20 +59,20 @@ class RedundantShellRuleTest {
 		val result = check<RedundantShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"RedundantShell",
-			"Both Step[#0] in Job[example] and Job[example] has bash shell, the step's shell can be removed."
+			"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
 		)
 	}
 
@@ -79,17 +83,17 @@ class RedundantShellRuleTest {
 				  run:
 				    shell: bash
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"RedundantShell",
-			"Both Step[#0] in Job[example] and Workflow[test.yml] has bash shell, the step's shell can be removed."
+			"Both Step[#0] in Job[test] and Workflow[test] has bash shell, the step's shell can be removed."
 		)
 	}
 
@@ -100,24 +104,24 @@ class RedundantShellRuleTest {
 				  run:
 				    shell: bash
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
 
 		result should haveFinding(
 			"RedundantShell",
-			"Both Step[#0] in Job[example] and Job[example] has bash shell, the step's shell can be removed."
+			"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
 		)
 		result should haveFinding(
 			"RedundantDefaultShell",
-			"Both Job[example] and Workflow[test.yml] has bash shell as default, one of them can be removed."
+			"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
 		)
 	}
 
@@ -125,13 +129,13 @@ class RedundantShellRuleTest {
 		val result = check<RedundantShellRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    defaults:
 				      run:
 				        shell: sh
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
@@ -146,10 +150,10 @@ class RedundantShellRuleTest {
 				  run:
 				    shell: sh
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: bash
 			""".trimIndent()
 		)
@@ -164,13 +168,13 @@ class RedundantShellRuleTest {
 				  run:
 				    shell: sh
 				jobs:
-				  example:
+				  test:
 				    runs-on: ubuntu-latest
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
-				      - run: echo "Example"
+				      - run: echo "Test"
 				        shell: sh
 			""".trimIndent()
 		)

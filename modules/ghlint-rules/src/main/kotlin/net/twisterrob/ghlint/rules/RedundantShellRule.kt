@@ -41,7 +41,7 @@ public class RedundantShellRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val RedundantDefaultShell = Issue(
 			id = "RedundantDefaultShell",
@@ -79,7 +79,7 @@ public class RedundantShellRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Default shell is defined on job.",
@@ -93,8 +93,8 @@ public class RedundantShellRule : VisitorRule {
 						        shell: bash
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -112,9 +112,9 @@ public class RedundantShellRule : VisitorRule {
 						        shell: bash
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 
 		val RedundantShell = Issue(
@@ -143,8 +143,8 @@ public class RedundantShellRule : VisitorRule {
 						        shell: bash
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -160,7 +160,7 @@ public class RedundantShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        shell: bash
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Default shell is defined on workflow, but steps also repeat it.",
@@ -175,9 +175,9 @@ public class RedundantShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example"
 						        shell: bash
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 	}
 }

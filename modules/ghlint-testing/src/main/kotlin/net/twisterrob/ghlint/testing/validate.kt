@@ -5,7 +5,7 @@ import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.string.shouldNotMatch
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.analysis.Validator
 import net.twisterrob.ghlint.model.File
@@ -30,24 +30,27 @@ public inline fun <reified T : Rule> validate(issue: Issue) {
 }
 
 public fun validate(rule: Rule, issue: Issue) {
+	validateIssueTitle(issue)
 	validateIssueDescription(issue)
-	validateIssueReasoning(issue)
 	rule.validateCompliantExamples(issue)
 	rule.validateNonCompliantExamples(issue)
 }
 
-internal fun validateIssueDescription(issue: Issue) {
-	withClue("Issue ${issue.id} description") {
+internal fun validateIssueTitle(issue: Issue) {
+	withClue("Issue ${issue.id} title") {
 		issue.title shouldNot beEmptyString()
 		issue.title shouldNotStartWith "TODO"
 	}
 }
 
-internal fun validateIssueReasoning(issue: Issue) {
-	withClue("Issue ${issue.id} reasoning") {
+internal fun validateIssueDescription(issue: Issue) {
+	withClue("Issue ${issue.id} description") {
 		issue.description shouldNot beEmptyString()
 		// REPORT missing shouldNotMatch overload.
-		issue.description shouldNotMatch Regex("""(?m)^TODO""").pattern
+		withClue("contains TODO") {
+			val todoRegex = Regex("""^TODO""", setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+			issue.description shouldNotContain todoRegex
+		}
 	}
 }
 
@@ -56,8 +59,8 @@ internal fun Rule.validateNonCompliantExamples(issue: Issue) {
 		issue.nonCompliant shouldHave atLeastSize(1)
 		issue.nonCompliant.forEachIndexed { index, example ->
 			withClue("${issue.id} non-compliant example #${index + 1}:\n${example.content}") {
-				validate(example.content) should beEmpty()
-				check(example.content) should haveFinding(issue.id)
+				val findings = validate(example.content) + check(example.content)
+				findings should haveFinding(issue.id)
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}

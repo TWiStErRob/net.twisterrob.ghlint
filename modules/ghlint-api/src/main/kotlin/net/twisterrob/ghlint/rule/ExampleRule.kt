@@ -33,8 +33,8 @@ private class ExampleRule : Rule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -46,9 +46,9 @@ private class ExampleRule : Rule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 	}
 }

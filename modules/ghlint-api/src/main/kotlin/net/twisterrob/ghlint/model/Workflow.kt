@@ -16,4 +16,11 @@ public interface Workflow : Component {
 }
 
 public val Workflow.id: String
-	get() = parent.location.name
+	get() {
+		val name = parent.location.name
+		return when {
+			name.endsWith(".yaml") -> name.removeSuffix(".yaml")
+			name.endsWith(".yml") -> name.removeSuffix(".yml")
+			else -> name
+		}
+	}

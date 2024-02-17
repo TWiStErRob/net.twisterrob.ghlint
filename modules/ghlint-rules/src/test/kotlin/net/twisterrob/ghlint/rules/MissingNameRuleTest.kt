@@ -4,9 +4,13 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class MissingNameRuleTest {
+
+	@TestFactory fun metadata() = test(MissingNameRule::class)
 
 	@Test fun `reports when workflow is missing a name`() {
 		val result = check<MissingNameRule>(
@@ -17,7 +21,7 @@ class MissingNameRuleTest {
 
 		result should haveFinding(
 			"MissingWorkflowName",
-			"Workflow[test.yml] is missing a name, add one to improve developer experience."
+			"Workflow[test] is missing a name, add one to improve developer experience."
 		)
 	}
 

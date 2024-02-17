@@ -16,7 +16,7 @@ jobs:
       contents: read
       # github/codeql-action/upload-sarif
       security-events: write
-      # github/codeql-action/upload-sarif in private repositories.
+      # github/codeql-action/upload-sarif in private repositories / internal organizations.
       actions: read
 
     runs-on: ubuntu-latest
@@ -53,3 +53,24 @@ jobs:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/report.sarif
 ```
+
+### Troubleshooting
+
+#### Advanced Security must be enabled for this repository to use code scanning.
+
+```
+Run github/codeql-action/upload-sarif@v3
+  with:
+    ...
+
+RequestError [HttpError]: Advanced Security must be enabled for this repository to use code scanning.
+{
+    status: 403,
+    response: {
+        url: 'https://api.github.com/repos/<org>/<repo>/code-scanning/analysis/status',
+        status: 403,
+        data: {
+            message: 'Advanced Security must be enabled for this repository to use code scanning.
+```
+
+https://docs.github.com/en/code-security/code-scanning/troubleshooting-code-scanning/advanced-security-must-be-enabled

@@ -35,7 +35,7 @@ public class MissingNameRule : VisitorRule {
 	}
 
 	@Suppress("StringLiteralDuplication") // A bad example is just bad, keep them inline.
-	internal companion object {
+	private companion object {
 
 		private val Message: (String) -> String = {
 			"${it} is missing a name, add one to improve developer experience."
@@ -64,8 +64,8 @@ public class MissingNameRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -77,9 +77,9 @@ public class MissingNameRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 
 		val MissingJobName = Issue(
@@ -107,8 +107,8 @@ public class MissingNameRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -120,9 +120,9 @@ public class MissingNameRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 
 		val MissingStepName = Issue(
@@ -148,8 +148,8 @@ public class MissingNameRule : VisitorRule {
 						    steps:
 						      - name: "My Step"
 						        run: echo "Example"
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -161,9 +161,9 @@ public class MissingNameRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 	}
 }

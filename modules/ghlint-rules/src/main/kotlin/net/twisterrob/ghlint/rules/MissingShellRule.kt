@@ -21,7 +21,7 @@ public class MissingShellRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val MissingShell = Issue(
 			id = "MissingShell",
@@ -61,7 +61,7 @@ public class MissingShellRule : VisitorRule {
 						    steps:
 						      - run: echo "Example" | grep "Missing" | sort
 						        shell: bash
-					""".trimIndent()
+					""".trimIndent(),
 				),
 				Example(
 					explanation = "Globally specified shell is inherited to the step.",
@@ -75,8 +75,8 @@ public class MissingShellRule : VisitorRule {
 						        shell: bash
 						    steps:
 						      - run: echo "Example" | grep "Missing" | sort
-					""".trimIndent()
-				)
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -88,9 +88,9 @@ public class MissingShellRule : VisitorRule {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example" | grep "Missing" | sort
-					""".trimIndent()
-				)
-			)
+					""".trimIndent(),
+				),
+			),
 		)
 	}
 }
