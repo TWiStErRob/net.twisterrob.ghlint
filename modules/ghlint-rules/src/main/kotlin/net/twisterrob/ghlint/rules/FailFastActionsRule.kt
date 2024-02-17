@@ -9,23 +9,36 @@ import net.twisterrob.ghlint.rule.report
 
 public class FailFastActionsRule : VisitorRule {
 
-	override val issues: List<Issue> = listOf(FailFastUploadArtifact, FailFastPublishUnitTestResults)
+	override val issues: List<Issue> = listOf(
+		FailFastUploadArtifact,
+		FailFastPublishUnitTestResults,
+		FailFastPeterEvansCreatePullRequest,
+	)
 
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
-		if (step.uses.startsWith("actions/upload-artifact@")) {
-			val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")
-			if (!isSpecified) {
-				reporting.report(FailFastUploadArtifact, step) {
-					"${it} should have input `if-no-files-found: error`."
+		when {
+			step.uses.startsWith("actions/upload-artifact@") -> {
+				val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")
+				if (!isSpecified) {
+					reporting.report(FailFastUploadArtifact, step) {
+						"${it} should have input `if-no-files-found: error`."
+					}
 				}
 			}
-		}
-		if (step.uses.startsWith("EnricoMi/publish-unit-test-result-action@")) {
-			val isSpecified = step.with.orEmpty().containsKey("action_fail_on_inconclusive")
-			if (!isSpecified) {
-				reporting.report(FailFastPublishUnitTestResults, step) {
-					"${it} should have input `action_fail_on_inconclusive: true`."
+
+			step.uses.startsWith("EnricoMi/publish-unit-test-result-action@") -> {
+				val isSpecified = step.with.orEmpty().containsKey("action_fail_on_inconclusive")
+				if (!isSpecified) {
+					reporting.report(FailFastPublishUnitTestResults, step) {
+						"${it} should have input `action_fail_on_inconclusive: true`."
+					}
+				}
+			}
+
+			step.uses.startsWith("peter-evans/create-pull-request@") -> {
+				reporting.report(FailFastPeterEvansCreatePullRequest, step) {
+					"Use `gh pr create` to open a PR instead of ${it}."
 				}
 			}
 		}
@@ -136,6 +149,88 @@ public class FailFastActionsRule : VisitorRule {
 						        with:
 						          junit_files: |
 						            **/build/**/TEST-*.xml
+					""".trimIndent()
+				),
+			),
+		)
+
+		val FailFastPeterEvansCreatePullRequest = Issue(
+			id = "FailFastPeterEvansCreatePullRequest",
+			title = "peter-evans/create-pull-request has unsafe edge cases, use `gh pr create` instead.",
+			description = """
+				Action doesn't allow fast fail, and therefore black-listed.
+				
+				From its documentation:
+				> If there are no changes (i.e. no diff exists with the checked-out base branch),
+				> no pull request will be created and the action **exits silently**.
+				
+				This is error-prone: if the PR content generation **accidentally** breaks, there's no way to detect it.
+				PR creation step just passes as if everything is all right.
+				There are outputs from the action which could be checked for null/empty/undefined,
+				but any user of this action needs to be aware of this.
+				This is akin to [C's numeric return codes](https://www.tutorialspoint.com/cprogramming/c_error_handling.htm),
+				the world has moved away from that approach.
+				
+				There's also confusion as seen [in the issue list](https://github.com/peter-evans/create-pull-request/issues?q=is%3Aissue+%22is+not+ahead+of+base%22+%22will+not+be+created%22).
+				
+				The only way to notice this is by checking the logs of the action:
+				```
+				Branch 'to-create' is not ahead of base 'main' and will not be created
+				```
+				and this line is not even a warning.
+				
+				Without the ability to fail fast, this action is not fit for production usage.
+				
+				The recommended replacement is [`gh pr create`](https://cli.github.com/manual/gh_pr_create),
+				which is a first party GitHub CLI tool with behaviors fit for the GitHub Actions environment.
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "Use the `gh` CLI to create a PR.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - name: "Create Pull Request"
+						        env:
+						          TITLE: Example
+						          BODY: |
+						            Example PR description
+						            - Updated foo
+						            - Removed bar
+						        run: >
+						          gh pr create
+						          --title "${'$'}{TITLE}"
+						          --body "${'$'}{BODY}"
+						          --draft
+						          --label "report"
+						          --label "automated pr"
+					""".trimIndent()
+				),
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Using create-pull-request action.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - name: "Create Pull Request"
+						        uses: peter-evans/create-pull-request@v6
+						        with:
+						          title: 'Example'
+						          body: |
+						            Example PR description
+						            - Updated foo
+						            - Removed bar
+						          labels: |
+						            report
+						            automated pr
+						          draft: true
 					""".trimIndent()
 				),
 			),

@@ -7,7 +7,6 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	id = "default",
 	name = "Default",
 	DoubleCurlyIfRule::class,
-	CreatePullRequestRule::class,
 	ExplicitJobPermissionsRule::class,
 	IdNamingRule::class,
 	MissingShellRule::class,

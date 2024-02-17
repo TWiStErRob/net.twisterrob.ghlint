@@ -101,6 +101,45 @@ class FailFastActionsRuleTest {
 		}
 	}
 
+	@Nested
+	inner class FailFastPeterEvansCreatePullRequestTest {
+
+		@Test fun `reports when action is used`() {
+			val result = check<FailFastActionsRule>(
+				"""
+					jobs:
+					  test:
+					    steps:
+					      - uses: peter-evans/create-pull-request@v6
+				""".trimIndent()
+			)
+
+			result should haveFinding(
+				"FailFastPeterEvansCreatePullRequest",
+				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@v6] in Job[test]."
+			)
+		}
+
+		@Test fun `reports when action is used with hash`() {
+			val result = check<FailFastActionsRule>(
+				"""
+					jobs:
+					  test:
+					    steps:
+					      - uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50 # v6.0.0
+					        with:
+					          title: "Test"
+				""".trimIndent()
+			)
+
+			result should haveFinding(
+				"FailFastPeterEvansCreatePullRequest",
+				@Suppress("MaxLineLength")
+				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test]."
+			)
+		}
+	}
+
 	@Test fun `passes on other actions`() {
 		val result = check<FailFastActionsRule>(
 			"""
