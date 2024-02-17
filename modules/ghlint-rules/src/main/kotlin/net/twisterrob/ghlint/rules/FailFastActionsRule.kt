@@ -163,6 +163,7 @@ public class FailFastActionsRule : VisitorRule {
 				From its documentation:
 				> If there are no changes (i.e. no diff exists with the checked-out base branch),
 				> no pull request will be created and the action **exits silently**.
+				> -- [README](https://github.com/peter-evans/create-pull-request#action-behaviour)
 				
 				This is error-prone: if the PR content generation **accidentally** breaks, there's no way to detect it.
 				PR creation step just passes as if everything is all right.

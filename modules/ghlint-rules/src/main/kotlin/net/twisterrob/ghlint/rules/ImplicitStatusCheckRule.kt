@@ -129,6 +129,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 				Note the documentation recommends:
 				> If you want to run a job or step regardless of its success or failure,
 				> use the recommended alternative: `if: ${'$'}{{ !cancelled() }}`
+				> -- [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions)
 				
 				but I strongly believe if you want to "run a job or step regardless of its success or failure",
 				use `if: ${'$'}{{ success() || failure() }}`, it's much clearer, isn't it?
