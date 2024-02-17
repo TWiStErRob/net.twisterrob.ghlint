@@ -32,8 +32,9 @@ jobs:
           distribution: temurin
 
       - name: "Download validator."
+        env:
+          GHALINT_VERSION: '0.1'
         run: |
-          GHALINT_VERSION=0.1
           curl --silent --show-error --location --remote-name \
               https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHALINT_VERSION}/ghlint-fat.jar
           chmod +x ghlint-fat.jar
