@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules.testing
 object Shell {
 
 	fun redirects(prefix: String): Map<String, String> {
+		@Suppress("detekt.StringShouldBeRawString") // All whitespace is significant.
 		val nl = "\n\t\t\t\t\t\t\t\t          "
 		@Suppress("RemoveSingleExpressionStringTemplate")
 		return mapOf(
@@ -20,6 +21,10 @@ object Shell {
 		)
 	}
 
+	/**
+	 * Cartesian product of two maps, combining keys with a slash separator.
+	 */
+	@Suppress("detekt.FunctionMinLength") // It's an operator.
 	infix fun Map<String, String>.x(other: Map<String, String>): Map<String, String> =
 		flatMap { (oneKey, oneValue) ->
 			other.map { (otherKey, otherValue) ->

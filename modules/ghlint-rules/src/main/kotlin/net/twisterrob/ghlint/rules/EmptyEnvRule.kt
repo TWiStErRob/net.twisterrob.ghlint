@@ -39,7 +39,7 @@ public class EmptyEnvRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		private val EMPTY_ENV_DESCRIPTION = """
 			Dead code can lead to confusion.

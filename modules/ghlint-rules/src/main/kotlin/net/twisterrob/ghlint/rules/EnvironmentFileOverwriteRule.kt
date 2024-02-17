@@ -21,7 +21,7 @@ public class EnvironmentFileOverwriteRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		private val environmentFileName = Regex(
 			"(?<environmentFile>GITHUB_ENV|GITHUB_OUTPUT|GITHUB_PATH|GITHUB_STEP_SUMMARY)"

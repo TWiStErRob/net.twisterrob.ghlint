@@ -41,7 +41,7 @@ public class RedundantShellRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val RedundantDefaultShell = Issue(
 			id = "RedundantDefaultShell",

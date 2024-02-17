@@ -30,7 +30,7 @@ public class DuplicateShellRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		private const val MAX_SHELLS_ON_STEPS = 2
 

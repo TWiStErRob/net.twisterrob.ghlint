@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-class EnvironmentFileRedirectRuleTest {
+class SafeEnvironmentFileRedirectRuleTest {
 
 	@TestFactory fun metadata() = test(SafeEnvironmentFileRedirectRule::class)
 

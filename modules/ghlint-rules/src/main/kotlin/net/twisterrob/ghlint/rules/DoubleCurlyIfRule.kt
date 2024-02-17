@@ -15,13 +15,13 @@ public class DoubleCurlyIfRule : VisitorRule {
 
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
-		val condition = (job.`if` ?: return)
+		val condition = job.`if` ?: return
 		validate(reporting, job, condition)
 	}
 
 	override fun visitStep(reporting: Reporting, step: Step) {
 		super.visitStep(reporting, step)
-		val condition = (step.`if` ?: return)
+		val condition = step.`if` ?: return
 		validate(reporting, step, condition)
 	}
 
@@ -33,7 +33,8 @@ public class DoubleCurlyIfRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	@Suppress("ClassOrdering") // Keep logic above Issue declaration for easy scrolling.
+	private companion object {
 
 		private fun isWrappedInDoubleCurly(condition: String): Boolean =
 			condition.startsWith("\${{") && condition.endsWith("}}")

@@ -39,7 +39,7 @@ public class IdNamingRule : VisitorRule {
 	private fun isValid(id: String): Boolean =
 		LOWER_KEBAB.matches(id)
 
-	internal companion object {
+	private companion object {
 
 		private val LOWER_KEBAB = Regex("^[a-z0-9-]+$")
 

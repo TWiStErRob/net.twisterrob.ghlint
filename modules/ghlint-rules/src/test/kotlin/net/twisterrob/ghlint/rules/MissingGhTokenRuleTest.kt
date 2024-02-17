@@ -114,6 +114,7 @@ class MissingGhTokenRuleTest {
 			""",
 		]
 	)
+	@Suppress("detekt.TrimMultilineRawString") // Trimmed inside test, trimming here would make these non-constant.
 	fun `reports when gh is used different contexts`(script: String) {
 		val result = check<MissingGhTokenRule>(
 			"""
@@ -138,6 +139,7 @@ class MissingGhTokenRuleTest {
 			""",
 		]
 	)
+	@Suppress("detekt.TrimMultilineRawString") // Trimmed inside test, trimming here would make these non-constant.
 	fun `passes when gh command is not in the right context`(script: String) {
 		val result = check<MissingGhTokenRule>(
 			"""

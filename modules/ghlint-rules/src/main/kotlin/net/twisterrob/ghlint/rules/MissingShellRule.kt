@@ -21,7 +21,7 @@ public class MissingShellRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val MissingShell = Issue(
 			id = "MissingShell",

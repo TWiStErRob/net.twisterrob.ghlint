@@ -14,9 +14,9 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule {
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		GITHUB_ENVIRONMENT_FILE_REGEX.findAll(step.run).forEach { match ->
-			val environmentFile = match.groups["environmentFile"]?.value
-			val prefix = match.groups["prefix"]?.value
-			val suffix = match.groups["prefix"]?.value
+			val environmentFile = match.groups.getRequired("environmentFile")
+			val prefix = match.groups.getRequired("prefix")
+			val suffix = match.groups.getRequired("suffix")
 			if (prefix != "\"\${" && suffix != "}\"") {
 				reporting.report(SafeEnvironmentFileRedirect, step) {
 					"""${it} should be formatted as `>> "${'$'}{${environmentFile}}"`."""
@@ -25,11 +25,18 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	@Suppress("ClassOrdering") // Keep logic above Issue declaration for easy scrolling.
+	private companion object {
 
-		private val GITHUB_ENVIRONMENT_FILE_REGEX = Regex(
-			""">>?(\s*(\\\n)?)*(?<prefix>"?\$\{?)(?<environmentFile>GITHUB_ENV|GITHUB_OUTPUT|GITHUB_PATH|GITHUB_STEP_SUMMARY)(?<suffix>}?"?)"""
+		private val environmentFileName = Regex(
+			"(?<environmentFile>GITHUB_ENV|GITHUB_OUTPUT|GITHUB_PATH|GITHUB_STEP_SUMMARY)"
 		)
+		private val GITHUB_ENVIRONMENT_FILE_REGEX = Regex(
+			""">>?(\s*(\\\n)?)*(?<prefix>"?\$\{?)${environmentFileName}(?<suffix>}?"?)"""
+		)
+
+		private fun MatchGroupCollection.getRequired(name: String): String =
+			(this[name] ?: error("Invalid regex, group <${name}> was not matched.")).value
 
 		val SafeEnvironmentFileRedirect = Issue(
 			id = "SafeEnvironmentFileRedirect",

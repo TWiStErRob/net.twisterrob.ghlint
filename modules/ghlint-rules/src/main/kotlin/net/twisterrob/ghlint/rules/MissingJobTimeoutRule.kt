@@ -18,7 +18,7 @@ public class MissingJobTimeoutRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val MissingJobTimeout = Issue(
 			id = "MissingJobTimeout",

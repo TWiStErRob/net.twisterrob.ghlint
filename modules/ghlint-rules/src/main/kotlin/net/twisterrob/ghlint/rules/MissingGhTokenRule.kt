@@ -26,7 +26,7 @@ public class MissingGhTokenRule : VisitorRule {
 				|| script.contains(GH_CLI_EMBEDDED)
 				|| script.contains(GH_CLI_PIPE_CONDITIONAL)
 
-	internal companion object {
+	private companion object {
 
 		private const val TOKEN_ENV_VAR = "GH_TOKEN"
 		private val GH_CLI_START_OF_LINE = Regex("""^\s*gh\s+""", RegexOption.MULTILINE)

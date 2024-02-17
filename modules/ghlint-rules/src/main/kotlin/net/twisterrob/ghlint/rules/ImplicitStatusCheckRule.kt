@@ -32,7 +32,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		private val NEGATIVE_CONDITION = Regex("""!\s*(always|success|failure|cancelled)\(\)""")
 

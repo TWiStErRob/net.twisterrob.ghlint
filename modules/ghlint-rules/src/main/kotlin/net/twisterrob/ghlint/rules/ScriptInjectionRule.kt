@@ -28,7 +28,7 @@ public class ScriptInjectionRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val ShellScriptInjection = Issue(
 			id = "ShellScriptInjection",

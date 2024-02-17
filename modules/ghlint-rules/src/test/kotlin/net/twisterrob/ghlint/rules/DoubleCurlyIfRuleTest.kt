@@ -231,6 +231,7 @@ class DoubleCurlyIfRuleTest {
 		@JvmStatic
 		val validButSyntaxErrorConditions = listOf(
 			"'aaa' == 'bbb'",
+			@Suppress("detekt.StringShouldBeRawString")
 			"\"aaa\" == \"bbb\"",
 			"'aaa' == github.context.variable",
 			"\"aaa\" == github.context.variable",

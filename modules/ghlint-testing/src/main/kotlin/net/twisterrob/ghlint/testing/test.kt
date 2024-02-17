@@ -48,7 +48,7 @@ public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
  * ```
  * @TestFactory
  * fun metadata(): List<DynamicNode> =
- *     validate(MyRule())
+ *     validate(MyRule::class)
  * ```
  */
 public fun test(rule: KClass<out Rule>): DynamicNode =

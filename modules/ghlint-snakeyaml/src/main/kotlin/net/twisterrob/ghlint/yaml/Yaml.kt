@@ -41,7 +41,7 @@ public object Yaml {
 			return Composer(settings, ParserImpl(settings, StreamReader(settings, yaml))).singleNode
 				.getOrElse { ScalarNode(Tag.NULL, "", ScalarStyle.PLAIN) }
 		} catch (ex: org.snakeyaml.engine.v2.exceptions.YamlEngineException) {
-			throw IllegalArgumentException("Failed to parse YAML: ${ex.message}\nFull input:\n${yaml}", ex)
+			throw IllegalArgumentException("Failed to parse YAML: ${ex.message ?: ex}\nFull input:\n${yaml}", ex)
 		}
 	}
 

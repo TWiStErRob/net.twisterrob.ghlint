@@ -21,7 +21,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val MissingJobPermissions = Issue(
 			id = "MissingJobPermissions",

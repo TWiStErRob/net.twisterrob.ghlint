@@ -44,7 +44,7 @@ public class FailFastActionsRule : VisitorRule {
 		}
 	}
 
-	internal companion object {
+	private companion object {
 
 		val FailFastUploadArtifact = Issue(
 			id = "FailFastUploadArtifact",
