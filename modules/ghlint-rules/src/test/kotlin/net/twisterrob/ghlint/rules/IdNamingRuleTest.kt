@@ -4,8 +4,8 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.jupiter.DisableFailingDynamicTest
 import net.twisterrob.ghlint.testing.test
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -13,7 +13,11 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class IdNamingRuleTest {
 
-	@Disabled("TODO Test framework needs adjustments to make it pass.")
+	@DisableFailingDynamicTest(
+		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
+		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
+		acceptableFailure = """(?s).*Could not find WorkflowIdNaming among findings:\n$""",
+	)
 	@TestFactory fun metadata() = test(IdNamingRule::class)
 
 	@Test fun `passes when no step id`() {
