@@ -66,6 +66,7 @@ jobs:
           comment_mode: off
           report_individual_runs: true
           test_changes_limit: 0
+          action_fail_on_inconclusive: true
           junit_files: |
             **/build/test-results/*/TEST-*.xml
 
@@ -110,7 +111,7 @@ jobs:
             | xargs java -jar modules/ghlint/build/libs/ghlint-fat.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
-        if: steps.validate.outcome != 'skipped' && (success() || failure())
+        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
           name: 'GHA-lint Results'
