@@ -21,7 +21,7 @@ class MissingNameRuleTest {
 
 		result should haveFinding(
 			"MissingWorkflowName",
-			"Workflow[test.yml] is missing a name, add one to improve developer experience."
+			"Workflow[test] is missing a name, add one to improve developer experience."
 		)
 	}
 

@@ -12,9 +12,9 @@ public class Issue(
 	@Language("markdown")
 	public val title: String,
 	@Language("markdown")
-	public val description: String = "", // STOPSHIP
-	public val compliant: List<Example> = emptyList(), // STOPSHIP
-	public val nonCompliant: List<Example> = emptyList(), // STOPSHIP
+	public val description: String,
+	public val compliant: List<Example>,
+	public val nonCompliant: List<Example>,
 )
 
 public class Example(

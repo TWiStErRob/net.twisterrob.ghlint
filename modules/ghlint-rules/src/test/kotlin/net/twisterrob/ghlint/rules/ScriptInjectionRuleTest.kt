@@ -133,6 +133,7 @@ class ScriptInjectionRuleTest {
 
 			result should haveFinding(
 				"JSScriptInjection",
+				// TODO re-think identifier, there could be multiple like this, it's not unique
 				"Step[actions/github-script@v7] in Job[test] JavaScript contains GitHub Expressions.",
 			)
 		}
@@ -154,6 +155,7 @@ class ScriptInjectionRuleTest {
 
 			result should haveFinding(
 				"JSScriptInjection",
+				// TODO remove quotes from the name?
 				"Step[\"Get title\"] in Job[test] JavaScript contains GitHub Expressions.",
 			)
 		}
