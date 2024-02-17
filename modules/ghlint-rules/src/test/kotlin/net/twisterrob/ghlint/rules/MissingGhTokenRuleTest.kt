@@ -18,7 +18,7 @@ class MissingGhTokenRuleTest {
 		val result = check<MissingGhTokenRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - run: gh pr view
 				        env:
@@ -33,7 +33,7 @@ class MissingGhTokenRuleTest {
 		val result = check<MissingGhTokenRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    env:
 				      GH_TOKEN: ${'$'}{{ github.token }}
 				    steps:
@@ -50,7 +50,7 @@ class MissingGhTokenRuleTest {
 				env:
 				  GH_TOKEN: ${'$'}{{ github.token }}
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - run: gh pr view
 			""".trimIndent()
@@ -63,7 +63,7 @@ class MissingGhTokenRuleTest {
 		val result = check<MissingGhTokenRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - run: gh pr view
 				        env:
@@ -118,7 +118,7 @@ class MissingGhTokenRuleTest {
 		val result = check<MissingGhTokenRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - run: |${'\n'}${script.trimIndent().prependIndent("\t\t\t\t          ")}
 			""".trimIndent()
@@ -126,7 +126,7 @@ class MissingGhTokenRuleTest {
 
 		result should haveFinding(
 			"MissingGhToken",
-			"Step[#0] in Job[example] should see `GH_TOKEN` environment variable."
+			"Step[#0] in Job[test] should see `GH_TOKEN` environment variable."
 		)
 	}
 
@@ -142,7 +142,7 @@ class MissingGhTokenRuleTest {
 		val result = check<MissingGhTokenRule>(
 			"""
 				jobs:
-				  example:
+				  test:
 				    steps:
 				      - run: |${'\n'}${script.trimIndent().prependIndent("\t\t\t\t          ")}
 			""".trimIndent()
