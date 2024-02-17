@@ -1,7 +1,9 @@
 package net.twisterrob.ghlint.yaml
 
+import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.NodeType
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
@@ -22,6 +24,16 @@ internal fun MappingNode.getRequiredKey(key: String): Node =
 
 internal fun MappingNode.getRequired(key: String): Node =
 	this.getOptional(key) ?: throwMissingKey(key)
+
+internal fun Node.getDash(): Node =
+	object : Node(
+		this.tag,
+		this.startMark.map { Mark(it.name, it.index - 2, it.line, it.column - 2, it.buffer, it.pointer - 2) },
+		this.startMark.map { Mark(it.name, it.index - 1, it.line, it.column - 1, it.buffer, it.pointer - 1) },
+	) {
+		override fun getNodeType(): NodeType = NodeType.ANCHOR
+		override fun toString(): String = "-"
+	}
 
 internal val Node.text: String
 	get() = (this as ScalarNode).value

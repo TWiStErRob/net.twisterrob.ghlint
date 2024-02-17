@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
+import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
-import net.twisterrob.ghlint.yaml.getRequiredKey
 import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.toTextMap
@@ -34,7 +34,7 @@ public sealed class SnakeStep protected constructor(
 						parent = parent,
 						index = Step.Index(index),
 						node = node,
-						target = node.getRequiredKey("uses"),
+						target = node.getDash(),
 					)
 
 				node.getOptionalText("run") != null ->
@@ -42,7 +42,7 @@ public sealed class SnakeStep protected constructor(
 						parent = parent,
 						index = Step.Index(index),
 						node = node,
-						target = node.getRequiredKey("run"),
+						target = node.getDash(),
 					)
 
 				else ->
