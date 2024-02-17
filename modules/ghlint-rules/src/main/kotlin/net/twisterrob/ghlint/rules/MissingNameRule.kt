@@ -61,9 +61,11 @@ public class MissingNameRule : VisitorRule {
 						on: push
 						jobs:
 						  example:
+						    name: "My Job"
 						    runs-on: ubuntu-latest
 						    steps:
-						      - run: echo "Example"
+						      - name: "Example"
+						        run: echo "Example"
 					""".trimIndent(),
 				),
 			),
@@ -74,9 +76,11 @@ public class MissingNameRule : VisitorRule {
 						on: push
 						jobs:
 						  example:
+						    name: "My Job"
 						    runs-on: ubuntu-latest
 						    steps:
-						      - run: echo "Example"
+						      - name: "Example"
+						        run: echo "Example"
 					""".trimIndent(),
 				),
 			),
@@ -100,13 +104,15 @@ public class MissingNameRule : VisitorRule {
 				Example(
 					explanation = "The example job has a name.",
 					content = """
+						name: "Example"
 						on: push
 						jobs:
 						  example:
 						    name: "My Job"
 						    runs-on: ubuntu-latest
 						    steps:
-						      - run: echo "Example"
+						      - name: "Example"
+						        run: echo "Example"
 					""".trimIndent(),
 				),
 			),
@@ -114,12 +120,14 @@ public class MissingNameRule : VisitorRule {
 				Example(
 					explanation = "The example job is missing a name.",
 					content = """
+						name: "Example"
 						on: push
 						jobs:
 						  example:
 						    runs-on: ubuntu-latest
 						    steps:
-						      - run: echo "Example"
+						      - name: "Example"
+						        run: echo "Example"
 					""".trimIndent(),
 				),
 			),
@@ -141,9 +149,11 @@ public class MissingNameRule : VisitorRule {
 				Example(
 					explanation = "The first step has a name.",
 					content = """
+						name: "Example"
 						on: push
 						jobs:
 						  example:
+						    name: "Example"
 						    runs-on: ubuntu-latest
 						    steps:
 						      - name: "My Step"
@@ -155,9 +165,11 @@ public class MissingNameRule : VisitorRule {
 				Example(
 					explanation = "The first step is missing a name.",
 					content = """
+						name: "Example"
 						on: push
 						jobs:
 						  example:
+						    name: "Example"
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
