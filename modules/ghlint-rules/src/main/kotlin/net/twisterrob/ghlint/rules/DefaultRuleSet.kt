@@ -19,6 +19,6 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	DuplicateShellRule::class,
 	RedundantShellRule::class,
 	FailFastActionsRule::class,
-	UseGhTokenWithGhCliRule::class,
+	MissingGhTokenRule::class,
 	ScriptInjectionRule::class,
 )
