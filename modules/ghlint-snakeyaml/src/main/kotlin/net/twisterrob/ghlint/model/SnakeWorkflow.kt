@@ -9,10 +9,12 @@ import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
+import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeWorkflow internal constructor(
 	override val parent: File,
 	override val node: MappingNode,
+	override val target: Node,
 ) : Workflow, HasSnakeNode {
 
 	override val location: Location
@@ -26,8 +28,8 @@ public class SnakeWorkflow internal constructor(
 
 	override val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map
-			.mapKeys { (key, _) -> key.text }
-			.mapValues { (key, node) -> SnakeJob.from(this, key, node as MappingNode) }
+			.map { (key, node) -> key.text to SnakeJob.from(this, key.text, node as MappingNode, key) }
+			.toMap()
 
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
@@ -37,7 +39,9 @@ public class SnakeWorkflow internal constructor(
 
 	public companion object {
 
-		public fun from(file: File): Workflow =
-			SnakeWorkflow(file, Yaml.load(file.content) as MappingNode)
+		public fun from(file: File): Workflow {
+			val node = Yaml.load(file.content) as MappingNode
+			return SnakeWorkflow(file, node, node.getRequired("jobs"))
+		}
 	}
 }

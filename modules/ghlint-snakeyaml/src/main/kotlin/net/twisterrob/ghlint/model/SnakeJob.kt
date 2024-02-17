@@ -9,6 +9,7 @@ import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
+import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeJob protected constructor(
 ) : Job.BaseJob, HasSnakeNode {
@@ -30,14 +31,14 @@ public sealed class SnakeJob protected constructor(
 
 	public companion object {
 
-		public fun from(parent: Workflow, id: String, node: MappingNode): Job =
+		public fun from(parent: Workflow, id: String, node: MappingNode, target: Node): Job =
 			when {
 
 				node.getOptionalText("uses") != null ->
-					SnakeReusableWorkflowCallJob(parent, id, node)
+					SnakeReusableWorkflowCallJob(parent, id, node, target)
 
 				node.getOptional("steps") != null ->
-					SnakeNormalJob(parent, id, node)
+					SnakeNormalJob(parent, id, node, target)
 
 				else ->
 					error("Unknown job type: ${node}")
@@ -48,6 +49,7 @@ public sealed class SnakeJob protected constructor(
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
+		override val target: Node,
 	) : Job.NormalJob, SnakeJob() {
 
 		override val steps: List<Step>
@@ -65,6 +67,7 @@ public sealed class SnakeJob protected constructor(
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
+		override val target: Node,
 	) : Job.ReusableWorkflowCallJob, SnakeJob() {
 
 		override val uses: String

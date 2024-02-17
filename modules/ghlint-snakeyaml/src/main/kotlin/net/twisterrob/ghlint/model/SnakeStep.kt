@@ -3,10 +3,12 @@ package net.twisterrob.ghlint.model
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
+import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
+import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeStep protected constructor(
 ) : Step.BaseStep, HasSnakeNode {
@@ -28,10 +30,10 @@ public sealed class SnakeStep protected constructor(
 		public fun from(parent: Job.NormalJob, index: Int, node: MappingNode): Step =
 			when {
 				node.getOptionalText("uses") != null ->
-					SnakeUses(parent, Step.Index(index), node)
+					SnakeUses(parent, Step.Index(index), node, node.getRequired("uses"))
 
 				node.getOptionalText("run") != null ->
-					SnakeRun(parent, Step.Index(index), node)
+					SnakeRun(parent, Step.Index(index), node, node.getRequired("run"))
 
 				else ->
 					error("Unknown step type: ${node}")
@@ -42,6 +44,7 @@ public sealed class SnakeStep protected constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
+		override val target: Node,
 	) : Step.Run, SnakeStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
@@ -59,6 +62,7 @@ public sealed class SnakeStep protected constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
+		override val target: Node,
 	) : Step.Uses, SnakeStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
