@@ -5,7 +5,6 @@ import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.analysis.Validator
@@ -75,7 +74,7 @@ internal fun Rule.validateCompliantExamples(issue: Issue) {
 		issue.compliant.forEachIndexed { index, example ->
 			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
 				validate(example.content) should beEmpty()
-				check(example.content) shouldNotHave onlyFindings(issue.id)
+				check(example.content) should beEmpty()
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}

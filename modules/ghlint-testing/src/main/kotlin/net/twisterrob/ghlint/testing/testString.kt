@@ -3,7 +3,11 @@ package net.twisterrob.ghlint.testing
 import net.twisterrob.ghlint.results.Finding
 
 public fun List<Finding>.testString(): String =
-	joinToString(separator = "\n", transform = Finding::testString)
+	if (this.isEmpty()) {
+		"No findings."
+	} else {
+		this.joinToString(separator = "\n", transform = Finding::testString)
+	}
 
 public fun Finding.testString(): String {
 	val coordinates = with(location) {
