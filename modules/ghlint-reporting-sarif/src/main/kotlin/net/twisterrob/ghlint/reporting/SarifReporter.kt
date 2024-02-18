@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.reporting
 
 import io.github.detekt.sarif4k.ArtifactLocation
+import io.github.detekt.sarif4k.Level
 import io.github.detekt.sarif4k.Location
 import io.github.detekt.sarif4k.Message
 import io.github.detekt.sarif4k.MultiformatMessageString
@@ -98,6 +99,7 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 private fun result(finding: Finding, base: Path): Result {
 	val file = Path.of(finding.location.file.path).absolute().toRealPath()
 	return Result(
+		level = Level.Warning,
 		message = Message(
 			text = finding.message,
 		),
