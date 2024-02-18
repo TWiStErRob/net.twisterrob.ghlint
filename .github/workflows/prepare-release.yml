@@ -1,0 +1,49 @@
+name: "Release: Prepare"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: "Prepare Release"
+
+    permissions:
+      # actions/checkout@v4
+      contents: read
+      # gh pr create
+      pull-requests: write
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Prepare changes."
+        id: prepare
+        run: |
+          # Remove -SNAPSHOT suffix in gradle.properties version.
+          sed -re 's/^(project.version=[0-9]+\.[0-9]+\.[0-9]+)-SNAPSHOT$/\1/' -i gradle.properties
+          version=$(grep -v 'project.version=(.*)' gradle.properties)
+          git checkout -b "release_${version}"
+          git commit -m "Release v${version}"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: "Create Release pull request."
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.outputs.prepare.version }}
+          BODY: |
+            Prepare release changes for ${VERSION}.
+            When merged to main, it'll trigger the publishing workflow.
+        run: >
+          gh pr create
+            --title "Release v${VERSION}"
+            --body "${BODY}"
+            --base main
