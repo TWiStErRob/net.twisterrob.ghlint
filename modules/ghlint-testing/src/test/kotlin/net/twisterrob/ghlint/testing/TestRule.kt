@@ -15,7 +15,7 @@ internal class TestRule : Rule {
 	override val issues: List<Issue> = listOf(TestIssue1, TestIssue2, TestIssue3, TestIssue4)
 
 	override fun check(workflow: Workflow): List<Finding> =
-		error("Should not be called")
+		error("Should never be called.")
 
 	override fun toString(): String =
 		"toString of ${TestRule::class.simpleName ?: error("Cannot self-reflect!")}"

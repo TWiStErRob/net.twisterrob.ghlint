@@ -31,8 +31,8 @@ class SafeRuleTest {
 
 	@Test fun `meaningful toString`() {
 		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Shouldn't be called.")
-			override fun check(workflow: Workflow) = error("Shouldn't be called.")
+			override val issues get() = error("Should never be called.")
+			override fun check(workflow: Workflow) = error("Should never be called.")
 			override fun toString(): String = "test rule"
 		})
 
@@ -44,7 +44,7 @@ class SafeRuleTest {
 		val mockIssues: List<Issue> = listOf(mock(), mock())
 		val subject = SafeRule(object : Rule {
 			override val issues: List<Issue> = mockIssues
-			override fun check(workflow: Workflow) = error("Shouldn't be called.")
+			override fun check(workflow: Workflow) = error("Should never be called.")
 		})
 
 		subject.issues shouldContainExactlyInAnyOrder mockIssues + SafeRule.RuleErrored
@@ -52,7 +52,7 @@ class SafeRuleTest {
 
 	@Test fun `propagates no findings`() {
 		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Shouldn't be called.")
+			override val issues get() = error("Should never be called.")
 			override fun check(workflow: Workflow): List<Finding> = emptyList()
 		})
 
@@ -64,7 +64,7 @@ class SafeRuleTest {
 	@Test fun `propagates findings`() {
 		val mockFindings: List<Finding> = listOf(mock(), mock())
 		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Shouldn't be called.")
+			override val issues get() = error("Should never be called.")
 			override fun check(workflow: Workflow) = mockFindings
 		})
 
@@ -76,7 +76,7 @@ class SafeRuleTest {
 	@Test fun `propagates exception as finding`() {
 		val stubFailure = RuntimeException("Fake failure")
 		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Shouldn't be called.")
+			override val issues get() = error("Should never be called.")
 			override fun check(workflow: Workflow) = throw stubFailure
 		})
 		val mockWorkflow: Workflow = mock()
@@ -96,7 +96,7 @@ class SafeRuleTest {
 	@Test fun `propagates error as finding`() {
 		val stubFailure = OutOfMemoryError("Fake failure")
 		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Shouldn't be called.")
+			override val issues get() = error("Should never be called.")
 			override fun check(workflow: Workflow) = throw stubFailure
 		})
 		val mockWorkflow: Workflow = mock()
