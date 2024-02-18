@@ -13,6 +13,17 @@ It is heavily inspired by
 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html),
 and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 
+## Features
+ * [x] Validate the syntax of the workflow YAML files via JSON-schema
+       (this is required for other steps).
+ * [x] Hand-crafted semantic rules and strongly typed object model.
+ * [ ] Support for the full workflow syntax.
+       Hopefully via generated code based on the JSON-schema.
+ * [ ] Custom third-party rules (plugins)
+ * [ ] action.yml validator via JSON-schema
+ * [ ] action.yml semantic rules
+ * [ ] support for other types (e.g. issue templates/forms)
+
 ## Usage
 
 ### Quick start
