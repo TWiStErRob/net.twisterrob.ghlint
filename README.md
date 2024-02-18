@@ -33,7 +33,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 
 ### Troubleshooting
 
-#### Advanced Security must be enabled for this repository to use code scanning.
+<details><summary>Advanced Security must be enabled for this repository to use code scanning.</summary>
 
 ```
 Run github/codeql-action/upload-sarif@v3
@@ -51,6 +51,8 @@ RequestError [HttpError]: Advanced Security must be enabled for this repository 
 ```
 
 https://docs.github.com/en/code-security/code-scanning/troubleshooting-code-scanning/advanced-security-must-be-enabled
+
+</details>
 
 ## Alternatives
 
