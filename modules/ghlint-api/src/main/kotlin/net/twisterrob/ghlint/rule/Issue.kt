@@ -29,7 +29,7 @@ public val Issue.descriptionWithExamples: String
 		append(description)
 		append("\n")
 		renderExamples("Compliant", compliant)
-		renderExamples("Non-compliant", compliant)
+		renderExamples("Non-compliant", nonCompliant)
 	}
 
 private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
