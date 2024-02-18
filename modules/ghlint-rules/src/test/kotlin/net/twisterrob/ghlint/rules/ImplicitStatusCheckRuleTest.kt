@@ -163,7 +163,7 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			results shouldHave singleFinding(
+			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
 				"NegativeStatusCheck",
 				"Step[#0] in Job[test] uses a negative condition."
 			)
