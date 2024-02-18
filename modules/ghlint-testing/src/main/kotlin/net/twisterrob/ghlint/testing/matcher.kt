@@ -4,7 +4,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import net.twisterrob.ghlint.results.Finding
 
-public fun beEmpty(): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
+public fun noFindings(): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 		value.isEmpty(),
 		{ "Findings should be empty but contained:\n${value.testString()}" },

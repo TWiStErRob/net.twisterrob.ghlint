@@ -2,7 +2,6 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.atLeastSize
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotContain
@@ -73,8 +72,8 @@ internal fun Rule.validateCompliantExamples(issue: Issue) {
 		issue.compliant shouldHave atLeastSize(1)
 		issue.compliant.forEachIndexed { index, example ->
 			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
-				validate(example.content) should beEmpty()
-				check(example.content) should beEmpty()
+				validate(example.content) shouldHave noFindings()
+				check(example.content) shouldHave noFindings()
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}

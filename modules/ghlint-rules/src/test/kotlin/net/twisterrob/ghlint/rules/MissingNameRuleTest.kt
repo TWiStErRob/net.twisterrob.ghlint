@@ -1,9 +1,10 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -33,7 +34,7 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		result shouldHave noFindings()
 	}
 
 	@Test fun `reports when job is missing a name`() {
@@ -67,7 +68,7 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		result shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is missing a name`() {
@@ -101,6 +102,6 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		result shouldHave noFindings()
 	}
 }
