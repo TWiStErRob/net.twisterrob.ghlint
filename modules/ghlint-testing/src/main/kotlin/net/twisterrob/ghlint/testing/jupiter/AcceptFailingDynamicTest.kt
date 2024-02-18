@@ -11,6 +11,27 @@ import org.junit.jupiter.api.extension.ExtendWith
  * but you want to disable some of them that fail.
  *
  * If the test does not fail, the annotation can be removed.
+ *
+ * Example usage:
+ * ```
+ * @AcceptFailingDynamicTest(
+ * 	displayName = "Some test name deep inside a dynamic container",
+ * 	reason = "To demonstrate how the failing test can be accepted.",
+ * 	acceptableFailure = "^\\Q"
+ * 			+ "Example\n"
+ * 			+ "failure"
+ * 			+ "\\E$"
+ * )
+ * @Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
+ * @TestFactory fun tests() = listOf(
+ *   dynamicTest("...") { ... },
+ *   dynamicContainer("", listOf(
+ *     dynamicTest("...") { ... },
+ *     dynamicTest("Some test name deep inside a dynamic container") { fail("Example\nfailure") },
+ *     dynamicTest("...") { ... },
+ *   ))
+ * )
+ * ```
  */
 @Repeatable
 @Retention(AnnotationRetention.RUNTIME)

@@ -16,7 +16,7 @@ class IdNamingRuleTest {
 	@AcceptFailingDynamicTest(
 		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
 		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
-		acceptableFailure = """(?s)^Could not find WorkflowIdNaming among findings:\nNo findings.$""",
+		acceptableFailure = """^Could not find WorkflowIdNaming among findings:\nNo findings.$""",
 	)
 	@TestFactory fun metadata() = test(IdNamingRule::class)
 

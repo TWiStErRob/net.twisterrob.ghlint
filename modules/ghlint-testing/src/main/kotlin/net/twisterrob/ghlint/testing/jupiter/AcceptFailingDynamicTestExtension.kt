@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.InvocationInterceptor
 import java.lang.reflect.AnnotatedElement
 import kotlin.jvm.optionals.getOrNull
 
+/**
+ * @see AcceptFailingDynamicTest for documentation.
+ */
 internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 
 	override fun interceptDynamicTest(
