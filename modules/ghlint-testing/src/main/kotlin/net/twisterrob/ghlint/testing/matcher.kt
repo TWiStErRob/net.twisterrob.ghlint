@@ -29,14 +29,6 @@ internal fun onlyFindings(issue: String): Matcher<List<Finding>> = object : Matc
 	)
 }
 
-public fun haveFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
-	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
-		value.any { it.issue.id == issue },
-		{ "Could not find ${issue} among findings:\n${value.testString()}" },
-		{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
-	)
-}
-
 public fun haveFinding(issue: String, message: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 		value.singleOrNull { it.issue.id == issue && it.message == message } != null,
