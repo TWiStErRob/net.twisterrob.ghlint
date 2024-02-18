@@ -25,8 +25,8 @@ internal class TestRule : Rule {
 
 		val TestIssue1 = Issue("TestIssue1", "title1", "description1", emptyList(), emptyList())
 		val TestIssue2 = Issue("TestIssue2", "title2", "description2", emptyList(), emptyList())
-		val TestIssue3 = Issue("TestIssue2", "title3", "description3", emptyList(), emptyList())
-		val TestIssue4 = Issue("TestIssue2", "title4", "description4", emptyList(), emptyList())
+		val TestIssue3 = Issue("TestIssue3", "title3", "description3", emptyList(), emptyList())
+		val TestIssue4 = Issue("TestIssue4", "title4", "description4", emptyList(), emptyList())
 
 		@Suppress("detekt.LongParameterList")
 		fun testFinding(
