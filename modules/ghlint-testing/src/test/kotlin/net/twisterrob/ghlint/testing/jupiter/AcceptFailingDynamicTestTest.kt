@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-class DisableFailingDynamicTestTest {
+class AcceptFailingDynamicTestTest {
 
-	@DisableFailingDynamicTest(
+	@AcceptFailingDynamicTest(
 		displayName = "Invalid location of annotation.",
 		reason = "Testing disable logic.",
 		acceptableFailure = "",
@@ -18,7 +18,7 @@ class DisableFailingDynamicTestTest {
 		pass()
 	}
 
-	@DisableFailingDynamicTest(
+	@AcceptFailingDynamicTest(
 		displayName = "Failing test",
 		reason = "Testing disable logic.",
 		acceptableFailure = "Fake failure",
@@ -29,7 +29,7 @@ class DisableFailingDynamicTestTest {
 			dynamicTest("Failing test") { fail("Fake failure") },
 		)
 
-	@DisableFailingDynamicTest(
+	@AcceptFailingDynamicTest(
 		displayName = "Missing name",
 		reason = "Testing disable logic.",
 		acceptableFailure = "Fake failure",
@@ -41,7 +41,7 @@ class DisableFailingDynamicTestTest {
 		)
 
 	@Disabled("Don't know how to assert result on this.")
-	@DisableFailingDynamicTest(
+	@AcceptFailingDynamicTest(
 		displayName = "Failing test",
 		reason = "Testing disable logic.",
 		acceptableFailure = "Fake failure",

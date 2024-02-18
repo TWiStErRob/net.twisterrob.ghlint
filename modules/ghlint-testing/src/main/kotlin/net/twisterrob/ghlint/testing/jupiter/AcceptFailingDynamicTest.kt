@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.extension.ExtendWith
 
 /**
- * Disables a dynamic test method that fails.
+ * Aborts a dynamic test method that fails.
  *
  * This is useful if an external framework creates dynamic tests on your behalf,
  * but you want to disable some of them that fail.
@@ -15,8 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 @Repeatable
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
-@ExtendWith(DisableFailingDynamicTestExtension::class)
-public annotation class DisableFailingDynamicTest(
+@ExtendWith(AcceptFailingDynamicTestExtension::class)
+public annotation class AcceptFailingDynamicTest(
 	/**
 	 * The display name of the dynamic test, does not include the full path, just the lowest [DynamicNode]'s name.
 	 */

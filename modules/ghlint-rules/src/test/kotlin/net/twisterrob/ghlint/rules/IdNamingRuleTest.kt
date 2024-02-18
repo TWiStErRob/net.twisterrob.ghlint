@@ -4,7 +4,7 @@ import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.haveFinding
-import net.twisterrob.ghlint.testing.jupiter.DisableFailingDynamicTest
+import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class IdNamingRuleTest {
 
-	@DisableFailingDynamicTest(
+	@AcceptFailingDynamicTest(
 		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
 		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
 		acceptableFailure = """(?s).*Could not find WorkflowIdNaming among findings:\nNo findings.$""",

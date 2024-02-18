@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.InvocationInterceptor
 import java.lang.reflect.AnnotatedElement
 import kotlin.jvm.optionals.getOrNull
 
-internal class DisableFailingDynamicTestExtension : InvocationInterceptor {
+internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 
 	override fun interceptDynamicTest(
 		@Suppress("ForbiddenVoid") // REPORT false positive: overridden method cannot be Unit.
@@ -28,7 +28,7 @@ internal class DisableFailingDynamicTestExtension : InvocationInterceptor {
 	}
 
 	private fun InvocationInterceptor.Invocation<*>.invokeDisabled(
-		disabled: DisableFailingDynamicTest,
+		disabled: AcceptFailingDynamicTest,
 		method: AnnotatedElement
 	) {
 		try {
@@ -64,8 +64,8 @@ private val ExtensionContext.firstElement: AnnotatedElement?
 		.map { it.element.getOrNull() }
 		.firstOrNull { it != null }
 
-private fun AnnotatedElement.findDisableAnnotationFor(displayName: String): DisableFailingDynamicTest? {
-	val disabled: Array<DisableFailingDynamicTest> = this.getAnnotationsByType(DisableFailingDynamicTest::class.java)
+private fun AnnotatedElement.findDisableAnnotationFor(displayName: String): AcceptFailingDynamicTest? {
+	val disabled: Array<AcceptFailingDynamicTest> = this.getAnnotationsByType(AcceptFailingDynamicTest::class.java)
 	val matching = disabled.filter { it.displayName == displayName }
 	return when (matching.size) {
 		0 -> null
