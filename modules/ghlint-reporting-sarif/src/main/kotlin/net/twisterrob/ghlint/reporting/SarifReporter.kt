@@ -17,6 +17,7 @@ import io.github.detekt.sarif4k.Version
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.descriptionWithExamples
+import net.twisterrob.ghlint.ruleset.RuleSet
 import java.io.Writer
 import java.nio.file.Path
 import kotlin.io.path.absolute
@@ -26,6 +27,7 @@ import kotlin.io.path.relativeTo
 public class SarifReporter(
 	private val target: Writer,
 	private val rootDir: Path,
+	private val ruleSets: List<RuleSet>,
 ) : Reporter {
 
 	override fun report(findings: List<Finding>) {
@@ -38,9 +40,10 @@ public class SarifReporter(
 					tool = Tool(
 						driver = ToolComponent(
 							name = "GHA-lint",
-							rules = findings.map { it.issue }.distinct().map { issue ->
-								reportingDescriptor(issue)
-							},
+							rules = ruleSets
+								.flatMap { it.createRules() }
+								.flatMap { it.issues }
+								.map(::reportingDescriptor),
 						),
 					),
 					originalURIBaseIDS = mapOf(
@@ -57,11 +60,12 @@ public class SarifReporter(
 
 	public companion object {
 
-		public fun report(findings: List<Finding>, target: Path, rootDir: Path) {
+		public fun report(ruleSets: List<RuleSet>, findings: List<Finding>, target: Path, rootDir: Path) {
 			target.bufferedWriter().use { writer ->
 				val reporter = SarifReporter(
 					target = writer,
-					rootDir = rootDir
+					rootDir = rootDir,
+					ruleSets = ruleSets,
 				)
 				reporter.report(findings)
 			}
