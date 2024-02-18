@@ -6,7 +6,6 @@ import io.kotest.assertions.print.Printers
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
-import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.haveSize
 import net.twisterrob.ghlint.results.Finding
 
@@ -19,9 +18,6 @@ private val init = run {
 		override fun print(a: Finding): Printed = error("Unused")
 	})
 }
-
-// STOPSHIP inline
-public fun noFindings(): Matcher<List<Finding>> = beEmpty()
 
 public fun singleFinding(issue: String, message: String): Matcher<List<Finding>> =
 	haveSize<Finding>(1) and aFinding(issue, message)

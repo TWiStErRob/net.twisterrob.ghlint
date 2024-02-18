@@ -1,8 +1,9 @@
 package net.twisterrob.ghlint.rules
 
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
@@ -26,7 +27,7 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 
 	@Test fun `passes when token is defined on job`() {
@@ -41,7 +42,7 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 
 	@Test fun `passes when token is defined on workflow`() {
@@ -56,7 +57,7 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 
 	@Test fun `passes when token is defined on step as secret`() {
@@ -71,7 +72,7 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 
 	@ParameterizedTest
@@ -150,6 +151,6 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 }

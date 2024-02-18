@@ -1,6 +1,8 @@
 package net.twisterrob.ghlint.testing
 
 import io.kotest.matchers.collections.atLeastSize
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotStartWith
@@ -113,13 +115,13 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 			name,
 			listOf(
 				dynamicTest("${name} syntax") {
-					validate(example.content) shouldHave noFindings()
+					validate(example.content) should beEmpty()
 				},
 				dynamicTest("${name} has no findings") {
-					instance.check(example.content) shouldHave noFindings()
+					instance.check(example.content) should beEmpty()
 				},
 				dynamicTest("${name} explanation") {
-					example.explanation shouldNot io.kotest.matchers.string.beEmpty()
+					example.explanation shouldNot beEmptyString()
 					example.explanation shouldNotStartWith "TODO"
 				}
 			)

@@ -1,10 +1,11 @@
 package net.twisterrob.ghlint.rules
 
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
@@ -26,7 +27,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 
 	@Test fun `passes when non-environment file is used`() {
@@ -39,7 +40,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		result should beEmpty()
 	}
 
 	@TestFactory
@@ -58,7 +59,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave noFindings()
+						result should beEmpty()
 					}
 				}
 			)
@@ -83,7 +84,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave noFindings()
+						result should beEmpty()
 					}
 				}
 			)
