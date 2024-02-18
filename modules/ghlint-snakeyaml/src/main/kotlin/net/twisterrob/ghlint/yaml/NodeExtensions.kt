@@ -7,23 +7,23 @@ import org.snakeyaml.engine.v2.nodes.NodeType
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
-internal fun MappingNode.getOptionalText(key: String): String? =
-	this.value.singleOrNull { it.keyNode.text == key }?.valueNode?.text
-
-internal fun MappingNode.getOptional(key: String): Node? =
-	this.value.singleOrNull { it.keyNode.text == key }?.valueNode
-
-internal fun MappingNode.getRequiredText(key: String): String =
-	this.getOptionalText(key) ?: throwMissingKey(key)
-
 internal fun MappingNode.getOptionalKey(key: String): Node? =
 	this.value.singleOrNull { it.keyNode.text == key }?.keyNode
 
 internal fun MappingNode.getRequiredKey(key: String): Node =
 	this.getOptionalKey(key) ?: throwMissingKey(key)
 
+internal fun MappingNode.getOptional(key: String): Node? =
+	this.value.singleOrNull { it.keyNode.text == key }?.valueNode
+
 internal fun MappingNode.getRequired(key: String): Node =
 	this.getOptional(key) ?: throwMissingKey(key)
+
+internal fun MappingNode.getOptionalText(key: String): String? =
+	getOptional(key)?.text
+
+internal fun MappingNode.getRequiredText(key: String): String =
+	getRequired(key).text
 
 internal fun Node.getDash(): Node {
 	startMark.ifPresent {

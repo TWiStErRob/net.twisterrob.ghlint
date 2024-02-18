@@ -30,13 +30,14 @@ public class SnakeWorkflow internal constructor(
 	override val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map
 			.map { (key, node) ->
-				val from = SnakeJob.from(
+				val id = key.text
+				val job = SnakeJob.from(
 					parent = this,
-					id = key.text,
+					id = id,
 					node = node as MappingNode,
 					target = key,
 				)
-				key.text to from
+				id to job
 			}
 			.toMap()
 
