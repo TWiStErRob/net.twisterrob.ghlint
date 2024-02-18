@@ -12,6 +12,14 @@ public fun noFindings(): Matcher<List<Finding>> = object : Matcher<List<Finding>
 	)
 }
 
+public fun haveFinding(issue: String, message: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
+	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
+		value.singleOrNull { it.issue.id == issue && it.message == message } != null,
+		{ "Could not find ${issue}: ${message} among findings:\n${value.testString()}" },
+		{ "Collection should not have ${issue}: ${message}, but contained:\n${value.testString()}" }
+	)
+}
+
 /**
  * Matches findings of a specific issue.
  * It fails if there are any findings that are not of the specified issue.
@@ -26,13 +34,5 @@ internal fun onlyFindings(issue: String): Matcher<List<Finding>> = object : Matc
 		value.isNotEmpty() && value.all { it.issue.id == issue },
 		{ "Could not find ${issue} among findings:\n${value.testString()}" },
 		{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
-	)
-}
-
-public fun haveFinding(issue: String, message: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
-	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
-		value.singleOrNull { it.issue.id == issue && it.message == message } != null,
-		{ "Could not find ${issue}: ${message} among findings:\n${value.testString()}" },
-		{ "Collection should not have ${issue}: ${message}, but contained:\n${value.testString()}" }
 	)
 }
