@@ -8,6 +8,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.results.Finding
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
@@ -21,8 +22,11 @@ private val init = run {
 }
 
 /**
- * Prefer to use this for better error reporting.
- * In case of failure this will print the finding details.
+ * Matches findings that have no findings.
+ * It fails if there are any findings.
+ *
+ * Prefer to use this instead of [beEmpty] for better error reporting.
+ * In case of failure this will print the finding details, while the other may or may not.
  *
  * Recommended usage:
  * ```
@@ -31,9 +35,38 @@ private val init = run {
  */
 public fun noFindings(): Matcher<List<Finding>> = beEmpty()
 
+/**
+ * Matches findings containing exactly one specific issue.
+ * It fails if there are no or more findings, or if there's a mismatch.
+ *
+ * Recommended usage:
+ * ```
+ * results shouldHave singleFinding(
+ *     "IssueName1",
+ *     "Finding message line 1."
+ * )
+ * ```
+ *
+ * Tip: if there's an extra finding that you don't care about, filter them first:
+ * ```
+ * results.filterNot { it.issue.id == "DontCareAboutThis" } shouldHave singleFinding(
+ *     "NegativeStatusCheck",
+ *     "Step[#0] in Job[test] uses a negative condition."
+ * )
+ * ```
+ * but it's recommended to use [exactFindings] wherever possible.
+ */
 public fun singleFinding(issue: String, message: String): Matcher<List<Finding>> =
 	haveSize<Finding>(1) and aFinding(issue, message)
 
+/**
+ * Matches a specific finding in the list.
+ * It fails if there is no finding with matching attributes.
+ *
+ * Recommended usage: do not use directly with [shouldHave].
+ *  * If you're matching one finding, use [singleFinding] instead.
+ *  * If you're matching multiple findings, use [exactFindings] instead.
+ */
 public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
 	object : Matcher<List<Finding>> {
 		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
@@ -45,6 +78,24 @@ public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
 		)
 	}
 
+/**
+ * Matches findings containing multiple specific issues.
+ * It fails if there are more or less findings, or if there's a mismatch.
+ *
+ * Recommended usage:
+ * ```
+ * results shouldHave exactFindings(
+ *     aFinding(
+ *         "IssueName1",
+ *         "Finding message line 1."
+ *     ),
+ *     aFinding(
+ *         "IssueName2",
+ *         "Finding message line 2."
+ *     ),
+ * )
+ * ```
+ */
 public fun exactFindings(vararg findings: Matcher<List<Finding>>): Matcher<List<Finding>> =
 	haveSize<Finding>(findings.size) and findings.reduce(Matcher<List<Finding>>::and)
 
