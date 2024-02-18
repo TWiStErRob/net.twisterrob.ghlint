@@ -25,7 +25,7 @@ private val init = run {
  * Matches findings that have no findings.
  * It fails if there are any findings.
  *
- * Prefer to use this instead of [beEmpty] for better error reporting.
+ * Prefer to use this instead of [beEmpty] or [haveSize] for better error reporting.
  * In case of failure this will print the finding details, while the other may or may not.
  *
  * Recommended usage:
@@ -33,7 +33,9 @@ private val init = run {
  * results shouldHave noFindings()
  * ```
  */
-public fun noFindings(): Matcher<List<Finding>> = beEmpty()
+public fun noFindings(): Matcher<List<Finding>> =
+	// beEmpty() only prints the first element, so using haveSize instead.
+	haveSize(0)
 
 /**
  * Matches findings containing exactly one specific issue.
@@ -97,7 +99,7 @@ public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
  * ```
  */
 public fun exactFindings(vararg findings: Matcher<List<Finding>>): Matcher<List<Finding>> =
-	haveSize<Finding>(findings.size) and findings.reduce(Matcher<List<Finding>>::and)
+	findings.fold(haveSize(findings.size), Matcher<List<Finding>>::and)
 
 /**
  * Matches findings of a specific issue.
