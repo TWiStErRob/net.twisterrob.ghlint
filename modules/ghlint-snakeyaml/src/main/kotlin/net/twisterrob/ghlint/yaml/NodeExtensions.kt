@@ -25,8 +25,13 @@ internal fun MappingNode.getRequiredKey(key: String): Node =
 internal fun MappingNode.getRequired(key: String): Node =
 	this.getOptional(key) ?: throwMissingKey(key)
 
-internal fun Node.getDash(): Node =
-	object : Node(
+internal fun Node.getDash(): Node {
+	startMark.ifPresent {
+		check(it.buffer[it.pointer - 1] == ' '.code && it.buffer[it.pointer - 2] == '-'.code) {
+			"Invalid context: expected a space and a '-' character before pointer in \n${it.createSnippet()}"
+		}
+	}
+	return object : Node(
 		this.tag,
 		this.startMark.map { Mark(it.name, it.index - 2, it.line, it.column - 2, it.buffer, it.pointer - 2) },
 		this.startMark.map { Mark(it.name, it.index - 1, it.line, it.column - 1, it.buffer, it.pointer - 1) },
@@ -34,6 +39,7 @@ internal fun Node.getDash(): Node =
 		override fun getNodeType(): NodeType = NodeType.ANCHOR
 		override fun toString(): String = "-"
 	}
+}
 
 internal val Node.text: String
 	get() = (this as ScalarNode).value

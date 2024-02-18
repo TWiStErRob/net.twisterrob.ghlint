@@ -27,14 +27,14 @@ public sealed class SnakeStep protected constructor(
 
 	public companion object {
 
-		public fun from(parent: Job.NormalJob, index: Int, node: MappingNode): Step =
+		public fun from(parent: Job.NormalJob, index: Int, node: MappingNode, target: Node): Step =
 			when {
 				node.getOptionalText("uses") != null ->
 					SnakeUses(
 						parent = parent,
 						index = Step.Index(index),
 						node = node,
-						target = node.getDash(),
+						target = target,
 					)
 
 				node.getOptionalText("run") != null ->
@@ -42,7 +42,7 @@ public sealed class SnakeStep protected constructor(
 						parent = parent,
 						index = Step.Index(index),
 						node = node,
-						target = node.getDash(),
+						target = target,
 					)
 
 				else ->

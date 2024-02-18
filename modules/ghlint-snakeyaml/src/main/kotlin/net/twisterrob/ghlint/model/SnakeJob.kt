@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.array
+import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
@@ -59,6 +60,7 @@ public sealed class SnakeJob protected constructor(
 						parent = this,
 						index = index,
 						node = node as MappingNode,
+						target = node.getDash(),
 					)
 				}
 
