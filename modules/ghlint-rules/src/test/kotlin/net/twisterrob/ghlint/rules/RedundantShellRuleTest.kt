@@ -1,10 +1,11 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -30,7 +31,7 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"RedundantDefaultShell",
 			"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
 		)
@@ -71,7 +72,7 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"RedundantShell",
 			"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
 		)
@@ -92,7 +93,7 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"RedundantShell",
 			"Both Step[#0] in Job[test] and Workflow[test] has bash shell, the step's shell can be removed."
 		)
@@ -116,13 +117,15 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
-			"RedundantShell",
-			"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
-		)
-		result should haveFinding(
-			"RedundantDefaultShell",
-			"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
+		result shouldHave exactFindings(
+			aFinding(
+				"RedundantShell",
+				"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
+			),
+			aFinding(
+				"RedundantDefaultShell",
+				"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
+			),
 		)
 	}
 

@@ -1,12 +1,11 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -109,7 +108,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 							""".trimIndent()
 						)
 
-						result should haveFinding(
+						result shouldHave singleFinding(
 							"SafeEnvironmentFileRedirect",
 							"Step[#0] in Job[test] should be formatted as `>> \"${'$'}{${environmentFile}}\"`."
 						)

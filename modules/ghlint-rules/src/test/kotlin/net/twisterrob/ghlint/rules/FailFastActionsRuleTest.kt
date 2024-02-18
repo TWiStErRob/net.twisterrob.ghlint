@@ -1,10 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -52,7 +51,7 @@ class FailFastActionsRuleTest {
 			)
 
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"FailFastUploadArtifact",
 				"Step[actions/upload-artifact@v4] in Job[test] should have input `if-no-files-found: error`."
 			)
@@ -94,7 +93,7 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"FailFastPublishUnitTestResults",
 				@Suppress("detekt.MaxLineLength")
 				"Step[EnricoMi/publish-unit-test-result-action@v2] in Job[test] should have input `action_fail_on_inconclusive: true`."
@@ -115,7 +114,7 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
 				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@v6] in Job[test]."
 			)
@@ -133,7 +132,7 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
 				@Suppress("detekt.MaxLineLength")
 				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test]."

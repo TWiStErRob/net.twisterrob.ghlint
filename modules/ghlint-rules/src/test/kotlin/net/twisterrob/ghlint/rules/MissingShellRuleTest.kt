@@ -1,10 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -23,7 +22,7 @@ class MissingShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingShell",
 			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
 		)
@@ -92,7 +91,7 @@ class MissingShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingShell",
 			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
 		)

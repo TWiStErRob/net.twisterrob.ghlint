@@ -1,10 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -37,7 +36,7 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingJobTimeout",
 			"Job[test] is missing `timeout-minutes`."
 		)
@@ -54,7 +53,7 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingJobTimeout",
 			"Job[test] is missing `timeout-minutes`."
 		)

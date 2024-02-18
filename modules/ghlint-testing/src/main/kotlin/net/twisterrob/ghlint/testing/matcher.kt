@@ -1,24 +1,42 @@
 package net.twisterrob.ghlint.testing
 
+import io.kotest.assertions.print.Print
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.Printers
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.and
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.collections.haveSize
 import net.twisterrob.ghlint.results.Finding
 
-public fun noFindings(): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
-	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
-		value.isEmpty(),
-		{ "Findings should be empty but contained:\n${value.testString()}" },
-		{ "Collection should not be empty." }
-	)
+@Suppress("unused") // Initialize static framework when these assertions are used.
+private val init = run {
+	Printers.add(Finding::class, object : Print<Finding> {
+		override fun print(a: Finding, level: Int): Printed = Printed(a.testString())
+
+		@Suppress("OVERRIDE_DEPRECATION")
+		override fun print(a: Finding): Printed = error("Unused")
+	})
 }
 
-public fun haveFinding(issue: String, message: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
-	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
-		value.size == 1 && value.singleOrNull { it.issue.id == issue && it.message == message } != null,
-		{ "Could not find ${issue}: ${message} among findings:\n${value.testString()}" },
-		{ "Collection should not have ${issue}: ${message}, but contained:\n${value.testString()}" }
-	)
-}
+// STOPSHIP inline
+public fun noFindings(): Matcher<List<Finding>> = beEmpty()
+
+public fun singleFinding(issue: String, message: String): Matcher<List<Finding>> =
+	haveSize<Finding>(1) and aFinding(issue, message)
+
+public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
+	object : Matcher<List<Finding>> {
+		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
+			value.singleOrNull { it.issue.id == issue && it.message == message } != null,
+			{ "Could not find \"${issue}: ${message}\" among findings:\n${value.testString()}" },
+			{ "Collection should not have \"${issue}: ${message}\", but contained:\n${value.testString()}" }
+		)
+	}
+
+public fun exactFindings(vararg findings: Matcher<List<Finding>>): Matcher<List<Finding>> =
+	haveSize<Finding>(findings.size) and findings.reduce(Matcher<List<Finding>>::and)
 
 /**
  * Matches findings of a specific issue.
@@ -29,10 +47,11 @@ public fun haveFinding(issue: String, message: String): Matcher<List<Finding>> =
  * This is why this method is internal for now.
  * @see `MatcherKtTest.multiple different finding (including target) matches`
  */
-internal fun onlyFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
-	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
-		value.isNotEmpty() && value.all { it.issue.id == issue },
-		{ "Could not find ${issue} among findings:\n${value.testString()}" },
-		{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
-	)
-}
+internal fun onlyFindings(issue: String): Matcher<List<Finding>> =
+	object : Matcher<List<Finding>> {
+		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
+			value.isNotEmpty() && value.all { it.issue.id == issue },
+			{ "Could not find ${issue} among findings:\n${value.testString()}" },
+			{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
+		)
+	}

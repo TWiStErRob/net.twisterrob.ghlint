@@ -1,11 +1,10 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -57,7 +56,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"ShellScriptInjection",
 				"Step[#0] in Job[test] shell script contains GitHub Expressions.",
 			)
@@ -132,7 +131,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"JSScriptInjection",
 				// TODO re-think identifier, there could be multiple like this, it's not unique
 				"Step[actions/github-script@v7] in Job[test] JavaScript contains GitHub Expressions.",
@@ -154,7 +153,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"JSScriptInjection",
 				// TODO remove quotes from the name?
 				"Step[\"Get title\"] in Job[test] JavaScript contains GitHub Expressions.",

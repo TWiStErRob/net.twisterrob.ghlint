@@ -1,10 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -20,7 +19,7 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingWorkflowName",
 			"Workflow[test] is missing a name, add one to improve developer experience."
 		)
@@ -49,7 +48,7 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingJobName",
 			"Job[test] is missing a name, add one to improve developer experience."
 		)
@@ -83,7 +82,7 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		result shouldHave singleFinding(
 			"MissingStepName",
 			"Step[#0] in Job[test] is missing a name, add one to improve developer experience."
 		)

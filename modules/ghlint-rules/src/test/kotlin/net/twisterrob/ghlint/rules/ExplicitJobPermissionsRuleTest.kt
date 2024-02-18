@@ -1,11 +1,10 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -40,7 +39,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"MissingJobPermissions",
 				"Job[test] is missing permissions."
 			)
@@ -81,7 +80,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"MissingJobPermissions",
 				"Job[test] is missing permissions."
 			)
@@ -117,7 +116,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			result shouldHave singleFinding(
 				"ExplicitJobPermissions",
 				"Job[test] should have explicit permissions."
 			)
