@@ -19,6 +19,7 @@ jobs:
     needs:
       - validate
     uses: ./.github/workflows/ci-build.yml
+    secrets: inherit
     permissions:
       contents: write
       checks: write
