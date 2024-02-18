@@ -104,10 +104,10 @@ private fun result(finding: Finding, base: Path): Result {
 					),
 					region = with(finding.location) {
 						Region(
-							startLine = 1L + start.line.number,
-							startColumn = 1L + start.column.number,
-							endLine = 1L + end.line.number,
-							endColumn = 1L + end.column.number,
+							startLine = start.line.number.toLong(),
+							startColumn = start.column.number.toLong(),
+							endLine = end.line.number.toLong(),
+							endColumn = end.column.number.toLong(),
 						)
 					},
 				),

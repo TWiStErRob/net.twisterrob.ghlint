@@ -20,4 +20,4 @@ private fun Optional<Mark>.toPosition(): Position =
 	this.get().toPosition()
 
 private fun Mark.toPosition(): Position =
-	Position(LineNumber(this.line), ColumnNumber(this.column))
+	Position(LineNumber(1 + this.line), ColumnNumber(1 + this.column))

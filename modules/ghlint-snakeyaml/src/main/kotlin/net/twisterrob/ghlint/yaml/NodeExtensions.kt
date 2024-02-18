@@ -1,23 +1,45 @@
 package net.twisterrob.ghlint.yaml
 
+import org.snakeyaml.engine.v2.exceptions.Mark
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.NodeType
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
-internal fun MappingNode.getOptionalText(key: String): String? =
-	this.value.singleOrNull { it.keyNode.text == key }?.valueNode?.text
+internal fun MappingNode.getOptionalKey(key: String): Node? =
+	this.value.singleOrNull { it.keyNode.text == key }?.keyNode
+
+internal fun MappingNode.getRequiredKey(key: String): Node =
+	this.getOptionalKey(key) ?: throwMissingKey(key)
 
 internal fun MappingNode.getOptional(key: String): Node? =
 	this.value.singleOrNull { it.keyNode.text == key }?.valueNode
 
-internal fun MappingNode.getRequiredText(key: String): String =
-	this.getOptionalText(key)
-		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
-
 internal fun MappingNode.getRequired(key: String): Node =
-	this.getOptional(key)
-		?: error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+	this.getOptional(key) ?: throwMissingKey(key)
+
+internal fun MappingNode.getOptionalText(key: String): String? =
+	getOptional(key)?.text
+
+internal fun MappingNode.getRequiredText(key: String): String =
+	getRequired(key).text
+
+internal fun Node.getDash(): Node {
+	startMark.ifPresent { mark ->
+		check(mark.buffer[mark.pointer - 1] == ' '.code && mark.buffer[mark.pointer - 2] == '-'.code) {
+			"Invalid context: expected a space and a '-' character before pointer in \n${mark.createSnippet()}"
+		}
+	}
+	return object : Node(
+		this.tag,
+		this.startMark.map { Mark(it.name, it.index - 2, it.line, it.column - 2, it.buffer, it.pointer - 2) },
+		this.startMark.map { Mark(it.name, it.index - 1, it.line, it.column - 1, it.buffer, it.pointer - 1) },
+	) {
+		override fun getNodeType(): NodeType = NodeType.ANCHOR
+		override fun toString(): String = "-"
+	}
+}
 
 internal val Node.text: String
 	get() = (this as ScalarNode).value
@@ -34,3 +56,7 @@ internal val Node.map: Map<Node, Node>
 
 internal fun Map<Node, Node>.toTextMap(): Map<String, String> =
 	this.entries.associate { (key, value) -> key.text to value.text }
+
+private fun MappingNode.throwMissingKey(key: String): Nothing {
+	error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
+}
