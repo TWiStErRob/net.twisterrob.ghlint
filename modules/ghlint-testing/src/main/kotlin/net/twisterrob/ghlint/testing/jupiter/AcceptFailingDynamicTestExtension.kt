@@ -44,11 +44,10 @@ internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 				Assumptions.abort("Test has been disabled: ${disabled.reason}.")
 			} else {
 				throw AssertionError(
-					"""
-						"${disabled.displayName}" failed with unexpected message.
-						Expected: ${disabled.acceptableFailure}
-						Actual: ${e.message}
-					""".trimIndent()
+					// Using concatenation, because regex and message can be multiline.
+					disabled.displayName + " failed with unexpected message.\n"
+							+ "Expected: " + disabled.acceptableFailure + "\n"
+							+ "Actual: " + e.message
 				).apply { initCause(e) }
 			}
 		}

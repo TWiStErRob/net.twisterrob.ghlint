@@ -36,6 +36,7 @@ public annotation class AcceptFailingDynamicTest(
 	 *  * use `^(...).*` to create a "starts with" match.
 	 *  * use `(?idmsux-idmsux:...)` to enable flags for the pattern.
 	 *    specifically: prepend `(?s)` to enable DOTALL mode to match multiline messages.
+	 *  * use `\Q...\E` to match complex bits of the message without having to worry about escaping.
 	 */
 	@Language("RegExp")
 	val acceptableFailure: String,
