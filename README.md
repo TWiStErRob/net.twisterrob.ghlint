@@ -1,6 +1,6 @@
 # GitHub Actions validator
 
-This is a CLI utility to validate GitHub Actions workflows files.
+This is a CLI utility to **semantically** validate GitHub Actions workflows files.
 
 ## Why?
 There are many [other tools](#alternatives) checking the syntax of YAML files,
@@ -17,6 +17,8 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
  * [x] Validate the syntax of the workflow YAML files via JSON-schema
        (this is required for other steps).
  * [x] Hand-crafted semantic rules and strongly typed object model.
+ * [ ] Opinionated workflow file formatter.
+ * [ ] GitHub Action to make it easier to select which files.
  * [ ] Support for the full workflow syntax.
        Hopefully via generated code based on the JSON-schema.
  * [ ] Custom third-party rules (plugins)
