@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.reporting
+package net.twisterrob.ghlint.reporting.sarif
 
 import io.github.detekt.sarif4k.ArtifactLocation
 import io.github.detekt.sarif4k.Location
@@ -14,9 +14,11 @@ import io.github.detekt.sarif4k.SarifSerializer
 import io.github.detekt.sarif4k.Tool
 import io.github.detekt.sarif4k.ToolComponent
 import io.github.detekt.sarif4k.Version
+import net.twisterrob.ghlint.reporting.Reporter
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.descriptionWithExamples
+import net.twisterrob.ghlint.ruleset.RuleSet
 import java.io.Writer
 import java.nio.file.Path
 import kotlin.io.path.absolute
@@ -26,6 +28,7 @@ import kotlin.io.path.relativeTo
 public class SarifReporter(
 	private val target: Writer,
 	private val rootDir: Path,
+	private val ruleSets: List<RuleSet>,
 ) : Reporter {
 
 	override fun report(findings: List<Finding>) {
@@ -38,9 +41,14 @@ public class SarifReporter(
 					tool = Tool(
 						driver = ToolComponent(
 							name = "GHA-lint",
-							rules = findings.map { it.issue }.distinct().map { issue ->
-								reportingDescriptor(issue)
-							},
+							version = BuildConfig.APP_VERSION,
+							semanticVersion = BuildConfig.APP_VERSION,
+							rules = ruleSets
+								.asSequence()
+								.flatMap { it.createRules() }
+								.flatMap { it.issues }
+								.map(::reportingDescriptor)
+								.toList(),
 						),
 					),
 					originalURIBaseIDS = mapOf(
@@ -57,11 +65,12 @@ public class SarifReporter(
 
 	public companion object {
 
-		public fun report(findings: List<Finding>, target: Path, rootDir: Path) {
+		public fun report(ruleSets: List<RuleSet>, findings: List<Finding>, target: Path, rootDir: Path) {
 			target.bufferedWriter().use { writer ->
 				val reporter = SarifReporter(
 					target = writer,
-					rootDir = rootDir
+					rootDir = rootDir,
+					ruleSets = ruleSets,
 				)
 				reporter.report(findings)
 			}
@@ -69,24 +78,25 @@ public class SarifReporter(
 	}
 }
 
-private fun reportingDescriptor(issue: Issue) = ReportingDescriptor(
-	id = issue.id,
-	name = issue.title,
-	shortDescription = MultiformatMessageString(
-		text = issue.title,
-	),
-	fullDescription = MultiformatMessageString(
-		text = "See fullDescription markdown.",
-		markdown = issue.description,
-	),
-	help = MultiformatMessageString(
-		text = "See help markdown.",
-		markdown = issue.descriptionWithExamples,
-	),
-	// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
-	// TODO helpURI = "https://example.com/help", // not visible on GH UI.
-	// TODO properties = PropertyBag(tags = listOf("tag1", "tag2")), // visible in detail view on GH UI.
-)
+private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
+	ReportingDescriptor(
+		id = issue.id,
+		name = issue.title,
+		shortDescription = MultiformatMessageString(
+			text = issue.title,
+		),
+		fullDescription = MultiformatMessageString(
+			text = "See fullDescription markdown.",
+			markdown = issue.description,
+		),
+		help = MultiformatMessageString(
+			text = "See help markdown.",
+			markdown = issue.descriptionWithExamples,
+		),
+		// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
+		// TODO helpURI = "https://example.com/help", // not visible on GH UI.
+		// TODO properties = PropertyBag(tags = listOf("tag1", "tag2")), // visible in detail view on GH UI.
+	)
 
 private fun result(finding: Finding, base: Path): Result {
 	val file = Path.of(finding.location.file.path).absolute().toRealPath()

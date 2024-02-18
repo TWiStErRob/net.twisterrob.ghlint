@@ -103,13 +103,13 @@ jobs:
           name: 'CLI Application'
           if-no-files-found: error
           path: |
-            modules/ghlint/build/libs/ghlint-fat.jar
+            modules/ghlint/build/libs/ghlint-*-fat.jar
 
       - name: "Run validator."
         id: validate
         run: >
           find ".github/workflows" -type f -name "*.yml" \
-            | xargs modules/ghlint/build/libs/ghlint-fat.jar
+            | xargs modules/ghlint/build/libs/ghlint-*-fat.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}

@@ -1,8 +1,14 @@
 plugins {
 	id("net.twisterrob.ghlint.library")
+	id("com.github.gmazzo.buildconfig") version "5.3.5"
 }
 
 dependencies {
 	implementation(projects.ghlintApi)
 	implementation(libs.sarif4k)
+}
+
+buildConfig {
+	packageName("net.twisterrob.ghlint.reporting.sarif")
+	buildConfigField(String, "APP_VERSION", provider { project.version.toString() })
 }
