@@ -1,9 +1,8 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
@@ -40,7 +39,7 @@ class MissingShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		result shouldHave noFindings()
 	}
 
 	@Test fun `passes when shell is declared on the job`() {
@@ -57,7 +56,7 @@ class MissingShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		result shouldHave noFindings()
 	}
 
 	@Test fun `passes when shell is declared on the workflow`() {
@@ -73,7 +72,7 @@ class MissingShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		result shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is declared on another job`() {

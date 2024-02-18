@@ -1,10 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
@@ -29,7 +28,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			result shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
@@ -44,7 +43,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			result shouldHave noFindings()
 		}
 
 		@Test fun `reports when there's possibility of shell injection`() {
@@ -79,7 +78,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			result shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
@@ -97,7 +96,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			result shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript`() {
@@ -115,7 +114,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			result shouldHave noFindings()
 		}
 
 		@Test fun `reports when there's possibility of script injection`() {
