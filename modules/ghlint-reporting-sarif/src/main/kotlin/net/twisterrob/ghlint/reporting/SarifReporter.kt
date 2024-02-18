@@ -39,7 +39,7 @@ public class SarifReporter(
 				Run(
 					tool = Tool(
 						driver = ToolComponent(
-							name = "ghlint",
+							name = "GHA-lint",
 							rules = ruleSets
 								.asSequence()
 								.flatMap { it.createRules() }
