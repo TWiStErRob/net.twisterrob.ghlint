@@ -36,7 +36,7 @@ jobs:
       - name: "Set up Gradle."
         uses: gradle/actions/setup-gradle@v3
         with:
-          dependency-graph: generate-and-submit
+          dependency-graph: ${{ github.ref == 'refs/heads/main' && 'generate-and-submit' || 'disabled' }}
           dependency-graph-continue-on-failure: false
 
       - name: "Build & Verify project."
