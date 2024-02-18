@@ -18,7 +18,7 @@ class DefaultRuleSetTest {
 				"Finding(\n" +
 				"	rule=net.twisterrob.ghlint.rules.ExplicitJobPermissionsRule@\\E[0-9a-f]+\\Q,\n" +
 				"	issue=ExplicitJobPermissions,\n" +
-				"	location=test.yml/5:4-7:27,\n" +
+				"	location=test.yml/5:3-5:10,\n" +
 				"	message=Job[example] should have explicit permissions.\n" +
 				")\\E$"
 	)
