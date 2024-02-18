@@ -26,9 +26,9 @@ internal fun MappingNode.getRequiredText(key: String): String =
 	getRequired(key).text
 
 internal fun Node.getDash(): Node {
-	startMark.ifPresent {
-		check(it.buffer[it.pointer - 1] == ' '.code && it.buffer[it.pointer - 2] == '-'.code) {
-			"Invalid context: expected a space and a '-' character before pointer in \n${it.createSnippet()}"
+	startMark.ifPresent { mark ->
+		check(mark.buffer[mark.pointer - 1] == ' '.code && mark.buffer[mark.pointer - 2] == '-'.code) {
+			"Invalid context: expected a space and a '-' character before pointer in \n${mark.createSnippet()}"
 		}
 	}
 	return object : Node(
