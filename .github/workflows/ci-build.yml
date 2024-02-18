@@ -8,7 +8,6 @@ jobs:
   build:
     name: "Build"
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     permissions:
       # read: actions/checkout, write: gradle/actions/setup-gradle
@@ -17,10 +16,6 @@ jobs:
       checks: write
       # github/codeql-action/upload-sarif
       security-events: write
-
-    defaults:
-      run:
-        shell: bash
 
     steps:
 
@@ -111,7 +106,7 @@ jobs:
             | xargs modules/ghlint/build/libs/ghlint-fat.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
-        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
+        if: steps.validate.outcome != 'skipped' && !cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: 'GHA-lint Results'
