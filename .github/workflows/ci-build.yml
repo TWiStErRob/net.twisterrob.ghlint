@@ -3,14 +3,6 @@ name: "🔨 Build & Verify"
 on:
   workflow_call:
 
-permissions:
-  # read: actions/checkout, write: gradle/actions/setup-gradle
-  contents: write
-  # EnricoMi/publish-unit-test-result-action
-  checks: write
-  # github/codeql-action/upload-sarif
-  security-events: write
-
 jobs:
 
   build:
@@ -18,14 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
+    permissions:
+      # read: actions/checkout, write: gradle/actions/setup-gradle
+      contents: write
+      # EnricoMi/publish-unit-test-result-action
+      checks: write
+      # github/codeql-action/upload-sarif
+      security-events: write
+
     defaults:
       run:
         shell: bash
 
     steps:
 
-      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: "Set up Java."
         uses: actions/setup-java@v4
