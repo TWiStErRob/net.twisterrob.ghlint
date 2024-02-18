@@ -73,24 +73,25 @@ public class SarifReporter(
 	}
 }
 
-private fun reportingDescriptor(issue: Issue) = ReportingDescriptor(
-	id = issue.id,
-	name = issue.title,
-	shortDescription = MultiformatMessageString(
-		text = issue.title,
-	),
-	fullDescription = MultiformatMessageString(
-		text = "See fullDescription markdown.",
-		markdown = issue.description,
-	),
-	help = MultiformatMessageString(
-		text = "See help markdown.",
-		markdown = issue.descriptionWithExamples,
-	),
-	// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
-	// TODO helpURI = "https://example.com/help", // not visible on GH UI.
-	// TODO properties = PropertyBag(tags = listOf("tag1", "tag2")), // visible in detail view on GH UI.
-)
+private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
+	ReportingDescriptor(
+		id = issue.id,
+		name = issue.title,
+		shortDescription = MultiformatMessageString(
+			text = issue.title,
+		),
+		fullDescription = MultiformatMessageString(
+			text = "See fullDescription markdown.",
+			markdown = issue.description,
+		),
+		help = MultiformatMessageString(
+			text = "See help markdown.",
+			markdown = issue.descriptionWithExamples,
+		),
+		// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
+		// TODO helpURI = "https://example.com/help", // not visible on GH UI.
+		// TODO properties = PropertyBag(tags = listOf("tag1", "tag2")), // visible in detail view on GH UI.
+	)
 
 private fun result(finding: Finding, base: Path): Result {
 	val file = Path.of(finding.location.file.path).absolute().toRealPath()
