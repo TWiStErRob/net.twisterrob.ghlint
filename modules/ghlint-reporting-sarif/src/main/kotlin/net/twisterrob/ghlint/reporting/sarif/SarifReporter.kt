@@ -41,14 +41,14 @@ public class SarifReporter(
 					tool = Tool(
 						driver = ToolComponent(
 							name = "GHA-lint",
+							version = BuildConfig.APP_VERSION,
+							semanticVersion = BuildConfig.APP_VERSION,
 							rules = ruleSets
 								.asSequence()
 								.flatMap { it.createRules() }
 								.flatMap { it.issues }
 								.map(::reportingDescriptor)
 								.toList(),
-							version = BuildConfig.APP_VERSION,
-							semanticVersion = BuildConfig.APP_VERSION,
 						),
 					),
 					originalURIBaseIDS = mapOf(
