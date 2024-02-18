@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.testing.jupiter
 
-import io.kotest.matchers.throwable.shouldHaveMessage
 import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.api.extension.DynamicTestInvocationContext
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.InvocationInterceptor
@@ -16,12 +16,9 @@ internal class DisableFailingDynamicTestExtension : InvocationInterceptor {
 		invocationContext: DynamicTestInvocationContext,
 		extensionContext: ExtensionContext
 	) {
-		val method = generateSequence(extensionContext) { it.parent.getOrNull() }
-			.map { it.element.getOrNull() }
-			.first { it != null }
+		val method = extensionContext.firstElement
 			?: error("No method context found for ${extensionContext.displayName}")
-		val disableds = method.getAnnotationsByType(DisableFailingDynamicTest::class.java)
-		val disabled = disableds.singleOrNull { it.displayName == extensionContext.displayName }
+		val disabled = method.findDisableAnnotationFor(extensionContext.displayName)
 
 		if (disabled != null) {
 			invocation.invokeDisabled(disabled, method)
@@ -43,7 +40,36 @@ internal class DisableFailingDynamicTestExtension : InvocationInterceptor {
 				""".trimIndent()
 			)
 		} catch (e: AssertionError) {
-			e shouldHaveMessage Regex(disabled.acceptableFailure)
+			if (e.message.orEmpty().matches(Regex(disabled.acceptableFailure))) {
+				Assumptions.abort("Test has been disabled: ${disabled.reason}.")
+			} else {
+				throw AssertionError(
+					"""
+						"${disabled.displayName}" failed with unexpected message.
+						Expected: ${disabled.acceptableFailure}
+						Actual: ${e.message}
+					""".trimIndent()
+				).apply { initCause(e) }
+			}
 		}
+	}
+}
+
+/**
+ * Dynamic tests are nested inside each other and a test method.
+ * This extension attempts to find the first element that is a test method.
+ */
+private val ExtensionContext.firstElement: AnnotatedElement?
+	get() = generateSequence(this) { it.parent.getOrNull() }
+		.map { it.element.getOrNull() }
+		.firstOrNull { it != null }
+
+private fun AnnotatedElement.findDisableAnnotationFor(displayName: String): DisableFailingDynamicTest? {
+	val disabled: Array<DisableFailingDynamicTest> = this.getAnnotationsByType(DisableFailingDynamicTest::class.java)
+	val matching = disabled.filter { it.displayName == displayName }
+	return when (matching.size) {
+		0 -> null
+		1 -> matching.single()
+		else -> error("Multiple @DisableFailingDynamicTest annotations for ${displayName} on ${this}")
 	}
 }
