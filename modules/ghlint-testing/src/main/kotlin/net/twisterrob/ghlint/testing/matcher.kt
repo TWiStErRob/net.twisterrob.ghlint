@@ -26,7 +26,9 @@ public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
 	object : Matcher<List<Finding>> {
 		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 			value.singleOrNull { it.issue.id == issue && it.message == message } != null,
+			@Suppress("StringShouldBeRawString")
 			{ "Could not find \"${issue}: ${message}\" among findings:\n${value.testString()}" },
+			@Suppress("StringShouldBeRawString")
 			{ "Collection should not have \"${issue}: ${message}\", but contained:\n${value.testString()}" }
 		)
 	}
