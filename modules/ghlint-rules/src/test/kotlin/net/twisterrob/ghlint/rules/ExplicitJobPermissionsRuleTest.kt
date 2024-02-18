@@ -15,7 +15,7 @@ class ExplicitJobPermissionsRuleTest {
 	@AcceptFailingDynamicTest(
 		"Issue MissingJobPermissions compliant example #2 has no findings",
 		"Rule triggers another another finding, but it's acceptable for this issue.",
-		"^\\QFindings should be empty but contained:\n" +
+		"^\\QCollection should be empty but contained " +
 				"Finding(\n" +
 				"	rule=net.twisterrob.ghlint.rules.ExplicitJobPermissionsRule@\\E[0-9a-f]+\\Q,\n" +
 				"	issue=ExplicitJobPermissions,\n" +
