@@ -78,19 +78,19 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						      - run: echo "Example"
 					""".trimIndent(),
 				),
-//				Example(
-//					explanation = "Permissions are explicitly declared on the workflow level.",
-//					content = """
-//						on: push
-//						permissions:
-//						  contents: read
-//						jobs:
-//						  example:
-//						    runs-on: ubuntu-latest
-//						    steps:
-//						      - run: echo "Example"
-//					""".trimIndent(),
-//				),
+				Example(
+					explanation = "Permissions are explicitly declared on the workflow level.",
+					content = """
+						on: push
+						permissions:
+						  contents: read
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - run: echo "Example"
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
