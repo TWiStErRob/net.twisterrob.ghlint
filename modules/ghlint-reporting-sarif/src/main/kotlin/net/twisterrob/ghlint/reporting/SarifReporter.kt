@@ -46,6 +46,8 @@ public class SarifReporter(
 								.flatMap { it.issues }
 								.map(::reportingDescriptor)
 								.toList(),
+							version = "0.2.0",
+							semanticVersion = "0.2.0",
 						),
 					),
 					originalURIBaseIDS = mapOf(
