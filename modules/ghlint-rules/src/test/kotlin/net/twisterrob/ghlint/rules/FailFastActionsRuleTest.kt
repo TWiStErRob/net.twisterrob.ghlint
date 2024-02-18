@@ -96,7 +96,7 @@ class FailFastActionsRuleTest {
 
 			result should haveFinding(
 				"FailFastPublishUnitTestResults",
-				@Suppress("MaxLineLength")
+				@Suppress("detekt.MaxLineLength")
 				"Step[EnricoMi/publish-unit-test-result-action@v2] in Job[test] should have input `action_fail_on_inconclusive: true`."
 			)
 		}
@@ -135,7 +135,7 @@ class FailFastActionsRuleTest {
 
 			result should haveFinding(
 				"FailFastPeterEvansCreatePullRequest",
-				@Suppress("MaxLineLength")
+				@Suppress("detekt.MaxLineLength")
 				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test]."
 			)
 		}

@@ -33,7 +33,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 		}
 	}
 
-	@Suppress("ClassOrdering") // Keep logic above Issue declaration for easy scrolling.
+	@Suppress("detekt.ClassOrdering") // Keep logic above Issue declaration for easy scrolling.
 	private companion object {
 
 		private fun isWrappedInDoubleCurly(condition: String): Boolean =

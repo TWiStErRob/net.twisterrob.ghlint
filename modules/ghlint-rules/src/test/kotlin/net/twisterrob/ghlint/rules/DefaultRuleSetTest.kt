@@ -22,5 +22,6 @@ class DefaultRuleSetTest {
 				"	message=Job[example] should have explicit permissions.\n" +
 				")\\E$"
 	)
+	@Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
 	@TestFactory fun test() = test(DefaultRuleSet::class)
 }

@@ -14,25 +14,25 @@ public class EmptyEnvRule : VisitorRule {
 
 	override val issues: List<Issue> = listOf(EmptyWorkflowEnv, EmptyJobEnv, EmptyStepEnv)
 
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
 		checkEmptyEnv(workflow, workflow.env, reporting, EmptyWorkflowEnv)
 	}
 
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
 		checkEmptyEnv(job, job.env, reporting, EmptyJobEnv)
 	}
 
-	@Suppress("NamedArguments")
+	@Suppress("detekt.NamedArguments")
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		checkEmptyEnv(step, step.env, reporting, EmptyStepEnv)
 	}
 
-	@Suppress("CanBeNonNullable")
+	@Suppress("detekt.CanBeNonNullable") // All usages pass in nullable, to reduce duplicated logic.
 	private fun checkEmptyEnv(component: Component, env: Map<String, String>?, reporting: Reporting, issue: Issue) {
 		if (env != null && env.isEmpty()) {
 			reporting.report(issue, component) { "${it} should not have empty env." }

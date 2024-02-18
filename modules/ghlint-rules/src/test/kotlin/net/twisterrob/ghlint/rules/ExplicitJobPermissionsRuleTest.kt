@@ -24,6 +24,7 @@ class ExplicitJobPermissionsRuleTest {
 				"	message=Job[example] should have explicit permissions.\n" +
 				")\\E$"
 	)
+	@Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
 	@TestFactory fun metadata() = test(ExplicitJobPermissionsRule::class)
 
 	@Nested

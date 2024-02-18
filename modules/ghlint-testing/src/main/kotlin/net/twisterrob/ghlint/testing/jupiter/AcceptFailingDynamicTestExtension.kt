@@ -11,7 +11,7 @@ import kotlin.jvm.optionals.getOrNull
 internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 
 	override fun interceptDynamicTest(
-		@Suppress("ForbiddenVoid") // REPORT false positive: overridden method cannot be Unit.
+		@Suppress("detekt.ForbiddenVoid") // REPORT false positive: overridden method cannot be Unit.
 		invocation: InvocationInterceptor.Invocation<Void>,
 		invocationContext: DynamicTestInvocationContext,
 		extensionContext: ExtensionContext
