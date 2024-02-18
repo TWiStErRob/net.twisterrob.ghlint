@@ -200,7 +200,7 @@ class MatcherKtTest {
 					testFinding(TestRule.TestIssue4),
 				)
 
-				// STOPSHIP questionable
+				// This is questionable, so keeping the method internal.
 				findings shouldNotHave onlyFindings(TestRule.TestIssue3.id)
 			}
 		}

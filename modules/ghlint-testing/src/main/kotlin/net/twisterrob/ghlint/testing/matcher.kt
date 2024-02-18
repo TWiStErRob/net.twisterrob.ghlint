@@ -12,7 +12,16 @@ public fun beEmpty(): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	)
 }
 
-public fun onlyFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
+/**
+ * Matches findings of a specific issue.
+ * It fails if there are any findings that are not of the specified issue.
+ *
+ * The negated version (`... shouldNotHave onlyFindings("...")`)
+ * is not recommended as it does not behave as expected.
+ * This is why this method is internal for now.
+ * @see `MatcherKtTest.multiple different finding (including target) matches`
+ */
+internal fun onlyFindings(issue: String): Matcher<List<Finding>> = object : Matcher<List<Finding>> {
 	override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 		value.isNotEmpty() && value.all { it.issue.id == issue },
 		{ "Could not find ${issue} among findings:\n${value.testString()}" },
