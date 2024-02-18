@@ -41,9 +41,11 @@ public class SarifReporter(
 						driver = ToolComponent(
 							name = "GHA-lint",
 							rules = ruleSets
+								.asSequence()
 								.flatMap { it.createRules() }
 								.flatMap { it.issues }
-								.map(::reportingDescriptor),
+								.map(::reportingDescriptor)
+								.toList(),
 						),
 					),
 					originalURIBaseIDS = mapOf(

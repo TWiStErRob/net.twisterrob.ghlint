@@ -23,5 +23,10 @@ public fun main(vararg args: String) {
 	val allFindings = validationResults + analysisResults
 
 	TextReporter(System.out).report(allFindings)
-	SarifReporter.report(ruleSets, allFindings, Path.of("report.sarif"), Path.of("."))
+	SarifReporter.report(
+		ruleSets = ruleSets,
+		findings = allFindings,
+		target = Path.of("report.sarif"),
+		rootDir = Path.of("."),
+	)
 }
