@@ -119,7 +119,7 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 					instance.check(example.content) shouldHave noFindings()
 				},
 				dynamicTest("${name} explanation") {
-					example.explanation shouldNot io.kotest.matchers.string.beEmpty()
+					example.explanation shouldNot beEmptyString()
 					example.explanation shouldNotStartWith "TODO"
 				}
 			)

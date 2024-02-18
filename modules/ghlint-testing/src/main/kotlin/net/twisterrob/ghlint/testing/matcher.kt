@@ -20,7 +20,15 @@ private val init = run {
 	})
 }
 
-// STOPSHIP inline
+/**
+ * Prefer to use this for better error reporting.
+ * In case of failure this will print the finding details.
+ *
+ * Recommended usage:
+ * ```
+ * results shouldHave noFindings()
+ * ```
+ */
 public fun noFindings(): Matcher<List<Finding>> = beEmpty()
 
 public fun singleFinding(issue: String, message: String): Matcher<List<Finding>> =

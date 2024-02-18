@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.atLeastSize
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotContain
@@ -82,7 +83,7 @@ internal fun Rule.validateCompliantExamples(issue: Issue) {
 }
 
 public fun validate(rule: Rule) {
-	rule.issues shouldNot io.kotest.matchers.collections.beEmpty() // STOPSHIP rename my beEmpty to something else?
+	rule.issues shouldNot beEmpty()
 	rule.issues.forEach { issue ->
 		validate(rule, issue)
 	}
