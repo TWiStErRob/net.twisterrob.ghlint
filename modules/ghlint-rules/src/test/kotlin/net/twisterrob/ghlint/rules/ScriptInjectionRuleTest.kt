@@ -1,10 +1,10 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
+import io.kotest.matchers.shouldHave
 import io.kotest.matchers.throwable.shouldHaveMessage
-import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class ScriptInjectionRuleTest {
 	inner class ShellScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -28,11 +28,11 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -43,11 +43,11 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when there's possibility of shell injection`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -56,7 +56,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"ShellScriptInjection",
 				"Step[#0] in Job[test] shell script contains GitHub Expressions.",
 			)
@@ -67,7 +67,7 @@ class ScriptInjectionRuleTest {
 	inner class JSScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -78,11 +78,11 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -96,11 +96,11 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -114,11 +114,11 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when there's possibility of script injection`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -131,7 +131,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"JSScriptInjection",
 				// TODO re-think identifier, there could be multiple like this, it's not unique
 				"Step[actions/github-script@v7] in Job[test] JavaScript contains GitHub Expressions.",
@@ -139,7 +139,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection regardless of version`() {
-			val result = check<ScriptInjectionRule>(
+			val results = check<ScriptInjectionRule>(
 				"""
 					jobs:
 					  test:
@@ -153,7 +153,7 @@ class ScriptInjectionRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"JSScriptInjection",
 				// TODO remove quotes from the name?
 				"Step[\"Get title\"] in Job[test] JavaScript contains GitHub Expressions.",

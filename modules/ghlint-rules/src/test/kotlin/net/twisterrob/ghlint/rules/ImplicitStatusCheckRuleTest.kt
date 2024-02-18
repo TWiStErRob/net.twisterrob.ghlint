@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class ImplicitStatusCheckRuleTest {
 	inner class NeverUseAlwaysStepTest {
 
 		@Test fun `passes when always is not in the condition`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -29,11 +29,11 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when always is explicitly expressed`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -43,11 +43,11 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `fails when always is used`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -57,14 +57,14 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"NeverUseAlways",
 				"Step[#0] in Job[test] uses the always() condition."
 			)
 		}
 
 		@Test fun `fails when always is used as part of a condition`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -74,7 +74,7 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"NeverUseAlways",
 				"Step[#0] in Job[test] uses the always() condition."
 			)
@@ -85,7 +85,7 @@ class ImplicitStatusCheckRuleTest {
 	inner class NeverUseAlwaysJobTest {
 
 		@Test fun `passes when always is not in the condition`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -95,11 +95,11 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when always is explicitly expressed`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -109,11 +109,11 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `fails when always is used`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -123,14 +123,14 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"NeverUseAlways",
 				"Job[test] uses the always() condition."
 			)
 		}
 
 		@Test fun `fails when always is used as part of a condition`() {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -140,7 +140,7 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"NeverUseAlways",
 				"Job[test] uses the always() condition."
 			)
@@ -153,7 +153,7 @@ class ImplicitStatusCheckRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["success", "failure", "cancelled", "always"])
 		fun `fails when negative status check condition is used`(function: String) {
-			val result = check<ImplicitStatusCheckRule>(
+			val results = check<ImplicitStatusCheckRule>(
 				"""
 					jobs:
 					  test:
@@ -163,7 +163,7 @@ class ImplicitStatusCheckRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
 				"NegativeStatusCheck",
 				"Step[#0] in Job[test] uses a negative condition."
 			)

@@ -25,7 +25,7 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule {
 		}
 	}
 
-	@Suppress("ClassOrdering") // Keep logic above Issue declaration for easy scrolling.
+	@Suppress("detekt.ClassOrdering") // Keep logic above Issue declaration for easy scrolling.
 	private companion object {
 
 		private val environmentFileName = Regex(

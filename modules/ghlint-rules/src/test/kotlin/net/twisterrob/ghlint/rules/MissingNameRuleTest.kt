@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -13,31 +13,31 @@ class MissingNameRuleTest {
 	@TestFactory fun metadata() = test(MissingNameRule::class)
 
 	@Test fun `reports when workflow is missing a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				jobs:
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"MissingWorkflowName",
 			"Workflow[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when workflow has a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Test
 				jobs:
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when job is missing a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -48,14 +48,14 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"MissingJobName",
 			"Job[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when job has a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -67,11 +67,11 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is missing a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -82,14 +82,14 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"MissingStepName",
 			"Step[#0] in Job[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when step has a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -101,6 +101,6 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 }

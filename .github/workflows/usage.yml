@@ -17,7 +17,7 @@ jobs:
 
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    defaults: 
+    defaults:
       run:
         shell: bash
     steps:

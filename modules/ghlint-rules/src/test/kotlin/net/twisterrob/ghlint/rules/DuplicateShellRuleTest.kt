@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -13,7 +13,7 @@ class DuplicateShellRuleTest {
 	@TestFactory fun metadata() = test(DuplicateShellRule::class)
 
 	@Test fun `reports when 2 steps have an explicit shell`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				jobs:
 				  test:
@@ -25,14 +25,14 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
 			"Job[test] has 2 steps defining bash shell, set default shell on job."
 		)
 	}
 
 	@Test fun `reports when 3 steps have an explicit shell`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				jobs:
 				  test:
@@ -46,14 +46,14 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
 			"Job[test] has 3 steps defining bash shell, set default shell on job."
 		)
 	}
 
 	@Test fun `reports when multiple steps have an explicit shell intermingled with other steps`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				jobs:
 				  test:
@@ -68,14 +68,14 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
 			"Job[test] has 2 steps defining bash shell, set default shell on job."
 		)
 	}
 
 	@Test fun `passes when there are no run steps`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				jobs:
 				  test:
@@ -86,11 +86,11 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when job has default shell`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				jobs:
 				  test:
@@ -103,11 +103,11 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when steps have different shells`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				jobs:
 				  test:
@@ -119,11 +119,11 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when steps override default shell`() {
-		val result = check<DuplicateShellRule>(
+		val results = check<DuplicateShellRule>(
 			"""
 				defaults:
 				  run:
@@ -138,6 +138,6 @@ class DuplicateShellRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 }

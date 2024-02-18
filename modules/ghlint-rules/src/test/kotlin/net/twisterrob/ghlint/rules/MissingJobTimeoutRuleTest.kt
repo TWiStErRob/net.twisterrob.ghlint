@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -13,7 +13,7 @@ class MissingJobTimeoutRuleTest {
 	@TestFactory fun metadata() = test(MissingJobTimeoutRule::class)
 
 	@Test fun `passes when timeout is defined`() {
-		val result = check<MissingJobTimeoutRule>(
+		val results = check<MissingJobTimeoutRule>(
 			"""
 				jobs:
 				  test:
@@ -23,11 +23,11 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `fails when timeout is missing`() {
-		val result = check<MissingJobTimeoutRule>(
+		val results = check<MissingJobTimeoutRule>(
 			"""
 				jobs:
 				  test:
@@ -36,14 +36,14 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"MissingJobTimeout",
 			"Job[test] is missing `timeout-minutes`."
 		)
 	}
 
 	@Test fun `fails when timeout is missing even when a step has timeout`() {
-		val result = check<MissingJobTimeoutRule>(
+		val results = check<MissingJobTimeoutRule>(
 			"""
 				jobs:
 				  test:
@@ -53,7 +53,7 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result should haveFinding(
+		results shouldHave singleFinding(
 			"MissingJobTimeout",
 			"Job[test] is missing `timeout-minutes`."
 		)

@@ -1,25 +1,39 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 class ExplicitJobPermissionsRuleTest {
 
-	@Disabled("TODO Test framework needs adjustments to make it pass.")
+	@AcceptFailingDynamicTest(
+		displayName = "Issue MissingJobPermissions compliant example #2 has no findings",
+		reason = "Rule triggers another another finding, but it's acceptable for this issue.",
+		acceptableFailure = "^\\Q"
+				+ "Collection should have size 0 but has size 1. Values: ["
+				+ "Finding(\n"
+				+ "	rule=net.twisterrob.ghlint.rules.ExplicitJobPermissionsRule@\\E[0-9a-f]+\\Q,\n"
+				+ "	issue=ExplicitJobPermissions,\n"
+				+ "	location=test.yml/5:3-5:10,\n"
+				+ "	message=Job[example] should have explicit permissions.\n"
+				+ ")"
+				+ "]"
+				+ "\\E$"
+	)
+	@Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
 	@TestFactory fun metadata() = test(ExplicitJobPermissionsRule::class)
 
 	@Nested
 	inner class MissingJobPermissionsTest {
 
 		@Test fun `reports when there are no permissions declared`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -28,14 +42,14 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"MissingJobPermissions",
 				"Job[test] is missing permissions."
 			)
 		}
 
 		@Test fun `passes explicit permissions on the job`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -46,11 +60,11 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `reports the job that has no permissions declared`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  has-perms-1:
@@ -69,14 +83,14 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"MissingJobPermissions",
 				"Job[test] is missing permissions."
 			)
 		}
 
 		@Test fun `passes explicit no permissions on the job`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -86,7 +100,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 	}
 
@@ -94,7 +108,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class ExplicitJobPermissionsTest {
 
 		@Test fun `reports when permissions are on the workflow level`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					permissions:
 					  contents: read
@@ -105,14 +119,14 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"ExplicitJobPermissions",
 				"Job[test] should have explicit permissions."
 			)
 		}
 
 		@Test fun `passes when permissions are on the job level`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -123,7 +137,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 	}
 }

@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
-import net.twisterrob.ghlint.testing.beEmpty
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -21,7 +21,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -31,7 +31,7 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@MethodSource(
@@ -40,7 +40,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -50,9 +50,9 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 
-			val resultNoSpacing = check<DoubleCurlyIfRule>(
+			val resultsNoSpacing = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -62,13 +62,13 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			resultNoSpacing should beEmpty()
+			resultsNoSpacing shouldHave noFindings()
 		}
 
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -78,7 +78,7 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"DoubleCurlyIf",
 				"Job[test] does not have double-curly-braces."
 			)
@@ -87,7 +87,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -97,7 +97,7 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"DoubleCurlyIf",
 				"Job[test] has nested or invalid double-curly-braces."
 			)
@@ -109,7 +109,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -119,7 +119,7 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 		}
 
 		@MethodSource(
@@ -128,7 +128,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -138,9 +138,9 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should beEmpty()
+			results shouldHave noFindings()
 
-			val resultNoSpacing = check<DoubleCurlyIfRule>(
+			val resultsNoSpacing = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -150,13 +150,13 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			resultNoSpacing should beEmpty()
+			resultsNoSpacing shouldHave noFindings()
 		}
 
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -166,7 +166,7 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"DoubleCurlyIf",
 				"Step[#0] in Job[test] does not have double-curly-braces."
 			)
@@ -175,7 +175,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val result = check<DoubleCurlyIfRule>(
+			val results = check<DoubleCurlyIfRule>(
 				"""
 					jobs:
 					  test:
@@ -185,7 +185,7 @@ class DoubleCurlyIfRuleTest {
 				""".trimIndent()
 			)
 
-			result should haveFinding(
+			results shouldHave singleFinding(
 				"DoubleCurlyIf",
 				"Step[#0] in Job[test] has nested or invalid double-curly-braces."
 			)

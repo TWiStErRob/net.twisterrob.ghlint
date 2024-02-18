@@ -1,11 +1,11 @@
 package net.twisterrob.ghlint.rules
 
-import io.kotest.matchers.should
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
-import net.twisterrob.ghlint.testing.beEmpty
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.haveFinding
+import net.twisterrob.ghlint.testing.noFindings
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicNode
@@ -18,7 +18,7 @@ class EnvironmentFileOverwriteRuleTest {
 	@TestFactory fun metadata() = test(EnvironmentFileOverwriteRule::class)
 
 	@Test fun `passes when no environment file is used`() {
-		val result = check<EnvironmentFileOverwriteRule>(
+		val results = check<EnvironmentFileOverwriteRule>(
 			"""
 				jobs:
 				  test:
@@ -27,7 +27,7 @@ class EnvironmentFileOverwriteRuleTest {
 			""".trimIndent()
 		)
 
-		result should beEmpty()
+		results shouldHave noFindings()
 	}
 
 	@TestFactory
@@ -37,7 +37,7 @@ class EnvironmentFileOverwriteRuleTest {
 				environmentFile,
 				syntaxes(environmentFile).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<EnvironmentFileOverwriteRule>(
+						val results = check<EnvironmentFileOverwriteRule>(
 							"""
 								jobs:
 								  test:
@@ -46,7 +46,7 @@ class EnvironmentFileOverwriteRuleTest {
 							""".trimIndent()
 						)
 
-						result should beEmpty()
+						results shouldHave noFindings()
 					}
 				}
 			)
@@ -59,7 +59,7 @@ class EnvironmentFileOverwriteRuleTest {
 				environmentFile,
 				(redirects(">>") x syntaxes(environmentFile)).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<EnvironmentFileOverwriteRule>(
+						val results = check<EnvironmentFileOverwriteRule>(
 							"""
 								jobs:
 								  test:
@@ -69,7 +69,7 @@ class EnvironmentFileOverwriteRuleTest {
 							""".trimIndent()
 						)
 
-						result should beEmpty()
+						results shouldHave noFindings()
 					}
 				}
 			)
@@ -82,7 +82,7 @@ class EnvironmentFileOverwriteRuleTest {
 				environmentFile,
 				(redirects(">") x syntaxes(environmentFile)).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<EnvironmentFileOverwriteRule>(
+						val results = check<EnvironmentFileOverwriteRule>(
 							"""
 								jobs:
 								  test:
@@ -92,7 +92,7 @@ class EnvironmentFileOverwriteRuleTest {
 							""".trimIndent()
 						)
 
-						result should haveFinding(
+						results shouldHave singleFinding(
 							"EnvironmentFileOverwritten",
 							"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
 						)
