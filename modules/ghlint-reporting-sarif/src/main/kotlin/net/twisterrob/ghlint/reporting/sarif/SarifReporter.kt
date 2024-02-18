@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.reporting
+package net.twisterrob.ghlint.reporting.sarif
 
 import io.github.detekt.sarif4k.ArtifactLocation
 import io.github.detekt.sarif4k.Level
@@ -15,6 +15,7 @@ import io.github.detekt.sarif4k.SarifSerializer
 import io.github.detekt.sarif4k.Tool
 import io.github.detekt.sarif4k.ToolComponent
 import io.github.detekt.sarif4k.Version
+import net.twisterrob.ghlint.reporting.Reporter
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.descriptionWithExamples
@@ -47,8 +48,8 @@ public class SarifReporter(
 								.flatMap { it.issues }
 								.map(::reportingDescriptor)
 								.toList(),
-							version = "0.2.0",
-							semanticVersion = "0.2.0",
+							version = BuildConfig.APP_VERSION,
+							semanticVersion = BuildConfig.APP_VERSION,
 						),
 					),
 					originalURIBaseIDS = mapOf(

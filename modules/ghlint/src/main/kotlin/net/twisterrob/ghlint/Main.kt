@@ -3,8 +3,8 @@ package net.twisterrob.ghlint
 import net.twisterrob.ghlint.analysis.Validator
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.reporting.SarifReporter
 import net.twisterrob.ghlint.reporting.TextReporter
+import net.twisterrob.ghlint.reporting.sarif.SarifReporter
 import net.twisterrob.ghlint.rules.DefaultRuleSet
 import net.twisterrob.ghlint.yaml.Yaml
 import java.nio.file.Path
