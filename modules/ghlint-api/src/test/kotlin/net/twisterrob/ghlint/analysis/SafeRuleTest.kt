@@ -43,7 +43,7 @@ class SafeRuleTest {
 	@Test fun `propagates issues`() {
 		val mockIssues: List<Issue> = listOf(mock(), mock())
 		val subject = SafeRule(object : Rule {
-			override val issues = mockIssues
+			override val issues: List<Issue> = mockIssues
 			override fun check(workflow: Workflow) = error("Shouldn't be called.")
 		})
 
