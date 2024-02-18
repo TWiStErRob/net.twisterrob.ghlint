@@ -13,31 +13,31 @@ class MissingNameRuleTest {
 	@TestFactory fun metadata() = test(MissingNameRule::class)
 
 	@Test fun `reports when workflow is missing a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				jobs:
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"MissingWorkflowName",
 			"Workflow[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when workflow has a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Test
 				jobs:
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when job is missing a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -48,14 +48,14 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"MissingJobName",
 			"Job[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when job has a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -67,11 +67,11 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is missing a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -82,14 +82,14 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"MissingStepName",
 			"Step[#0] in Job[test] is missing a name, add one to improve developer experience."
 		)
 	}
 
 	@Test fun `passes when step has a name`() {
-		val result = check<MissingNameRule>(
+		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
 				jobs:
@@ -101,6 +101,6 @@ class MissingNameRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 }

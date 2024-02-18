@@ -13,31 +13,31 @@ class EmptyEnvRuleTest {
 	@TestFactory fun metadata() = test(EmptyEnvRule::class)
 
 	@Test fun `passes when no env defined`() {
-		val result = check<EmptyEnvRule>(
+		val results = check<EmptyEnvRule>(
 			"""
 				jobs:
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when workflow has empty env`() {
-		val result = check<EmptyEnvRule>(
+		val results = check<EmptyEnvRule>(
 			"""
 				env:
 				jobs:
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"EmptyWorkflowEnv",
 			"Workflow[test] should not have empty env."
 		)
 	}
 
 	@Test fun `reports when job has empty env`() {
-		val result = check<EmptyEnvRule>(
+		val results = check<EmptyEnvRule>(
 			"""
 				jobs:
 				  test:
@@ -47,14 +47,14 @@ class EmptyEnvRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"EmptyJobEnv",
 			"Job[test] should not have empty env."
 		)
 	}
 
 	@Test fun `reports when step has empty env`() {
-		val result = check<EmptyEnvRule>(
+		val results = check<EmptyEnvRule>(
 			"""
 				jobs:
 				  test:
@@ -64,7 +64,7 @@ class EmptyEnvRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"EmptyStepEnv",
 			"Step[#0] in Job[test] should not have empty env."
 		)

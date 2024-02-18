@@ -18,7 +18,7 @@ class EnvironmentFileOverwriteRuleTest {
 	@TestFactory fun metadata() = test(EnvironmentFileOverwriteRule::class)
 
 	@Test fun `passes when no environment file is used`() {
-		val result = check<EnvironmentFileOverwriteRule>(
+		val results = check<EnvironmentFileOverwriteRule>(
 			"""
 				jobs:
 				  test:
@@ -27,7 +27,7 @@ class EnvironmentFileOverwriteRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@TestFactory
@@ -37,7 +37,7 @@ class EnvironmentFileOverwriteRuleTest {
 				environmentFile,
 				syntaxes(environmentFile).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<EnvironmentFileOverwriteRule>(
+						val results = check<EnvironmentFileOverwriteRule>(
 							"""
 								jobs:
 								  test:
@@ -46,7 +46,7 @@ class EnvironmentFileOverwriteRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave noFindings()
+						results shouldHave noFindings()
 					}
 				}
 			)
@@ -59,7 +59,7 @@ class EnvironmentFileOverwriteRuleTest {
 				environmentFile,
 				(redirects(">>") x syntaxes(environmentFile)).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<EnvironmentFileOverwriteRule>(
+						val results = check<EnvironmentFileOverwriteRule>(
 							"""
 								jobs:
 								  test:
@@ -69,7 +69,7 @@ class EnvironmentFileOverwriteRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave noFindings()
+						results shouldHave noFindings()
 					}
 				}
 			)
@@ -82,7 +82,7 @@ class EnvironmentFileOverwriteRuleTest {
 				environmentFile,
 				(redirects(">") x syntaxes(environmentFile)).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<EnvironmentFileOverwriteRule>(
+						val results = check<EnvironmentFileOverwriteRule>(
 							"""
 								jobs:
 								  test:
@@ -92,7 +92,7 @@ class EnvironmentFileOverwriteRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave singleFinding(
+						results shouldHave singleFinding(
 							"EnvironmentFileOverwritten",
 							"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
 						)

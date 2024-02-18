@@ -30,7 +30,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class MissingJobPermissionsTest {
 
 		@Test fun `reports when there are no permissions declared`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -39,14 +39,14 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"MissingJobPermissions",
 				"Job[test] is missing permissions."
 			)
 		}
 
 		@Test fun `passes explicit permissions on the job`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -57,11 +57,11 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave noFindings()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `reports the job that has no permissions declared`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  has-perms-1:
@@ -80,14 +80,14 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"MissingJobPermissions",
 				"Job[test] is missing permissions."
 			)
 		}
 
 		@Test fun `passes explicit no permissions on the job`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -97,7 +97,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave noFindings()
+			results shouldHave noFindings()
 		}
 	}
 
@@ -105,7 +105,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class ExplicitJobPermissionsTest {
 
 		@Test fun `reports when permissions are on the workflow level`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					permissions:
 					  contents: read
@@ -116,14 +116,14 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"ExplicitJobPermissions",
 				"Job[test] should have explicit permissions."
 			)
 		}
 
 		@Test fun `passes when permissions are on the job level`() {
-			val result = check<ExplicitJobPermissionsRule>(
+			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					jobs:
 					  test:
@@ -134,7 +134,7 @@ class ExplicitJobPermissionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave noFindings()
+			results shouldHave noFindings()
 		}
 	}
 }

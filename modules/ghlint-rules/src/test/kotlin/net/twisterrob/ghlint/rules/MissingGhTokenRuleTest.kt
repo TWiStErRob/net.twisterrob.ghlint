@@ -15,7 +15,7 @@ class MissingGhTokenRuleTest {
 	@TestFactory fun metadata() = test(MissingGhTokenRule::class)
 
 	@Test fun `passes when token is defined on step`() {
-		val result = check<MissingGhTokenRule>(
+		val results = check<MissingGhTokenRule>(
 			"""
 				jobs:
 				  test:
@@ -26,11 +26,11 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on job`() {
-		val result = check<MissingGhTokenRule>(
+		val results = check<MissingGhTokenRule>(
 			"""
 				jobs:
 				  test:
@@ -41,11 +41,11 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on workflow`() {
-		val result = check<MissingGhTokenRule>(
+		val results = check<MissingGhTokenRule>(
 			"""
 				env:
 				  GH_TOKEN: ${'$'}{{ github.token }}
@@ -56,11 +56,11 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on step as secret`() {
-		val result = check<MissingGhTokenRule>(
+		val results = check<MissingGhTokenRule>(
 			"""
 				jobs:
 				  test:
@@ -71,7 +71,7 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@ParameterizedTest
@@ -116,7 +116,7 @@ class MissingGhTokenRuleTest {
 	)
 	@Suppress("detekt.TrimMultilineRawString") // Trimmed inside test, trimming here would make these non-constant.
 	fun `reports when gh is used different contexts`(script: String) {
-		val result = check<MissingGhTokenRule>(
+		val results = check<MissingGhTokenRule>(
 			"""
 				jobs:
 				  test:
@@ -125,7 +125,7 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"MissingGhToken",
 			"Step[#0] in Job[test] should see `GH_TOKEN` environment variable."
 		)
@@ -141,7 +141,7 @@ class MissingGhTokenRuleTest {
 	)
 	@Suppress("detekt.TrimMultilineRawString") // Trimmed inside test, trimming here would make these non-constant.
 	fun `passes when gh command is not in the right context`(script: String) {
-		val result = check<MissingGhTokenRule>(
+		val results = check<MissingGhTokenRule>(
 			"""
 				jobs:
 				  test:
@@ -150,6 +150,6 @@ class MissingGhTokenRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 }

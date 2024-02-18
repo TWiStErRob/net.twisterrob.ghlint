@@ -21,7 +21,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["error", "warn", "ignore"])
 		fun `passes input is defined`(value: String) {
-			val result = check<FailFastActionsRule>(
+			val results = check<FailFastActionsRule>(
 				"""
 					jobs:
 					  test:
@@ -34,11 +34,11 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave noFindings()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when input is missing`() {
-			val result = check<FailFastActionsRule>(
+			val results = check<FailFastActionsRule>(
 				"""
 					jobs:
 					  test:
@@ -51,7 +51,7 @@ class FailFastActionsRuleTest {
 			)
 
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"FailFastUploadArtifact",
 				"Step[actions/upload-artifact@v4] in Job[test] should have input `if-no-files-found: error`."
 			)
@@ -64,7 +64,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["true", "false"])
 		fun `passes input is defined`(value: String) {
-			val result = check<FailFastActionsRule>(
+			val results = check<FailFastActionsRule>(
 				"""
 					jobs:
 					  test:
@@ -77,11 +77,11 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave noFindings()
+			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when input is missing`() {
-			val result = check<FailFastActionsRule>(
+			val results = check<FailFastActionsRule>(
 				"""
 					jobs:
 					  test:
@@ -93,7 +93,7 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"FailFastPublishUnitTestResults",
 				@Suppress("detekt.MaxLineLength")
 				"Step[EnricoMi/publish-unit-test-result-action@v2] in Job[test] should have input `action_fail_on_inconclusive: true`."
@@ -105,7 +105,7 @@ class FailFastActionsRuleTest {
 	inner class FailFastPeterEvansCreatePullRequestTest {
 
 		@Test fun `reports when action is used`() {
-			val result = check<FailFastActionsRule>(
+			val results = check<FailFastActionsRule>(
 				"""
 					jobs:
 					  test:
@@ -114,14 +114,14 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
 				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@v6] in Job[test]."
 			)
 		}
 
 		@Test fun `reports when action is used with hash`() {
-			val result = check<FailFastActionsRule>(
+			val results = check<FailFastActionsRule>(
 				"""
 					jobs:
 					  test:
@@ -132,7 +132,7 @@ class FailFastActionsRuleTest {
 				""".trimIndent()
 			)
 
-			result shouldHave singleFinding(
+			results shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
 				@Suppress("detekt.MaxLineLength")
 				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test]."
@@ -141,7 +141,7 @@ class FailFastActionsRuleTest {
 	}
 
 	@Test fun `passes on other actions`() {
-		val result = check<FailFastActionsRule>(
+		val results = check<FailFastActionsRule>(
 			"""
 				jobs:
 				  test:
@@ -172,6 +172,6 @@ class FailFastActionsRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 }

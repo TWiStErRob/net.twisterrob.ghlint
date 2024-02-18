@@ -13,7 +13,7 @@ class MissingJobTimeoutRuleTest {
 	@TestFactory fun metadata() = test(MissingJobTimeoutRule::class)
 
 	@Test fun `passes when timeout is defined`() {
-		val result = check<MissingJobTimeoutRule>(
+		val results = check<MissingJobTimeoutRule>(
 			"""
 				jobs:
 				  test:
@@ -23,11 +23,11 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `fails when timeout is missing`() {
-		val result = check<MissingJobTimeoutRule>(
+		val results = check<MissingJobTimeoutRule>(
 			"""
 				jobs:
 				  test:
@@ -36,14 +36,14 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"MissingJobTimeout",
 			"Job[test] is missing `timeout-minutes`."
 		)
 	}
 
 	@Test fun `fails when timeout is missing even when a step has timeout`() {
-		val result = check<MissingJobTimeoutRule>(
+		val results = check<MissingJobTimeoutRule>(
 			"""
 				jobs:
 				  test:
@@ -53,7 +53,7 @@ class MissingJobTimeoutRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"MissingJobTimeout",
 			"Job[test] is missing `timeout-minutes`."
 		)

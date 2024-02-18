@@ -15,7 +15,7 @@ class RedundantShellRuleTest {
 	@TestFactory fun metadata() = test(RedundantShellRule::class)
 
 	@Test fun `reports when both job and workflow have the same default shell`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				defaults:
 				  run:
@@ -31,14 +31,14 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"RedundantDefaultShell",
 			"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
 		)
 	}
 
 	@Test fun `passes when both job and workflow have different default shell`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				defaults:
 				  run:
@@ -54,11 +54,11 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step has the same shell as the default in job`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				jobs:
 				  test:
@@ -72,14 +72,14 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"RedundantShell",
 			"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
 		)
 	}
 
 	@Test fun `reports when step has the same shell as the default in workflow`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				defaults:
 				  run:
@@ -93,14 +93,14 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"RedundantShell",
 			"Both Step[#0] in Job[test] and Workflow[test] has bash shell, the step's shell can be removed."
 		)
 	}
 
 	@Test fun `reports when step has the same shell as the default in workflow and job`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				defaults:
 				  run:
@@ -117,7 +117,7 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave exactFindings(
+		results shouldHave exactFindings(
 			aFinding(
 				"RedundantShell",
 				"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
@@ -130,7 +130,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `passes when job and step have different shell`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				jobs:
 				  test:
@@ -144,11 +144,11 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when workflow and step have different shell`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				defaults:
 				  run:
@@ -162,11 +162,11 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when workflow, job and step have different shell`() {
-		val result = check<RedundantShellRule>(
+		val results = check<RedundantShellRule>(
 			"""
 				defaults:
 				  run:
@@ -183,6 +183,6 @@ class RedundantShellRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 }

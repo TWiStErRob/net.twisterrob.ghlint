@@ -17,7 +17,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	@TestFactory fun metadata() = test(SafeEnvironmentFileRedirectRule::class)
 
 	@Test fun `passes when no environment file is used`() {
-		val result = check<SafeEnvironmentFileRedirectRule>(
+		val results = check<SafeEnvironmentFileRedirectRule>(
 			"""
 				jobs:
 				  test:
@@ -26,11 +26,11 @@ class SafeEnvironmentFileRedirectRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when non-environment file is used`() {
-		val result = check<SafeEnvironmentFileRedirectRule>(
+		val results = check<SafeEnvironmentFileRedirectRule>(
 			"""
 				jobs:
 				  test:
@@ -39,7 +39,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 			""".trimIndent()
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@TestFactory
@@ -49,7 +49,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 				environmentFile,
 				(acceptedSyntaxes(environmentFile) + rejectedSyntaxes(environmentFile)).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<SafeEnvironmentFileRedirectRule>(
+						val results = check<SafeEnvironmentFileRedirectRule>(
 							"""
 								jobs:
 								  test:
@@ -58,7 +58,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave noFindings()
+						results shouldHave noFindings()
 					}
 				}
 			)
@@ -73,7 +73,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					environmentFile
 				))).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<SafeEnvironmentFileRedirectRule>(
+						val results = check<SafeEnvironmentFileRedirectRule>(
 							"""
 								jobs:
 								  test:
@@ -83,7 +83,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave noFindings()
+						results shouldHave noFindings()
 					}
 				}
 			)
@@ -98,7 +98,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					environmentFile
 				))).map { (name, syntax) ->
 					dynamicTest(name) {
-						val result = check<SafeEnvironmentFileRedirectRule>(
+						val results = check<SafeEnvironmentFileRedirectRule>(
 							"""
 								jobs:
 								  test:
@@ -108,7 +108,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 							""".trimIndent()
 						)
 
-						result shouldHave singleFinding(
+						results shouldHave singleFinding(
 							"SafeEnvironmentFileRedirect",
 							"Step[#0] in Job[test] should be formatted as `>> \"${'$'}{${environmentFile}}\"`."
 						)

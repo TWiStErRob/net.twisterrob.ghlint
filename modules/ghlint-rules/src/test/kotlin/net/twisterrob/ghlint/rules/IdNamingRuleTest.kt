@@ -21,7 +21,7 @@ class IdNamingRuleTest {
 	@TestFactory fun metadata() = test(IdNamingRule::class)
 
 	@Test fun `passes when no step id`() {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  test:
@@ -30,13 +30,13 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when workflow id is lower kebab`(id: String) {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  test:
@@ -46,13 +46,13 @@ class IdNamingRuleTest {
 			fileName = "${id}.yml",
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when job id is lower kebab`(id: String) {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  ${id}:
@@ -61,13 +61,13 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when step id is lower kebab`(id: String) {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  test:
@@ -78,13 +78,13 @@ class IdNamingRuleTest {
 			fileName = "${id}.yml",
 		)
 
-		result shouldHave noFindings()
+		results shouldHave noFindings()
 	}
 
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when workflow id is not lower kebab`(id: String) {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  test:
@@ -94,7 +94,7 @@ class IdNamingRuleTest {
 			fileName = "${id}.yml",
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"WorkflowIdNaming",
 			"Workflow[${id}] should have a lower-case kebab ID."
 		)
@@ -103,7 +103,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when job id is not lower kebab`(id: String) {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  ${id}:
@@ -112,7 +112,7 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"JobIdNaming",
 			"Job[${id}] should have a lower-case kebab ID."
 		)
@@ -121,7 +121,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when step id is not lower kebab`(id: String) {
-		val result = check<IdNamingRule>(
+		val results = check<IdNamingRule>(
 			"""
 				jobs:
 				  test:
@@ -131,7 +131,7 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 		)
 
-		result shouldHave singleFinding(
+		results shouldHave singleFinding(
 			"StepIdNaming",
 			"Step[${id}] in Job[test] should have a lower-case kebab ID."
 		)
