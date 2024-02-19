@@ -36,7 +36,7 @@ jobs:
           GHALINT_VERSION: "0.1"
         run: |
           curl --silent --show-error --location --remote-name \
-              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHALINT_VERSION}/ghlint.jar
+              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHALINT_VERSION}/ghlint-fat.jar
           chmod +x ghlint-fat.jar
 
       - name: "Run validator."
