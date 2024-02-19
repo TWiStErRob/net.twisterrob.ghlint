@@ -40,7 +40,7 @@ public class SnakeAction internal constructor(
 			.toMap()
 
 	override val runs: Action.Runs
-		get() = TODO()
+		get() = error("Not implemented yet.")
 
 	public companion object {
 

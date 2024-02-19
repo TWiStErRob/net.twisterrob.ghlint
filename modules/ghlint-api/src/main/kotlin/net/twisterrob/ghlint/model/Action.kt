@@ -16,6 +16,7 @@ public interface Action : Component {
 		public val parent: Action
 		public val id: String
 		public val description: String
+		@Suppress("detekt.BooleanPropertyNaming") // Keep as schema.
 		public val required: Boolean
 		public val default: String?
 	}

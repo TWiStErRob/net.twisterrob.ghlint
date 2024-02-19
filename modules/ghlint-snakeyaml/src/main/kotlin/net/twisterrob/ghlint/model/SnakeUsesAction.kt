@@ -8,22 +8,23 @@ public class SnakeUsesAction internal constructor(
 	private val actionResolver: ActionResolver,
 ) : Step.UsesAction {
 
+	@Suppress("detekt.PropertyUsedBeforeDeclaration")
 	override val action: Action
 		get() = actionResolver.resolveAction(owner = owner, repo = repository, path = path, ref = ref)
 
-	public override val actionName: String
+	override val actionName: String
 		get() = raw.substringBefore('@')
 
-	public override val ref: String
+	override val ref: String
 		get() = raw.substringAfter('@')
 
-	public override val owner: String
+	override val owner: String
 		get() = ref.substringBefore('/')
 
-	public override val repository: String
+	override val repository: String
 		get() = ref.removePrefix(owner).removePrefix("/").substringBefore('/')
 
-	public override val path: String?
+	override val path: String?
 		get() = ref.removePrefix("${owner}/${repository}")
 			.removePrefix("/")
 			.takeIf { it.isNotEmpty() }

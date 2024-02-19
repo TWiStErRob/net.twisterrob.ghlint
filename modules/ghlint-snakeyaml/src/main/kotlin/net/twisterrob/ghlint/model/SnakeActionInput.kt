@@ -16,7 +16,7 @@ public class SnakeActionInput internal constructor(
 		get() = node.getRequiredText("description")
 
 	override val required: Boolean
-		get() = node.getOptionalText("required")?.toBooleanStrict() ?: false
+		get() = node.getOptionalText("required")?.toBooleanStrict() == true
 
 	override val default: String?
 		get() = node.getOptionalText("default")
@@ -24,6 +24,6 @@ public class SnakeActionInput internal constructor(
 	public companion object {
 
 		public fun from(action: Action, id: String, node: MappingNode, target: Node): Action.ActionInput =
-			SnakeActionInput(action, id, node, target)
+			SnakeActionInput(parent = action, id = id, node = node, target = target)
 	}
 }

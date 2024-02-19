@@ -13,13 +13,14 @@ import java.time.Duration
 internal class SnakeActionResolver : ActionResolver {
 
 	override fun resolveAction(owner: String, repo: String, path: String?, ref: String): Action {
+		val directory = if (path == null) "" else "/${path}"
 		val request = HttpRequest.newBuilder()
-			.uri(URI("https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}/action.yml"))
+			.uri(URI("https://raw.githubusercontent.com/${owner}/${repo}/${ref}${directory}/action.yml"))
 			.timeout(Duration.ofSeconds(@Suppress("detekt.MagicNumber") 5))
 			.GET()
 			.build()
 		val yaml = HttpClient.newHttpClient().send(request, BodyHandlers.ofString()).body()
-		val file = File(FileLocation("github://${owner}/${repo}/${path}/action.yml"), yaml)
+		val file = File(FileLocation("github://${owner}/${repo}${directory}/action.yml"), yaml)
 		return SnakeAction.from(file)
 	}
 }
