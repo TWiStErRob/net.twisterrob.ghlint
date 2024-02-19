@@ -27,11 +27,16 @@ jobs:
 
       - name: "Prepare changes."
         id: prepare
+        env:
+          GIT_USER: ${{ github.actor }}
+          GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
         run: |
           # Remove -SNAPSHOT suffix in gradle.properties version.
           sed -re 's/^(project.version=[0-9]+\.[0-9]+\.[0-9]+)-SNAPSHOT$/\1/' -i gradle.properties
           version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
           echo "Prepare changes for ${version}."
+          git config --global user.email "${EMAIL}"
+          git config --global user.name "${GIT_USER}"
           git checkout -b "release_${version}"
           git commit -m "Release v${version}"
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
