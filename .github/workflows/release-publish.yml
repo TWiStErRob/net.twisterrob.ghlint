@@ -45,12 +45,18 @@ jobs:
 
       - name: "Version"
         id: prepare
-        run: echo "version=$(cat modules/ghlint/build/version.txt)" >> "${GITHUB_OUTPUT}"
+        env:
+          RELEASE_DIR: "release"
+        run: |
+          mkdir "${RELEASE_DIR}"
+          cp "modules/ghlint/build/version.txt" "${RELEASE_DIR}/version.txt"
+          cp "modules/ghlint/build/libs/ghlint-${VERSION}-fat.jar" "${RELEASE_DIR}/ghlint.jar"
+          cp "modules/ghlint/build/distributions/ghlint-${VERSION}.zip" "${RELEASE_DIR}/ghlint.zip"
+          echo "version=$(cat release/version.txt)" >> "${GITHUB_OUTPUT}"
 
       - name: "Create Release."
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.prepare.outputs.version }}
           RELEASE_TAG: v${{ steps.prepare.outputs.version }}
           RELEASE_TITLE: v${{ steps.prepare.outputs.version }}
         run: |
@@ -59,7 +65,7 @@ jobs:
                   --title "${RELEASE_TITLE}" \
                   --latest \
                   --generate-notes \
-                  "modules/ghlint/build/libs/ghlint-${VERSION}-fat.jar" \
-                  "modules/ghlint/build/distributions/ghlint-${VERSION}.zip"
+                  "release/ghlint.jar" \
+                  "release/ghlint.zip"
           )
           echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
