@@ -80,7 +80,7 @@ jobs:
           echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
 
   prepare-next:
-    name: "🚧 Prepare Next Version"
+    name: "🚧 Prepare"
     if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
     needs:
       - release
