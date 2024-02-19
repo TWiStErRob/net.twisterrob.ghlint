@@ -45,7 +45,7 @@ jobs:
 
       - name: "Version"
         id: version
-        run: echo "version=$(cat modules/ghlint/build/version.txt)" >> "${GITHUB_OUTPUT}"
+        run: echo "version=$(cat build/version.txt)" >> "${GITHUB_OUTPUT}"
 
       - name: "Create Release."
         env:
