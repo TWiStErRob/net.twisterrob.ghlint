@@ -33,14 +33,14 @@ jobs:
 
       - name: "Download validator."
         env:
-          GHALINT_VERSION: '0.1'
+          GHALINT_VERSION: "0.2.0"
         run: |
           curl --silent --show-error --location --remote-name \
-              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHALINT_VERSION}/ghlint-fat.jar
-          chmod +x ghlint-fat.jar
+              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHALINT_VERSION}/ghlint.jar
+          chmod +x ghlint.jar
 
       - name: "Run validator."
-        run: find ".github/workflows" -type f -name "*.yml" | xargs ghlint-fat.jar
+        run: find ".github/workflows" -type f -name "*.yml" | xargs ./ghlint.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
         uses: actions/upload-artifact@v4

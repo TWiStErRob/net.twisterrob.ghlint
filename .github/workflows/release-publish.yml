@@ -1,0 +1,80 @@
+name: "Release: Publish"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  
+  validate:
+    name: "🦺 Validation"
+    if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@19333c04e57739ec6074b09c6ca09c225c94dc09 # v1
+
+  release:
+    name: "🚢 Release"
+    if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
+    needs:
+      - validate
+
+    permissions:
+      # read: actions/checkout
+      # write: gh release create
+      contents: write
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: temurin
+
+      - name: "Build CLI."
+        run: >
+          ./gradlew
+          --no-daemon
+          --continue
+          --stacktrace
+          versionFile
+          fatJar
+          distZip
+
+      - name: "Version"
+        id: prepare
+        env:
+          RELEASE_DIR: "release"
+        run: |
+          mkdir "${RELEASE_DIR}"
+          cp "modules/ghlint/build/version.txt" "${RELEASE_DIR}/version.txt"
+          version=$(cat release/version.txt)
+          cp "modules/ghlint/build/libs/ghlint-${version}-fat.jar" "${RELEASE_DIR}/ghlint.jar"
+          cp "modules/ghlint/build/distributions/ghlint-${version}.zip" "${RELEASE_DIR}/ghlint.zip"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: "Create Release."
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.prepare.outputs.version }}
+          RELEASE_TITLE: v${{ steps.prepare.outputs.version }}
+        run: |
+          link=$(
+              gh release create "${RELEASE_TAG}" \
+                  --title "${RELEASE_TITLE}" \
+                  --latest \
+                  --generate-notes \
+                  "release/ghlint.jar#CLI executable" \
+                  "release/ghlint.zip#CLI exploded distribution"
+          )
+          echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
