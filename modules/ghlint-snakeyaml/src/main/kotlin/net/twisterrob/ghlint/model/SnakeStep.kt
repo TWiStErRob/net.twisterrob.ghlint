@@ -75,10 +75,36 @@ public sealed class SnakeStep protected constructor(
 	) : Step.Uses, SnakeStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
-		override val uses: String
-			get() = node.getRequiredText("uses")
+		override val uses: Step.UsesAction
+			get() = SnakeUsesAction(
+				raw = node.getRequiredText("uses"),
+				versionComment = node.inLineComments.singleOrNull()?.value
+			)
 
 		override val with: Map<String, String>?
 			get() = node.getOptional("with")?.run { map.toTextMap() }
 	}
+}
+
+public class SnakeUsesAction internal constructor(
+	public override val raw: String,
+	public override val versionComment: String?
+) : Step.UsesAction {
+
+	public override val action: String
+		get() = raw.substringBefore('@')
+
+	public override val ref: String
+		get() = raw.substringAfter('@')
+
+	public override val owner: String
+		get() = ref.substringBefore('/')
+
+	public override val repository: String
+		get() = ref.removePrefix(owner).removePrefix("/").substringBefore('/')
+
+	public override val path: String?
+		get() = ref.removePrefix("${owner}/${repository}")
+			.removePrefix("/")
+			.takeIf { it.isNotEmpty() }
 }

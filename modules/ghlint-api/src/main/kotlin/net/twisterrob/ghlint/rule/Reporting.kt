@@ -34,5 +34,5 @@ public fun Component.toTarget(): String =
 private val Step.identifier: String
 	get() = this.id
 		?: this.name?.let { "\"${it}\"" }
-		?: (this as? Step.Uses)?.uses
+		?: (this as? Step.Uses)?.run { uses.raw }
 		?: "#${this.index.value}"

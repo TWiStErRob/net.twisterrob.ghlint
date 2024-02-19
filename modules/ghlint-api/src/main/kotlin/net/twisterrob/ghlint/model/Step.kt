@@ -34,9 +34,27 @@ public sealed interface Step : Component {
 	public interface Uses : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
-		public val uses: String
+		public val uses: UsesAction
 		public val with: Map<String, String>?
 
 		public companion object
+	}
+
+	/**
+	 * ```
+	 * uses ::= <action>@<ref> # <versionComment>
+	 * <action> ::= <owner>/<repository>(/<path>)?
+	 * ```
+	 */
+	public interface UsesAction {
+
+		public val raw: String
+		public val versionComment: String?
+
+		public val action: String
+		public val owner: String
+		public val repository: String
+		public val path: String?
+		public val ref: String
 	}
 }
