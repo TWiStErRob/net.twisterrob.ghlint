@@ -50,9 +50,10 @@ jobs:
         run: |
           mkdir "${RELEASE_DIR}"
           cp "modules/ghlint/build/version.txt" "${RELEASE_DIR}/version.txt"
-          cp "modules/ghlint/build/libs/ghlint-${VERSION}-fat.jar" "${RELEASE_DIR}/ghlint.jar"
-          cp "modules/ghlint/build/distributions/ghlint-${VERSION}.zip" "${RELEASE_DIR}/ghlint.zip"
-          echo "version=$(cat release/version.txt)" >> "${GITHUB_OUTPUT}"
+          version=$(cat release/version.txt)
+          cp "modules/ghlint/build/libs/ghlint-${version}-fat.jar" "${RELEASE_DIR}/ghlint.jar"
+          cp "modules/ghlint/build/distributions/ghlint-${version}.zip" "${RELEASE_DIR}/ghlint.zip"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
 
       - name: "Create Release."
         env:
