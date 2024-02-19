@@ -67,7 +67,8 @@ jobs:
             [publish]: https://github.com/${{ github.repository }}/actions/workflows/release-publish.yml
         run: |
           set -x
-          gh pr create \
+          link=$(gh pr create \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
-            --base "${PR_BRANCH}"
+            --base "${PR_BRANCH}")
+          echo "::notice title='${PR_TITLE}' PR created::${link}" 
