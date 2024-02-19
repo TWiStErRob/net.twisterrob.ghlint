@@ -53,7 +53,7 @@ public sealed class SnakeStep protected constructor(
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val uses: Step.UsesAction
 			get() = factory.createUsesAction(
-				raw = node.getRequiredText("uses"),
+				uses = node.getRequiredText("uses"),
 				versionComment = node.inLineComments?.singleOrNull()?.value,
 			)
 

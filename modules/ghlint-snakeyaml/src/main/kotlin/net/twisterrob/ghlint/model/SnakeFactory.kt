@@ -105,9 +105,9 @@ public class SnakeFactory {
 		)
 	}
 
-	internal fun createUsesAction(raw: String, versionComment: String?): Step.UsesAction =
+	internal fun createUsesAction(uses: String, versionComment: String?): Step.UsesAction =
 		SnakeUsesAction(
-			raw = raw,
+			uses = uses,
 			versionComment = versionComment,
 		)
 }

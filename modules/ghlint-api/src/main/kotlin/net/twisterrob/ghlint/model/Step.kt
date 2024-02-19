@@ -48,7 +48,7 @@ public sealed interface Step : Component {
 	 */
 	public interface UsesAction {
 
-		public val raw: String
+		public val uses: String
 		public val versionComment: String?
 
 		public val action: String

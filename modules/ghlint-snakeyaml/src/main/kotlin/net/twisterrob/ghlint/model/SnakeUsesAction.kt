@@ -1,15 +1,15 @@
 package net.twisterrob.ghlint.model
 
 public class SnakeUsesAction internal constructor(
-	public override val raw: String,
+	public override val uses: String,
 	public override val versionComment: String?,
 ) : Step.UsesAction {
 
 	override val action: String
-		get() = raw.substringBefore('@')
+		get() = uses.substringBefore('@')
 
 	override val ref: String
-		get() = raw.substringAfter('@')
+		get() = uses.substringAfter('@')
 
 	override val owner: String
 		get() = action.substringBefore('/')
