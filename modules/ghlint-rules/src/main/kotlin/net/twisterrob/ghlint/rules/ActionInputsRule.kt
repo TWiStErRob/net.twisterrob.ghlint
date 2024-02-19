@@ -14,7 +14,7 @@ public class ActionInputsRule : VisitorRule {
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
 		val action = step.uses.action
-		val (required, _) = action.inputs.values.partition { it.required }
+		val (required, _) = action.inputs.values.partition { it.required && it.default.isNullOrEmpty() }
 		val missing = required.map { it.id } - step.with.orEmpty().keys
 		if (missing.isNotEmpty()) {
 			reporting.report(InvalidActionInput, step) { "${it} is missing inputs: ${missing}." }

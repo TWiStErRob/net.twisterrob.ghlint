@@ -17,13 +17,13 @@ public class SnakeUsesAction internal constructor(
 		get() = raw.substringAfter('@')
 
 	override val owner: String
-		get() = ref.substringBefore('/')
+		get() = actionName.substringBefore('/')
 
 	override val repository: String
-		get() = ref.removePrefix(owner).removePrefix("/").substringBefore('/')
+		get() = actionName.removePrefix(owner).removePrefix("/").substringBefore('/')
 
 	override val path: String?
-		get() = ref.removePrefix("${owner}/${repository}")
+		get() = actionName.removePrefix("${owner}/${repository}")
 			.removePrefix("/")
 			.takeIf { it.isNotEmpty() }
 }

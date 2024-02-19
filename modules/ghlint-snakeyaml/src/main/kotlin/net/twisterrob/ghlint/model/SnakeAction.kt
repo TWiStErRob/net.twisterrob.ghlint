@@ -24,7 +24,7 @@ public class SnakeAction internal constructor(
 		get() = node.getRequiredText("description")
 
 	override val inputs: Map<String, Action.ActionInput>
-		get() = node.getRequired("jobs").map
+		get() = node.getRequired("inputs").map
 			.map { (key, node) ->
 				factory.createActionInput(
 					action = this,
