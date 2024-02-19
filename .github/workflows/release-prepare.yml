@@ -72,4 +72,4 @@ jobs:
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
             --base "${PR_BASE_BRANCH}")
-          echo "::notice title='${PR_TITLE}' PR created::${link}"
+          echo "::notice title=${PR_TITLE} PR created::${link}"
