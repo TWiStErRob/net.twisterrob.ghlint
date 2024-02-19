@@ -42,14 +42,14 @@ jobs:
           VERSION: ${{ steps.changes.outputs.version }}
           GIT_USER: ${{ github.actor }}
           GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
-          BRANCH: release
+          GIT_BRANCH: release
         run: |
           git config user.name "${GIT_USER}"
           git config user.email "${GIT_EMAIL}"
-          git checkout -b "${BRANCH}"
+          git checkout -b "${GIT_BRANCH}"
           git add gradle.properties
           git commit -m "Release v${VERSION}"
-          git push origin HEAD:"${BRANCH}" -u -f
+          git push origin HEAD:"${GIT_BRANCH}" -u -f
 
       - name: "Create Release pull request."
         env:
