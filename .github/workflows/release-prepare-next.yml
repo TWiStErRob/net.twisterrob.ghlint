@@ -61,6 +61,8 @@ jobs:
           PR_BODY: |
             ## Prepare development version for ${{ steps.changes.outputs.version }}
             
+            **Close and re-open this pull request to trigger CI.**
+            
             Merge this pull request immediately after the release is published.
             
             -- _This PR was created by a [GitHub Actions Workflow][publish]'s [run][publish-run], see [Release Process][releasing]._
