@@ -13,6 +13,9 @@ jobs:
       contents: write
       # gh pr create
       pull-requests: write
+      # gh pr create
+      # https://github.com/TWiStErRob/net.twisterrob.ghlint/settings/actions
+      # Allow GitHub Actions to create and approve pull requests: Enabled
 
     runs-on: ubuntu-latest
     timeout-minutes: 2
