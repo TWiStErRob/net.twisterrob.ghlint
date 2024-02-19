@@ -35,8 +35,8 @@ jobs:
         id: changes
         run: |
           old_version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
-          new_version=$(echo "${old_version}" | awk --field-separator=. '{print $1"."$2"."$3+1}')
-          sed -re "s/^(project.version=)[0-9]+\.[0-9]+\.[0-9]+\$/\1${new_version}-SNAPSHOT/" -i gradle.properties
+          new_version=$(echo "${old_version}" | awk --field-separator=. '{print $1"."$2"."$3+1"-SNAPSHOT"}')
+          sed -re "s/^(project.version=)[0-9]+\.[0-9]+\.[0-9]+\$/\1${new_version}/" -i gradle.properties
           echo "version=${new_version}" >> "${GITHUB_OUTPUT}"
   
       - name: "Prepare git for ${{ env.VERSION }}."
@@ -57,9 +57,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_BASE_BRANCH: main
-          PR_TITLE: "Release v${{ steps.changes.outputs.version }}"
+          PR_TITLE: "Prepare next development version v${{ steps.changes.outputs.version }}"
           PR_BODY: |
-            Prepare release changes for ${{ steps.changes.outputs.version }}.
+            Prepare development version for ${{ steps.changes.outputs.version }}.
             
             -- _This PR was created by a [GitHub Actions Workflow][publish]'s [run][publish-run], see [Release Process][releasing]._
             
