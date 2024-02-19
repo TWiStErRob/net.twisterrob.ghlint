@@ -1,12 +1,14 @@
-name: "Release: Prepare"
+name: "Release: Prepare Development"
 
 on:
+  workflow_call:
+  # For testing only.
   workflow_dispatch:
 
 jobs:
-  release:
-    name: "Prepare Release"
-
+  prepare:
+    name: "Prepare Next Version"
+    
     permissions:
       # actions/checkout@v4
       # git push
@@ -16,14 +18,14 @@ jobs:
       # gh pr create
       # https://github.com/TWiStErRob/net.twisterrob.ghlint/settings/actions
       # Allow GitHub Actions to create and approve pull requests: Enabled
-
+    
     runs-on: ubuntu-latest
     timeout-minutes: 2
     
     defaults:
       run:
         shell: bash
-
+    
     steps:
 
       - name: "Stop if wrong branch."
@@ -34,47 +36,46 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
-
+  
       - name: "Prepare changes."
         id: changes
         run: |
-          # Remove -SNAPSHOT suffix in gradle.properties version.
-          sed -re 's/^(project.version=[0-9]+\.[0-9]+\.[0-9]+)-SNAPSHOT$/\1/' -i gradle.properties
-          version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
-          echo "version=${version}" >> "${GITHUB_OUTPUT}"
-
+          old_version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
+          new_version=$(echo "${old_version}" | awk --field-separator=. '{print $1"."$2"."$3+1"-SNAPSHOT"}')
+          sed -re "s/^(project.version=)[0-9]+\.[0-9]+\.[0-9]+\$/\1${new_version}/" -i gradle.properties
+          echo "version=${new_version}" >> "${GITHUB_OUTPUT}"
+  
       - name: "Prepare git for ${{ env.VERSION }}."
         env:
           VERSION: ${{ steps.changes.outputs.version }}
           GIT_USER: ${{ github.actor }}
           GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
-          GIT_BRANCH: release
+          GIT_BRANCH: prepare
         run: |
           git config user.name "${GIT_USER}"
           git config user.email "${GIT_EMAIL}"
           git checkout -b "${GIT_BRANCH}"
           git add gradle.properties
-          git commit -m "Release v${VERSION}"
+          git commit -m "Prepare next development version v${VERSION}"
           git push origin HEAD:"${GIT_BRANCH}" -u -f
-
+  
       - name: "Create Release pull request."
         env:
           GH_TOKEN: ${{ github.token }}
           PR_BASE_BRANCH: main
-          PR_TITLE: "Release v${{ steps.changes.outputs.version }}"
+          PR_TITLE: "Prepare next development version v${{ steps.changes.outputs.version }}"
           PR_BODY: |
-            ## Prepare release changes for ${{ steps.changes.outputs.version }}
+            ## Prepare development version for ${{ steps.changes.outputs.version }}
             
             **Close and re-open this pull request to trigger CI.**
             
-            When merged to `main`, this pull request will trigger the [publishing workflow][publish].
+            Merge this pull request immediately after the release is published.
             
-            -- _This PR was created by a [GitHub Actions Workflow][prepare]'s [run][prepare-run], see [Release Process][releasing]._
+            -- _This PR was created by a [GitHub Actions Workflow][publish]'s [run][publish-run], see [Release Process][releasing]._
             
             [releasing]: ${{ github.server_url }}/${{ github.repository }}/blob/main/docs/RELEASING.md
-            [prepare]: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-prepare.yml
             [publish]: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-publish.yml
-            [prepare-run]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            [publish-run]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           link=$(
               gh pr create \

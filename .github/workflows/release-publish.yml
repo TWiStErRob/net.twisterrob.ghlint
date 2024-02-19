@@ -78,3 +78,14 @@ jobs:
                   "release/ghlint.zip#CLI exploded distribution"
           )
           echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
+
+  prepare-next:
+    name: "🚧 Prepare"
+    if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
+    needs:
+      - release
+    uses: ./.github/workflows/release-prepare-next.yml
+
+    permissions:
+      contents: write
+      pull-requests: write
