@@ -33,24 +33,27 @@ jobs:
           version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
 
-      - name: "Prepare changes for ${{ env.VERSION }}."
+      - name: "Prepare git for ${{ env.VERSION }}."
         env:
           VERSION: ${{ steps.changes.outputs.version }}
           GIT_USER: ${{ github.actor }}
           GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
+          BRANCH: release_${{ env.VERSION }}
         run: |
           git config --global user.email "${EMAIL}"
           git config --global user.name "${GIT_USER}"
-          git checkout -b "release_${version}"
+          git checkout -b "${BRANCH}"
           git add gradle.properties
-          git commit -m "Release v${version}"
+          git commit -m "Release v${VERSION}"
 
       - name: "Create Release pull request."
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.changes.outputs.version }}
-          BODY: |
-            Prepare release changes for ${VERSION}.
+          PR_VERSION: ${{ steps.changes.outputs.version }}
+          PR_BRANCH: main
+          PR_TITLE: "Release v${{ env.VERSION }}"
+          PR_BODY: |
+            Prepare release changes for ${{ env.VERSION }}.
             When merged to `main`, it'll trigger the [publishing workflow][publish].
             
             -- This PR was created by a [GitHub Actions Workflow][prepare], see [Release Process][releasing].
@@ -58,8 +61,9 @@ jobs:
             [releasing]: https://github.com/${{ github.repository }}/blob/main/docs/RELEASING.md
             [prepare]: https://github.com/${{ github.repository }}/actions/workflows/release-prepare.yml
             [publish]: https://github.com/${{ github.repository }}/actions/workflows/release-publish.yml
-        run: >
-          gh pr create
-            --title "Release v${VERSION}"
-            --body "${BODY}"
-            --base main
+        run: |
+          set -x
+          gh pr create \
+            --title "${PR_TITLE}" \
+            --body "${PR_BODY}" \
+            --base "${PR_BRANCH}"
