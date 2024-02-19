@@ -113,8 +113,11 @@ public class SnakeFactory {
 			versionComment = versionComment,
 		)
 
-	internal fun createUsedAction(owner: String, repo: String, path: String?, ref: String): Action {
-		val file = SnakeActionResolver().resolveAction(owner = owner, repo = repo, path = path, ref = ref)
-		return this.createAction(file)
-	}
+	private val actionCache: MutableMap<String, Action> = mutableMapOf()
+
+	internal fun createUsedAction(owner: String, repo: String, path: String?, ref: String): Action =
+		actionCache.getOrPut("$owner/$repo/$path@$ref") {
+			val file = SnakeActionResolver().resolveAction(owner = owner, repo = repo, path = path, ref = ref)
+			this.createAction(file)
+		}
 }

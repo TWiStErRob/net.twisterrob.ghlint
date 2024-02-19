@@ -24,13 +24,15 @@ import kotlin.jvm.optionals.getOrElse
 
 public object Yaml {
 
+	private val factory = SnakeFactory()
+
 	public fun analyze(files: List<File>, ruleSets: List<RuleSet>): List<Finding> {
 		val workflows = files.map(::loadWorkflow)
 		return Analyzer().analyzeWorkflows(workflows, ruleSets)
 	}
 
 	public fun loadWorkflow(file: File): Workflow =
-		SnakeFactory().createWorkflow(file)
+		factory.createWorkflow(file)
 
 	public fun load(@Language("yaml") yaml: String): Node {
 		val settings = LoadSettings.builder()

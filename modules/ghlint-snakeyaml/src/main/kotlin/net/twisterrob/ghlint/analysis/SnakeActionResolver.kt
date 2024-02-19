@@ -12,6 +12,13 @@ internal class SnakeActionResolver(
 	private val httpClient: HttpClient = HttpClient.newHttpClient()
 ) {
 
+	init {
+		System.setProperty(
+			"jdk.httpclient.HttpClient.log",
+			"none", // "errors,requests,headers,frames:control:data:window,ssl,trace,channel",
+		)
+	}
+
 	fun resolveAction(owner: String, repo: String, path: String?, ref: String): File {
 		val directory = if (path == null) "" else "/${path}"
 		val uri = URI("https://raw.githubusercontent.com/${owner}/${repo}/${ref}${directory}/action.yml")
