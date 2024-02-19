@@ -30,7 +30,8 @@ jobs:
         run: |
           # Remove -SNAPSHOT suffix in gradle.properties version.
           sed -re 's/^(project.version=[0-9]+\.[0-9]+\.[0-9]+)-SNAPSHOT$/\1/' -i gradle.properties
-          version=$(grep -v 'project.version=(.*)' gradle.properties)
+          version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
+          echo "Prepare changes for ${version}."
           git checkout -b "release_${version}"
           git commit -m "Release v${version}"
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
