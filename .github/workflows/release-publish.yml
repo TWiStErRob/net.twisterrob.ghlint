@@ -9,7 +9,7 @@ jobs:
   release:
     name: "Release"
     if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
-    
+
     permissions:
       # read: actions/checkout
       # write: gh release create
