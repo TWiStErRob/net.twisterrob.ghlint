@@ -40,7 +40,7 @@ jobs:
           chmod +x ghlint-fat.jar
 
       - name: "Run validator."
-        run: find ".github/workflows" -type f -name "*.yml" | xargs ./ghlint.jar
+        run: find ".github/workflows" -type f -name "*.yml" | xargs ./ghlint-fat.jar
 
       - name: "Upload 'GHA-lint Results' artifact."
         uses: actions/upload-artifact@v4
