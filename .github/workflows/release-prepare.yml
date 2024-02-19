@@ -60,7 +60,7 @@ jobs:
             Prepare release changes for ${{ steps.changes.outputs.version }}.
             When merged to `main`, it'll trigger the [publishing workflow][publish].
             
-            -- _This PR was created by a [GitHub Actions Workflow][prepare] [run][prepare-run], see [Release Process][releasing]._
+            -- _This PR was created by a [GitHub Actions Workflow][prepare]'s [run][prepare-run], see [Release Process][releasing]._
             
             [releasing]: ${{ github.server_url }}/${{ github.repository }}/blob/main/docs/RELEASING.md
             [prepare]: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-prepare.yml
@@ -72,4 +72,4 @@ jobs:
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
             --base "${PR_BASE_BRANCH}")
-          echo "::notice title='${PR_TITLE}' PR created::${link}" 
+          echo "::notice title='${PR_TITLE}' PR created::${link}"
