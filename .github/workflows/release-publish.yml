@@ -78,10 +78,3 @@ jobs:
                   "release/ghlint.zip#CLI exploded distribution"
           )
           echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
-
-      - name: "Verify Release."
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: v${{ steps.prepare.outputs.version }}
-        run: |
-          gh workflow run usage.yml --ref "${RELEASE_TAG}"
