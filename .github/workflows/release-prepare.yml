@@ -60,11 +60,12 @@ jobs:
             Prepare release changes for ${{ steps.changes.outputs.version }}.
             When merged to `main`, it'll trigger the [publishing workflow][publish].
             
-            -- This PR was created by a [GitHub Actions Workflow][prepare], see [Release Process][releasing].
+            -- This PR was created by a [GitHub Actions Workflow][prepare] [run][prepare-run], see [Release Process][releasing].
             
-            [releasing]: https://github.com/${{ github.repository }}/blob/main/docs/RELEASING.md
-            [prepare]: https://github.com/${{ github.repository }}/actions/workflows/release-prepare.yml
-            [publish]: https://github.com/${{ github.repository }}/actions/workflows/release-publish.yml
+            [releasing]: ${{ github.server_url }}/${{ github.repository }}/blob/main/docs/RELEASING.md
+            [prepare]: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-prepare.yml
+            [publish]: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-publish.yml
+            [prepare-run]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -x
           link=$(gh pr create \
