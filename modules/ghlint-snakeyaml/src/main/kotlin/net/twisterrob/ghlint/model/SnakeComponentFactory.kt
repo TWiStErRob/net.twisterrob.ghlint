@@ -12,7 +12,7 @@ import net.twisterrob.ghlint.yaml.text
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-public class SnakeFactory {
+public class SnakeComponentFactory {
 
 	public fun createWorkflow(file: File): Workflow {
 		val node = Yaml.load(file.content) as MappingNode

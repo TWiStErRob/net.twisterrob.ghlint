@@ -30,7 +30,7 @@ public sealed class SnakeJob protected constructor(
 		get() = node.getOptionalText("if")
 
 	public class SnakeNormalJob internal constructor(
-		private val factory: SnakeFactory,
+		private val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,

@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.yaml.getOptionalText
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public class SnakeDefaults internal constructor(
-	private val factory: SnakeFactory,
+	private val factory: SnakeComponentFactory,
 	private val node: MappingNode,
 ) : Defaults {
 

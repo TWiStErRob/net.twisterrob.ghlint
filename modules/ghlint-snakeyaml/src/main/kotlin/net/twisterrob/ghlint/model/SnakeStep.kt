@@ -43,7 +43,7 @@ public sealed class SnakeStep protected constructor(
 	}
 
 	public class SnakeUses internal constructor(
-		private val factory: SnakeFactory,
+		private val factory: SnakeComponentFactory,
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
