@@ -15,6 +15,8 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeFactory {
 
+	private val actionCache: MutableMap<String, Action> = mutableMapOf()
+
 	public fun createWorkflow(file: File): Workflow {
 		val node = Yaml.load(file.content) as MappingNode
 		return SnakeWorkflow(
@@ -113,10 +115,8 @@ public class SnakeFactory {
 			versionComment = versionComment,
 		)
 
-	private val actionCache: MutableMap<String, Action> = mutableMapOf()
-
 	internal fun createUsedAction(owner: String, repo: String, path: String?, ref: String): Action =
-		actionCache.getOrPut("$owner/$repo/$path@$ref") {
+		actionCache.getOrPut("$owner/$repo/${path ?: "null"}@$ref") {
 			val file = SnakeActionResolver().resolveAction(owner = owner, repo = repo, path = path, ref = ref)
 			this.createAction(file)
 		}
