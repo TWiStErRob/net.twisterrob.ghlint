@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.model
 
+import net.twisterrob.ghlint.analysis.SnakeActionResolver
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -78,33 +79,11 @@ public sealed class SnakeStep protected constructor(
 		override val uses: Step.UsesAction
 			get() = SnakeUsesAction(
 				raw = node.getRequiredText("uses"),
-				versionComment = node.inLineComments.singleOrNull()?.value
+				versionComment = node.inLineComments.singleOrNull()?.value,
+				actionResolver = SnakeActionResolver(),
 			)
 
 		override val with: Map<String, String>?
 			get() = node.getOptional("with")?.run { map.toTextMap() }
 	}
-}
-
-public class SnakeUsesAction internal constructor(
-	public override val raw: String,
-	public override val versionComment: String?
-) : Step.UsesAction {
-
-	public override val action: String
-		get() = raw.substringBefore('@')
-
-	public override val ref: String
-		get() = raw.substringAfter('@')
-
-	public override val owner: String
-		get() = ref.substringBefore('/')
-
-	public override val repository: String
-		get() = ref.removePrefix(owner).removePrefix("/").substringBefore('/')
-
-	public override val path: String?
-		get() = ref.removePrefix("${owner}/${repository}")
-			.removePrefix("/")
-			.takeIf { it.isNotEmpty() }
 }
