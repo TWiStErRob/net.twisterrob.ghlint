@@ -7,5 +7,5 @@
 
 [prepare]: https://github.com/TWiStErRob/net.twisterrob.ghlint/actions/workflows/release-prepare.yml
 [publish]: https://github.com/TWiStErRob/net.twisterrob.ghlint/actions/workflows/release-publish.yml
-[pr-release]: https://github.com/TWiStErRob/ghlint-test/pulls?q=is%3Apr+is%3Aopen+in%3Atitle+%22Release%22
-[pr-next]: https://github.com/TWiStErRob/ghlint-test/pulls?q=is%3Apr+is%3Aopen+in%3Atitle+%22Prepare%20next%20development%20version%22
+[pr-release]: https://github.com/TWiStErRob/net.twisterrob.ghlint/pulls?q=is%3Apr+is%3Aopen+in%3Atitle+%22Release%22
+[pr-next]: https://github.com/TWiStErRob/net.twisterrob.ghlint/pulls?q=is%3Apr+is%3Aopen+in%3Atitle+%22Prepare%20next%20development%20version%22
