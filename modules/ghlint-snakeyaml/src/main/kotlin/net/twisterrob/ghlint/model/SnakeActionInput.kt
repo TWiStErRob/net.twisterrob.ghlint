@@ -6,6 +6,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeActionInput internal constructor(
+	override val parent: Action,
 	override val id: String,
 	override val node: MappingNode,
 	override val target: Node,
@@ -22,7 +23,7 @@ public class SnakeActionInput internal constructor(
 
 	public companion object {
 
-		public fun from(id: String, node: MappingNode, target: Node): Action.ActionInput =
-			SnakeActionInput(id, node, target)
+		public fun from(action: Action, id: String, node: MappingNode, target: Node): Action.ActionInput =
+			SnakeActionInput(action, id, node, target)
 	}
 }

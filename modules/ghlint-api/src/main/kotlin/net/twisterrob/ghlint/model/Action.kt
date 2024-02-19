@@ -13,6 +13,7 @@ public interface Action : Component {
 
 	public interface ActionInput {
 
+		public val parent: Action
 		public val id: String
 		public val description: String
 		public val required: Boolean
@@ -21,8 +22,12 @@ public interface Action : Component {
 
 	public interface Runs {
 
+		public val parent: Action
 		public val using: String
 	}
 
 	public companion object
 }
+
+public val Action.id: String
+	get() = parent.location.path.removePrefix("github://").substringBeforeLast('/')

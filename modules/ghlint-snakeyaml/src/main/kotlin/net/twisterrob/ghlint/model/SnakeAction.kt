@@ -30,6 +30,7 @@ public class SnakeAction internal constructor(
 			.map { (key, node) ->
 				val id = key.text
 				val job = SnakeActionInput.from(
+					action = this,
 					id = id,
 					node = node as MappingNode,
 					target = key,
