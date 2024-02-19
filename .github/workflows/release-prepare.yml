@@ -54,7 +54,7 @@ jobs:
       - name: "Create Release pull request."
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_BRANCH: main
+          PR_BASE_BRANCH: main
           PR_TITLE: "Release v${{ steps.changes.outputs.version }}"
           PR_BODY: |
             Prepare release changes for ${{ steps.changes.outputs.version }}.
@@ -70,5 +70,5 @@ jobs:
           link=$(gh pr create \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
-            --base "${PR_BRANCH}")
+            --base "${PR_BASE_BRANCH}")
           echo "::notice title='${PR_TITLE}' PR created::${link}" 
