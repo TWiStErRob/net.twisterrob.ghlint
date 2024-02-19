@@ -67,7 +67,6 @@ jobs:
             [publish]: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/release-publish.yml
             [prepare-run]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          set -x
           link=$(gh pr create \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
