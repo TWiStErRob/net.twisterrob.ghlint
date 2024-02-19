@@ -29,5 +29,9 @@ public interface Action : Component {
 	public companion object
 }
 
-public val Action.id: String
-	get() = parent.location.path.removePrefix("github://").substringBeforeLast('/')
+public val Action.id: String?
+	get() = if (parent.location.path.startsWith("github://")) {
+		parent.location.path.removePrefix("github://").substringBeforeLast('/')
+	} else {
+		null
+	}
