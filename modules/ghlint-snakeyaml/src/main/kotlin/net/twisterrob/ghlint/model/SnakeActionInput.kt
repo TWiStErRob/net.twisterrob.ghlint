@@ -20,10 +20,4 @@ public class SnakeActionInput internal constructor(
 
 	override val default: String?
 		get() = node.getOptionalText("default")
-
-	public companion object {
-
-		public fun from(action: Action, id: String, node: MappingNode, target: Node): Action.ActionInput =
-			SnakeActionInput(parent = action, id = id, node = node, target = target)
-	}
 }

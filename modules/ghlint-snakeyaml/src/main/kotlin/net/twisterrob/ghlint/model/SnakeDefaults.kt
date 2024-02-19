@@ -5,11 +5,12 @@ import net.twisterrob.ghlint.yaml.getOptionalText
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public class SnakeDefaults internal constructor(
+	private val factory: SnakeFactory,
 	private val node: MappingNode,
 ) : Defaults {
 
 	override val run: Defaults.Run?
-		get() = node.getOptional("run")?.let { SnakeRun(it as MappingNode) }
+		get() = node.getOptional("run")?.let { factory.createDefaultsRun(it) }
 
 	public class SnakeRun internal constructor(
 		private val node: MappingNode,

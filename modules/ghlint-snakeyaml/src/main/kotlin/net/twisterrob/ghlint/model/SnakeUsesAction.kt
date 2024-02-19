@@ -1,16 +1,14 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.analysis.ActionResolver
-
 public class SnakeUsesAction internal constructor(
+	private val factory: SnakeFactory,
 	public override val raw: String,
 	public override val versionComment: String?,
-	private val actionResolver: ActionResolver,
 ) : Step.UsesAction {
 
 	@Suppress("detekt.PropertyUsedBeforeDeclaration")
 	override val action: Action
-		get() = actionResolver.resolveAction(owner = owner, repo = repository, path = path, ref = ref)
+		get() = factory.createUsedAction(owner = owner, repo = repository, path = path, ref = ref)
 
 	override val actionName: String
 		get() = raw.substringBefore('@')
