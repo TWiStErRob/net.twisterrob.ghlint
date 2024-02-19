@@ -35,13 +35,3 @@ subprojects {
 		}
 	}
 }
-
-tasks.register("versionFile") {
-	Provider<RegularFile> versionFile = layout.buildDirectory.file("version.txt")
-	Object version = project.version
-	it.inputs.property("version", version)
-	it.outputs.file(versionFile).withPropertyName("versionFile")
-	doLast {
-		versionFile.get().asFile.text = version
-	}
-}

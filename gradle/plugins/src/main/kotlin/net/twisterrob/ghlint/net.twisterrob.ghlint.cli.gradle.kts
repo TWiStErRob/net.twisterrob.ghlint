@@ -39,3 +39,13 @@ tasks.register<Jar>("fatJar") {
 		file.setExecutable(true)
 	}
 }
+
+tasks.register("versionFile") {
+	val versionFile = layout.buildDirectory.file("version.txt")
+	val version = project.version
+	inputs.property("version", version)
+	outputs.file(versionFile).withPropertyName("versionFile")
+	doLast {
+		versionFile.get().asFile.writeText(version.toString())
+	}
+}
