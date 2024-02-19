@@ -57,8 +57,11 @@ jobs:
           PR_BASE_BRANCH: main
           PR_TITLE: "Release v${{ steps.changes.outputs.version }}"
           PR_BODY: |
-            Prepare release changes for ${{ steps.changes.outputs.version }}.
-            When merged to `main`, it'll trigger the [publishing workflow][publish].
+            ## Prepare release changes for ${{ steps.changes.outputs.version }}
+            
+            **Close and re-open this pull request to trigger CI.**
+            
+            When merged to `main`, this pull request will trigger the [publishing workflow][publish].
             
             -- _This PR was created by a [GitHub Actions Workflow][prepare]'s [run][prepare-run], see [Release Process][releasing]._
             
