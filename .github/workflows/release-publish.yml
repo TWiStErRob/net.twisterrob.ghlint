@@ -43,14 +43,22 @@ jobs:
           fatJar
           distZip
 
+      - name: "Version"
+        id: version
+        run: echo "version=$(cat modules/ghlint/build/version.txt)" >> "${GITHUB_OUTPUT}"
+
       - name: "Create Release."
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: "v${{ steps.version.outputs.version }}"
+          RELEASE_TITLE: "v${{ steps.version.outputs.version }}"
         run: |
-          version=$(cat modules/ghlint/build/version.txt)
-          gh release create "v${version}" \
-            --title "Release v${version}" \
-            --latest \
-            --generate-notes \
-            "modules/ghlint/build/libs/ghlint-${version}-fat.jar" \
-            "modules/ghlint/build/distributions/ghlint-${version}.zip"
+          link=$(
+              gh release create "${RELEASE_TAG}" \
+                  --title "${RELEASE_TITLE}" \
+                  --latest \
+                  --generate-notes \
+                  "modules/ghlint/build/libs/ghlint-${version}-fat.jar" \
+                  "modules/ghlint/build/distributions/ghlint-${version}.zip"
+          )
+          echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
