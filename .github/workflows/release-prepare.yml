@@ -38,22 +38,22 @@ jobs:
           VERSION: ${{ steps.changes.outputs.version }}
           GIT_USER: ${{ github.actor }}
           GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
-          BRANCH: release_${{ env.VERSION }}
+          BRANCH: release
         run: |
           git config --global user.email "${EMAIL}"
           git config --global user.name "${GIT_USER}"
           git checkout -b "${BRANCH}"
           git add gradle.properties
           git commit -m "Release v${VERSION}"
+          git push origin HEAD:"${BRANCH}" -u
 
       - name: "Create Release pull request."
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_VERSION: ${{ steps.changes.outputs.version }}
           PR_BRANCH: main
-          PR_TITLE: "Release v${{ env.VERSION }}"
+          PR_TITLE: "Release v${{ steps.changes.outputs.version }}"
           PR_BODY: |
-            Prepare release changes for ${{ env.VERSION }}.
+            Prepare release changes for ${{ steps.changes.outputs.version }}.
             When merged to `main`, it'll trigger the [publishing workflow][publish].
             
             -- This PR was created by a [GitHub Actions Workflow][prepare], see [Release Process][releasing].
