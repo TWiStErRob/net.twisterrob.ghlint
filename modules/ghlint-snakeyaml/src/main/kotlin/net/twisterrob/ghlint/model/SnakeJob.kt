@@ -2,7 +2,6 @@ package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.array
-import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
@@ -30,23 +29,8 @@ public sealed class SnakeJob protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
-	public companion object {
-
-		public fun from(parent: Workflow, id: String, node: MappingNode, target: Node): Job =
-			when {
-
-				node.getOptionalText("uses") != null ->
-					SnakeReusableWorkflowCallJob(parent = parent, id = id, node = node, target = target)
-
-				node.getOptional("steps") != null ->
-					SnakeNormalJob(parent = parent, id = id, node = node, target = target)
-
-				else ->
-					error("Unknown job type: ${node}")
-			}
-	}
-
 	public class SnakeNormalJob internal constructor(
+		private val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -54,18 +38,16 @@ public sealed class SnakeJob protected constructor(
 	) : Job.NormalJob, SnakeJob() {
 
 		override val steps: List<Step>
-			get() = node.getRequired("steps").array
-				.mapIndexed { index, node ->
-					SnakeStep.from(
-						parent = this,
-						index = index,
-						node = node as MappingNode,
-						target = node.getDash(),
-					)
-				}
+			get() = node.getRequired("steps").array.mapIndexed { index, node ->
+				factory.createStep(
+					parent = this,
+					index = index,
+					node = node,
+				)
+			}
 
 		override val defaults: Defaults?
-			get() = node.getOptional("defaults")?.let { SnakeDefaults(it as MappingNode) }
+			get() = node.getOptional("defaults")?.let { factory.createDefaults(it) }
 
 		override val timeoutMinutes: Int?
 			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()

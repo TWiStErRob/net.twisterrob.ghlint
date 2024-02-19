@@ -24,31 +24,6 @@ public sealed class SnakeStep protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
-	public companion object {
-
-		public fun from(parent: Job.NormalJob, index: Int, node: MappingNode, target: Node): Step =
-			when {
-				node.getOptionalText("uses") != null ->
-					SnakeUses(
-						parent = parent,
-						index = Step.Index(index),
-						node = node,
-						target = target,
-					)
-
-				node.getOptionalText("run") != null ->
-					SnakeRun(
-						parent = parent,
-						index = Step.Index(index),
-						node = node,
-						target = target,
-					)
-
-				else ->
-					error("Unknown step type: ${node}")
-			}
-	}
-
 	public class SnakeRun internal constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
@@ -68,6 +43,7 @@ public sealed class SnakeStep protected constructor(
 	}
 
 	public class SnakeUses internal constructor(
+		private val factory: SnakeComponentFactory,
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
@@ -75,8 +51,11 @@ public sealed class SnakeStep protected constructor(
 	) : Step.Uses, SnakeStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
-		override val uses: String
-			get() = node.getRequiredText("uses")
+		override val uses: Step.UsesAction
+			get() = factory.createUsesAction(
+				uses = node.getRequiredText("uses"),
+				versionComment = node.inLineComments?.singleOrNull()?.value,
+			)
 
 		override val with: Map<String, String>?
 			get() = node.getOptional("with")?.run { map.toTextMap() }

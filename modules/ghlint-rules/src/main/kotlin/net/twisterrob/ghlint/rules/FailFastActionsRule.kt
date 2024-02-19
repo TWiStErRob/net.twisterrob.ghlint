@@ -17,8 +17,8 @@ public class FailFastActionsRule : VisitorRule {
 
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
-		when {
-			step.uses.startsWith("actions/upload-artifact@") -> {
+		when (step.uses.action) {
+			"actions/upload-artifact" -> {
 				val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")
 				if (!isSpecified) {
 					reporting.report(FailFastUploadArtifact, step) {
@@ -27,7 +27,7 @@ public class FailFastActionsRule : VisitorRule {
 				}
 			}
 
-			step.uses.startsWith("EnricoMi/publish-unit-test-result-action@") -> {
+			"EnricoMi/publish-unit-test-result-action" -> {
 				val isSpecified = step.with.orEmpty().containsKey("action_fail_on_inconclusive")
 				if (!isSpecified) {
 					reporting.report(FailFastPublishUnitTestResults, step) {
@@ -36,7 +36,7 @@ public class FailFastActionsRule : VisitorRule {
 				}
 			}
 
-			step.uses.startsWith("peter-evans/create-pull-request@") -> {
+			"peter-evans/create-pull-request" -> {
 				reporting.report(FailFastPeterEvansCreatePullRequest, step) {
 					"Use `gh pr create` to open a PR instead of ${it}."
 				}

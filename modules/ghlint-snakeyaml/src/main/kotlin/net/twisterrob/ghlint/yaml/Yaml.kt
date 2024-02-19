@@ -2,7 +2,7 @@ package net.twisterrob.ghlint.yaml
 
 import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.File
-import net.twisterrob.ghlint.model.SnakeWorkflow
+import net.twisterrob.ghlint.model.SnakeComponentFactory
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.ruleset.RuleSet
@@ -24,13 +24,15 @@ import kotlin.jvm.optionals.getOrElse
 
 public object Yaml {
 
+	private val factory = SnakeComponentFactory()
+
 	public fun analyze(files: List<File>, ruleSets: List<RuleSet>): List<Finding> {
 		val workflows = files.map(::loadWorkflow)
 		return Analyzer().analyzeWorkflows(workflows, ruleSets)
 	}
 
 	public fun loadWorkflow(file: File): Workflow =
-		SnakeWorkflow.from(file)
+		factory.createWorkflow(file)
 
 	public fun load(@Language("yaml") yaml: String): Node {
 		val settings = LoadSettings.builder()
