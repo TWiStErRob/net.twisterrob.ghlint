@@ -6,9 +6,17 @@ on:
       - main
 
 jobs:
-  release:
-    name: "Release"
+  
+  validate:
+    name: "🦺 Validation"
     if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@19333c04e57739ec6074b09c6ca09c225c94dc09 # v1
+
+  release:
+    name: "🚢 Release"
+    if: ${{ startsWith(github.event.head_commit.message, 'Release v') }}
+    needs:
+      - validate
 
     permissions:
       # read: actions/checkout
