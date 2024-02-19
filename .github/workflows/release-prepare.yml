@@ -44,8 +44,8 @@ jobs:
           GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
           BRANCH: release
         run: |
-          git config --global user.email "${EMAIL}"
-          git config --global user.name "${GIT_USER}"
+          git config user.name "${GIT_USER}"
+          git config user.email "${GIT_EMAIL}"
           git checkout -b "${BRANCH}"
           git add gradle.properties
           git commit -m "Release v${VERSION}"
