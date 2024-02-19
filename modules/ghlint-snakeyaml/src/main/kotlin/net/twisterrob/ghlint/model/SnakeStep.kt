@@ -79,7 +79,7 @@ public sealed class SnakeStep protected constructor(
 		override val uses: Step.UsesAction
 			get() = SnakeUsesAction(
 				raw = node.getRequiredText("uses"),
-				versionComment = node.inLineComments.singleOrNull()?.value,
+				versionComment = node.inLineComments?.singleOrNull()?.value,
 				actionResolver = SnakeActionResolver(),
 			)
 
