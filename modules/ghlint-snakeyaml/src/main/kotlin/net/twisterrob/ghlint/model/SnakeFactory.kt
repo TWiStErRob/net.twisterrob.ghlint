@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.analysis.SnakeActionResolver
 import net.twisterrob.ghlint.model.Action.ActionInput
 import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
@@ -14,8 +13,6 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeFactory {
-
-	private val actionCache: MutableMap<String, Action> = mutableMapOf()
 
 	public fun createWorkflow(file: File): Workflow {
 		val node = Yaml.load(file.content) as MappingNode
@@ -110,14 +107,7 @@ public class SnakeFactory {
 
 	internal fun createUsesAction(raw: String, versionComment: String?): Step.UsesAction =
 		SnakeUsesAction(
-			factory = this,
 			raw = raw,
 			versionComment = versionComment,
 		)
-
-	internal fun createUsedAction(owner: String, repo: String, path: String?, ref: String): Action =
-		actionCache.getOrPut("$owner/$repo/${path ?: "null"}@$ref") {
-			val file = SnakeActionResolver().resolveAction(owner = owner, repo = repo, path = path, ref = ref)
-			this.createAction(file)
-		}
 }

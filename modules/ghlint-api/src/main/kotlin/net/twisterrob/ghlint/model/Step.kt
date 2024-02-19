@@ -51,9 +51,7 @@ public sealed interface Step : Component {
 		public val raw: String
 		public val versionComment: String?
 
-		public val action: Action
-
-		public val actionName: String
+		public val action: String
 		public val owner: String
 		public val repository: String
 		public val path: String?

@@ -20,7 +20,7 @@ public class ScriptInjectionRule : VisitorRule {
 
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
-		if (step.uses.actionName == "actions/github-script"
+		if (step.uses.action == "actions/github-script"
 			// Assuming script is required: https://github.com/actions/github-script/blob/v7.0.1/action.yml#L8-L10
 			&& step.with.orEmpty().getValue("script").contains("\${{")
 		) {
