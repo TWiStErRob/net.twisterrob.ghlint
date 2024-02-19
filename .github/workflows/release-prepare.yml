@@ -35,7 +35,7 @@ jobs:
 
       - name: "Prepare changes for ${{ env.VERSION }}."
         env:
-          VERSION: ${{ steps.outputs.changes.version }}
+          VERSION: ${{ steps.changes.outputs.version }}
           GIT_USER: ${{ github.actor }}
           GIT_EMAIL: ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
         run: |
@@ -48,10 +48,16 @@ jobs:
       - name: "Create Release pull request."
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.outputs.changes.version }}
+          VERSION: ${{ steps.changes.outputs.version }}
           BODY: |
             Prepare release changes for ${VERSION}.
-            When merged to main, it'll trigger the publishing workflow.
+            When merged to `main`, it'll trigger the [publishing workflow][publish].
+            
+            -- This PR was created by a [GitHub Actions Workflow][prepare], see [Release Process][releasing].
+            
+            [releasing]: https://github.com/${{ github.repository }}/blob/main/docs/RELEASING.md
+            [prepare]: https://github.com/${{ github.repository }}/actions/workflows/release-prepare.yml
+            [publish]: https://github.com/${{ github.repository }}/actions/workflows/release-publish.yml
         run: >
           gh pr create
             --title "Release v${VERSION}"
