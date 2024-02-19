@@ -50,15 +50,16 @@ jobs:
       - name: "Create Release."
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: "v${{ steps.version.outputs.version }}"
-          RELEASE_TITLE: "v${{ steps.version.outputs.version }}"
+          VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_TAG: v${{ steps.version.outputs.version }}
+          RELEASE_TITLE: v${{ steps.version.outputs.version }}
         run: |
           link=$(
               gh release create "${RELEASE_TAG}" \
                   --title "${RELEASE_TITLE}" \
                   --latest \
                   --generate-notes \
-                  "modules/ghlint/build/libs/ghlint-${version}-fat.jar" \
-                  "modules/ghlint/build/distributions/ghlint-${version}.zip"
+                  "modules/ghlint/build/libs/ghlint-${VERSION}-fat.jar" \
+                  "modules/ghlint/build/distributions/ghlint-${VERSION}.zip"
           )
           echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
