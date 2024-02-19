@@ -46,9 +46,7 @@ jobs:
           git checkout -b "${BRANCH}"
           git add gradle.properties
           git commit -m "Release v${VERSION}"
-          git branch --set-upstream-to="origin/${BRANCH}"
-          git pull -r
-          git push origin HEAD:"${BRANCH}" -u
+          git push origin HEAD:"${BRANCH}" -u -f
 
       - name: "Create Release pull request."
         env:
