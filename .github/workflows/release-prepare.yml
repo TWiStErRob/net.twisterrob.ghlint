@@ -12,7 +12,7 @@ jobs:
       # git push
       contents: write
       # gh pr create
-      #pull-requests: write
+      pull-requests: write
 
     runs-on: ubuntu-latest
     timeout-minutes: 2
