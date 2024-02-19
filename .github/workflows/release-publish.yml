@@ -48,7 +48,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           version=$(cat modules/ghlint/build/version.txt)
-          gh release create "${version}" \
+          gh release create "v${version}" \
             --title "Release v${version}" \
             --latest \
             --generate-notes \
