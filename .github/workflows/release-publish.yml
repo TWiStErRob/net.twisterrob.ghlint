@@ -66,7 +66,7 @@ jobs:
                   --title "${RELEASE_TITLE}" \
                   --latest \
                   --generate-notes \
-                  "release/ghlint.jar" \
-                  "release/ghlint.zip"
+                  "release/ghlint.jar#CLI executable" \
+                  "release/ghlint.zip#CLI exploded distribution"
           )
           echo "::notice title=Release '${RELEASE_TITLE}' created::${link}"
