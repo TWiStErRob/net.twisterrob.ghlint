@@ -42,6 +42,7 @@ jobs:
           python-version-file: 'website/.python-version'
 
       - name: "Install dependencies"
+        working-directory: website
         run: |
           pip install -r requirements.txt
 
@@ -52,6 +53,7 @@ jobs:
       - name: "Build the website"
         env:
           VERBOSE: ${{ env.ACTIONS_STEP_DEBUG && ' --verbose' || '' }}
+        working-directory: website
         run: |
           mkdocs build${VERBOSE} --clean --strict
 
