@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.ruleset.RuleSet
 public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	id = "default",
 	name = "Default",
+	ActionInputsRule::class,
 	DoubleCurlyIfRule::class,
 	ExplicitJobPermissionsRule::class,
 	IdNamingRule::class,

@@ -1,0 +1,44 @@
+package net.twisterrob.ghlint.analysis
+
+import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.FileLocation
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse.BodyHandlers
+import java.time.Duration
+
+internal class SnakeActionResolver(
+	private val httpClient: HttpClient = HttpClient.newHttpClient()
+) {
+
+	init {
+		System.setProperty(
+			"jdk.httpclient.HttpClient.log",
+			"none", // "errors,requests,headers,frames:control:data:window,ssl,trace,channel",
+		)
+	}
+
+	fun resolveAction(owner: String, repo: String, path: String?, ref: String): File {
+		val directory = if (path == null) "" else "/${path}"
+		val uri = URI("https://raw.githubusercontent.com/${owner}/${repo}/${ref}${directory}/action.yml")
+		val request = HttpRequest.newBuilder()
+			.uri(uri)
+			.timeout(Duration.ofSeconds(@Suppress("detekt.MagicNumber") 5))
+			.GET()
+			.build()
+		val response = httpClient.send(request, BodyHandlers.ofString())
+		require(response.statusCode() == HTTP_OK) {
+			"Failed to fetch action.yml for ${owner}/${repo}/${directory}@${ref}:\n" +
+					"Status: ${response.statusCode()}\n" +
+					response.body()
+		}
+		val yaml = response.body()
+		return File(FileLocation("github://${owner}/${repo}${directory}/action.yml"), yaml)
+	}
+
+	companion object {
+
+		private const val HTTP_OK = 200
+	}
+}

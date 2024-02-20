@@ -17,7 +17,7 @@ public class FailFastActionsRule : VisitorRule {
 
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
 		super.visitUsesStep(reporting, step)
-		when (step.uses.action) {
+		when (step.uses.actionName) {
 			"actions/upload-artifact" -> {
 				val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")
 				if (!isSpecified) {
