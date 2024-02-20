@@ -1,10 +1,17 @@
 package net.twisterrob.ghlint.analysis
 
+import dev.harrel.jsonschema.Validator
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.yaml.SnakeYaml
+import net.twisterrob.ghlint.yaml.YamlValidation
+import net.twisterrob.ghlint.yaml.resolve
+import net.twisterrob.ghlint.yaml.toLocation
+import org.snakeyaml.engine.v2.nodes.Node
 
 internal class JsonSchemaValidationRule : Rule {
 
@@ -14,7 +21,18 @@ internal class JsonSchemaValidationRule : Rule {
 		if (file.location.path == "test.yml") {
 			emptyList()
 		} else {
-			error("Should never be called.")
+			val root: Node = SnakeYaml.load(file.content as Yaml)
+			val result: Validator.Result = YamlValidation.validate(file.content as Yaml)
+			result.errors
+				.filter { it.error != "False schema always fails" }
+				.map { error ->
+					Finding(
+						rule = this,
+						issue = JsonSchemaValidation,
+						location = root.resolve(error.instanceLocation).toLocation(file),
+						message = "${error.error} (${error.instanceLocation})"
+					)
+				}
 		}
 
 	companion object {
