@@ -64,6 +64,7 @@ internal class Generator(
 					
 					_Defined by `${rule.id}` in the "[${ruleSet.name}](../)" ruleset${related}._
 					
+					## Description
 				""".trimIndent()
 			)
 			appendLine(issue.descriptionWithExamples)
