@@ -6,7 +6,7 @@ import kotlin.io.path.relativeTo
 
 public class GitHubCommandReporter(
 	private val repositoryRoot: Path,
-	private val output: Appendable
+	private val output: Appendable,
 ) : Reporter {
 
 	override fun report(findings: List<Finding>) {
@@ -22,10 +22,11 @@ public class GitHubCommandReporter(
  * Escaping ref: https://github.com/actions/toolkit/blob/415c42d/packages/core/src/command.ts#L38-L94
  */
 private fun Finding.render(repositoryRoot: Path): String {
-	val repoRelativePath = Path.of(location.file.path).toAbsolutePath().relativeTo(repositoryRoot.toAbsolutePath())
+	val filePath = Path.of(location.file.path)
+	val repoRelativePath = filePath.toAbsolutePath().relativeTo(repositoryRoot.toAbsolutePath())
 	val file = repoRelativePath.toString().escapeProperty()
-	val start = location.start.line.number
-	val end = location.end.line.number
+	val start = location.start.line.number.toString().escapeProperty()
+	val end = location.end.line.number.toString().escapeProperty()
 	val title = issue.id.escapeProperty()
 	val message = message.escapeData()
 	return "::warning file=${file},line=${start},endLine=${end},title=${title}::${message}"
@@ -33,9 +34,7 @@ private fun Finding.render(repositoryRoot: Path): String {
 
 private fun String.escapeProperty(): String =
 	this
-		.replace("%", "%25")
-		.replace("\r", "%0D")
-		.replace("\n", "%0A")
+		.escapeData()
 		.replace(":", "%3A")
 		.replace(",", "%2C")
 
