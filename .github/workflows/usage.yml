@@ -33,7 +33,7 @@ jobs:
 
       - name: "Download validator."
         env:
-          GHLINT_VERSION: "0.2.0"
+          GHLINT_VERSION: "0.1.0"
         run: |
           curl --silent --show-error --location --remote-name \
               https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
