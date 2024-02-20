@@ -8,6 +8,8 @@ dependencies {
 	implementation(projects.ghlintSnakeyaml)
 	implementation(projects.ghlintJsonschema)
 	implementation(projects.ghlintReportingSarif)
+
+	testImplementation(projects.ghlintTesting)
 }
 
 application {

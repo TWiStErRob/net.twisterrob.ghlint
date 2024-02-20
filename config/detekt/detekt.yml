@@ -64,6 +64,9 @@ comments:
   CommentOverPrivateProperty:
     # I want to be able to write comments for private properties if they're needed.
     active: false
+  CommentOverPrivateFunction:
+    # I want to be able to write comments for private functions if they're needed.
+    active: false
 
 libraries:
   LibraryEntitiesShouldNotBePublic:
