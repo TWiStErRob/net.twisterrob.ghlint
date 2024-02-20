@@ -49,10 +49,6 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: "Retrieve GitHub Pages configuration."
-        id: pages
-        uses: actions/configure-pages@v4
-
       - name: "Build the website"
         env:
           VERBOSE: ${{ env.ACTIONS_STEP_DEBUG && ' --verbose' || '' }}
