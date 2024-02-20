@@ -50,13 +50,17 @@ public class RedundantShellRule : VisitorRule {
 				Duplication can lead to confusion.
 				
 				The default `shell:` can be specified on 2 levels, and the lowest wins:
+				
 				 * [`defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#defaultsrun)
 				 * [`jobs.<job_id>.defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun)
+				
 				This means that when the workflow has the shell defined, the job's definition is not necessary.
 				
 				It is, however, recommended that the shell is defined on a per-job basis,
 				because each job can have different runners.
+				
 				This results in
+				
 				 * explicit definitions:
 				   each job has their shells defined.
 				 * better locality:
@@ -124,6 +128,7 @@ public class RedundantShellRule : VisitorRule {
 				Duplication can lead to confusion.
 				
 				The `shell:` can be specified on 3 levels, and the lowest wins:
+				
 				 * [`defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#defaultsrun)
 				 * [`jobs.<job_id>.defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun)
 				 * [`jobs.<job_id>.steps[*].shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell)

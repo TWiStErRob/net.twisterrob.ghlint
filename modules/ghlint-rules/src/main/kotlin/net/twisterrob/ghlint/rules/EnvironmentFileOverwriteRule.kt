@@ -41,6 +41,7 @@ public class EnvironmentFileOverwriteRule : VisitorRule {
 				Use `>>` instead of `>`, to ensure the file is appended, not overwritten.
 				
 				References:
+				
 				 * [Environment files documentation](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files)
 			""".trimIndent(),
 			compliant = listOf(

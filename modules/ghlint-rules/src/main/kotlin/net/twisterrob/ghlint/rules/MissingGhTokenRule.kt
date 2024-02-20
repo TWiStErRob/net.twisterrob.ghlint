@@ -48,13 +48,14 @@ public class MissingGhTokenRule : VisitorRule {
 				> -- [Using GitHub CLI in workflows](https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows)
 				
 				Usually this token will be:
-				```
+				```yaml
 				env:
 				  GH_TOKEN: ${'$'}{{ github.token }}
 				```
 				and the "required scopes" can be defined in the `permissions:` field of the job.
 				
 				References:
+				
 				 * [GitHub CLI Manual](https://cli.github.com/manual/#configuration)
 				 * [Using GitHub CLI in workflows](https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows)
 				 * [gh help environment](https://cli.github.com/manual/gh_help_environment)
@@ -62,6 +63,7 @@ public class MissingGhTokenRule : VisitorRule {
 				
 				Note: it's possible to set both `GH_TOKEN` and `GITHUB_TOKEN` as environment variables,
 				but to reduce confusion between
+				
 				 * `GITHUB_TOKEN` environment variables used by `gh` CLI
 				 * `GITHUB_TOKEN` secret automatically defined by GitHub Actions
 				
@@ -87,7 +89,7 @@ public class MissingGhTokenRule : VisitorRule {
 				Example(
 					explanation = """
 						`GH_TOKEN` is not defined, command will fail with:
-						```
+						```log
 						gh: To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable. Example:
 						  env:
 						    GH_TOKEN: ${'$'}{{ github.token }}

@@ -175,7 +175,7 @@ public class FailFastActionsRule : VisitorRule {
 				There's also confusion as seen [in the issue list](https://github.com/peter-evans/create-pull-request/issues?q=is%3Aissue+%22is+not+ahead+of+base%22+%22will+not+be+created%22).
 				
 				The only way to notice this is by checking the logs of the action:
-				```
+				```log
 				Branch 'to-create' is not ahead of base 'main' and will not be created
 				```
 				and this line is not even a warning.

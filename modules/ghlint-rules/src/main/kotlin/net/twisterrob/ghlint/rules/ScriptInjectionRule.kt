@@ -34,7 +34,7 @@ public class ScriptInjectionRule : VisitorRule {
 			id = "ShellScriptInjection",
 			title = "Shell script vulnerable to script injection.",
 			description = """
-				Using ${'$'}{{ }} in shell scripts is vulnerable to script injection.
+				Using `${'$'}{{ }}` in shell scripts is vulnerable to script injection.
 				Script injection is when a user can control part of the script, and can inject arbitrary code.
 				In most cases this is a security vulnerability, but at the very least it's a bug.
 				All user input must be sanitized before being executed as shell script.
@@ -44,6 +44,7 @@ public class ScriptInjectionRule : VisitorRule {
 				With environment variables data travels in memory, rather than becoming part of the executable code.
 				
 				References:
+				
 				 * [Understanding the risk of script injections](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
 				 * [Stealing the job's `GITHUB_TOKEN`](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#stealing-the-jobs-github_token)
 			""".trimIndent(),
@@ -69,7 +70,7 @@ public class ScriptInjectionRule : VisitorRule {
 						Capturing the input in an environment variable prevents shell injection.
 						
 						The output is as expected:
-						```
+						```log
 						Warning: Quotation mark (") needs a pair.
 						```
 					""".trimIndent(),
@@ -94,6 +95,7 @@ public class ScriptInjectionRule : VisitorRule {
 					explanation = """
 						Directly using the output in the shell script is vulnerable to script injection.
 						Depending on the actual contents of the result
+						
 						 * in the best case, the script fails,
 						 * in normal cases, the output is just wrong,
 						 * in the worst case, this could lead to arbitrary code execution.
@@ -121,7 +123,7 @@ public class ScriptInjectionRule : VisitorRule {
 			id = "JSScriptInjection",
 			title = "JavaScript vulnerable to script injection.",
 			description = """
-				Using ${'$'}{{ }} in actions/github-script JavaScript is vulnerable to script injection.
+				Using `${'$'}{{ }}` in actions/github-script JavaScript is vulnerable to script injection.
 				Script injection is when a user can control part of the script, and can inject arbitrary code.
 				In most cases this is a security vulnerability, but at the very least it's a bug.
 				All user input must be sanitized before being executed as JavaScript code.
@@ -131,6 +133,7 @@ public class ScriptInjectionRule : VisitorRule {
 				With environment variables data travels in memory, rather than becoming part of the executable code.
 				
 				References:
+				
 				 * [Understanding the risk of script injections](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
 				 * [Stealing the job's `GITHUB_TOKEN`](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#stealing-the-jobs-github_token)
 			""".trimIndent(),

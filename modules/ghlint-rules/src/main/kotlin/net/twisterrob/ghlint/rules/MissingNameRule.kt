@@ -46,6 +46,7 @@ public class MissingNameRule : VisitorRule {
 			description = """
 				Having a workflow name is important for usability.
 				The default workflow name is the file name, but it's recommended to override it for human consumption:
+				
 				 * The workflow name is visible at various parts of the GitHub UI, most notably in the Actions tab.
 				 * It's also used in Email subjects, for example:
 				   `[<org>/<repo>] Run failed: <workflow name> - <branch name> (<hash>)`.
@@ -90,7 +91,9 @@ public class MissingNameRule : VisitorRule {
 			title = "Job is missing a name.",
 			description = """
 				Having a job name is important for usability.
+				
 				The default job name is the id of the job, but it's recommended to override it for human consumption:
+				
 				 * The job name is visible at various parts of the GitHub UI,
 				   most notably in the Checks UI on commits, bottom of pull requests and merge queues.
 				 * It's also prominently visible when looking into a workflow run:
@@ -137,8 +140,10 @@ public class MissingNameRule : VisitorRule {
 			title = "Step is missing a name.",
 			description = """
 				Having a step name is important for usability.
+				
 				The default step name is the first line of `run:` or the action of `uses:`,
 				but it's recommended to override it for human consumption:
+				
 				 * The step name is the header shown when a step is collapsed on the workflow run UI.
 				 * Using a succinct, but descriptive name can help to understand the workflow run at a glance.
 				 * It's also useful when opening the file for viewing or editing,

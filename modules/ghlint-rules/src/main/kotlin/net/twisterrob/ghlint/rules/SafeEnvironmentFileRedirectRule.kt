@@ -44,19 +44,22 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule {
 			description = """
 				Environment files can be written in many different ways from shell scripts.
 				
-				To be consistent with ShellCheck recommendations (SC2086 and SC2250),
+				To be consistent with ShellCheck recommendations
+				([SC2086](https://www.shellcheck.net/wiki/SC2086) and [SC2250](https://www.shellcheck.net/wiki/SC2250)),
 				it is recommended to quote and use curly braces around environment file path variables, for example:
-				```
+				```shell
 				>> "${'$'}{GITHUB_OUTPUT}"
 				```
 				
 				While other styles also work, this style is the most robust and safe.
 				If this style is copied elsewhere it can only benefit the target script.
 				In short, the benefits are:
+				
 				 * Quotes around file paths help with spaces and special characters.
 				 * Curly braces help with explicit variable references and disambiguation.
 				
 				References:
+				
 				 * [Environment files documentation](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files)
 				 * [Prefer putting braces around variable references even when not strictly required.](https://www.shellcheck.net/wiki/SC2250)
 				 * [Double quote to prevent globbing and word splitting.](https://www.shellcheck.net/wiki/SC2086)

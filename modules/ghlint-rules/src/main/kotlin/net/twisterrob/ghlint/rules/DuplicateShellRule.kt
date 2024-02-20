@@ -42,6 +42,7 @@ public class DuplicateShellRule : VisitorRule {
 				Step shells should be uniform for each job, since each step is executed on the same runner.
 				
 				Relevant documentation:
+				
 				 * [`jobs.<job_id>.steps[*].shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell)
 				 * [`jobs.<job_id>.defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun)
 			""".trimIndent(),
