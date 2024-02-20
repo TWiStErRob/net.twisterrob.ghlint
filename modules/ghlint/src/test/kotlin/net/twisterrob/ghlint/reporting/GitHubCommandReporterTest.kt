@@ -18,8 +18,8 @@ class GitHubCommandReporterTest {
 
 		val findings = listOf(
 			testFinding(
-				TestRule(),
-				TestRule.TestIssue,
+				rule = TestRule(),
+				issue = TestRule.TestIssue,
 				file = "test/path/to/test.file",
 			)
 		)
@@ -38,8 +38,8 @@ class GitHubCommandReporterTest {
 
 		val findings = listOf(
 			testFinding(
-				TestRule(),
-				TestRule.TestIssue,
+				rule = TestRule(),
+				issue = TestRule.TestIssue,
 				startLine = 42,
 				endLine = 42,
 			)
@@ -59,8 +59,8 @@ class GitHubCommandReporterTest {
 
 		val findings = listOf(
 			testFinding(
-				TestRule(),
-				TestRule.TestIssue,
+				rule = TestRule(),
+				issue = TestRule.TestIssue,
 				message = "multiline\nmessage",
 			)
 		)
@@ -79,16 +79,16 @@ class GitHubCommandReporterTest {
 
 		val findings = listOf(
 			testFinding(
-				TestRule(),
-				TestRule.TestIssue,
+				rule = TestRule(),
+				issue = TestRule.TestIssue,
 				file = "test1.file",
 				startLine = 11,
 				endLine = 12,
 				message = "message1"
 			),
 			testFinding(
-				TestRule(),
-				TestRule.TestIssue,
+				rule = TestRule(),
+				issue = TestRule.TestIssue,
 				file = "test2.file",
 				startLine = 21,
 				endLine = 22,

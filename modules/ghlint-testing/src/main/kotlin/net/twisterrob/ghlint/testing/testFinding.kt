@@ -10,6 +10,9 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 
 /**
+ * Creates a Finding object with the given parameters.
+ * Useful to create a finding with only relevant properties set.
+ *
  * Minimal example usage:
  * ```
  * testFinding(
