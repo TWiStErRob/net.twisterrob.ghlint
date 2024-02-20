@@ -1,3 +1,8 @@
 site_name: GH-lint documentation
+repo_url: https://github.com/TWiStErRob/net.twisterrob.ghlint/
+
 theme:
   name: material
+
+markdown_extensions:
+  - pymdownx.superfences
