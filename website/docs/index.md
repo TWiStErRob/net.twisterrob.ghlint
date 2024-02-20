@@ -1,6 +1,6 @@
 # Welcome to GH-Lint
 
-This is the documentation for GH-Lint, a tool to lint GitHub files.
+This is the documentation for `ghlint`, a tool to lint GitHub files.
 
 ## Getting Started
 
@@ -8,4 +8,4 @@ See [project README](https://www.github.com/TWiStErRob/net.twisterrob.ghlint) fo
 
 ## Issue Documentation
 
-See [issue documentation](issues) for a list of rules and their details.
+See [issue documentation](issues/default) for a list of rules and their details.
