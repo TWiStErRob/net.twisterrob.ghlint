@@ -32,7 +32,7 @@ jobs:
       - name: "Build & Verify project."
         run: >
           ./gradlew
-          :ghlint-website:run
+          :ghlint-docs:run
 
       - name: "Set up Python"
         uses: actions/setup-python@v5
