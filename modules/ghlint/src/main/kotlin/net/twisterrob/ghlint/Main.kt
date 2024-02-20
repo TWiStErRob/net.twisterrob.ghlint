@@ -24,7 +24,7 @@ public fun main(vararg args: String) {
 	val allFindings = validationResults + analysisResults
 
 	TextReporter(System.out).report(allFindings)
-	if (System.getenv("GITHUB_ACTIONS") == "true" && false) {
+	if (System.getenv("GITHUB_ACTIONS") == "true") {
 		GitHubCommandReporter(
 			repositoryRoot = Path.of("."),
 			output = System.out,
