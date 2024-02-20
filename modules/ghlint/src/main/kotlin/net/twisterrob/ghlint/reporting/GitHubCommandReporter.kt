@@ -47,4 +47,4 @@ private fun String.escapeData(): String =
 		.replace("\n", "%0A")
 
 private val Issue.helpLink: String
-	get() = "\n\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/)."
+	get() = "\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/)."
