@@ -64,9 +64,11 @@ jobs:
 
   deploy:
     name: "Deploy GitHub Pages Site"
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' }}
     needs:
       - generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     permissions:
       pages: write
@@ -76,7 +78,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
-    runs-on: ubuntu-latest
     steps:
       - name: "Deploy to GitHub Pages"
         id: deployment
