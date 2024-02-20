@@ -41,7 +41,7 @@ jobs:
 
       - name: "Install dependencies"
         run: |
-          #pip install -r requirements.txt
+          pip install -r requirements.txt
 
       - name: "Retrieve GitHub Pages configuration."
         id: pages
