@@ -28,6 +28,8 @@ jobs:
 
       - name: "Set up Gradle."
         uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: "Build & Verify project."
         run: >
