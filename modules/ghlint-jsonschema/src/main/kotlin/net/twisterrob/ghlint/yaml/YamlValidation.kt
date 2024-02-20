@@ -8,7 +8,7 @@ import net.twisterrob.ghlint.model.Yaml
 import java.net.URI
 import java.net.URL
 
-public object YamlValidation {
+internal object YamlValidation {
 
 	private const val WORKFLOW_SCHEMA_URL =
 		"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json"
@@ -22,7 +22,7 @@ public object YamlValidation {
 			}
 	}
 
-	public fun validate(yaml: Yaml): Validator.Result {
+	fun validate(yaml: Yaml): Validator.Result {
 		val factory = SnakeYamlJsonNode.Factory(SnakeYaml::load)
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)

@@ -21,8 +21,9 @@ internal class JsonSchemaValidationRule : Rule {
 		if (file.location.path == "test.yml") {
 			emptyList()
 		} else {
-			val root: Node = SnakeYaml.load(file.content as Yaml)
-			val result: Validator.Result = YamlValidation.validate(file.content as Yaml)
+			val yaml = file.content as Yaml
+			val root: Node = SnakeYaml.load(yaml)
+			val result: Validator.Result = YamlValidation.validate(yaml)
 			result.errors
 				.filter { it.error != "False schema always fails" }
 				.map { error ->

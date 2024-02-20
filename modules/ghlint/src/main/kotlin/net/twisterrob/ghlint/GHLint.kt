@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint
 
-import net.twisterrob.ghlint.analysis.Validator
+import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
@@ -20,19 +20,17 @@ public class GHLint {
 			}
 		}
 		val files = config.files.map { Yaml.from(FileLocation(it.toString()), it.readText()) }
-		val validationResults = Validator().validateWorkflows(files)
-		val ruleSets = listOf(DefaultRuleSet())
-		val analysisResults = SnakeYaml.analyze(files, ruleSets)
-		val allFindings = validationResults + analysisResults
+		val ruleSets = listOf(JsonSchemaRuleSet(), DefaultRuleSet())
+		val findings = SnakeYaml.analyze(files, ruleSets)
 		if (config.isVerbose) {
-			println("There are ${allFindings.size} findings.")
+			println("There are ${findings.size} findings.")
 		}
 
 		if (config.isReportConsole) {
 			if (config.isVerbose) {
 				println("Reporting findings to console.")
 			}
-			TextReporter(System.out).report(allFindings)
+			TextReporter(System.out).report(findings)
 		}
 		if (config.isReportGitHubCommands) {
 			if (config.isVerbose) {
@@ -41,7 +39,7 @@ public class GHLint {
 			GitHubCommandReporter(
 				repositoryRoot = config.root,
 				output = System.out,
-			).report(allFindings)
+			).report(findings)
 		}
 		config.sarifReportLocation?.run {
 			if (config.isVerbose) {
@@ -49,12 +47,12 @@ public class GHLint {
 			}
 			SarifReporter.report(
 				ruleSets = ruleSets,
-				findings = allFindings,
+				findings = findings,
 				target = this,
 				rootDir = config.root,
 			)
 		}
-		val code = if (config.isReportExitCode && allFindings.isNotEmpty()) 1 else 0
+		val code = if (config.isReportExitCode && findings.isNotEmpty()) 1 else 0
 		if (config.isVerbose) {
 			println("Exiting with code ${code}.")
 		}
