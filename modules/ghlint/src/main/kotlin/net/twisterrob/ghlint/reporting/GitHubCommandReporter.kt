@@ -21,6 +21,7 @@ public class GitHubCommandReporter(
  * Multiline support: Based on https://github.com/actions/toolkit/issues/193
  * Escaping ref: https://github.com/actions/toolkit/blob/415c42d/packages/core/src/command.ts#L38-L94
  */
+@Suppress("detekt.MaxChainedCallsOnSameLine")
 private fun Finding.render(repositoryRoot: Path): String {
 	val filePath = Path.of(location.file.path)
 	val repoRelativePath = filePath.toAbsolutePath().relativeTo(repositoryRoot.toAbsolutePath())
