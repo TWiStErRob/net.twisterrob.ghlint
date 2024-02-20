@@ -91,10 +91,10 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 		),
 		help = MultiformatMessageString(
 			text = "See help markdown.",
-			markdown = issue.descriptionWithExamples,
+			markdown = issue.descriptionWithExamples + issue.helpLink,
 		),
+		helpURI = "https://ghlint.twisterrob.net/issues/default/${issue.id}/", // not visible on GH UI.
 		// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
-		// TODO helpURI = "https://example.com/help", // not visible on GH UI.
 		// TODO properties = PropertyBag(tags = listOf("tag1", "tag2")), // visible in detail view on GH UI.
 	)
 
@@ -125,3 +125,6 @@ private fun result(finding: Finding, base: Path): Result {
 		),
 	)
 }
+
+private val Issue.helpLink: String
+	get() = "\n\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/."
