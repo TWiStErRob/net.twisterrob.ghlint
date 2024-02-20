@@ -3,8 +3,8 @@ on:
   push:
 
 jobs:
-  website:
-    name: "Build website"
+  generate:
+    name: "Generate website"
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -19,6 +19,20 @@ jobs:
     steps:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: "Build & Verify project."
+        run: >
+          ./gradlew
+          :ghlint-website:run
 
       - name: "Set up Python"
         uses: actions/setup-python@v6
@@ -49,7 +63,7 @@ jobs:
     name: "Deploy GitHub Pages Site"
     if: github.event_name == 'push'
     needs:
-      - build
+      - generate
 
     permissions:
       pages: write
