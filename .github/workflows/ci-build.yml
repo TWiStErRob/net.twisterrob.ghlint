@@ -8,6 +8,7 @@ jobs:
   build:
     name: "Build"
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     permissions:
       # read: actions/checkout, write: gradle/actions/setup-gradle
