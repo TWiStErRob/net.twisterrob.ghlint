@@ -38,7 +38,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 
 		val NeverUseAlways = Issue(
 			id = "NeverUseAlways",
-			title = "Using always() is discouraged.",
+			title = "Using `always()` is discouraged.",
 			description = """
 				always() does not mean what you might think it means.
 				
@@ -55,7 +55,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 				
 				References:
 				
-				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions).
+				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions)
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
@@ -124,7 +124,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 				
 				References:
 				
-				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions).
+				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions)
 				
 				---
 				

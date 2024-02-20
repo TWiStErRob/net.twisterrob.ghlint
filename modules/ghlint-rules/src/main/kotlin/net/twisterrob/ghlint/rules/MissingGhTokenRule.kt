@@ -38,7 +38,7 @@ public class MissingGhTokenRule : VisitorRule {
 
 		val MissingGhToken = Issue(
 			id = "MissingGhToken",
-			title = "GH_TOKEN is required for using the `gh` CLI tool.",
+			title = "`GH_TOKEN` is required for using the `gh` CLI tool.",
 			description = """
 				Using the `gh` CLI tool requires a GitHub token to be set.
 				

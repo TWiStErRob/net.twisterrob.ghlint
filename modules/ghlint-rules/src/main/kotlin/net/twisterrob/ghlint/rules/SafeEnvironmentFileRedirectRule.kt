@@ -40,7 +40,7 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule {
 
 		val SafeEnvironmentFileRedirect = Issue(
 			id = "SafeEnvironmentFileRedirect",
-			title = "GITHUB_OUTPUT must be quoted.",
+			title = "`GITHUB_OUTPUT` must be quoted.",
 			description = """
 				Environment files can be written in many different ways from shell scripts.
 				

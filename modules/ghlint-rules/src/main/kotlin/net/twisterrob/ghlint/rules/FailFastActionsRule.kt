@@ -48,7 +48,7 @@ public class FailFastActionsRule : VisitorRule {
 
 		val FailFastUploadArtifact = Issue(
 			id = "FailFastUploadArtifact",
-			title = "upload-artifact should fail fast.",
+			title = "`upload-artifact` should fail fast.",
 			description = """
 				`actions/upload-artifact` should be configured to fail the CI when no files are found.
 				
@@ -101,7 +101,7 @@ public class FailFastActionsRule : VisitorRule {
 
 		val FailFastPublishUnitTestResults = Issue(
 			id = "FailFastPublishUnitTestResults",
-			title = "publish-unit-test-result-action should fail fast.",
+			title = "`publish-unit-test-result-action` should fail fast.",
 			description = """
 				`EnricoMi/publish-unit-test-result-action` should be configured to fail the CI when no test results are found.
 				
@@ -156,7 +156,7 @@ public class FailFastActionsRule : VisitorRule {
 
 		val FailFastPeterEvansCreatePullRequest = Issue(
 			id = "FailFastPeterEvansCreatePullRequest",
-			title = "peter-evans/create-pull-request has unsafe edge cases, use `gh pr create` instead.",
+			title = "`peter-evans/create-pull-request` has unsafe edge cases, use `gh pr create` instead.",
 			description = """
 				Action doesn't allow fast fail, and therefore black-listed.
 				
