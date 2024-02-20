@@ -11,7 +11,7 @@ import java.io.File
 import java.nio.file.Path
 
 private const val DOCS =
-	"%0A%0ASee also the [online documentation](https://ghlint.twisterrob.net/issues/default/TestIssue/."
+	"%0AFor more information, see the online documentation: https://ghlint.twisterrob.net/issues/default/TestIssue/"
 
 class GitHubCommandReporterTest {
 
