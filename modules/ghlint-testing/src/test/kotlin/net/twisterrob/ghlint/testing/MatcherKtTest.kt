@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.testing.TestRule.Companion.testFinding
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -25,7 +24,7 @@ class MatcherKtTest {
 
 			@Test fun `one finding fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -44,8 +43,8 @@ class MatcherKtTest {
 
 			@Test fun `multiple findings fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue2, message = "message2"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message2"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -77,7 +76,7 @@ class MatcherKtTest {
 
 			@Test fun `exact match passes`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				results shouldHave singleFinding(
@@ -88,7 +87,7 @@ class MatcherKtTest {
 
 			@Test fun `different message fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -111,7 +110,7 @@ class MatcherKtTest {
 
 			@Test fun `different issue fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -134,7 +133,7 @@ class MatcherKtTest {
 
 			@Test fun `mismatching details fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -172,8 +171,8 @@ class MatcherKtTest {
 
 			@Test fun `duplicate fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -200,8 +199,8 @@ class MatcherKtTest {
 
 			@Test fun `multiple partial match fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
-					testFinding(TestRule.TestIssue2, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -228,8 +227,8 @@ class MatcherKtTest {
 
 			@Test fun `multiple different findings fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue2, message = "message"),
-					testFinding(TestRule.TestIssue3, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue3, message = "message"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -270,7 +269,7 @@ class MatcherKtTest {
 
 			@Test fun `exactly one match passes`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
 				)
 
 				results shouldHave exactFindings(
@@ -283,8 +282,8 @@ class MatcherKtTest {
 
 			@Test fun `exactly two match passes`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue2, message = "message2"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message2"),
 				)
 
 				results shouldHave exactFindings(
@@ -301,8 +300,8 @@ class MatcherKtTest {
 
 			@Test fun `partial mismatch fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue2, message = "message2"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message2"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -337,8 +336,8 @@ class MatcherKtTest {
 
 			@Test fun `partial mismatch and more fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue2, message = "extra finding"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "extra finding"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -367,8 +366,8 @@ class MatcherKtTest {
 
 			@Test fun `partial mismatch and less fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue3, message = "message3"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue3, message = "message3"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -405,8 +404,8 @@ class MatcherKtTest {
 
 			@Test fun `full mismatch fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue2, message = "message2"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message2"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -441,8 +440,8 @@ class MatcherKtTest {
 
 			@Test fun `full mismatch and more fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
-					testFinding(TestRule.TestIssue2, message = "message2"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message2"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -471,7 +470,7 @@ class MatcherKtTest {
 
 			@Test fun `full mismatch and less fails`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1, message = "message1"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message1"),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -507,16 +506,16 @@ class MatcherKtTest {
 
 			@Test fun `single targeted finding is matched`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue1),
 				)
 				results shouldHave onlyFindings(TestRule.TestIssue1.id)
 			}
 
 			@Test fun `multiple targeted results are matched`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
-					testFinding(TestRule.TestIssue1),
-					testFinding(TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue1),
 				)
 				results shouldHave onlyFindings(TestRule.TestIssue1.id)
 			}
@@ -533,7 +532,7 @@ class MatcherKtTest {
 
 			@Test fun `different finding fails to match`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue2),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -553,9 +552,9 @@ class MatcherKtTest {
 
 			@Test fun `multiple different results fail to match`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue2),
-					testFinding(TestRule.TestIssue2),
-					testFinding(TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue2),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -587,8 +586,8 @@ class MatcherKtTest {
 
 			@Test fun `mixed results fails to match`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
-					testFinding(TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue2),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -614,8 +613,8 @@ class MatcherKtTest {
 
 			@Test fun `mixed results fails to match (reverse)`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue2),
-					testFinding(TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue1),
 				)
 
 				val failure = shouldThrow<AssertionError> {
@@ -645,7 +644,7 @@ class MatcherKtTest {
 
 			@Test fun `same finding fails to match`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue1),
 				)
 				val failure = shouldThrow<AssertionError> {
 					results shouldNotHave onlyFindings(TestRule.TestIssue1.id)
@@ -664,7 +663,7 @@ class MatcherKtTest {
 
 			@Test fun `different finding matches`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue1),
 				)
 
 				results shouldNotHave onlyFindings(TestRule.TestIssue2.id)
@@ -672,9 +671,9 @@ class MatcherKtTest {
 
 			@Test fun `multiple different finding matches`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
-					testFinding(TestRule.TestIssue2),
-					testFinding(TestRule.TestIssue3),
+					testFinding(TestRule(), TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue3),
 				)
 
 				results shouldNotHave onlyFindings(TestRule.TestIssue4.id)
@@ -682,10 +681,10 @@ class MatcherKtTest {
 
 			@Test fun `multiple different finding (including target) matches`() {
 				val results: List<Finding> = listOf(
-					testFinding(TestRule.TestIssue1),
-					testFinding(TestRule.TestIssue2),
-					testFinding(TestRule.TestIssue3),
-					testFinding(TestRule.TestIssue4),
+					testFinding(TestRule(), TestRule.TestIssue1),
+					testFinding(TestRule(), TestRule.TestIssue2),
+					testFinding(TestRule(), TestRule.TestIssue3),
+					testFinding(TestRule(), TestRule.TestIssue4),
 				)
 
 				// This is questionable, so keeping the method internal.
