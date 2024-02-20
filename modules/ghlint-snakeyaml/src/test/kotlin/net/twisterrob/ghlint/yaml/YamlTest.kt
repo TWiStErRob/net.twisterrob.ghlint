@@ -120,8 +120,8 @@ class YamlTest {
 	}
 
 	private fun reserialize(yaml: String) {
-		val result = Yaml.load(yaml)
-		val dumped = Yaml.save(result)
+		val result = SnakeYaml.load(yaml)
+		val dumped = SnakeYaml.save(result)
 		dumped shouldBe yaml
 	}
 }

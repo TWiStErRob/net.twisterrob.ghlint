@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.analysis
 
-import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -13,15 +13,15 @@ internal class SafeRule(
 	override val issues: List<Issue>
 		get() = unsafeRule.issues + RuleErrored
 
-	override fun check(workflow: Workflow): List<Finding> {
+	override fun check(file: File): List<Finding> {
 		try {
-			return unsafeRule.check(workflow)
+			return unsafeRule.check(file)
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Throwable) {
 			// detekt.TooGenericExceptionCaught: Can't know what's wrong, so we can't handle it more specifically.
 			val errorFinding = Finding(
 				rule = this,
 				issue = RuleErrored,
-				location = workflow.location,
+				location = file.content.location,
 				message = @Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 				"${unsafeRule} errored while checking:  \n${ex.message ?: "null"}\n"
 						+ "```\n${ex.stackTraceToString()}\n```",

@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.analysis
 
-import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -10,8 +10,8 @@ internal class JsonSchemaValidationRule : Rule {
 
 	override val issues: List<Issue> = listOf(JsonSchemaValidation)
 
-	override fun check(workflow: Workflow): List<Finding> =
-		if (workflow.parent.location.path == "test.yml") {
+	override fun check(file: File): List<Finding> =
+		if (file.location.path == "test.yml") {
 			emptyList()
 		} else {
 			error("Should never be called.")

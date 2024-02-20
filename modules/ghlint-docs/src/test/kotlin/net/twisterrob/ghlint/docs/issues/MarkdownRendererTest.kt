@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
@@ -28,7 +29,7 @@ class MarkdownRendererTest {
 		private inner class NoIssuesTestRule : Rule {
 
 			override val issues: List<Issue> = emptyList()
-			override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
+			override fun check(file: File): List<Finding> = error("Should never be called.")
 		}
 
 		private inner class OneIssueTestRule : Rule {
@@ -37,7 +38,7 @@ class MarkdownRendererTest {
 				TestRule.IssueNameWithManyExamples,
 			)
 
-			override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
+			override fun check(file: File): List<Finding> = error("Should never be called.")
 		}
 
 		private inner class ManyIssuesTestRule : Rule {
@@ -48,7 +49,7 @@ class MarkdownRendererTest {
 				TestRule.IssueNameWithoutExamples
 			)
 
-			override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
+			override fun check(file: File): List<Finding> = error("Should never be called.")
 		}
 
 		@Test fun `rule set renders with no rules`(@TempDir temp: Path) {
@@ -446,14 +447,14 @@ internal class TestRuleSet(
 internal class TestRule : Rule {
 
 	override val issues: List<Issue> get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> {
-		val name = workflow.name.orEmpty()
+	override fun check(file: File): List<Finding> {
+		val name = (file.content as Workflow).name.orEmpty()
 		return when {
 			name == "IssueWithComplexFindingMessage non-compliant" -> listOf(
 				Finding(
 					rule = this,
 					issue = IssueWithComplexFindingMessage,
-					location = workflow.location,
+					location = file.content.location,
 					message = """
 						Complex `finding` message.
 						
@@ -486,7 +487,7 @@ internal class TestRule : Rule {
 					issue = Companion::class.java.declaredMethods
 						.single { it.name.removePrefix("get") == name.substringBefore(" ") }
 						.invoke(Companion) as? Issue ?: error("Unknown issue from workflow name: ${name}"),
-					location = workflow.location,
+					location = file.content.location,
 					message = "Non-compliant `workflow`."
 				)
 			)

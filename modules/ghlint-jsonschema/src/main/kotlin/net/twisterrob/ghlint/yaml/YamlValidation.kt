@@ -4,7 +4,7 @@ import dev.harrel.jsonschema.Error
 import dev.harrel.jsonschema.SchemaResolver
 import dev.harrel.jsonschema.Validator
 import dev.harrel.jsonschema.ValidatorFactory
-import org.intellij.lang.annotations.Language
+import net.twisterrob.ghlint.model.Yaml
 import java.net.URI
 import java.net.URL
 
@@ -22,14 +22,14 @@ public object YamlValidation {
 			}
 	}
 
-	public fun validate(@Language("yaml") yaml: String): Validator.Result {
-		val factory = SnakeYamlJsonNode.Factory(Yaml::load)
+	public fun validate(yaml: Yaml): Validator.Result {
+		val factory = SnakeYamlJsonNode.Factory(SnakeYaml::load)
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
 			.withJsonNodeFactory(factory)
 			.withSchemaResolver(resolver)
 			.createValidator()
-		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), factory.create(yaml))
+		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), yaml.raw)
 	}
 }
 

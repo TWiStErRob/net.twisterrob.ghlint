@@ -3,23 +3,24 @@ package net.twisterrob.ghlint.analysis
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.testing.validate
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.whenever
 
 class SafeRuleTest {
 
 	@Test fun metadata() {
 		val subject = SafeRule(object : Rule {
 			override val issues: List<Issue> = emptyList()
-			override fun check(workflow: Workflow): List<Finding> =
-				if (workflow.name == "Invalid") {
+			override fun check(file: File): List<Finding> =
+				if ((file.content as Workflow).name == "Invalid") {
 					error("Fake failure")
 				} else {
 					emptyList()
@@ -32,7 +33,7 @@ class SafeRuleTest {
 	@Test fun `meaningful toString`() {
 		val subject = SafeRule(object : Rule {
 			override val issues get() = error("Should never be called.")
-			override fun check(workflow: Workflow) = error("Should never be called.")
+			override fun check(file: File) = error("Should never be called.")
 			override fun toString(): String = "test rule"
 		})
 
@@ -44,7 +45,7 @@ class SafeRuleTest {
 		val mockIssues: List<Issue> = listOf(mock(), mock())
 		val subject = SafeRule(object : Rule {
 			override val issues: List<Issue> = mockIssues
-			override fun check(workflow: Workflow) = error("Should never be called.")
+			override fun check(file: File) = error("Should never be called.")
 		})
 
 		subject.issues shouldContainExactlyInAnyOrder mockIssues + SafeRule.RuleErrored
@@ -70,11 +71,9 @@ class SafeRuleTest {
 	@Test fun `propagates exception as finding`() {
 		val stubFailure = RuntimeException("Fake failure")
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
-		val mockWorkflow: Workflow = mock()
-		val mockLocation: Location = mock()
-		whenever(mockWorkflow.location).thenReturn(mockLocation)
+		val fakeFile: File = fakeFile()
 
-		val findings = subject.check(mockWorkflow)
+		val findings = subject.check(fakeFile)
 
 		findings shouldHaveSize 1
 		val finding = findings.single()
@@ -86,17 +85,15 @@ class SafeRuleTest {
 				"```\n" +
 				"${stubFailure.stackTraceToString()}\n" +
 				"```"
-		finding.location shouldBe mockLocation
+		finding.location shouldBe fakeFile.content.location
 	}
 
 	@Test fun `propagates error as finding`() {
 		val stubFailure = OutOfMemoryError("Fake failure")
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
-		val mockWorkflow: Workflow = mock()
-		val mockLocation: Location = mock()
-		whenever(mockWorkflow.location).thenReturn(mockLocation)
+		val fakeFile: File = fakeFile()
 
-		val findings = subject.check(mockWorkflow)
+		val findings = subject.check(fakeFile)
 
 		findings shouldHaveSize 1
 		val finding = findings.single()
@@ -108,14 +105,17 @@ class SafeRuleTest {
 				"```\n" +
 				"${stubFailure.stackTraceToString()}\n" +
 				"```"
-		finding.location shouldBe mockLocation
+		finding.location shouldBe fakeFile.content.location
 	}
+
+	private fun fakeFile(): File =
+		Yaml.from(FileLocation("test.yml"), "")
 }
 
 private class AlwaysFailingRule(private val stubFailure: Throwable) : Rule {
 
 	override val issues get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> = throw stubFailure
+	override fun check(file: File): List<Finding> = throw stubFailure
 
 	override fun toString(): String {
 		val thisClass = this::class.simpleName ?: error("Cannot self-reflect")
@@ -127,5 +127,5 @@ private class AlwaysFailingRule(private val stubFailure: Throwable) : Rule {
 private class FixedFindingsRule(private val findings: List<Finding>) : Rule {
 
 	override val issues get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> = findings
+	override fun check(file: File): List<Finding> = findings
 }

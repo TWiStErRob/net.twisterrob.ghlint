@@ -2,8 +2,9 @@ package net.twisterrob.ghlint.analysis
 
 import dev.harrel.jsonschema.Validator
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.resolve
 import net.twisterrob.ghlint.yaml.toLocation
@@ -14,8 +15,8 @@ public class Validator {
 	public fun validateWorkflows(files: List<File>): List<Finding> {
 		val rule = JsonSchemaValidationRule()
 		return files.flatMap { file ->
-			val root: Node = Yaml.load(file.content)
-			val result: Validator.Result = YamlValidation.validate(file.content)
+			val root: Node = SnakeYaml.load(file.content as Yaml)
+			val result: Validator.Result = YamlValidation.validate(file.content as Yaml)
 			result.errors
 				.filter { it.error != "False schema always fails" }
 				.map { error ->

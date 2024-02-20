@@ -8,8 +8,8 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.analysis.Validator
-import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -20,7 +20,7 @@ public fun validate(
 	@Language("yaml") yml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {
-	val file = File(FileLocation(fileName), yml)
+	val file = Yaml.from(FileLocation(fileName), yml)
 	return Validator().validateWorkflows(listOf(file))
 }
 

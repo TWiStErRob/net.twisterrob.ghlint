@@ -2,11 +2,11 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeIn
-import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 
 public var isDebugEnabled: Boolean = System.getProperty("ghlint.debug", "false").toBooleanStrict()
@@ -26,7 +26,7 @@ public fun Rule.check(
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yml}")
 	require(yml.isNotEmpty()) { "A non-empty workflow.yml file must be provided." }
-	val findings = this.check(Yaml.loadWorkflow(File(FileLocation(fileName), yml)))
+	val findings = this.check(SnakeYaml.loadWorkflow(Yaml.from(FileLocation(fileName), yml)))
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)

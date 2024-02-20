@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.reporting.sarif
 
 import io.kotest.matchers.shouldBe
-import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -169,7 +169,7 @@ internal class MarkdownTestRuleSet
 internal class MarkdownTestRule : Rule {
 
 	override val issues: List<Issue> get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
+	override fun check(file: File): List<Finding> = error("Should never be called.")
 
 	companion object {
 
