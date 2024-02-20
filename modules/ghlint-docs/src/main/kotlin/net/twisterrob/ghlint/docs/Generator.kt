@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.docs
 
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.rule.descriptionWithExamples
 import net.twisterrob.ghlint.ruleset.RuleSet
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -65,7 +66,7 @@ internal class Generator(
 					
 				""".trimIndent()
 			)
-			appendLine(issue.description)
+			appendLine(issue.descriptionWithExamples)
 		}
 }
 
