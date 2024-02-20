@@ -1,0 +1,21 @@
+plugins {
+	id("net.twisterrob.ghlint.cli")
+}
+
+dependencies {
+	implementation(projects.ghlintRules)
+}
+
+application {
+	mainClass = "net.twisterrob.ghlint.docs.MainKt"
+}
+
+tasks.named("run", JavaExec.class) {
+	def output = rootProject.layout.projectDirectory.dir("website/docs/issues")
+	outputs.dir(output)
+	args(output)
+}
+
+tasks.named("build") {
+	dependsOn("run")
+}

@@ -143,6 +143,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						
 						However, this condition will **always** evaluate to `true`:
 						The way to interpret this expression is as follows:
+						
 						 * Evaluate `steps.calculation.outputs.result` -> `'hello'`
 						 * Substitute `'hello'` -> `if: hello == 'world'`
 						 * Evaluate `"hello == 'world'"` -> `true`
@@ -152,7 +153,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						That string is then passed to `if`, but it's a non-empty string, which is truthy.
 						
 						To confirm this, you can run a workflow with step debugging turned on, and you'll see this:
-						```
+						```log
 						Evaluating: (success() && format('{0} == ''world''', steps.calculation.outputs.result))
 						```
 					""".trimIndent(),
@@ -174,8 +175,10 @@ public class DoubleCurlyIfRule : VisitorRule {
 						Looking at the expression, it might be interpreted (by humans) as a valid boolean expression,
 						because the GitHub Actions Context variable accesses are wrapped in an Expression as expected.
 						
-						However, this condition will **always** evaluate to `true`:
+						However, this condition will **always** evaluate to `true`.
+						
 						The way to interpret this expression is as follows:
+						
 						 * Evaluate first `${{ }}` -> for example `true`
 						 * Evaluate second `${{ }}` -> for example `false`
 						 * Substitute expressions -> `if: 'true && false'`
@@ -186,7 +189,7 @@ public class DoubleCurlyIfRule : VisitorRule {
 						That string is then passed to `if`, but it's a non-empty string, which is truthy.
 						
 						To confirm this, you can run a workflow with step debugging turned on, and you'll see this:
-						```
+						```log
 						Evaluating: (success() && format('{0} && {1}', ..., ...))
 						```
 					""".trimIndent(),

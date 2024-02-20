@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.file.Path
 
+private const val DOCS =
+	"%0AFor more information, see the online documentation: https://ghlint.twisterrob.net/issues/default/TestIssue/"
+
 class GitHubCommandReporterTest {
 
 	@Test fun `reporting a single finding`() {
@@ -27,7 +30,7 @@ class GitHubCommandReporterTest {
 		reporter.report(findings)
 
 		output.toString() shouldBe """
-			::warning file=path${File.separator}to${File.separator}test.file,line=1,endLine=3,title=TestIssue::message
+			::warning file=path${File.separator}to${File.separator}test.file,line=1,endLine=3,title=TestIssue::message${DOCS}
 			
 		""".trimIndent()
 	}
@@ -48,7 +51,7 @@ class GitHubCommandReporterTest {
 		reporter.report(findings)
 
 		output.toString() shouldBe """
-			::warning file=test.file,line=42,endLine=42,title=TestIssue::message
+			::warning file=test.file,line=42,endLine=42,title=TestIssue::message${DOCS}
 			
 		""".trimIndent()
 	}
@@ -68,7 +71,7 @@ class GitHubCommandReporterTest {
 		reporter.report(findings)
 
 		output.toString() shouldBe """
-			::warning file=test.file,line=1,endLine=3,title=TestIssue::multiline%0Amessage
+			::warning file=test.file,line=1,endLine=3,title=TestIssue::multiline%0Amessage${DOCS}
 			
 		""".trimIndent()
 	}
@@ -99,8 +102,8 @@ class GitHubCommandReporterTest {
 		reporter.report(findings)
 
 		output.toString() shouldBe """
-			::warning file=test1.file,line=11,endLine=12,title=TestIssue::message1
-			::warning file=test2.file,line=21,endLine=22,title=TestIssue::message2
+			::warning file=test1.file,line=11,endLine=12,title=TestIssue::message1${DOCS}
+			::warning file=test2.file,line=21,endLine=22,title=TestIssue::message2${DOCS}
 			
 		""".trimIndent()
 	}

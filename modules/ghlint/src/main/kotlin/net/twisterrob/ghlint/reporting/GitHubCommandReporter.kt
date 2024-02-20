@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.reporting
 
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Issue
 import java.nio.file.Path
 import kotlin.io.path.relativeTo
 
@@ -29,7 +30,7 @@ private fun Finding.render(repositoryRoot: Path): String {
 	val start = location.start.line.number.toString().escapeProperty()
 	val end = location.end.line.number.toString().escapeProperty()
 	val title = issue.id.escapeProperty()
-	val message = message.escapeData()
+	val message = (message + issue.helpLink).escapeData()
 	return "::warning file=${file},line=${start},endLine=${end},title=${title}::${message}"
 }
 
@@ -44,3 +45,6 @@ private fun String.escapeData(): String =
 		.replace("%", "%25")
 		.replace("\r", "%0D")
 		.replace("\n", "%0A")
+
+private val Issue.helpLink: String
+	get() = "\nFor more information, see the online documentation: https://ghlint.twisterrob.net/issues/default/${id}/"

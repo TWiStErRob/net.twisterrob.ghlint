@@ -54,8 +54,9 @@ public class IdNamingRule : VisitorRule {
 				Conventionally it's best to use lower-kebab-case naming for workflow file names.
 				
 				Workflow IDs (or their file names) appear
+				
 				 * in GitHub's Actions tab URLs, e.g.:
-				   https://github.com/TWiStErRob/net.twisterrob.ghlint/actions/workflows/ci-build.yml
+				   `https://github.com/TWiStErRob/net.twisterrob.ghlint/actions/workflows/ci-build.yml`
 				 * in commands / shell scripts when triggering 
 				   a [`workflow_dispatch` event](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch)
 				   from [`gh` CLI](https://cli.github.com/manual/gh_workflow_run).
@@ -96,6 +97,7 @@ public class IdNamingRule : VisitorRule {
 				> --- [jobs.<job_id>](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id)
 				
 				Job IDs appear
+				
 				 * as name of Jobs when their name is not set
 				 * in the [`needs` list](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idneeds) of another job to express dependencies
 				 * in the [`outputs` declarations of `workflow_call`s](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_calloutputs)
@@ -106,6 +108,7 @@ public class IdNamingRule : VisitorRule {
 				as it's consistent with the rest of GitHub's Workflow syntax, for example `runs-on`, `timeout-minutes`.
 				
 				Using kebab case also helps to distinguish their IDs from
+				
 				 * event names (lower_snake_case)
 				 * placeholders (`<job_id>`)
 				 * payload fields (`pull_request.auto_merge`)
@@ -162,11 +165,14 @@ public class IdNamingRule : VisitorRule {
 				This makes them consistent in style with the rest of the workflow syntax and workflow/job names.
 				
 				Step IDs appear
+				
 				 * GitHub Expressions, as property dereferences of the
-				   [`steps` context](https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context),
+				   [`steps` context](https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context),  
 				   e.g. `${'$'}{{ steps.some-step }}`
-				 * in `if` conditions on other steps, e.g. `if: ${'$'}{{ steps.some-step.outputs.some-output == 'something' }}.
-				 * in `outputs` declarations of jobs, e.g. `some-output: ${'$'}{{ steps.some-step.outputs.some-output }}`.
+				 * in `if` conditions on other steps,  
+				   e.g. `if: ${'$'}{{ steps.some-step.outputs.some-output == 'something' }}`.
+				 * in `outputs` declarations of jobs,  
+				   e.g. `some-output: ${'$'}{{ steps.some-step.outputs.some-output }}`.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(

@@ -33,6 +33,7 @@ public class MissingJobTimeoutRule : VisitorRule {
 				Fun fact: 360 minutes is actually a hard limit on the job length, and not a friendly default.
 				
 				This should save resources:
+				
 				 * You'll get an error faster in case something is stuck.
 				 * You'll get less [billed minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions#minute-multipliers) because of used minutes.
 				   Especially important on macOS (10x) runners.

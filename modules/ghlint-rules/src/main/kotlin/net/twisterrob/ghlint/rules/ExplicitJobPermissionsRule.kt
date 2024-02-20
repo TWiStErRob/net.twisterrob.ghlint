@@ -36,11 +36,13 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 				Declaring permissions for the `github.token` / `secrets.GITHUB_TOKEN` temporary Access Token is the best practice.
 				
 				There are three ways to declare permissions:
+				
 				 * on the repository level
 				 * on the workflow level
 				 * on the job level
 				
 				The recommended setting is:
+				
 				 * Set the organization/repository level permissions to ["Read repository contents and packages permissions"](https://github.blog/changelog/2021-04-20-github-actions-control-permissions-for-github_token/#setting-the-default-permissions-for-the-organization-or-repository).  
 				   Sadly, the default is "Read and write permissions" (for everything), which is too permissive.
 				 * Do not declare anything on the workflow level.
@@ -60,6 +62,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 				```
 				
 				References:
+				
 				 * [Documentation of `GITHUB_TOKEN` permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token)
 				 * [What can go wrong if a too permissive token leaks?](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#potential-impact-of-a-compromised-runner)
 				 * [List of Available permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
@@ -118,6 +121,7 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 				Move the permissions declaration from the workflow level to the job level.
 				
 				References:
+				
 				 * [Best practice in documentation](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token:~:text=The%20two,permissions%27%20scope.)
 			""".trimIndent(),
 			compliant = listOf(
@@ -141,12 +145,14 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 						Permissions are declared on the workflow level, leading to escalated privileges for all jobs.
 						
 						There are two jobs: `build` and `comment`:
+						
 						 * The `build` job needs to access contents to invoke the `make` command.
 						 * The `comment` job needs to write comments to the pull request.
 						
 						With the `permissions:` being declared on the workflow,
 						both jobs will have the same permissions.
 						This leads to a larger attack surface:
+						
 						 * The comment job will be able to read the repository contents.
 						   This means that if the publish-comment-action is compromised,
 						   it can read/steal the repository contents.

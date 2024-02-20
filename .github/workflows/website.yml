@@ -1,0 +1,84 @@
+name: "Website"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate:
+    name: "Generate website"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      # actions/checkout
+      contents: read
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: "Build & Verify project."
+        run: >
+          ./gradlew
+          :ghlint-docs:run
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: 'website/.python-version'
+
+      - name: "Install dependencies"
+        working-directory: website
+        run: |
+          pip install -r requirements.txt
+
+      - name: "Build the website"
+        env:
+          VERBOSE: ${{ env.ACTIONS_STEP_DEBUG && ' --verbose' || '' }}
+        working-directory: website
+        run: |
+          mkdocs build${VERBOSE} --clean --strict
+
+      - name: "Upload 'github-pages' artifact."
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/site/
+
+
+  deploy:
+    name: "Deploy GitHub Pages Site"
+    if: ${{ github.event_name == 'push' }}
+    needs:
+      - generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: "Deploy to GitHub Pages"
+        id: deployment
+        uses: actions/deploy-pages@v4

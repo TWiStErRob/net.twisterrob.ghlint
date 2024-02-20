@@ -38,11 +38,11 @@ public class ImplicitStatusCheckRule : VisitorRule {
 
 		val NeverUseAlways = Issue(
 			id = "NeverUseAlways",
-			title = "Using always() is discouraged.",
+			title = "Using `always()` is discouraged.",
 			description = """
 				always() does not mean what you might think it means.
 				
-				```
+				```kotlin
 				always() == success() || failure() || cancelled()
 				```
 				
@@ -54,7 +54,8 @@ public class ImplicitStatusCheckRule : VisitorRule {
 				but `always()` will still execute the steps.
 				
 				References:
-				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions).
+				
+				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions)
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
@@ -113,7 +114,7 @@ public class ImplicitStatusCheckRule : VisitorRule {
 				
 				If someone has read the documentation, they might understand what `!failure()` actually means,
 				but being explicit comes at almost no cost and helps everyone immediately understand the intent:
-				```
+				```yaml
 				if: ${'$'}{{ success() || cancelled() }}
 				```
 				
@@ -122,7 +123,8 @@ public class ImplicitStatusCheckRule : VisitorRule {
 				You never know if your condition will be in the right half._
 				
 				References:
-				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions).
+				
+				 * [Documentation](https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions)
 				
 				---
 				
