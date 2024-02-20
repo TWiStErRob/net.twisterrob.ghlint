@@ -127,4 +127,4 @@ private fun result(finding: Finding, base: Path): Result {
 }
 
 private val Issue.helpLink: String
-	get() = "\n\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/."
+	get() = "\n---\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/)."
