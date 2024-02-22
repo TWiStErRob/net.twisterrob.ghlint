@@ -16,7 +16,7 @@ sarif4k = "0.5.0"
 junit-jupiter = "5.10.2"
 kotest = "5.8.0"
 mockito-kotlin = "5.2.1"
-jsonSchema = "1.5.0"
+jsonSchema = "1.5.1"
 
 
 [libraries]
