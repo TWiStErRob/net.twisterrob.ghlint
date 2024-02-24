@@ -51,10 +51,7 @@ class SafeRuleTest {
 	}
 
 	@Test fun `propagates no findings`() {
-		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Should never be called.")
-			override fun check(workflow: Workflow): List<Finding> = emptyList()
-		})
+		val subject = SafeRule(FixedFindingsRule(emptyList()))
 
 		val findings = subject.check(mock())
 
@@ -63,10 +60,7 @@ class SafeRuleTest {
 
 	@Test fun `propagates findings`() {
 		val mockFindings: List<Finding> = listOf(mock(), mock())
-		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Should never be called.")
-			override fun check(workflow: Workflow) = mockFindings
-		})
+		val subject = SafeRule(FixedFindingsRule(mockFindings))
 
 		val findings = subject.check(mock())
 
@@ -75,10 +69,7 @@ class SafeRuleTest {
 
 	@Test fun `propagates exception as finding`() {
 		val stubFailure = RuntimeException("Fake failure")
-		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Should never be called.")
-			override fun check(workflow: Workflow) = throw stubFailure
-		})
+		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val mockWorkflow: Workflow = mock()
 		val mockLocation: Location = mock()
 		whenever(mockWorkflow.location).thenReturn(mockLocation)
@@ -89,16 +80,17 @@ class SafeRuleTest {
 		val finding = findings.single()
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
-		finding.message shouldBe stubFailure.stackTraceToString()
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:  \n" +
+				"Fake failure\n" +
+				"```\n" +
+				"${stubFailure.stackTraceToString()}\n" +
+				"```"
 		finding.location shouldBe mockLocation
 	}
 
 	@Test fun `propagates error as finding`() {
 		val stubFailure = OutOfMemoryError("Fake failure")
-		val subject = SafeRule(object : Rule {
-			override val issues get() = error("Should never be called.")
-			override fun check(workflow: Workflow) = throw stubFailure
-		})
+		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val mockWorkflow: Workflow = mock()
 		val mockLocation: Location = mock()
 		whenever(mockWorkflow.location).thenReturn(mockLocation)
@@ -109,7 +101,29 @@ class SafeRuleTest {
 		val finding = findings.single()
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
-		finding.message shouldBe stubFailure.stackTraceToString()
+		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:  \n" +
+				"Fake failure\n" +
+				"```\n" +
+				"${stubFailure.stackTraceToString()}\n" +
+				"```"
 		finding.location shouldBe mockLocation
 	}
+}
+
+private class AlwaysFailingRule(private val stubFailure: Throwable) : Rule {
+
+	override val issues get() = error("Should never be called.")
+	override fun check(workflow: Workflow): List<Finding> = throw stubFailure
+
+	override fun toString(): String {
+		val thisClass = this::class.simpleName ?: error("Cannot self-reflect")
+		val errorClass = stubFailure::class.simpleName ?: error("Cannot reflect")
+		return "toString of ${thisClass}: ${errorClass}"
+	}
+}
+
+private class FixedFindingsRule(private val findings: List<Finding>) : Rule {
+
+	override val issues get() = error("Should never be called.")
+	override fun check(workflow: Workflow): List<Finding> = findings
 }
