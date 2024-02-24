@@ -22,7 +22,8 @@ internal class SafeRule(
 				rule = this,
 				issue = RuleErrored,
 				location = workflow.location,
-				message = ex.stackTraceToString()
+				// STOPSHIP test
+				message = "${unsafeRule} errored while checking:  \n${ex.message}\n```\n${ex.stackTraceToString()}\n```",
 			)
 			return listOf(errorFinding)
 		}
