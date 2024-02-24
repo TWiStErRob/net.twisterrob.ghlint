@@ -15,10 +15,150 @@ import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.whenever
 import java.nio.file.Path
 
 @Suppress("detekt.NamedArguments")
 class MarkdownRendererTest {
+
+	@Nested
+	inner class `RuleSet rendering` {
+
+		private inner class NoIssuesTestRule : Rule {
+
+			override val issues: List<Issue> = emptyList()
+			override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+		}
+
+		private inner class OneIssueTestRule : Rule {
+
+			override val issues: List<Issue> = listOf(
+				TestRule.IssueNameWithManyExamples,
+			)
+
+			override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+		}
+
+		private inner class ManyIssuesTestRule : Rule {
+
+			override val issues: List<Issue> = listOf(
+				TestRule.IssueNameWithManyExamples,
+				TestRule.IssueNameWithOneExampleEach,
+				TestRule.IssueNameWithoutExamples
+			)
+
+			override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+		}
+
+		@Test fun `rule set renders with no rules`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+			whenever(ruleSet.createRules()).thenReturn(emptyList())
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				No rules.
+				
+			""".trimIndent()
+		}
+
+		@Test fun `rule renders with no issues`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+
+			whenever(ruleSet.createRules()).thenReturn(listOf(NoIssuesTestRule()))
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				 - `NoIssuesTestRule`
+				
+			""".trimIndent()
+		}
+
+		@Test fun `rule renders with one issue`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+
+			whenever(ruleSet.createRules()).thenReturn(listOf(OneIssueTestRule()))
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				 - `OneIssueTestRule`
+				    - [`IssueNameWithManyExamples`](IssueNameWithManyExamples.md): Issue with many examples.
+				
+			""".trimIndent()
+		}
+
+		@Test fun `rule renders with multiple issues`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+			whenever(ruleSet.createRules()).thenReturn(listOf(ManyIssuesTestRule()))
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				 - `ManyIssuesTestRule`
+				    - [`IssueNameWithManyExamples`](IssueNameWithManyExamples.md): Issue with many examples.
+				    - [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md): Issue with one example each.
+				    - [`IssueNameWithoutExamples`](IssueNameWithoutExamples.md): Issue without examples.
+				
+			""".trimIndent()
+		}
+
+		@Test fun `rule set renders with multiple rules`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+			whenever(ruleSet.createRules()).thenReturn(
+				listOf(
+					OneIssueTestRule(),
+					NoIssuesTestRule(),
+					ManyIssuesTestRule()
+				)
+			)
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				 - `ManyIssuesTestRule`
+				    - [`IssueNameWithManyExamples`](IssueNameWithManyExamples.md): Issue with many examples.
+				    - [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md): Issue with one example each.
+				    - [`IssueNameWithoutExamples`](IssueNameWithoutExamples.md): Issue without examples.
+				 - `NoIssuesTestRule`
+				 - `OneIssueTestRule`
+				    - [`IssueNameWithManyExamples`](IssueNameWithManyExamples.md): Issue with many examples.
+				
+			""".trimIndent()
+		}
+	}
 
 	@Nested
 	inner class `Issue rendering` {
@@ -48,9 +188,9 @@ class MarkdownRendererTest {
 			markdown shouldBe """
 				# `IssueNameWithoutExamples`
 				Issue without examples.
-	
+				
 				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
-	
+				
 				## Description
 				Description of issue without examples.
 				
@@ -71,9 +211,9 @@ class MarkdownRendererTest {
 			markdown shouldBe """
 				# `IssueNameWithoutExamples`
 				Issue without examples.
-	
+				
 				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](IssueNameWithOnlyCompliantExample.md), [`IssueNameWithOnlyNonCompliantExample`](IssueNameWithOnlyNonCompliantExample.md), [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
-	
+				
 				## Description
 				Description of issue without examples.
 				
@@ -236,17 +376,15 @@ class MarkdownRendererTest {
 	}
 }
 
-private class TestRuleSet(
+internal class TestRuleSet(
 	override val id: String = "test-ruleset",
 	override val name: String = "Test RuleSet",
 ) : RuleSet by ReflectiveRuleSet(id, name, TestRule::class)
 
-private class TestRule : Rule {
+internal class TestRule : Rule {
 
-	override val issues: List<Issue> = listOf(IssueNameWithoutExamples)
-
-	override fun check(workflow: Workflow): List<Finding> =
-		error("Should not be called.")
+	override val issues: List<Issue> get() = error("Should not be called.")
+	override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
 
 	companion object {
 

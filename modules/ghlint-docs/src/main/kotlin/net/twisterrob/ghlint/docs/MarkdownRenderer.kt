@@ -18,10 +18,15 @@ internal class MarkdownRenderer(
 					
 				""".trimIndent()
 			)
-			ruleSet.createRules().sortedBy { it.id }.forEach { rule ->
+			val rules = ruleSet.createRules()
+			if (rules.isEmpty()) {
+				appendLine("No rules.")
+			}
+			rules.sortedBy { it.id }.forEach { rule ->
 				appendLine(" - `${rule.id}`")
 				rule.issues.sortedBy { it.id }.forEach { issue ->
-					val issueRelativePath = locator.ruleSetFile(ruleSet).relativeTo(locator.issueFile(ruleSet, issue))
+					val thisFolder = locator.ruleSetFile(ruleSet).parent
+					val issueRelativePath = locator.issueFile(ruleSet, issue).relativeTo(thisFolder)
 					appendLine("    - [`${issue.id}`](${issueRelativePath}): ${issue.title}")
 				}
 			}
