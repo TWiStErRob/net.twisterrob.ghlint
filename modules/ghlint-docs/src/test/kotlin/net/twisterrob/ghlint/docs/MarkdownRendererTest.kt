@@ -284,6 +284,8 @@ class MarkdownRendererTest {
 						> on: push
 						> jobs: {}
 						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
 						
 					""".trimIndent(),
 				),
@@ -315,6 +317,8 @@ class MarkdownRendererTest {
 						> on: push
 						> jobs: {}
 						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
 						
 					""".trimIndent(),
 				),
@@ -368,6 +372,8 @@ class MarkdownRendererTest {
 						> on: push
 						> jobs: {}
 						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
 						
 						### Non-compliant example #2
 						Non-compliant example 2 description.
@@ -377,6 +383,8 @@ class MarkdownRendererTest {
 						> on: push
 						> jobs: {}
 						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
 						
 					""".trimIndent(),
 				),
@@ -393,7 +401,12 @@ internal class TestRuleSet(
 internal class TestRule : Rule {
 
 	override val issues: List<Issue> get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
+	override fun check(workflow: Workflow): List<Finding> =
+		if (workflow.name.orEmpty().contains("non-compliant")) {
+			listOf(Finding(this, IssueNameWithoutExamples, workflow.location, "Non-compliant `workflow`."))
+		} else {
+			emptyList()
+		}
 
 	companion object {
 
