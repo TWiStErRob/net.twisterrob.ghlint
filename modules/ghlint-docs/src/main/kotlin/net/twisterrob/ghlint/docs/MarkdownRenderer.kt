@@ -29,13 +29,13 @@ internal class MarkdownRenderer(
 
 	fun renderIssue(ruleSet: RuleSet, rule: Rule, issue: Issue, relatedIssues: List<Issue>): String =
 		buildString {
-			val thisFile = locator.issueFile(ruleSet, issue)
+			val thisFolder = locator.issueFile(ruleSet, issue).parent
 			val relatedIssuesText = relatedIssues.joinToString(separator = ", ") { relatedIssue ->
-				val relatedIssueRelativePath = locator.issueFile(ruleSet, relatedIssue).relativeTo(thisFile)
+				val relatedIssueRelativePath = locator.issueFile(ruleSet, relatedIssue).relativeTo(thisFolder)
 				"[`${relatedIssue.id}`]($relatedIssueRelativePath)"
 			}
 			val related = if (relatedIssuesText.isNotEmpty()) " along with ${relatedIssuesText}" else ""
-			val ruleSetRelativePath = locator.ruleSetFile(ruleSet).relativeTo(thisFile)
+			val ruleSetRelativePath = locator.ruleSetFile(ruleSet).relativeTo(thisFolder)
 			appendLine(
 				"""
 					# `${issue.id}`
