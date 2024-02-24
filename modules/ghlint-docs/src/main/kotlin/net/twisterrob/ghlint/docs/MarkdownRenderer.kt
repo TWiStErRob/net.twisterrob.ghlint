@@ -51,17 +51,17 @@ internal class MarkdownRenderer(
 					## Description
 				""".trimIndent()
 			)
-			append(issue.descriptionWithExamples)
+			append(renderIssueDescription(issue))
+		}
+
+	private fun renderIssueDescription(issue: Issue): String =
+		buildString {
+			append(issue.description)
+			append("\n")
+			renderExamples("Compliant", issue.compliant)
+			renderExamples("Non-compliant", issue.nonCompliant)
 		}
 }
-
-private val Issue.descriptionWithExamples: String
-	get() = buildString {
-		append(description)
-		append("\n")
-		renderExamples("Compliant", compliant)
-		renderExamples("Non-compliant", nonCompliant)
-	}
 
 private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
 	if (examples.isNotEmpty()) {
