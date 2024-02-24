@@ -13,11 +13,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-@Suppress("detekt.NamedArguments")
+@Suppress("detekt.ClassNaming")
 class Issue_helpMarkdownTest {
 
 	@ParameterizedTest(name = "[{index}] {0}")
-	@MethodSource("net.twisterrob.ghlint.reporting.sarif.Issue_helpMarkdownTest#testCases")
+	@MethodSource("testCases")
 	fun `issue renders markdown`(
 		@Suppress("detekt.UnusedParameter", "UNUSED_PARAMETER") issueId: String,
 		issue: Issue,
