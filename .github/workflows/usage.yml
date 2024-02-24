@@ -1,10 +1,13 @@
-name: "GHA-lint"
+name: "GH-Lint"
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/usage.yml"
 
 jobs:
-  gha-lint:
+  ghlint:
     name: "Validate GitHub Workflows"
 
     permissions:
@@ -33,24 +36,24 @@ jobs:
 
       - name: "Download validator."
         env:
-          GHALINT_VERSION: "0.2.0"
+          GHLINT_VERSION: "0.2.0"
         run: |
           curl --silent --show-error --location --remote-name \
-              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHALINT_VERSION}/ghlint.jar
+              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
           chmod +x ghlint.jar
 
       - name: "Run validator."
         run: find ".github/workflows" -type f -name "*.yml" | xargs ./ghlint.jar
 
-      - name: "Upload 'GHA-lint Results' artifact."
+      - name: "Upload 'GH-Lint Results' artifact."
         uses: actions/upload-artifact@v4
         with:
-          name: 'GHA-lint Results'
+          name: 'GH-Lint Results'
           if-no-files-found: error
           path: |
             report.sarif
 
-      - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
+      - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
         with:
           checkout_path: ${{ github.workspace }}

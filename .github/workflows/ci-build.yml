@@ -111,16 +111,16 @@ jobs:
           find ".github/workflows" -type f -name "*.yml" \
             | xargs modules/ghlint/build/libs/ghlint-*-fat.jar
 
-      - name: "Upload 'GHA-lint Results' artifact."
+      - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'GHA-lint Results'
+          name: 'GH-Lint Results'
           if-no-files-found: error
           path: |
             report.sarif
 
-      - name: "Publish 'GHA-lint' GitHub Code Scanning analysis."
+      - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:

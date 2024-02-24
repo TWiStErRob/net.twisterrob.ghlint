@@ -2,5 +2,25 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
 		"local>TWiStErRob/renovate-config"
+	],
+	"customManagers": [
+		{
+			"description": "Update GH-Lint CLI in usage.",
+			"customType": "regex",
+			"fileMatch": ["^\\.github/workflows/usage\\.yml$"],
+			"datasourceTemplate": "github-releases",
+			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
+			"matchStrings": [
+				"GHLINT_VERSION: \"(?<currentValue>.*)\""
+			],
+			"extractVersionTemplate": "^v(?<version>.*)$",
+			"versioningTemplate": "semver"
+		}
+	],
+	"packageRules": [
+		{
+			"matchDepNames": ["TWiStErRob/net.twisterrob.ghlint"],
+			"automerge": true
+		}
 	]
 }

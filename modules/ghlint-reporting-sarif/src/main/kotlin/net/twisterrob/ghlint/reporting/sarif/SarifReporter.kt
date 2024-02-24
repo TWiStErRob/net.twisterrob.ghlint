@@ -40,7 +40,8 @@ public class SarifReporter(
 				Run(
 					tool = Tool(
 						driver = ToolComponent(
-							name = "GHA-lint",
+							fullName = "GH-Lint ${BuildConfig.APP_VERSION}",
+							name = "ghlint",
 							version = BuildConfig.APP_VERSION,
 							semanticVersion = BuildConfig.APP_VERSION,
 							rules = ruleSets
