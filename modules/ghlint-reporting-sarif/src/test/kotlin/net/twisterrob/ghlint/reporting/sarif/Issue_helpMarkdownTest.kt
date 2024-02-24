@@ -168,8 +168,8 @@ internal class MarkdownTestRuleSet
 
 internal class MarkdownTestRule : Rule {
 
-	override val issues: List<Issue> get() = error("Should not be called.")
-	override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+	override val issues: List<Issue> get() = error("Should never be called.")
+	override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
 
 	companion object {
 

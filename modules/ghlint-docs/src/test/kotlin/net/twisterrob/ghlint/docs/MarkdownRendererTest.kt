@@ -28,7 +28,7 @@ class MarkdownRendererTest {
 		private inner class NoIssuesTestRule : Rule {
 
 			override val issues: List<Issue> = emptyList()
-			override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+			override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
 		}
 
 		private inner class OneIssueTestRule : Rule {
@@ -37,7 +37,7 @@ class MarkdownRendererTest {
 				TestRule.IssueNameWithManyExamples,
 			)
 
-			override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+			override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
 		}
 
 		private inner class ManyIssuesTestRule : Rule {
@@ -48,7 +48,7 @@ class MarkdownRendererTest {
 				TestRule.IssueNameWithoutExamples
 			)
 
-			override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+			override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
 		}
 
 		@Test fun `rule set renders with no rules`(@TempDir temp: Path) {
@@ -383,8 +383,8 @@ internal class TestRuleSet(
 
 internal class TestRule : Rule {
 
-	override val issues: List<Issue> get() = error("Should not be called.")
-	override fun check(workflow: Workflow): List<Finding> = error("Should not be called.")
+	override val issues: List<Issue> get() = error("Should never be called.")
+	override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
 
 	companion object {
 
