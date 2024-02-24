@@ -9,6 +9,7 @@ import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -30,6 +31,46 @@ class MarkdownRendererTest {
 		val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), issue, emptyList())
 
 		markdown shouldBe expected
+	}
+
+	@Test fun `related issue is listed`(@TempDir temp: Path) {
+		val renderer = MarkdownRenderer(FileLocator(temp))
+
+		val relatedIssues = listOf(TestRule.IssueNameWithOneExampleEach)
+		val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithoutExamples, relatedIssues)
+
+		markdown shouldBe """
+			# `IssueNameWithoutExamples`
+			Issue without examples.
+
+			_Defined by `TestRule` in the "[Test RuleSet](..\index.md)" ruleset along with [`IssueNameWithOneExampleEach`]()._
+
+			## Description
+			Description of issue without examples.
+			
+		""".trimIndent()
+	}
+
+	@Test fun `related issues are listed`(@TempDir temp: Path) {
+		val renderer = MarkdownRenderer(FileLocator(temp))
+
+		val relatedIssues = listOf(
+			TestRule.IssueNameWithOnlyCompliantExample,
+			TestRule.IssueNameWithOnlyNonCompliantExample,
+			TestRule.IssueNameWithOneExampleEach
+		)
+		val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithoutExamples, relatedIssues)
+
+		markdown shouldBe """
+			# `IssueNameWithoutExamples`
+			Issue without examples.
+
+			_Defined by `TestRule` in the "[Test RuleSet](..\index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](), [`IssueNameWithOnlyNonCompliantExample`](), [`IssueNameWithOneExampleEach`]()._
+
+			## Description
+			Description of issue without examples.
+			
+		""".trimIndent()
 	}
 
 	companion object {
