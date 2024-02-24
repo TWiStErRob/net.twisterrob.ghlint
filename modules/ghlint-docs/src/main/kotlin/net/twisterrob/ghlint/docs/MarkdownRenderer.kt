@@ -56,8 +56,7 @@ internal class MarkdownRenderer(
 
 	private fun renderIssueDescription(issue: Issue): String =
 		buildString {
-			append(issue.description)
-			append("\n")
+			appendLine(issue.description)
 			renderExamples("Compliant", issue.compliant)
 			renderExamples("Non-compliant", issue.nonCompliant)
 		}
@@ -65,16 +64,20 @@ internal class MarkdownRenderer(
 
 private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
 	if (examples.isNotEmpty()) {
-		append("\n## ${type} ${if (examples.size > 1) "examples" else "example"}\n")
+		appendLine() // Add a line between description and example heading.
+		appendLine("## ${type} ${if (examples.size > 1) "examples" else "example"}")
 		examples.forEachIndexed { index, example ->
 			if (examples.size != 1) {
-				append("\n### ${type} example #${index + 1}\n")
+				appendLine()
+				appendLine("### ${type} example #${index + 1}")
 			}
-			append("```yaml\n")
-			append(example.content)
-			append("\n```\n")
-			append(example.explanation)
-			append("\n")
+			appendLine(example.explanation)
+			appendLine() // Add a line between explanation and example.
+			appendLine(buildString {
+				append("```yaml\n")
+				append(example.content)
+				append("\n```")
+			}.prependIndent("> "))
 		}
 	}
 }

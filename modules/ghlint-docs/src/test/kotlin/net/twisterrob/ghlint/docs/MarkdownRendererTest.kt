@@ -255,12 +255,13 @@ class MarkdownRendererTest {
 						Description of issue with only compliant example.
 						
 						## Compliant example
-						```yaml
-						name: "IssueNameWithOnlyCompliantExample compliant"
-						on: push
-						jobs: {}
-						```
 						Compliant example description.
+						
+						> ```yaml
+						> name: "IssueNameWithOnlyCompliantExample compliant"
+						> on: push
+						> jobs: {}
+						> ```
 						
 					""".trimIndent(),
 				),
@@ -276,13 +277,14 @@ class MarkdownRendererTest {
 						Description of issue with only compliant example.
 						
 						## Non-compliant example
-						```yaml
-						name: "IssueNameWithOnlyNonCompliantExample non-compliant"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example description.
-
+						
+						> ```yaml
+						> name: "IssueNameWithOnlyNonCompliantExample non-compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						
 					""".trimIndent(),
 				),
 				testCase(
@@ -297,20 +299,22 @@ class MarkdownRendererTest {
 						Description of issue with one example each.
 						
 						## Compliant example
-						```yaml
-						name: "IssueNameWithOneExampleEach compliant"
-						on: push
-						jobs: {}
-						```
 						Compliant example description.
 						
+						> ```yaml
+						> name: "IssueNameWithOneExampleEach compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						## Non-compliant example
-						```yaml
-						name: "IssueNameWithOneExampleEach non-compliant"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example description.
+						
+						> ```yaml
+						> name: "IssueNameWithOneExampleEach non-compliant"
+						> on: push
+						> jobs: {}
+						> ```
 						
 					""".trimIndent(),
 				),
@@ -328,46 +332,51 @@ class MarkdownRendererTest {
 						## Compliant examples
 						
 						### Compliant example #1
-						```yaml
-						name: "IssueNameWithManyExamples compliant 1"
-						on: push
-						jobs: {}
-						```
 						Compliant example 1 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples compliant 1"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						### Compliant example #2
-						```yaml
-						name: "IssueNameWithManyExamples compliant 2"
-						on: push
-						jobs: {}
-						```
 						Compliant example 2 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples compliant 2"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						### Compliant example #3
-						```yaml
-						name: "IssueNameWithManyExamples compliant 3"
-						on: push
-						jobs: {}
-						```
 						Compliant example 3 description.
+						
+						> ```yaml
+						> name: "IssueNameWithManyExamples compliant 3"
+						> on: push
+						> jobs: {}
+						> ```
 						
 						## Non-compliant examples
 						
 						### Non-compliant example #1
-						```yaml
-						name: "IssueNameWithManyExamples non-compliant 1"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example 1 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples non-compliant 1"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						### Non-compliant example #2
-						```yaml
-						name: "IssueNameWithManyExamples non-compliant 2"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example 2 description.
+						
+						> ```yaml
+						> name: "IssueNameWithManyExamples non-compliant 2"
+						> on: push
+						> jobs: {}
+						> ```
 						
 					""".trimIndent(),
 				),
