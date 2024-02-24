@@ -78,7 +78,9 @@ class MarkdownRendererTest {
 		@Suppress("detekt.LongMethod")
 		@JvmStatic
 		fun testCases(): List<Arguments> {
-			fun testCase(issue: Issue, @Language("markdown") expected: String) = Arguments.of(issue.id, issue, expected)
+			fun testCase(issue: Issue, @Language("markdown") expected: String): Arguments =
+				Arguments.of(issue.id, issue, expected)
+			
 			return listOf(
 				testCase(
 					TestRule.IssueNameWithoutExamples,
