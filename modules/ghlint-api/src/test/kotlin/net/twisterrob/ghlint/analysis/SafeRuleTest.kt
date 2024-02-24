@@ -80,6 +80,7 @@ class SafeRuleTest {
 		val finding = findings.single()
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
+		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:  \n" +
 				"Fake failure\n" +
 				"```\n" +
@@ -101,6 +102,7 @@ class SafeRuleTest {
 		val finding = findings.single()
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
+		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:  \n" +
 				"Fake failure\n" +
 				"```\n" +

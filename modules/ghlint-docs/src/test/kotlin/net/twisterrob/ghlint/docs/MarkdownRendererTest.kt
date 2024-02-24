@@ -403,7 +403,14 @@ internal class TestRule : Rule {
 	override val issues: List<Issue> get() = error("Should never be called.")
 	override fun check(workflow: Workflow): List<Finding> =
 		if (workflow.name.orEmpty().contains("non-compliant")) {
-			listOf(Finding(this, IssueNameWithoutExamples, workflow.location, "Non-compliant `workflow`."))
+			listOf(
+				Finding(
+					rule = this,
+					issue = IssueNameWithoutExamples,
+					location = workflow.location,
+					message = "Non-compliant `workflow`."
+				)
+			)
 		} else {
 			emptyList()
 		}

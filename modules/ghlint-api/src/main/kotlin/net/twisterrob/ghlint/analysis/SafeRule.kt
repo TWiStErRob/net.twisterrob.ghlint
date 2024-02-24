@@ -22,7 +22,9 @@ internal class SafeRule(
 				rule = this,
 				issue = RuleErrored,
 				location = workflow.location,
-				message = "${unsafeRule} errored while checking:  \n${ex.message}\n```\n${ex.stackTraceToString()}\n```",
+				message = @Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+				"${unsafeRule} errored while checking:  \n${ex.message ?: "null"}\n"
+						+ "```\n${ex.stackTraceToString()}\n```",
 			)
 			return listOf(errorFinding)
 		}
