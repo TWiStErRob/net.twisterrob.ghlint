@@ -45,7 +45,7 @@ internal class MarkdownRenderer(
 					## Description
 				""".trimIndent()
 			)
-			appendLine(issue.descriptionWithExamples)
+			append(issue.descriptionWithExamples)
 		}
 }
 
