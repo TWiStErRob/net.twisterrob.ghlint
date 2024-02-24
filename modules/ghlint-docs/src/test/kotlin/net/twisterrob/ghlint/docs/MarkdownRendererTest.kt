@@ -16,12 +16,13 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
 
+@Suppress("detekt.NamedArguments")
 class MarkdownRendererTest {
 
 	@ParameterizedTest(name = "[{index}] {0}")
 	@MethodSource("testCases")
 	fun `issue renders markdown`(
-		@Suppress("UnusedParameter", "UNUSED_PARAMETER") issueId: String,
+		@Suppress("detekt.UnusedParameter", "UNUSED_PARAMETER") issueId: String,
 		issue: Issue,
 		expected: String,
 		@TempDir temp: Path
@@ -80,7 +81,7 @@ class MarkdownRendererTest {
 		fun testCases(): List<Arguments> {
 			fun testCase(issue: Issue, @Language("markdown") expected: String): Arguments =
 				Arguments.of(issue.id, issue, expected)
-			
+
 			return listOf(
 				testCase(
 					TestRule.IssueNameWithoutExamples,
@@ -237,9 +238,8 @@ private class TestRule : Rule {
 
 	override val issues: List<Issue> = listOf(IssueNameWithoutExamples)
 
-	override fun check(workflow: Workflow): List<Finding> {
-		TODO("Implement, or extend VisitorRule and override a function.")
-	}
+	override fun check(workflow: Workflow): List<Finding> =
+		error("Should not be called.")
 
 	companion object {
 
