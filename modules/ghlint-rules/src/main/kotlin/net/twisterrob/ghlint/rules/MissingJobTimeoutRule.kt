@@ -85,7 +85,11 @@ public class MissingJobTimeoutRule : VisitorRule {
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "Timeout is missing, this job will run for 6 hours.",
+					explanation = """
+						Timeout is missing, this job will run for 6 hours.
+						
+						Will probably crash before that while running out of disk space because of incessant logging.
+					""".trimIndent(),
 					content = """
 						on: push
 						jobs:
