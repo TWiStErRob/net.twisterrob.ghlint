@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.docs
 
+import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.rule.descriptionWithExamples
 import net.twisterrob.ghlint.ruleset.RuleSet
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -76,3 +76,27 @@ private val Rule.id: String
 
 private val Issue.fileName: String
 	get() = this.id + ".md"
+
+private val Issue.descriptionWithExamples: String
+	get() = buildString {
+		append(description)
+		append("\n")
+		renderExamples("Compliant", compliant)
+		renderExamples("Non-compliant", nonCompliant)
+	}
+
+private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
+	if (examples.isNotEmpty()) {
+		append("\n## ${type} ${if (examples.size > 1) "examples" else "example"}\n")
+		examples.forEachIndexed { index, example ->
+			if (examples.size != 1) {
+				append("\n### ${type} example #${index + 1}\n")
+			}
+			append("```yaml\n")
+			append(example.content)
+			append("\n```\n")
+			append(example.explanation)
+			append("\n")
+		}
+	}
+}

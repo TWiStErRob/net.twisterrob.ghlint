@@ -16,8 +16,8 @@ import io.github.detekt.sarif4k.ToolComponent
 import io.github.detekt.sarif4k.Version
 import net.twisterrob.ghlint.reporting.Reporter
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
-import net.twisterrob.ghlint.rule.descriptionWithExamples
 import net.twisterrob.ghlint.ruleset.RuleSet
 import java.io.Writer
 import java.nio.file.Path
@@ -100,7 +100,7 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 	)
 
 private fun result(finding: Finding, base: Path): Result {
-	val file = Path.of(finding.location.file.path).absolute().toRealPath()
+	val file = Path.of(finding.location.file.path).absolute()
 	return Result(
 		message = Message(
 			text = finding.message,
@@ -129,3 +129,27 @@ private fun result(finding: Finding, base: Path): Result {
 
 private val Issue.helpLink: String
 	get() = "\n---\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/)."
+
+private val Issue.descriptionWithExamples: String
+	get() = buildString {
+		append(description)
+		append("\n")
+		renderExamples("Compliant", compliant)
+		renderExamples("Non-compliant", nonCompliant)
+	}
+
+private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
+	if (examples.isNotEmpty()) {
+		append("\n## ${type} ${if (examples.size > 1) "examples" else "example"}\n")
+		examples.forEachIndexed { index, example ->
+			if (examples.size != 1) {
+				append("\n### ${type} example #${index + 1}\n")
+			}
+			append("```yaml\n")
+			append(example.content)
+			append("\n```\n")
+			append(example.explanation)
+			append("\n")
+		}
+	}
+}
