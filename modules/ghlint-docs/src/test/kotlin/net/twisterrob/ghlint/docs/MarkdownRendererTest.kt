@@ -9,6 +9,7 @@ import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
@@ -19,59 +20,65 @@ import java.nio.file.Path
 @Suppress("detekt.NamedArguments")
 class MarkdownRendererTest {
 
-	@ParameterizedTest(name = "[{index}] {0}")
-	@MethodSource("testCases")
-	fun `issue renders markdown`(
-		@Suppress("detekt.UnusedParameter", "UNUSED_PARAMETER") issueId: String,
-		issue: Issue,
-		expected: String,
-		@TempDir temp: Path
-	) {
-		val renderer = MarkdownRenderer(FileLocator(temp))
+	@Nested
+	inner class `Issue rendering` {
 
-		val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), issue, emptyList())
+		@ParameterizedTest(name = "[{index}] {0}")
+		@MethodSource("net.twisterrob.ghlint.docs.MarkdownRendererTest#testCases")
+		fun `issue renders markdown`(
+			@Suppress("detekt.UnusedParameter", "UNUSED_PARAMETER") issueId: String,
+			issue: Issue,
+			expected: String,
+			@TempDir temp: Path
+		) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
 
-		markdown shouldBe expected
-	}
+			val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), issue, emptyList())
 
-	@Test fun `related issue is listed`(@TempDir temp: Path) {
-		val renderer = MarkdownRenderer(FileLocator(temp))
+			markdown shouldBe expected
+		}
 
-		val relatedIssues = listOf(TestRule.IssueNameWithOneExampleEach)
-		val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithoutExamples, relatedIssues)
+		@Test fun `related issue is listed`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
 
-		markdown shouldBe """
-			# `IssueNameWithoutExamples`
-			Issue without examples.
+			val relatedIssues = listOf(TestRule.IssueNameWithOneExampleEach)
+			val markdown =
+				renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithoutExamples, relatedIssues)
 
-			_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
+			markdown shouldBe """
+				# `IssueNameWithoutExamples`
+				Issue without examples.
+	
+				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
+	
+				## Description
+				Description of issue without examples.
+				
+			""".trimIndent()
+		}
 
-			## Description
-			Description of issue without examples.
-			
-		""".trimIndent()
-	}
+		@Test fun `related issues are listed`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
 
-	@Test fun `related issues are listed`(@TempDir temp: Path) {
-		val renderer = MarkdownRenderer(FileLocator(temp))
+			val relatedIssues = listOf(
+				TestRule.IssueNameWithOnlyCompliantExample,
+				TestRule.IssueNameWithOnlyNonCompliantExample,
+				TestRule.IssueNameWithOneExampleEach
+			)
+			val markdown =
+				renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithoutExamples, relatedIssues)
 
-		val relatedIssues = listOf(
-			TestRule.IssueNameWithOnlyCompliantExample,
-			TestRule.IssueNameWithOnlyNonCompliantExample,
-			TestRule.IssueNameWithOneExampleEach
-		)
-		val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithoutExamples, relatedIssues)
-
-		markdown shouldBe """
-			# `IssueNameWithoutExamples`
-			Issue without examples.
-
-			_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](IssueNameWithOnlyCompliantExample.md), [`IssueNameWithOnlyNonCompliantExample`](IssueNameWithOnlyNonCompliantExample.md), [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
-
-			## Description
-			Description of issue without examples.
-			
-		""".trimIndent()
+			markdown shouldBe """
+				# `IssueNameWithoutExamples`
+				Issue without examples.
+	
+				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](IssueNameWithOnlyCompliantExample.md), [`IssueNameWithOnlyNonCompliantExample`](IssueNameWithOnlyNonCompliantExample.md), [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
+	
+				## Description
+				Description of issue without examples.
+				
+			""".trimIndent()
+		}
 	}
 
 	companion object {
