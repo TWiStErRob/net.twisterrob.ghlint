@@ -43,7 +43,7 @@ class MarkdownRendererTest {
 			# `IssueNameWithoutExamples`
 			Issue without examples.
 
-			_Defined by `TestRule` in the "[Test RuleSet](..\index.md)" ruleset along with [`IssueNameWithOneExampleEach`]()._
+			_Defined by `TestRule` in the "[Test RuleSet](..\index.md)" ruleset along with [`IssueNameWithOneExampleEach`](..\IssueNameWithOneExampleEach.md)._
 
 			## Description
 			Description of issue without examples.
@@ -65,7 +65,7 @@ class MarkdownRendererTest {
 			# `IssueNameWithoutExamples`
 			Issue without examples.
 
-			_Defined by `TestRule` in the "[Test RuleSet](..\index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](), [`IssueNameWithOnlyNonCompliantExample`](), [`IssueNameWithOneExampleEach`]()._
+			_Defined by `TestRule` in the "[Test RuleSet](..\index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](..\IssueNameWithOnlyCompliantExample.md), [`IssueNameWithOnlyNonCompliantExample`](..\IssueNameWithOnlyNonCompliantExample.md), [`IssueNameWithOneExampleEach`](..\IssueNameWithOneExampleEach.md)._
 
 			## Description
 			Description of issue without examples.
