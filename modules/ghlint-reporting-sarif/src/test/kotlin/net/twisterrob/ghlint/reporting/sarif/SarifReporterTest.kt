@@ -21,9 +21,9 @@ class SarifReporterTest {
 		val testRuleSet = ReflectiveRuleSet(
 			id = "test-ruleset",
 			name = "Test RuleSet",
-			TestRule::class
+			IntegrationTestRule::class
 		)
-		val findings = check<TestRule>(
+		val findings = check<IntegrationTestRule>(
 			fileName = temp.resolve("test.yml").toString(),
 			yml = """
 				on:
@@ -49,7 +49,7 @@ private fun sarifReport(root: Path, resourcePath: String): String =
 		.replace("<root>", root.toUri().toString())
 		.removeSuffix("\n")
 
-internal class TestRule : Rule {
+internal class IntegrationTestRule : Rule {
 
 	override val issues: List<Issue> = listOf(TestIssue)
 

@@ -16,7 +16,6 @@ import io.github.detekt.sarif4k.ToolComponent
 import io.github.detekt.sarif4k.Version
 import net.twisterrob.ghlint.reporting.Reporter
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.ruleset.RuleSet
 import java.io.Writer
@@ -92,7 +91,7 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 		),
 		help = MultiformatMessageString(
 			text = "See help markdown.",
-			markdown = issue.descriptionWithExamples + issue.helpLink,
+			markdown = issue.helpMarkdown(),
 		),
 		helpURI = "https://ghlint.twisterrob.net/issues/default/${issue.id}/", // not visible on GH UI.
 		// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
@@ -125,31 +124,4 @@ private fun result(finding: Finding, base: Path): Result {
 			),
 		),
 	)
-}
-
-private val Issue.helpLink: String
-	get() = "\n---\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/)."
-
-private val Issue.descriptionWithExamples: String
-	get() = buildString {
-		append(description)
-		append("\n")
-		renderExamples("Compliant", compliant)
-		renderExamples("Non-compliant", nonCompliant)
-	}
-
-private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
-	if (examples.isNotEmpty()) {
-		append("\n## ${type} ${if (examples.size > 1) "examples" else "example"}\n")
-		examples.forEachIndexed { index, example ->
-			if (examples.size != 1) {
-				append("\n### ${type} example #${index + 1}\n")
-			}
-			append("```yaml\n")
-			append(example.content)
-			append("\n```\n")
-			append(example.explanation)
-			append("\n")
-		}
-	}
 }
