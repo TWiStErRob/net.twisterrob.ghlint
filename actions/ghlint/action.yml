@@ -78,6 +78,8 @@ runs:
       run: |
         # Hackaround for https://github.com/orgs/community/discussions/73309
         echo $PATH
+        java -version
         PATH="${JAVA_HOME_17_X64}:${PATH}"
         echo $PATH
+        java -version
         echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
