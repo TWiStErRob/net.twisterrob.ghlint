@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/usage.yml"
+      - "action.yml"
 
 jobs:
   ghlint:
