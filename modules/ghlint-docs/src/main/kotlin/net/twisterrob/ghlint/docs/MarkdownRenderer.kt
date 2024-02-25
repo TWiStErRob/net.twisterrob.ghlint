@@ -104,21 +104,21 @@ private fun Rule.calculateFindings(example: Example): List<Finding> {
 	return Yaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
 }
 
+// REPORT False negative detekt.NestedBlockDepth: invert guard if, and inline this function.
 private fun StringBuilder.renderFindings(findings: List<Finding>) {
-	if (findings.isNotEmpty()) {
-		appendLine(">") // Follow the code block's quote.
-		findings.forEach { finding ->
-			val bullet = "**Line ${finding.location.start.line.number}**: ${finding.message}"
-			append("> - ")
-			appendLine(bullet.lineSequence().first())
-			bullet.lineSequence().drop(1).forEach { line ->
-				append(">    ")
-				if (line.isNotEmpty()) {
-					appendLine(line)
-				} else {
-					// This prevents separating the bullet from the rest of the content.
-					appendLine("<br/>")
-				}
+	if (findings.isEmpty()) return
+	appendLine(">") // Follow the code block's quote.
+	findings.forEach { finding ->
+		val bullet = "**Line ${finding.location.start.line.number}**: ${finding.message}"
+		append("> - ")
+		appendLine(bullet.lineSequence().first())
+		bullet.lineSequence().drop(1).forEach { line ->
+			append(">    ") // mkdocs requires 4 indentation of bullets.
+			if (line.isNotEmpty()) {
+				appendLine(line)
+			} else {
+				// This prevents separating the bullet from the rest of the content.
+				appendLine("<br/>")
 			}
 		}
 	}

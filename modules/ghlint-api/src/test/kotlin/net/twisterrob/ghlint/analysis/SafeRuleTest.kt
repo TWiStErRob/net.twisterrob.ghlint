@@ -36,7 +36,7 @@ class SafeRuleTest {
 			override fun toString(): String = "test rule"
 		})
 
-		@Suppress("detekt.NullableToStringCall") // False positive: STOPSHIP
+		@Suppress("detekt.NullableToStringCall") // REPORT False positive.
 		subject.toString() shouldBe "SafeRule(test rule)"
 	}
 
