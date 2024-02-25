@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.defaultShell
 import net.twisterrob.ghlint.model.effectiveShell
 import net.twisterrob.ghlint.rule.Example
@@ -14,13 +15,25 @@ public class DuplicateShellRule : VisitorRule {
 
 	override val issues: List<Issue> = listOf(DuplicateShellOnSteps)
 
+	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
+		super.visitWorkflow(reporting, workflow)
+		val steps = workflow.jobs.values.flatMap { (it as? Job.NormalJob)?.steps.orEmpty() }
+		val explicitShells = steps.countExplicitShells()
+		if (explicitShells.size == 1) {
+			val (shell, count) = explicitShells.entries.single()
+			if (workflow.defaultShell != null && shell != workflow.defaultShell) {
+				reporting.report(DuplicateShellOnSteps, workflow) {
+					"All (${count}) steps in ${it} override shell as `${shell}`, " +
+							"change the default shell on the workflow from `${workflow.defaultShell}` to `${shell}`, " +
+							"and remove shells from steps."
+				}
+			}
+		}
+	}
+
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
-		val explicitShells = job.steps
-			.filterIsInstance<Step.Run>()
-			.filter { it.shell != null }
-			.groupingBy { it.shell ?: error("Just filtered it!") }
-			.eachCount()
+		val explicitShells = job.steps.countExplicitShells()
 		if (explicitShells.size == 1) {
 			if (job.effectiveShell == null) {
 				val (shell, count) = explicitShells.entries.single()
@@ -106,3 +119,10 @@ public class DuplicateShellRule : VisitorRule {
 		)
 	}
 }
+
+private fun List<Step>.countExplicitShells(): Map<String, Int> =
+	this
+		.filterIsInstance<Step.Run>()
+		.filter { it.shell != null }
+		.groupingBy { it.shell ?: error("Just filtered it!") }
+		.eachCount()

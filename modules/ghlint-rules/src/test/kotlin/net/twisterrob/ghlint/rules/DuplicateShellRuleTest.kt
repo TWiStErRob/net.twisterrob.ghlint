@@ -164,6 +164,58 @@ class DuplicateShellRuleTest {
 		)
 	}
 
+	@Test fun `reports when steps override default shell on workflow, but all the same`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"DuplicateShellOnSteps",
+			"All (2) steps in Workflow[test] override shell as `sh`, " +
+					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps."
+		)
+	}
+
+	@Test fun `reports when steps override default shell on workflow, but all the same, multiple jobs`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"DuplicateShellOnSteps",
+			"All (4) steps in Workflow[test] override shell as `sh`, " +
+					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps."
+		)
+	}
+
 	@Test fun `passes when steps override default shell to different values`() {
 		val results = check<DuplicateShellRule>(
 			"""
@@ -183,6 +235,33 @@ class DuplicateShellRuleTest {
 				        shell: zsh
 				      - run: echo "Test"
 				        shell: zsh
+				""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when a step overrides default shell to different values`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: zsh
+				      - run: echo "Test"
+				        shell: sh
 				""".trimIndent()
 		)
 
