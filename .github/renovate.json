@@ -11,7 +11,7 @@
 			"datasourceTemplate": "github-releases",
 			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
 			"matchStrings": [
-				"default: \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+				"default: \"(?<currentValue>.*)\""
 			],
 			"extractVersionTemplate": "^v(?<version>.*)$",
 			"versioningTemplate": "semver"
