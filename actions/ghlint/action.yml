@@ -4,6 +4,9 @@ inputs:
   version:
     description: "The version of ghlint to use. Use 'latest' to always use the latest version, may break over time."
     default: "0.2.0"
+  location:
+    description: "The location of the files to lint."
+    default: ${{ github.workspace }}
   files:
     description: "The files to lint."
     default: |
@@ -48,6 +51,7 @@ runs:
           return result.join("\n");
 
     - name: "Run validator."
+      working-directory: ${{ inputs.location }}
       env:
         FILES: ${{ steps.files.outputs.result }}
       shell: bash
