@@ -134,10 +134,33 @@ class DuplicateShellRuleTest {
 				      - run: echo "Test"
 				        shell: sh
 				      - run: echo "Test"
-				        shell: sh
+				        shell: powershell
 			""".trimIndent()
 		)
 
 		results shouldHave noFindings()
+	}
+
+	@Test fun `reports when steps override default shell on job, but all the same`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				jobs:
+				  test:
+				    defaults:
+				      run:
+				        shell: bash
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"DuplicateShellOnSteps",
+			"All (2) steps in Job[test] override shell as `sh`, " +
+					"change the default shell on the job from `bash` to `sh`, and remove shells from steps."
+		)
 	}
 }

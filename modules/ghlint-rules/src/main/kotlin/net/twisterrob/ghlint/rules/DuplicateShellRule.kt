@@ -15,16 +15,25 @@ public class DuplicateShellRule : VisitorRule {
 
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
-		if (job.effectiveShell == null) {
-			val explicitShells = job.steps
-				.filterIsInstance<Step.Run>()
-				.filter { it.shell != null }
-				.groupingBy { it.shell ?: error("Just filtered it!") }
-				.eachCount()
+		val explicitShells = job.steps
+			.filterIsInstance<Step.Run>()
+			.filter { it.shell != null }
+			.groupingBy { it.shell ?: error("Just filtered it!") }
+			.eachCount()
+		val defaultShell = job.effectiveShell
+		if (defaultShell == null) {
 			if (explicitShells.size == 1 && explicitShells.values.single() >= MAX_SHELLS_ON_STEPS) {
 				val (shell, count) = explicitShells.entries.single()
 				reporting.report(DuplicateShellOnSteps, job) {
 					"${it} has all (${count}) steps defining ${shell} shell, set default shell on job."
+				}
+			}
+		} else {
+			if (explicitShells.size == 1 && explicitShells.keys.single() != defaultShell) {
+				val (shell, count) = explicitShells.entries.single()
+				reporting.report(DuplicateShellOnSteps, job) {
+					"All (${count}) steps in ${it} override shell as `${shell}`, " +
+							"change the default shell on the job from `bash` to `sh`, and remove shells from steps."
 				}
 			}
 		}
