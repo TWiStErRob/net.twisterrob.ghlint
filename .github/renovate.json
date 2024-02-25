@@ -7,11 +7,11 @@
 		{
 			"description": "Update GH-Lint CLI in usage.",
 			"customType": "regex",
-			"fileMatch": ["^action.yml\\.yml$"],
+			"fileMatch": ["^action\\.yml$"],
 			"datasourceTemplate": "github-releases",
 			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
 			"matchStrings": [
-				"default: \"(?<currentValue>.*)\""
+				"default: \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
 			],
 			"extractVersionTemplate": "^v(?<version>.*)$",
 			"versioningTemplate": "semver"
