@@ -40,7 +40,9 @@ runs:
       with:
         script: |
           const files = process.env.FILES;
+          console.log(glob);
           const globber = glob.create(files, { followSymbolicLinks: false });
+          console.log(globber);
           const result = [];
           for await (const file of globber.globGenerator()) {
           	result.push(file);
