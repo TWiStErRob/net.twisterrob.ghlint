@@ -19,6 +19,7 @@
 	],
 	"packageRules": [
 		{
+			"description": "Auto-merge own package, because it's still 0.x, which means each release is assumed 'breaking'.",
 			"matchDepNames": ["TWiStErRob/net.twisterrob.ghlint"],
 			"automerge": true
 		}
