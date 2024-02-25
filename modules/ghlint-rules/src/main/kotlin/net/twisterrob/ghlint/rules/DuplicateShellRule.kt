@@ -18,14 +18,14 @@ public class DuplicateShellRule : VisitorRule {
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
 		val steps = workflow.jobs.values.flatMap { (it as? Job.NormalJob)?.steps.orEmpty() }
-		val explicitShells = steps.countExplicitShells()
-		if (explicitShells.size == 1) {
-			val (explicitShell, count) = explicitShells.entries.single()
+		val shells = steps.countShells()
+		if (shells.size == 1) {
+			val (commonShell, count) = shells.entries.single()
 			val defaultShell = workflow.defaultShell
-			if (defaultShell != null && explicitShell != null && explicitShell != defaultShell) {
+			if (defaultShell != null && commonShell != null && commonShell != defaultShell) {
 				reporting.report(DuplicateShellOnSteps, workflow) {
-					"All (${count}) steps in ${it} override shell as `${explicitShell}`, " +
-							"change the default shell on the workflow from `${defaultShell}` to `${explicitShell}`, " +
+					"All (${count}) steps in ${it} override shell as `${commonShell}`, " +
+							"change the default shell on the workflow from `${defaultShell}` to `${commonShell}`, " +
 							"and remove shells from steps."
 				}
 			}
@@ -34,23 +34,23 @@ public class DuplicateShellRule : VisitorRule {
 
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
-		val explicitShells = job.steps.countExplicitShells()
-		if (explicitShells.size == 1) {
+		val shells = job.steps.countShells()
+		if (shells.size == 1) {
 			if (job.effectiveShell == null) {
-				val (explicitShell, count) = explicitShells.entries.single()
-				if (explicitShell != null && count >= MAX_SHELLS_ON_STEPS) {
+				val (commonShell, count) = shells.entries.single()
+				if (commonShell != null && count >= MAX_SHELLS_ON_STEPS) {
 					reporting.report(DuplicateShellOnSteps, job) {
-						"${it} has all (${count}) steps defining ${explicitShell} shell, set default shell on job."
+						"${it} has all (${count}) steps defining ${commonShell} shell, set default shell on job."
 					}
 				}
 			}
 			val defaultShell = job.defaultShell
 			if (defaultShell != null) {
-				val (explicitShell, count) = explicitShells.entries.single()
-				if (explicitShell != null && explicitShell != defaultShell) {
+				val (commonShell, count) = shells.entries.single()
+				if (commonShell != null && commonShell != defaultShell) {
 					reporting.report(DuplicateShellOnSteps, job) {
-						"All (${count}) steps in ${it} override shell as `${explicitShell}`, " +
-								"change the default shell on the job from `$defaultShell` to `${explicitShell}`, " +
+						"All (${count}) steps in ${it} override shell as `${commonShell}`, " +
+								"change the default shell on the job from `$defaultShell` to `${commonShell}`, " +
 								"and remove shells from steps."
 					}
 				}
@@ -123,7 +123,7 @@ public class DuplicateShellRule : VisitorRule {
 	}
 }
 
-private fun List<Step>.countExplicitShells(): Map<String?, Int> =
+private fun List<Step>.countShells(): Map<String?, Int> =
 	this
 		.filterIsInstance<Step.Run>()
 		.groupingBy { it.shell }
