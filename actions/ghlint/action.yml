@@ -33,11 +33,19 @@ runs:
   using: composite
   steps:
 
+    - name: "Env"
+      shell: bash
+      run: env | sort
+
     - name: "Set up Java."
       uses: actions/setup-java@v4
       with:
         java-version: 17
         distribution: temurin
+
+    - name: "Env"
+      shell: bash
+      run: env | sort
 
     - name: "Download validator."
       working-directory: ${{ runner.temp }}

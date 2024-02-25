@@ -29,9 +29,17 @@ jobs:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
+      - name: "Env"
+        shell: bash
+        run: env | sort
+
       - name: "Run validator."
         id: ghlint
         uses: ./actions/ghlint
+
+      - name: "Env"
+        shell: bash
+        run: env | sort
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ success() || failure() }}
