@@ -1,16 +1,33 @@
 name: "GH-Lint"
 description: "Run ghlint on GitHub Actions files"
 inputs:
+
   version:
-    description: "The version of ghlint to use. Use 'latest' to always use the latest version, may break over time."
+    description: |
+      The version of ghlint to use. Use 'latest' to always use the latest version, may break over time.
     default: "0.2.0"
+
   location:
-    description: "The location of the files to lint."
+    description: |
+      The location of the files to lint.
     default: ${{ github.workspace }}
+
   files:
-    description: "The files to lint."
+    description: |
+      Glob patterns for the files to lint.
+      By default, all standard GitHub Actions file locations will be linted.
+      See https://github.com/actions/toolkit/tree/main/packages/glob#patterns for format.
     default: |
       ${{ github.workspace }}/.github/workflows/*.yml
+
+outputs:
+
+  sarif-report:
+    description: |
+      The absolute path of the SARIF report file.
+      Slashes might be mixed, forward slash only on Linux.
+      This can be used to upload the report to GitHub Code Scanning.
+    value: ${{ inputs.location }}/report.sarif
 
 runs:
   using: composite

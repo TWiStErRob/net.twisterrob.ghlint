@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "Run validator."
+        id: ghlint
         uses: ./actions/ghlint
 
       - name: "Upload 'GH-Lint Results' artifact."
@@ -38,12 +39,11 @@ jobs:
         with:
           name: 'GH-Lint Results'
           if-no-files-found: error
-          path: |
-            report.sarif
+          path: ${{ steps.ghlint.output.sarif-report }}
 
       - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         if: ${{ success() || failure() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: ${{ github.workspace }}/report.sarif
+          sarif_file: ${{ steps.ghlint.output.sarif-report }}
