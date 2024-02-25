@@ -74,8 +74,8 @@ runs:
       working-directory: ${{ inputs.location }}
       env:
         FILES: ${{ steps.files.outputs.result }}
-        PATH: "${{ env.JAVA_HOME_17_X64 }}:${{ env.PATH }}"
       shell: bash
       run: |
-        echo PATH="${PATH}"
+        # Hackaround for https://github.com/orgs/community/discussions/73309
+        PATH="${{ env.JAVA_HOME_17_X64 }}:${{ env.PATH }}"
         echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
