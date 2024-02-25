@@ -17,7 +17,6 @@ import io.github.detekt.sarif4k.Version
 import net.twisterrob.ghlint.reporting.Reporter
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
-import net.twisterrob.ghlint.rule.descriptionWithExamples
 import net.twisterrob.ghlint.ruleset.RuleSet
 import java.io.Writer
 import java.nio.file.Path
@@ -92,7 +91,7 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 		),
 		help = MultiformatMessageString(
 			text = "See help markdown.",
-			markdown = issue.descriptionWithExamples + issue.helpLink,
+			markdown = issue.helpMarkdown(),
 		),
 		helpURI = "https://ghlint.twisterrob.net/issues/default/${issue.id}/", // not visible on GH UI.
 		// TODO defaultConfiguration = ReportingConfiguration(level = issue.severity), //
@@ -100,7 +99,7 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 	)
 
 private fun result(finding: Finding, base: Path): Result {
-	val file = Path.of(finding.location.file.path).absolute().toRealPath()
+	val file = Path.of(finding.location.file.path).absolute()
 	return Result(
 		message = Message(
 			text = finding.message,
@@ -126,6 +125,3 @@ private fun result(finding: Finding, base: Path): Result {
 		),
 	)
 }
-
-private val Issue.helpLink: String
-	get() = "\n---\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/${id}/)."

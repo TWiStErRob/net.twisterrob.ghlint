@@ -1,0 +1,59 @@
+package net.twisterrob.ghlint.docs
+
+import io.kotest.matchers.paths.aDirectory
+import io.kotest.matchers.paths.aFile
+import io.kotest.matchers.paths.exist
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.ruleset.RuleSet
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.whenever
+import java.nio.file.Path
+import kotlin.io.path.name
+
+class FileLocatorTest {
+
+	@Test fun testRuleSet(@TempDir temp: Path) {
+		val locator = FileLocator(temp)
+
+		val ruleSet: RuleSet = mock()
+		whenever(ruleSet.id).thenReturn("test-ruleset")
+
+		val result = locator.ruleSetFile(ruleSet)
+
+		result.name shouldBe "index.md"
+		result shouldNot exist()
+		result shouldBe aFile()
+
+		result.parent should exist()
+		result.parent shouldBe aDirectory()
+		result.parent.name shouldBe "test-ruleset"
+
+		result.parent.parent shouldBe temp
+	}
+
+	@Test fun testIssue(@TempDir temp: Path) {
+		val locator = FileLocator(temp)
+
+		val ruleSet: RuleSet = mock()
+		whenever(ruleSet.id).thenReturn("test-ruleset")
+		val issue: Issue = mock()
+		whenever(issue.id).thenReturn("TestIssue")
+
+		val result = locator.issueFile(ruleSet, issue)
+
+		result.name shouldBe "TestIssue.md"
+		result shouldNot exist()
+		result shouldBe aFile()
+
+		result.parent should exist()
+		result.parent shouldBe aDirectory()
+		result.parent.name shouldBe "test-ruleset"
+
+		result.parent.parent shouldBe temp
+	}
+}
