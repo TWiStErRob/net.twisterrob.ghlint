@@ -1,9 +1,13 @@
 package net.twisterrob.ghlint.docs
 
+import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
+import net.twisterrob.ghlint.yaml.Yaml
 import kotlin.io.path.relativeTo
 
 internal class MarkdownRenderer(
@@ -51,30 +55,65 @@ internal class MarkdownRenderer(
 					## Description
 				""".trimIndent()
 			)
-			append(issue.descriptionWithExamples)
+			append(renderIssueDescription(rule, issue))
+		}
+
+	private fun renderIssueDescription(rule: Rule, issue: Issue): String =
+		buildString {
+			appendLine(issue.description)
+			renderExamples(rule = rule, issue = issue, examples = issue.compliant, type = "Compliant")
+			renderExamples(rule = rule, issue = issue, examples = issue.nonCompliant, type = "Non-compliant")
 		}
 }
 
-private val Issue.descriptionWithExamples: String
-	get() = buildString {
-		append(description)
-		append("\n")
-		renderExamples("Compliant", compliant)
-		renderExamples("Non-compliant", nonCompliant)
-	}
-
-private fun StringBuilder.renderExamples(type: String, examples: List<Example>) {
+private fun StringBuilder.renderExamples(rule: Rule, issue: Issue, examples: List<Example>, type: String) {
 	if (examples.isNotEmpty()) {
-		append("\n## ${type} ${if (examples.size > 1) "examples" else "example"}\n")
+		appendLine() // Add a line between description and example heading.
+		appendLine("## ${type} ${if (examples.size > 1) "examples" else "example"}")
 		examples.forEachIndexed { index, example ->
 			if (examples.size != 1) {
-				append("\n### ${type} example #${index + 1}\n")
+				appendLine()
+				appendLine("### ${type} example #${index + 1}")
 			}
-			append("```yaml\n")
-			append(example.content)
-			append("\n```\n")
-			append(example.explanation)
-			append("\n")
+			appendLine(example.explanation)
+			appendLine() // Add a line between explanation and example.
+			appendLine(buildString {
+				append("```yaml\n")
+				append(example.content)
+				append("\n```")
+			}.prependIndent("> "))
+			renderFindings(rule.calculateFindings(issue, example))
+		}
+	}
+}
+
+private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding> {
+	val exampleFile = File(FileLocation("example.yml"), example.content)
+	val exampleRuleSet = object : RuleSet {
+		override val id: String = "example"
+		override val name: String = "Example"
+		override fun createRules(): List<Rule> = listOf(this@calculateFindings)
+	}
+	val findings = Yaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+	return findings.filter { it.issue == issue || it.issue.id == "RuleErrored" }
+}
+
+// REPORT False negative detekt.NestedBlockDepth: invert guard if, and inline this function.
+private fun StringBuilder.renderFindings(findings: List<Finding>) {
+	if (findings.isEmpty()) return
+	appendLine(">") // Follow the code block's quote.
+	findings.forEach { finding ->
+		val bullet = "**Line ${finding.location.start.line.number}**: ${finding.message}"
+		append("> - ")
+		appendLine(bullet.lineSequence().first())
+		bullet.lineSequence().drop(1).forEach { line ->
+			append(">    ") // mkdocs requires 4 indentation of bullets.
+			if (line.isNotEmpty()) {
+				appendLine(line)
+			} else {
+				// This prevents separating the bullet from the rest of the content.
+				appendLine("<br/>")
+			}
 		}
 	}
 }

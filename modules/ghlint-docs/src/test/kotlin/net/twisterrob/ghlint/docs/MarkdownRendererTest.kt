@@ -255,12 +255,13 @@ class MarkdownRendererTest {
 						Description of issue with only compliant example.
 						
 						## Compliant example
-						```yaml
-						name: "IssueNameWithOnlyCompliantExample compliant"
-						on: push
-						jobs: {}
-						```
 						Compliant example description.
+						
+						> ```yaml
+						> name: "IssueNameWithOnlyCompliantExample compliant"
+						> on: push
+						> jobs: {}
+						> ```
 						
 					""".trimIndent(),
 				),
@@ -276,13 +277,16 @@ class MarkdownRendererTest {
 						Description of issue with only compliant example.
 						
 						## Non-compliant example
-						```yaml
-						name: "IssueNameWithOnlyNonCompliantExample non-compliant"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example description.
-
+						
+						> ```yaml
+						> name: "IssueNameWithOnlyNonCompliantExample non-compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
+						
 					""".trimIndent(),
 				),
 				testCase(
@@ -297,20 +301,24 @@ class MarkdownRendererTest {
 						Description of issue with one example each.
 						
 						## Compliant example
-						```yaml
-						name: "IssueNameWithOneExampleEach compliant"
-						on: push
-						jobs: {}
-						```
 						Compliant example description.
 						
+						> ```yaml
+						> name: "IssueNameWithOneExampleEach compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						## Non-compliant example
-						```yaml
-						name: "IssueNameWithOneExampleEach non-compliant"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example description.
+						
+						> ```yaml
+						> name: "IssueNameWithOneExampleEach non-compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
 						
 					""".trimIndent(),
 				),
@@ -328,48 +336,102 @@ class MarkdownRendererTest {
 						## Compliant examples
 						
 						### Compliant example #1
-						```yaml
-						name: "IssueNameWithManyExamples compliant 1"
-						on: push
-						jobs: {}
-						```
 						Compliant example 1 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples compliant 1"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						### Compliant example #2
-						```yaml
-						name: "IssueNameWithManyExamples compliant 2"
-						on: push
-						jobs: {}
-						```
 						Compliant example 2 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples compliant 2"
+						> on: push
+						> jobs: {}
+						> ```
+						
 						### Compliant example #3
-						```yaml
-						name: "IssueNameWithManyExamples compliant 3"
-						on: push
-						jobs: {}
-						```
 						Compliant example 3 description.
+						
+						> ```yaml
+						> name: "IssueNameWithManyExamples compliant 3"
+						> on: push
+						> jobs: {}
+						> ```
 						
 						## Non-compliant examples
 						
 						### Non-compliant example #1
-						```yaml
-						name: "IssueNameWithManyExamples non-compliant 1"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example 1 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples non-compliant 1"
+						> on: push
+						> jobs: {}
+						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
+						
 						### Non-compliant example #2
-						```yaml
-						name: "IssueNameWithManyExamples non-compliant 2"
-						on: push
-						jobs: {}
-						```
 						Non-compliant example 2 description.
 						
+						> ```yaml
+						> name: "IssueNameWithManyExamples non-compliant 2"
+						> on: push
+						> jobs: {}
+						> ```
+						>
+						> - **Line 3**: Non-compliant `workflow`.
+						
 					""".trimIndent(),
+				),
+				testCase(
+					TestRule.IssueWithComplexFindingMessage,
+					"""
+						# `IssueWithComplexFindingMessage`
+						Issue with complex finding message.
+						
+						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
+						
+						## Description
+						Description of issue with complex finding message.
+						
+						## Non-compliant example
+						Non-compliant example description.
+						
+						> ```yaml
+						> name: "IssueWithComplexFindingMessage non-compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						>
+						> - **Line 3**: Complex `finding` message.
+						>    <br/>
+						>    With empty lines:
+						>    <br/>
+						>     * some
+						>       * lists
+						>     * and
+						>       ```
+						>       even
+						>       
+						>       code
+						>       ```
+						>     * and quotes:
+						>       > why not?
+						>    <br/>
+						>    ```kotlin
+						>    // Some
+						>    <br/>
+						>    code
+						>    ```
+						>    <br/>
+						
+					""".trimIndent(),
+					// TODO the code block has a <br/> in it.
 				),
 			)
 		}
@@ -384,7 +446,54 @@ internal class TestRuleSet(
 internal class TestRule : Rule {
 
 	override val issues: List<Issue> get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> = error("Should never be called.")
+	override fun check(workflow: Workflow): List<Finding> {
+		val name = workflow.name.orEmpty()
+		return when {
+			name == "IssueWithComplexFindingMessage non-compliant" -> listOf(
+				Finding(
+					rule = this,
+					issue = IssueWithComplexFindingMessage,
+					location = workflow.location,
+					message = """
+						Complex `finding` message.
+						
+						With empty lines:
+						
+						 * some
+						   * lists
+						 * and
+						   ```
+						   even
+						   
+						   code
+						   ```
+						 * and quotes:
+						   > why not?
+						
+						```kotlin
+						// Some
+						
+						code
+						```
+						
+					""".trimIndent()
+				)
+			)
+
+			name.contains("non-compliant") -> listOf(
+				Finding(
+					rule = this,
+					issue = Companion::class.java.declaredMethods
+						.single { it.name.removePrefix("get") == name.substringBefore(" ") }
+						.invoke(Companion) as? Issue ?: error("Unknown issue from workflow name: ${name}"),
+					location = workflow.location,
+					message = "Non-compliant `workflow`."
+				)
+			)
+
+			else -> emptyList()
+		}
+	}
 
 	companion object {
 
@@ -509,6 +618,25 @@ internal class TestRule : Rule {
 					explanation = "Non-compliant example 2 description.",
 					content = """
 						name: "IssueNameWithManyExamples non-compliant 2"
+						on: push
+						jobs: {}
+					""".trimIndent(),
+				),
+			),
+		)
+
+		val IssueWithComplexFindingMessage = Issue(
+			id = "IssueWithComplexFindingMessage",
+			title = "Issue with complex finding message.",
+			description = """
+				Description of issue with complex finding message.
+			""".trimIndent(),
+			compliant = emptyList(),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Non-compliant example description.",
+					content = """
+						name: "IssueWithComplexFindingMessage non-compliant"
 						on: push
 						jobs: {}
 					""".trimIndent(),

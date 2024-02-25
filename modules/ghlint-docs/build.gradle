@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
 	implementation(projects.ghlintRules)
+	implementation(projects.ghlintSnakeyaml)
 }
 
 application {
