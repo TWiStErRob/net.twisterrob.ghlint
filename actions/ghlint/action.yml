@@ -1,0 +1,29 @@
+name: "GH-Lint"
+description: "Run ghlint on GitHub Actions files"
+inputs:
+  version:
+    description: "The version of ghlint to use. Use 'latest' to always use the latest version, may break over time."
+    default: "0.2.0"
+
+runs:
+  using: composite
+  steps:
+
+    - name: "Set up Java."
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: "Download validator."
+      env:
+        GHLINT_VERSION: ${{ inputs.version }}
+      shell: bash
+      run: |
+        curl --silent --show-error --location --remote-name \
+            https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
+        chmod +x ghlint.jar
+
+    - name: "Run validator."
+      shell: bash
+      run: find ".github/workflows" -type f -name "*.yml" | xargs ./ghlint.jar
