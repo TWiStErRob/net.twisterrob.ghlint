@@ -33,19 +33,8 @@ runs:
   using: composite
   steps:
 
-    - name: "Env"
-      shell: bash
-      run: env | sort
-
-    - name: "Set up Java."
-      uses: actions/setup-java@v4
-      with:
-        java-version: 17
-        distribution: temurin
-
-    - name: "Env"
-      shell: bash
-      run: env | sort
+    # Do not set up Java, because we can't do it without changing the runner environment.
+    # See https://github.com/actions/setup-java/issues/552
 
     - name: "Download validator."
       working-directory: ${{ runner.temp }}
