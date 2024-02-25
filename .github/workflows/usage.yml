@@ -39,11 +39,11 @@ jobs:
         with:
           name: 'GH-Lint Results'
           if-no-files-found: error
-          path: ${{ steps.ghlint.output.sarif-report }}
+          path: ${{ steps.ghlint.outputs.sarif-report }}
 
       - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         if: ${{ success() || failure() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: ${{ steps.ghlint.output.sarif-report }}
+          sarif_file: ${{ steps.ghlint.outputs.sarif-report }}
