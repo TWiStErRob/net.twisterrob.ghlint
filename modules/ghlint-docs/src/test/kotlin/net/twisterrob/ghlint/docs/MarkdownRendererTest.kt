@@ -483,7 +483,9 @@ internal class TestRule : Rule {
 			name.contains("non-compliant") -> listOf(
 				Finding(
 					rule = this,
-					issue = IssueNameWithoutExamples,
+					issue = Companion::class.java.declaredMethods
+						.single { it.name.removePrefix("get") == name.substringBefore(" ") }
+						.invoke(Companion) as? Issue ?: error("Unknown issue from workflow name: ${name}"),
 					location = workflow.location,
 					message = "Non-compliant `workflow`."
 				)

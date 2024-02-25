@@ -61,17 +61,12 @@ internal class MarkdownRenderer(
 	private fun renderIssueDescription(rule: Rule, issue: Issue): String =
 		buildString {
 			appendLine(issue.description)
-			renderExamples(null, "Compliant", issue.compliant)
-			renderExamples(rule, "Non-compliant", issue.nonCompliant)
+			renderExamples(rule = rule, issue = issue, examples = issue.compliant, type = "Compliant")
+			renderExamples(rule = rule, issue = issue, examples = issue.nonCompliant, type = "Non-compliant")
 		}
 }
 
-private fun StringBuilder.renderExamples(
-	@Suppress("detekt.CanBeNonNullable")
-	rule: Rule?,
-	type: String,
-	examples: List<Example>,
-) {
+private fun StringBuilder.renderExamples(rule: Rule, issue: Issue, examples: List<Example>, type: String) {
 	if (examples.isNotEmpty()) {
 		appendLine() // Add a line between description and example heading.
 		appendLine("## ${type} ${if (examples.size > 1) "examples" else "example"}")
@@ -87,21 +82,20 @@ private fun StringBuilder.renderExamples(
 				append(example.content)
 				append("\n```")
 			}.prependIndent("> "))
-			if (rule != null) {
-				renderFindings(rule.calculateFindings(example))
-			}
+			renderFindings(rule.calculateFindings(issue, example))
 		}
 	}
 }
 
-private fun Rule.calculateFindings(example: Example): List<Finding> {
+private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding> {
 	val exampleFile = File(FileLocation("example.yml"), example.content)
 	val exampleRuleSet = object : RuleSet {
 		override val id: String = "example"
 		override val name: String = "Example"
 		override fun createRules(): List<Rule> = listOf(this@calculateFindings)
 	}
-	return Yaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+	val findings = Yaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+	return findings.filter { it.issue == issue || it.issue.id == "RuleErrored" }
 }
 
 // REPORT False negative detekt.NestedBlockDepth: invert guard if, and inline this function.
