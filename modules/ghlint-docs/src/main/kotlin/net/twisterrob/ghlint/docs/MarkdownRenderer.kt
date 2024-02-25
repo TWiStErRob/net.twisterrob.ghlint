@@ -100,10 +100,14 @@ private fun StringBuilder.renderExamples(
 						val bullet = "**Line ${finding.location.start.line.number}**: ${finding.message}"
 						append("> - ")
 						appendLine(bullet.lineSequence().first())
-						// STOPSHIP test
 						bullet.lineSequence().drop(1).forEach { line ->
 							append(">    ")
-							appendLine(line)
+							if (line.isNotEmpty()) {
+								appendLine(line)
+							} else {
+								// This prevents separating the bullet from the rest of the content.
+								appendLine("<br/>")
+							}
 						}
 					}
 				}

@@ -388,6 +388,51 @@ class MarkdownRendererTest {
 						
 					""".trimIndent(),
 				),
+				testCase(
+					TestRule.IssueWithComplexFindingMessage,
+					"""
+						# `IssueWithComplexFindingMessage`
+						Issue with complex finding message.
+						
+						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
+						
+						## Description
+						Description of issue with complex finding message.
+						
+						## Non-compliant example
+						Non-compliant example description.
+						
+						> ```yaml
+						> name: "IssueWithComplexFindingMessage non-compliant"
+						> on: push
+						> jobs: {}
+						> ```
+						>
+						> - **Line 3**: Complex `finding` message.
+						>    <br/>
+						>    With empty lines:
+						>    <br/>
+						>     * some
+						>       * lists
+						>     * and
+						>       ```
+						>       even
+						>       
+						>       code
+						>       ```
+						>     * and quotes:
+						>       > why not?
+						>    <br/>
+						>    ```kotlin
+						>    // Some
+						>    <br/>
+						>    code
+						>    ```
+						>    <br/>
+						
+					""".trimIndent(),
+					// TODO the code block has a <br/> in it.
+				),
 			)
 		}
 	}
@@ -401,9 +446,41 @@ internal class TestRuleSet(
 internal class TestRule : Rule {
 
 	override val issues: List<Issue> get() = error("Should never be called.")
-	override fun check(workflow: Workflow): List<Finding> =
-		if (workflow.name.orEmpty().contains("non-compliant")) {
-			listOf(
+	override fun check(workflow: Workflow): List<Finding> {
+		val name = workflow.name.orEmpty()
+		return when {
+			name == "IssueWithComplexFindingMessage non-compliant" -> listOf(
+				Finding(
+					rule = this,
+					issue = IssueWithComplexFindingMessage,
+					location = workflow.location,
+					message = """
+						Complex `finding` message.
+						
+						With empty lines:
+						
+						 * some
+						   * lists
+						 * and
+						   ```
+						   even
+						   
+						   code
+						   ```
+						 * and quotes:
+						   > why not?
+						
+						```kotlin
+						// Some
+						
+						code
+						```
+						
+					""".trimIndent()
+				)
+			)
+
+			name.contains("non-compliant") -> listOf(
 				Finding(
 					rule = this,
 					issue = IssueNameWithoutExamples,
@@ -411,9 +488,10 @@ internal class TestRule : Rule {
 					message = "Non-compliant `workflow`."
 				)
 			)
-		} else {
-			emptyList()
+
+			else -> emptyList()
 		}
+	}
 
 	companion object {
 
@@ -538,6 +616,25 @@ internal class TestRule : Rule {
 					explanation = "Non-compliant example 2 description.",
 					content = """
 						name: "IssueNameWithManyExamples non-compliant 2"
+						on: push
+						jobs: {}
+					""".trimIndent(),
+				),
+			),
+		)
+
+		val IssueWithComplexFindingMessage = Issue(
+			id = "IssueWithComplexFindingMessage",
+			title = "Issue with complex finding message.",
+			description = """
+				Description of issue with complex finding message.
+			""".trimIndent(),
+			compliant = emptyList(),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Non-compliant example description.",
+					content = """
+						name: "IssueWithComplexFindingMessage non-compliant"
 						on: push
 						jobs: {}
 					""".trimIndent(),
