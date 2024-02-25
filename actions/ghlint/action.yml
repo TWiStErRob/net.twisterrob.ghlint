@@ -41,6 +41,7 @@ runs:
         FILES: ${{ inputs.files }}
       uses: actions/github-script@v7
       with:
+        result-encoding: string
         script: |
           const files = process.env.FILES;
           const globber = await glob.create(files, { followSymbolicLinks: false });
