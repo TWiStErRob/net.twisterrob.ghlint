@@ -4,9 +4,11 @@ inputs:
 
   version:
     description: |
-      The version of ghlint to use. Use 'latest' to always use the latest version, may break over time.
+      The version of ghlint to use.
+      Use 'latest' to always use the latest version, may break over time.
+      Prefer using a fixed version and use Renovate to update it, see .github/renovate.json for an example.
       First supported version: 0.2.0.
-    default: "0.1.0"
+    default: "0.2.0"
 
   location:
     description: |

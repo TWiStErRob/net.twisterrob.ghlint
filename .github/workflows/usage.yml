@@ -2,7 +2,6 @@ name: "GH-Lint"
 
 on:
   workflow_dispatch:
-  push:
   pull_request:
     paths:
       - ".github/workflows/usage.yml"
