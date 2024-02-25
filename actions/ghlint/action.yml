@@ -11,9 +11,6 @@ inputs:
     description: "The files to lint."
     default: |
       ${{ github.workspace }}/.github/workflows/*.yml
-      ${{ github.workspace }}/action.yml
-      ${{ github.workspace }}/.github/actions/action.yml
-      ${{ github.workspace }}/actions/*/action.yml
 
 runs:
   using: composite
