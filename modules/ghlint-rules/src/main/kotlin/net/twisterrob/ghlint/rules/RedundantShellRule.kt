@@ -29,14 +29,16 @@ public class RedundantShellRule : VisitorRule {
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		val myShell = step.shell
-		val (globalLocation, globalShell) = when {
-			step.parent.defaultShell != null -> step.parent to step.parent.defaultShell
-			step.parent.parent.defaultShell != null -> step.parent.parent to step.parent.parent.defaultShell
-			else -> null to null
-		}
-		if (globalLocation != null && myShell != null && globalShell == myShell) {
-			reporting.report(RedundantShell, step) {
-				"Both ${globalLocation.toTarget()} and ${it} has `${myShell}` shell, the step's shell can be removed."
+		if (myShell != null) {
+			val (globalLocation, globalShell) = when {
+				step.parent.defaultShell != null -> step.parent to step.parent.defaultShell
+				step.parent.parent.defaultShell != null -> step.parent.parent to step.parent.parent.defaultShell
+				else -> return
+			}
+			if (globalShell == myShell) {
+				reporting.report(RedundantShell, step) {
+					"Both ${globalLocation.toTarget()} and ${it} has `${myShell}` shell, the step's shell can be removed."
+				}
 			}
 		}
 	}
