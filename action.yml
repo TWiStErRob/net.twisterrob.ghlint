@@ -1,5 +1,11 @@
 name: "GH-Lint"
-description: "Run ghlint on GitHub Actions files"
+description: "Run ghlint on GitHub Actions files."
+
+author: "TWiStErRob"
+branding: 
+  icon: alert-triangle
+  color: yellow
+
 inputs:
 
   version:
@@ -13,6 +19,8 @@ inputs:
   location:
     description: |
       The location of the files to lint.
+      This will be used as the base directory for reporting (e.g. producing relative paths).
+      Usually the repository root, so GitHub can find the files mentioned in the SARIF file.
     default: ${{ github.workspace }}
 
   files:
