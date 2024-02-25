@@ -9,4 +9,5 @@ public interface Configuration {
 	public val reportConsole: Boolean
 	public val reportSarif: Path?
 	public val reportGitHubCommands: Boolean
+	public val reportExitCode: Boolean
 }

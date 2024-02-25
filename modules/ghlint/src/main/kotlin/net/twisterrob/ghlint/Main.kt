@@ -17,7 +17,7 @@ public fun main(vararg args: String) {
 
 public class Main {
 
-	public fun run(config: Configuration) {
+	public fun run(config: Configuration): Int {
 		if (config.verbose) {
 			config.files.forEach {
 				@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
@@ -29,6 +29,9 @@ public class Main {
 		val ruleSets = listOf(DefaultRuleSet())
 		val analysisResults = Yaml.analyze(files, ruleSets)
 		val allFindings = validationResults + analysisResults
+		if (config.verbose) {
+			println("There are ${allFindings.size} findings.")
+		}
 
 		if (config.reportConsole) {
 			if (config.verbose) {
@@ -56,5 +59,10 @@ public class Main {
 				rootDir = Path.of("."),
 			)
 		}
+		val code = if (config.reportExitCode && allFindings.isNotEmpty()) 1 else 0
+		if (config.verbose) {
+			println("Exiting with code ${code}.")
+		}
+		return code
 	}
 }
