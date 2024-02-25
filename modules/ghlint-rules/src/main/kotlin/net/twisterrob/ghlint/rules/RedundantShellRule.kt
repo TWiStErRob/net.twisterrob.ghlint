@@ -36,7 +36,7 @@ public class RedundantShellRule : VisitorRule {
 		}
 		if (globalShell != null && myShell != null && globalShell.second == myShell) {
 			reporting.report(RedundantShell, step) {
-				"Both ${it} and ${globalShell.first.toTarget()} has `${myShell}` shell, the step's shell can be removed."
+				"Both ${globalShell.first.toTarget()} and ${it} has `${myShell}` shell, the step's shell can be removed."
 			}
 		}
 	}
