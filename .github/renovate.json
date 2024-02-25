@@ -7,7 +7,7 @@
 		{
 			"description": "Update GH-Lint CLI in usage.",
 			"customType": "regex",
-			"fileMatch": ["^\\.github/workflows/usage\\.yml$"],
+			"fileMatch": ["^action.yml\\.yml$"],
 			"datasourceTemplate": "github-releases",
 			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
 			"matchStrings": [

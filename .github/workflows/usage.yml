@@ -29,8 +29,8 @@ jobs:
       - name: "Run GH-Lint validator."
         id: ghlint
         # TODO When using this file in your repo, change the following line to:
-        # uses: TWiStErRob/net.twisterrob.ghlint/actions/ghlint@v0
-        uses: ./actions/ghlint
+        # uses: TWiStErRob/net.twisterrob.ghlint@v0
+        uses: ./
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ success() || failure() }}
