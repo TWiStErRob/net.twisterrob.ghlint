@@ -1,9 +1,9 @@
 package net.twisterrob.ghlint.rules.utils
 
-internal fun editDistance(str1: String, str2: String): Int =
-	editDistance(str1, str1.length, str2, str2.length)
+internal fun editDistance(string1: String, string2: String): Int =
+	editDistance(string1 = string1, length1 = string1.length, string2 = string2, length2 = string2.length)
 
-@Suppress("detekt.ReturnCount")
+@Suppress("detekt.ReturnCount", "detekt.NamedArguments")
 private fun editDistance(string1: String, length1: Int, string2: String, length2: Int): Int {
 	// If the first string is empty, need to insert all characters.
 	if (length1 == 0) return length2

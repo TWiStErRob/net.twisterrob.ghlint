@@ -17,7 +17,7 @@ public class DuplicateStepIdRule : VisitorRule {
 		val ids = job.steps.mapNotNull { it.id }
 		val similar: Sequence<Triple<String, String, Int>> = ids
 			.combinations()
-			.map { (id1, id2) -> if (id1 < id2) Pair(id1, id2) else Pair(id2, id1) }
+			.map { (id1, id2) -> if (id1 < id2) id1 to id2 else id2 to id1 }
 			.map { Triple(it.first, it.second, editDistance(it.first, it.second)) }
 			.filter { it.third <= MAX_SHELLS_ON_STEPS }
 
@@ -62,7 +62,7 @@ public class DuplicateStepIdRule : VisitorRule {
 						      - run: echo "Example"
 						      - run: echo "Example"
 						        id: my-other-step-id
-						""".trimIndent(),
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
@@ -113,7 +113,7 @@ public class DuplicateStepIdRule : VisitorRule {
 						      - run: echo "Example"
 						      - run: echo "Example"
 						        id: my-other-step-id
-						""".trimIndent(),
+					""".trimIndent(),
 				),
 			),
 			nonCompliant = listOf(
