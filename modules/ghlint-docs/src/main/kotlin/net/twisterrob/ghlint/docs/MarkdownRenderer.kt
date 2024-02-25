@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.docs
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -87,29 +88,36 @@ private fun StringBuilder.renderExamples(
 				append("\n```")
 			}.prependIndent("> "))
 			if (rule != null) {
-				val exampleFile = File(FileLocation("example.yml"), example.content)
-				val exampleRuleSet = object : RuleSet {
-					override val id: String = "example"
-					override val name: String = "Example"
-					override fun createRules(): List<Rule> = listOf(rule)
-				}
-				val findings = Yaml.analyze(listOf(exampleFile), listOf(exampleRuleSet))
-				if (findings.isNotEmpty()) {
-					appendLine(">") // Follow the code block's quote.
-					findings.forEach { finding ->
-						val bullet = "**Line ${finding.location.start.line.number}**: ${finding.message}"
-						append("> - ")
-						appendLine(bullet.lineSequence().first())
-						bullet.lineSequence().drop(1).forEach { line ->
-							append(">    ")
-							if (line.isNotEmpty()) {
-								appendLine(line)
-							} else {
-								// This prevents separating the bullet from the rest of the content.
-								appendLine("<br/>")
-							}
-						}
-					}
+				renderFindings(rule.calculateFindings(example))
+			}
+		}
+	}
+}
+
+private fun Rule.calculateFindings(example: Example): List<Finding> {
+	val exampleFile = File(FileLocation("example.yml"), example.content)
+	val exampleRuleSet = object : RuleSet {
+		override val id: String = "example"
+		override val name: String = "Example"
+		override fun createRules(): List<Rule> = listOf(this@calculateFindings)
+	}
+	return Yaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+}
+
+private fun StringBuilder.renderFindings(findings: List<Finding>) {
+	if (findings.isNotEmpty()) {
+		appendLine(">") // Follow the code block's quote.
+		findings.forEach { finding ->
+			val bullet = "**Line ${finding.location.start.line.number}**: ${finding.message}"
+			append("> - ")
+			appendLine(bullet.lineSequence().first())
+			bullet.lineSequence().drop(1).forEach { line ->
+				append(">    ")
+				if (line.isNotEmpty()) {
+					appendLine(line)
+				} else {
+					// This prevents separating the bullet from the rest of the content.
+					appendLine("<br/>")
 				}
 			}
 		}
