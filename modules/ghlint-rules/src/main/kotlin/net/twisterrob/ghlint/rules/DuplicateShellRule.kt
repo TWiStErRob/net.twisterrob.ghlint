@@ -50,7 +50,7 @@ public class DuplicateShellRule : VisitorRule {
 				if (commonShell != null && commonShell != defaultShell) {
 					reporting.report(DuplicateShellOnSteps, job) {
 						"All (${count}) steps in ${it} override shell as `${commonShell}`, " +
-								"change the default shell on the job from `$defaultShell` to `${commonShell}`, " +
+								"change the default shell on the job from `${defaultShell}` to `${commonShell}`, " +
 								"and remove shells from steps."
 					}
 				}
