@@ -8,6 +8,7 @@ dependencies {
 	implementation(projects.ghlintSnakeyaml)
 	implementation(projects.ghlintJsonschema)
 	implementation(projects.ghlintReportingSarif)
+	implementation(libs.clikt)
 
 	testImplementation(projects.ghlintTesting)
 }

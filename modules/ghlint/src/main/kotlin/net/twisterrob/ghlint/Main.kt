@@ -12,13 +12,7 @@ import java.nio.file.Path
 import kotlin.io.path.readText
 
 public fun main(vararg args: String) {
-	Main().run(object : Configuration {
-		override val files: List<Path> = args.map { Path.of(it) }
-		override val verbose: Boolean = true
-		override val reportConsole: Boolean = true
-		override val reportSarif: Path? = Path.of("report.sarif")
-		override val reportGitHubCommands: Boolean = System.getenv("GITHUB_ACTIONS") == "true"
-	})
+	CLI().main(args)
 }
 
 public class Main {
