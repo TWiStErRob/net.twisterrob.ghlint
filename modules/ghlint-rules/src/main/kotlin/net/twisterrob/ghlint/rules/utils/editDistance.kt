@@ -6,12 +6,18 @@ internal fun editDistance(string1: String, string2: String): Int =
 @Suppress("detekt.ReturnCount", "detekt.NamedArguments")
 private fun editDistance(string1: String, length1: Int, string2: String, length2: Int): Int {
 	// If the first string is empty, need to insert all characters.
-	if (length1 == 0) return length2
+	if (length1 == 0) {
+		return length2
+	}
 	// If the second string is empty, need to remove all characters.
-	if (length2 == 0) return length1
+	if (length2 == 0) {
+		return length1
+	}
 
 	// If the characters are the same, that counts as no operation, just ignore them and count other operations.
-	if (string1[length1 - 1] == string2[length2 - 1]) return editDistance(string1, length1 - 1, string2, length2 - 1)
+	if (string1[length1 - 1] == string2[length2 - 1]) {
+		return editDistance(string1, length1 - 1, string2, length2 - 1)
+	}
 
 	// If characters as different, need to try each operation.
 	val insertion = editDistance(string1, length1, string2, length2 - 1)
