@@ -18,7 +18,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
        (this is required for other steps).
  * [x] Hand-crafted semantic rules and strongly typed object model.
  * [ ] Opinionated workflow file formatter.
- * [ ] GitHub Action to make it easier to select which files.
+ * [x] GitHub Action to make it easier to select which files.
  * [ ] Support for the full workflow syntax.
        Hopefully via generated code based on the JSON-schema.
  * [ ] Custom third-party rules (plugins)
@@ -32,6 +32,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 
 1. Copy [usage.yml](.github/workflows/usage.yml) to your repository to `.github/workflows/ghlint.yml`.
 2. Change the `on:` trigger to your liking (usually `on: pull_request` or `on: push`).
+3. Change the action reference to external syntax (see `TODO`).
 
 ### Troubleshooting
 
