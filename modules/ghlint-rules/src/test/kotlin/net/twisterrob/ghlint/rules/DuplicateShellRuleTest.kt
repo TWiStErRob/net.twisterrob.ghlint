@@ -106,6 +106,23 @@ class DuplicateShellRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when workflow has default shell`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test:
+				    steps:
+				      - run: echo "Test"
+				      - run: echo "Test"
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when steps have different shells`() {
 		val results = check<DuplicateShellRule>(
 			"""
@@ -235,7 +252,7 @@ class DuplicateShellRuleTest {
 				        shell: zsh
 				      - run: echo "Test"
 				        shell: zsh
-				""".trimIndent()
+			""".trimIndent()
 		)
 
 		results shouldHave noFindings()
@@ -262,7 +279,53 @@ class DuplicateShellRuleTest {
 				        shell: zsh
 				      - run: echo "Test"
 				        shell: sh
-				""".trimIndent()
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when a step missing shell - job`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				jobs:
+				  test:
+				    defaults:
+				      run:
+				        shell: bash
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when a step missing shell - workflow`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
 		)
 
 		results shouldHave noFindings()
