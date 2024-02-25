@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.defaultShell
 import net.twisterrob.ghlint.model.effectiveShell
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -20,16 +21,15 @@ public class DuplicateShellRule : VisitorRule {
 			.filter { it.shell != null }
 			.groupingBy { it.shell ?: error("Just filtered it!") }
 			.eachCount()
-		val defaultShell = job.effectiveShell
-		if (defaultShell == null) {
+		if (job.effectiveShell == null) {
 			if (explicitShells.size == 1 && explicitShells.values.single() >= MAX_SHELLS_ON_STEPS) {
 				val (shell, count) = explicitShells.entries.single()
 				reporting.report(DuplicateShellOnSteps, job) {
 					"${it} has all (${count}) steps defining ${shell} shell, set default shell on job."
 				}
 			}
-		} else {
-			if (explicitShells.size == 1 && explicitShells.keys.single() != defaultShell) {
+		} else if (job.defaultShell != null) {
+			if (explicitShells.size == 1 && explicitShells.keys.single() != job.defaultShell) {
 				val (shell, count) = explicitShells.entries.single()
 				reporting.report(DuplicateShellOnSteps, job) {
 					"All (${count}) steps in ${it} override shell as `${shell}`, " +

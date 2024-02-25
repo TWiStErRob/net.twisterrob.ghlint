@@ -163,4 +163,29 @@ class DuplicateShellRuleTest {
 					"change the default shell on the job from `bash` to `sh`, and remove shells from steps."
 		)
 	}
+
+	@Test fun `passes when steps override default shell to different values`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: zsh
+				      - run: echo "Test"
+				        shell: zsh
+				""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
 }
