@@ -17,9 +17,10 @@ public class DuplicateStepIdRule : VisitorRule {
 		val ids = job.steps.mapNotNull { it.id }
 		val similar: Sequence<Triple<String, String, Int>> = ids
 			.combinations()
+			// Sort to be consistent in reporting the similar pairs.
 			.map { (id1, id2) -> if (id1 < id2) id1 to id2 else id2 to id1 }
 			.map { Triple(it.first, it.second, editDistance(it.first, it.second)) }
-			.filter { it.third <= MAX_SHELLS_ON_STEPS }
+			.filter { it.third <= MAX_EDIT_DISTANCE }
 
 		similar.forEach { (id1, id2, distance) ->
 			if (distance == 0) {
@@ -32,7 +33,11 @@ public class DuplicateStepIdRule : VisitorRule {
 
 	private companion object {
 
-		private const val MAX_SHELLS_ON_STEPS = 3
+		/**
+		 * Maximum edit distance to consider two strings similar.
+		 * @sample 0 = same string.
+		 */
+		private const val MAX_EDIT_DISTANCE = 3
 
 		val DuplicateStepId = Issue(
 			id = "DuplicateStepId",

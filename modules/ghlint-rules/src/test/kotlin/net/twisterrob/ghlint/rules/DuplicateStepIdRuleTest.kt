@@ -1,7 +1,9 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -67,6 +69,37 @@ class DuplicateStepIdRuleTest {
 		results shouldHave singleFinding(
 			"SimilarStepId",
 			"Job[test] has similar step identifiers: `test1` and `test2`.",
+		)
+	}
+
+	@Test fun `reports when multiple ids are similar`() {
+		val results = check<DuplicateStepIdRule>(
+			"""
+				jobs:
+				  test:
+				    steps:
+				      - run: echo "Example"
+				        id: test1
+				      - run: echo "Example"
+				        id: test2
+				      - run: echo "Example"
+				        id: test3
+			""".trimIndent()
+		)
+
+		results shouldHave exactFindings(
+			aFinding(
+				"SimilarStepId",
+				"Job[test] has similar step identifiers: `test1` and `test2`.",
+			),
+			aFinding(
+				"SimilarStepId",
+				"Job[test] has similar step identifiers: `test1` and `test3`.",
+			),
+			aFinding(
+				"SimilarStepId",
+				"Job[test] has similar step identifiers: `test2` and `test3`.",
+			),
 		)
 	}
 
