@@ -23,6 +23,7 @@ runs:
         distribution: temurin
 
     - name: "Download validator."
+      working-directory: ${{ runner.temp }}
       env:
         GHLINT_VERSION: ${{ inputs.version }}
       shell: bash
@@ -50,4 +51,4 @@ runs:
       env:
         FILES: ${{ steps.files.outputs.result }}
       shell: bash
-      run: echo "${FILES}" | xargs ./ghlint.jar
+      run: echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
