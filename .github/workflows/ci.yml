@@ -2,9 +2,6 @@ name: "CI"
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 concurrency:
   # See https://github.com/TWiStErRob/github-workflows/blob/main/snippets/cancel-pr-ci-on-push.yml
