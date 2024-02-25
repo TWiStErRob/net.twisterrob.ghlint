@@ -21,19 +21,22 @@ public class DuplicateShellRule : VisitorRule {
 			.filter { it.shell != null }
 			.groupingBy { it.shell ?: error("Just filtered it!") }
 			.eachCount()
-		if (job.effectiveShell == null) {
-			if (explicitShells.size == 1 && explicitShells.values.single() >= MAX_SHELLS_ON_STEPS) {
+		if (explicitShells.size == 1) {
+			if (job.effectiveShell == null) {
 				val (shell, count) = explicitShells.entries.single()
-				reporting.report(DuplicateShellOnSteps, job) {
-					"${it} has all (${count}) steps defining ${shell} shell, set default shell on job."
+				if (count >= MAX_SHELLS_ON_STEPS) {
+					reporting.report(DuplicateShellOnSteps, job) {
+						"${it} has all (${count}) steps defining ${shell} shell, set default shell on job."
+					}
 				}
-			}
-		} else if (job.defaultShell != null) {
-			if (explicitShells.size == 1 && explicitShells.keys.single() != job.defaultShell) {
+			} else if (job.defaultShell != null) {
 				val (shell, count) = explicitShells.entries.single()
-				reporting.report(DuplicateShellOnSteps, job) {
-					"All (${count}) steps in ${it} override shell as `${shell}`, " +
-							"change the default shell on the job from `bash` to `sh`, and remove shells from steps."
+				if (shell != job.defaultShell) {
+					reporting.report(DuplicateShellOnSteps, job) {
+						"All (${count}) steps in ${it} override shell as `${shell}`, " +
+								"change the default shell on the job from `${job.defaultShell}` to `${shell}`, " +
+								"and remove shells from steps."
+					}
 				}
 			}
 		}
