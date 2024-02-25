@@ -1,0 +1,35 @@
+package net.twisterrob.ghlint.rules.utils
+
+internal fun editDistance(str1: String, str2: String): Int =
+	editDistance(str1, str1.length, str2, str2.length)
+
+@Suppress("detekt.ReturnCount")
+private fun editDistance(string1: String, length1: Int, string2: String, length2: Int): Int {
+	// If the first string is empty, need to insert all characters.
+	if (length1 == 0) return length2
+	// If the second string is empty, need to remove all characters.
+	if (length2 == 0) return length1
+
+	// If the characters are the same, that counts as no operation, just ignore them and count other operations.
+	if (string1[length1 - 1] == string2[length2 - 1]) return editDistance(string1, length1 - 1, string2, length2 - 1)
+
+	// If characters as different, need to try each operation.
+	val insertion = editDistance(string1, length1, string2, length2 - 1)
+	val deletion = editDistance(string1, length1 - 1, string2, length2)
+	val replace = editDistance(string1, length1 - 1, string2, length2 - 1)
+	val transposition =
+		@Suppress("detekt.ComplexCondition")
+		if (
+			length1 >= 2 && length2 >= 2
+			&& string1[length1 - 1] == string2[length2 - 2]
+			&& string1[length1 - 2] == string2[length2 - 1]
+		) {
+			editDistance(string1, length1 - 2, string2, length2 - 2)
+		} else {
+			Int.MAX_VALUE - 1 // `- 1` to avoid overflow on `1 +` below.
+		}
+
+	// Take the best of the operations calculated recursively.
+	// Add one for the operation itself.
+	return 1 + minOf(insertion, deletion, replace, transposition)
+}
