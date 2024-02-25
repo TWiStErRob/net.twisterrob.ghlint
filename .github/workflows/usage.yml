@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/usage.yml"
+      - "action.yml"
 
 jobs:
   ghlint:
@@ -20,41 +21,28 @@ jobs:
 
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    defaults:
-      run:
-        shell: bash
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
-      - name: "Set up Java."
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: temurin
-
-      - name: "Download validator."
-        env:
-          GHLINT_VERSION: "0.2.0"
-        run: |
-          curl --silent --show-error --location --remote-name \
-              https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
-          chmod +x ghlint.jar
-
-      - name: "Run validator."
-        run: find ".github/workflows" -type f -name "*.yml" | xargs ./ghlint.jar
+      - name: "Run GH-Lint validator."
+        id: ghlint
+        # TODO When using this file in your repo, change the following line to:
+        # uses: TWiStErRob/net.twisterrob.ghlint@v0
+        uses: ./
 
       - name: "Upload 'GH-Lint Results' artifact."
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: 'GH-Lint Results'
           if-no-files-found: error
-          path: |
-            report.sarif
+          path: ${{ steps.ghlint.outputs.sarif-report }}
 
       - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
+        if: ${{ success() || failure() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: ${{ github.workspace }}/report.sarif
+          sarif_file: ${{ steps.ghlint.outputs.sarif-report }}

@@ -1,0 +1,84 @@
+name: "GH-Lint"
+description: "Run ghlint on GitHub Actions files."
+
+author: "TWiStErRob"
+branding: 
+  icon: alert-triangle
+  color: yellow
+
+inputs:
+
+  version:
+    description: |
+      The version of ghlint to use.
+      Use 'latest' to always use the latest version, may break over time.
+      Prefer using a fixed version and use Renovate to update it, see .github/renovate.json for an example.
+      First supported version: 0.2.0.
+    default: "0.2.0"
+
+  location:
+    description: |
+      The location of the files to lint.
+      This will be used as the base directory for reporting (e.g. producing relative paths).
+      Usually the repository root, so GitHub can find the files mentioned in the SARIF file.
+    default: ${{ github.workspace }}
+
+  files:
+    description: |
+      Glob patterns for the files to lint.
+      By default, all standard GitHub Actions file locations will be linted.
+      See https://github.com/actions/toolkit/tree/main/packages/glob#patterns for format.
+    default: |
+      ${{ github.workspace }}/.github/workflows/*.yml
+
+outputs:
+
+  sarif-report:
+    description: |
+      The absolute path of the SARIF report file.
+      Slashes might be mixed, forward slash only on Linux.
+      This can be used to upload the report to GitHub Code Scanning.
+    value: ${{ inputs.location }}/report.sarif
+
+runs:
+  using: composite
+  steps:
+
+    # Do not set up Java, because we can't do it without changing the runner environment.
+    # See https://github.com/actions/setup-java/issues/552
+
+    - name: "Download validator."
+      working-directory: ${{ runner.temp }}
+      env:
+        GHLINT_VERSION: ${{ inputs.version }}
+      shell: bash
+      run: |
+        curl --silent --show-error --location --remote-name \
+            https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
+        chmod +x ghlint.jar
+
+    - name: "Calculate files to check"
+      id: files
+      env:
+        FILES: ${{ inputs.files }}
+      uses: actions/github-script@v7
+      with:
+        result-encoding: string
+        script: |
+          const files = process.env.FILES;
+          const globber = await glob.create(files, { followSymbolicLinks: false });
+          const result = [];
+          for await (const file of globber.globGenerator()) {
+          	result.push(file);
+          }
+          return result.join("\n");
+
+    - name: "Run validator."
+      working-directory: ${{ inputs.location }}
+      env:
+        FILES: ${{ steps.files.outputs.result }}
+      shell: bash
+      run: |
+        # Hackaround for https://github.com/orgs/community/discussions/73309
+        PATH="${JAVA_HOME_17_X64}/bin:${PATH}"
+        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
