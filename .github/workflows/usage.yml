@@ -21,9 +21,6 @@ jobs:
 
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    defaults:
-      run:
-        shell: bash
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
