@@ -27,7 +27,7 @@ class DuplicateShellRuleTest {
 
 		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
-			"Job[test] has 2 steps defining bash shell, set default shell on job."
+			"Job[test] has all (2) steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -48,7 +48,7 @@ class DuplicateShellRuleTest {
 
 		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
-			"Job[test] has 3 steps defining bash shell, set default shell on job."
+			"Job[test] has all (3) steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -70,7 +70,7 @@ class DuplicateShellRuleTest {
 
 		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
-			"Job[test] has 2 steps defining bash shell, set default shell on job."
+			"Job[test] has all (2) steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -97,6 +97,23 @@ class DuplicateShellRuleTest {
 				    defaults:
 				      run:
 				        shell: bash
+				    steps:
+				      - run: echo "Test"
+				      - run: echo "Test"
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when workflow has default shell`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test:
 				    steps:
 				      - run: echo "Test"
 				      - run: echo "Test"
@@ -133,6 +150,179 @@ class DuplicateShellRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
+				      - run: echo "Test"
+				        shell: powershell
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `reports when steps override default shell on job, but all the same`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				jobs:
+				  test:
+				    defaults:
+				      run:
+				        shell: bash
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"DuplicateShellOnSteps",
+			"All (2) steps in Job[test] override shell as `sh`, " +
+					"change the default shell on the job from `bash` to `sh`, and remove shells from steps."
+		)
+	}
+
+	@Test fun `reports when steps override default shell on workflow, but all the same`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"DuplicateShellOnSteps",
+			"All (2) steps in Workflow[test] override shell as `sh`, " +
+					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps."
+		)
+	}
+
+	@Test fun `reports when steps override default shell on workflow, but all the same, multiple jobs`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"DuplicateShellOnSteps",
+			"All (4) steps in Workflow[test] override shell as `sh`, " +
+					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps."
+		)
+	}
+
+	@Test fun `passes when steps override default shell to different values`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: zsh
+				      - run: echo "Test"
+				        shell: zsh
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when a step overrides default shell to different values`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: zsh
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when a step missing shell - job`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				jobs:
+				  test:
+				    defaults:
+				      run:
+				        shell: bash
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				      - run: echo "Test"
+				        shell: sh
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when a step missing shell - workflow`() {
+		val results = check<DuplicateShellRule>(
+			"""
+				defaults:
+				  run:
+				    shell: bash
+				jobs:
+				  test1:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
+				        shell: sh
+				  test2:
+				    steps:
+				      - run: echo "Test"
+				        shell: sh
+				      - run: echo "Test"
 				      - run: echo "Test"
 				        shell: sh
 			""".trimIndent()

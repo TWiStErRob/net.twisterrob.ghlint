@@ -21,7 +21,7 @@ public class RedundantShellRule : VisitorRule {
 		val globalShell = workflow.defaultShell
 		if (globalShell != null && myShell == globalShell) {
 			reporting.report(RedundantDefaultShell, job) {
-				"Both ${it} and ${workflow.toTarget()} has ${myShell} shell as default, one of them can be removed."
+				"Both ${it} and ${workflow.toTarget()} has `${myShell}` shell as default, one of them can be removed."
 			}
 		}
 	}
@@ -29,14 +29,16 @@ public class RedundantShellRule : VisitorRule {
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
 		super.visitRunStep(reporting, step)
 		val myShell = step.shell
-		val globalShell = when {
-			step.parent.defaultShell != null -> step.parent to step.parent.defaultShell
-			step.parent.parent.defaultShell != null -> step.parent.parent to step.parent.parent.defaultShell
-			else -> null
-		}
-		if (globalShell != null && myShell != null && globalShell.second == myShell) {
-			reporting.report(RedundantShell, step) {
-				"Both ${it} and ${globalShell.first.toTarget()} has ${myShell} shell, the step's shell can be removed."
+		if (myShell != null) {
+			val (globalLocation, globalShell) = when {
+				step.parent.defaultShell != null -> step.parent to step.parent.defaultShell
+				step.parent.parent.defaultShell != null -> step.parent.parent to step.parent.parent.defaultShell
+				else -> return
+			}
+			if (globalShell == myShell) {
+				reporting.report(RedundantShell, step) {
+					"Both ${globalLocation.toTarget()} and ${it} has `${myShell}` shell, the step's shell can be removed."
+				}
 			}
 		}
 	}
