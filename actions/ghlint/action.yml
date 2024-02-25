@@ -68,4 +68,6 @@ runs:
         FILES: ${{ steps.files.outputs.result }}
         PATH: "${{ env.JAVA_HOME_17_X64 }}:${{ env.PATH }}"
       shell: bash
-      run: echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
+      run: |
+        echo PATH="${PATH}"
+        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
