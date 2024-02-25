@@ -62,14 +62,6 @@ runs:
           }
           return result.join("\n");
 
-    - name: "env shell"
-      shell: bash
-      run: env | sort
-
-    - name: "env context"
-      shell: bash
-      run: echo "${{ toJson(env) }}"
-
     - name: "Run validator."
       working-directory: ${{ inputs.location }}
       env:
@@ -77,9 +69,5 @@ runs:
       shell: bash
       run: |
         # Hackaround for https://github.com/orgs/community/discussions/73309
-        echo $PATH
-        java -version
         PATH="${JAVA_HOME_17_X64}/bin:${PATH}"
-        echo $PATH
-        java -version
         echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
