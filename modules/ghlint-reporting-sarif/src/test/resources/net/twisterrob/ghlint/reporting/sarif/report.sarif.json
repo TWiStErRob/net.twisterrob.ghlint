@@ -35,7 +35,7 @@
       "tool": {
         "driver": {
           "fullName": "GH-Lint <version>",
-          "name": "ghlint",
+          "name": "GH-Lint",
           "rules": [
             {
               "fullDescription": {
