@@ -27,7 +27,7 @@ class DuplicateShellRuleTest {
 
 		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
-			"Job[test] has 2 steps defining bash shell, set default shell on job."
+			"Job[test] has all (2) steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -48,7 +48,7 @@ class DuplicateShellRuleTest {
 
 		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
-			"Job[test] has 3 steps defining bash shell, set default shell on job."
+			"Job[test] has all (3) steps defining bash shell, set default shell on job."
 		)
 	}
 
@@ -70,7 +70,7 @@ class DuplicateShellRuleTest {
 
 		results shouldHave singleFinding(
 			"DuplicateShellOnSteps",
-			"Job[test] has 2 steps defining bash shell, set default shell on job."
+			"Job[test] has all (2) steps defining bash shell, set default shell on job."
 		)
 	}
 

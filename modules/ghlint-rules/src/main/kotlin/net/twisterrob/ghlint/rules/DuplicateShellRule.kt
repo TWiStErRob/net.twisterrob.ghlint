@@ -24,7 +24,7 @@ public class DuplicateShellRule : VisitorRule {
 			if (explicitShells.size == 1 && explicitShells.values.single() >= MAX_SHELLS_ON_STEPS) {
 				val (shell, count) = explicitShells.entries.single()
 				reporting.report(DuplicateShellOnSteps, job) {
-					"${it} has ${count} steps defining ${shell} shell, set default shell on job."
+					"${it} has all (${count}) steps defining ${shell} shell, set default shell on job."
 				}
 			}
 		}
