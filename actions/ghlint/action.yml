@@ -5,7 +5,8 @@ inputs:
   version:
     description: |
       The version of ghlint to use. Use 'latest' to always use the latest version, may break over time.
-    default: "0.2.0"
+      First supported version: 0.2.0.
+    default: "0.1.0"
 
   location:
     description: |

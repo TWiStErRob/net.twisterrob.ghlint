@@ -26,8 +26,10 @@ jobs:
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
-      - name: "Run validator."
+      - name: "Run GH-Lint validator."
         id: ghlint
+        # TODO When using this file in your repo, change the following line to:
+        # uses: TWiStErRob/net.twisterrob.ghlint/actions/ghlint@v0
         uses: ./actions/ghlint
 
       - name: "Upload 'GH-Lint Results' artifact."
