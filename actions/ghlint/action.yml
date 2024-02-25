@@ -68,9 +68,7 @@ runs:
 
     - name: "env context"
       shell: bash
-      env:
-        ENV: ${{ toJson(env) }}
-      run: echo "${ENV}"
+      run: echo "${{ toJson(env) }}"
 
     - name: "Run validator."
       working-directory: ${{ inputs.location }}
