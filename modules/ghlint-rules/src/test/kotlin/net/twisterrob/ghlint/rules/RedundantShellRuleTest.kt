@@ -33,7 +33,7 @@ class RedundantShellRuleTest {
 
 		results shouldHave singleFinding(
 			"RedundantDefaultShell",
-			"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
+			"Both Job[test] and Workflow[test] has `bash` shell as default, one of them can be removed."
 		)
 	}
 
@@ -74,7 +74,7 @@ class RedundantShellRuleTest {
 
 		results shouldHave singleFinding(
 			"RedundantShell",
-			"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
+			"Both Step[#0] in Job[test] and Job[test] has `bash` shell, the step's shell can be removed."
 		)
 	}
 
@@ -95,7 +95,7 @@ class RedundantShellRuleTest {
 
 		results shouldHave singleFinding(
 			"RedundantShell",
-			"Both Step[#0] in Job[test] and Workflow[test] has bash shell, the step's shell can be removed."
+			"Both Step[#0] in Job[test] and Workflow[test] has `bash` shell, the step's shell can be removed."
 		)
 	}
 
@@ -120,11 +120,11 @@ class RedundantShellRuleTest {
 		results shouldHave exactFindings(
 			aFinding(
 				"RedundantShell",
-				"Both Step[#0] in Job[test] and Job[test] has bash shell, the step's shell can be removed."
+				"Both Step[#0] in Job[test] and Job[test] has `bash` shell, the step's shell can be removed."
 			),
 			aFinding(
 				"RedundantDefaultShell",
-				"Both Job[test] and Workflow[test] has bash shell as default, one of them can be removed."
+				"Both Job[test] and Workflow[test] has `bash` shell as default, one of them can be removed."
 			),
 		)
 	}
