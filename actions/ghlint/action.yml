@@ -62,6 +62,16 @@ runs:
           }
           return result.join("\n");
 
+    - name: "env shell"
+      shell: bash
+      run: env | sort
+
+    - name: "env context"
+      shell: bash
+      env:
+        ENV: ${{ toJson(env) }}
+      run: echo "${ENV}"
+
     - name: "Run validator."
       working-directory: ${{ inputs.location }}
       env:
