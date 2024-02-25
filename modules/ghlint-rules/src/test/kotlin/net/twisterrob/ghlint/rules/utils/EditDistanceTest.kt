@@ -14,8 +14,8 @@ class EditDistanceTest {
 		"intention, execution, 5",
 		"rosettacode, raisethysword, 8",
 	)
-	fun `editDistance complex`(str1: String, str2: String, expected: Int) {
-		test(str1, str2, expected)
+	fun `editDistance complex`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
 	}
 
 	@ParameterizedTest
@@ -25,8 +25,8 @@ class EditDistanceTest {
 		"ab, ab, 0",
 		"abc, abc, 0",
 	)
-	fun `editDistance same`(str1: String, str2: String, expected: Int) {
-		test(str1, str2, expected)
+	fun `editDistance same`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
 	}
 
 	@ParameterizedTest
@@ -40,8 +40,8 @@ class EditDistanceTest {
 		"abc, adbc, 1",
 		"abc, dabc, 1",
 	)
-	fun `editDistance insertion`(str1: String, str2: String, expected: Int) {
-		test(str1, str2, expected)
+	fun `editDistance insertion`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
 	}
 
 	@ParameterizedTest
@@ -58,8 +58,8 @@ class EditDistanceTest {
 		"abc, c, 2",
 		"abc, '', 3",
 	)
-	fun `editDistance deletion`(str1: String, str2: String, expected: Int) {
-		test(str1, str2, expected)
+	fun `editDistance deletion`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
 	}
 
 	@ParameterizedTest
@@ -73,8 +73,8 @@ class EditDistanceTest {
 		"abc, ade, 2",
 		"abc, def, 3",
 	)
-	fun `editDistance replace`(str1: String, str2: String, expected: Int) {
-		test(str1, str2, expected)
+	fun `editDistance replace`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
 	}
 
 	@ParameterizedTest
@@ -86,17 +86,17 @@ class EditDistanceTest {
 		"abcd, badc, 2",
 		"abcde, ebcda, 2", // 2 replacements wins over transposition (which is not swap).
 	)
-	fun `editDistance transpose`(str1: String, str2: String, expected: Int) {
-		test(str1, str2, expected)
+	fun `editDistance transpose`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
 	}
 
-	private fun test(str1: String, str2: String, expected: Int) {
-		val distance = editDistance(str1, str2)
+	private fun test(string1: String, string2: String, expected: Int) {
+		val distance = editDistance(string1, string2)
 
 		distance shouldBe expected
 
 		withClue("symmetry") {
-			editDistance(str2, str1) shouldBe expected
+			editDistance(string2, string1) shouldBe expected
 		}
 	}
 }
