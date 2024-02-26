@@ -8,7 +8,6 @@ import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.reporting.sarif.SarifReporter
 import net.twisterrob.ghlint.rules.DefaultRuleSet
 import net.twisterrob.ghlint.yaml.Yaml
-import java.nio.file.Path
 import kotlin.io.path.readText
 
 public fun main(vararg args: String) {
@@ -44,7 +43,7 @@ public class Main {
 				println("Reporting findings via GitHub Commands.")
 			}
 			GitHubCommandReporter(
-				repositoryRoot = Path.of("."),
+				repositoryRoot = config.root,
 				output = System.out,
 			).report(allFindings)
 		}
@@ -56,7 +55,7 @@ public class Main {
 				ruleSets = ruleSets,
 				findings = allFindings,
 				target = this,
-				rootDir = Path.of("."),
+				rootDir = config.root,
 			)
 		}
 		val code = if (config.reportExitCode && allFindings.isNotEmpty()) 1 else 0
