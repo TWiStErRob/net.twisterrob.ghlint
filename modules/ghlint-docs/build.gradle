@@ -5,10 +5,11 @@ plugins {
 dependencies {
 	implementation(projects.ghlintRules)
 	implementation(projects.ghlintSnakeyaml)
+	implementation(projects.ghlint)
 }
 
 application {
-	mainClass = "net.twisterrob.ghlint.docs.MainKt"
+	mainClass = "net.twisterrob.ghlint.docs.issues.MainKt"
 }
 
 tasks.named("run", JavaExec.class) {

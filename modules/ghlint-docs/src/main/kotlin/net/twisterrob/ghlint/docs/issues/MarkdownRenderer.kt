@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.docs
+package net.twisterrob.ghlint.docs.issues
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
