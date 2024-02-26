@@ -1,6 +1,5 @@
 plugins {
-	id("net.twisterrob.ghlint.cli")
-	alias(libs.plugins.buildConfig)
+	id("net.twisterrob.ghlint.library")
 }
 
 dependencies {
@@ -9,16 +8,6 @@ dependencies {
 	implementation(projects.ghlintSnakeyaml)
 	implementation(projects.ghlintJsonschema)
 	implementation(projects.ghlintReportingSarif)
-	implementation(libs.clikt)
 
 	testImplementation(projects.ghlintTesting)
-}
-
-application {
-	mainClass = "net.twisterrob.ghlint.MainKt"
-}
-
-buildConfig {
-	packageName("net.twisterrob.ghlint")
-	buildConfigField(String, "APP_VERSION", provider { project.version.toString() })
 }

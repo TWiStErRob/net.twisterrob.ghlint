@@ -10,10 +10,6 @@ import net.twisterrob.ghlint.rules.DefaultRuleSet
 import net.twisterrob.ghlint.yaml.Yaml
 import kotlin.io.path.readText
 
-public fun main(vararg args: String) {
-	CLI().main(args)
-}
-
 public class Main {
 
 	public fun run(config: Configuration): Int {

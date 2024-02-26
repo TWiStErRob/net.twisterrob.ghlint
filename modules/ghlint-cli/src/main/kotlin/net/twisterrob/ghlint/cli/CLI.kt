@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint
+package net.twisterrob.ghlint.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
@@ -14,9 +14,11 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
+import net.twisterrob.ghlint.Configuration
+import net.twisterrob.ghlint.Main
 import java.nio.file.Path
 
-internal class CLI : CliktCommand(
+public class CLI : CliktCommand(
 	name = "ghlint",
 	printHelpOnEmptyArgs = true,
 	help = """
