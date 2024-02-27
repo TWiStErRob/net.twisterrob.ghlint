@@ -1,9 +1,15 @@
 plugins {
 	id("net.twisterrob.ghlint.library")
+	alias(libs.plugins.buildConfig)
 }
 
 dependencies {
 	implementation(libs.jsr305)
 
 	testImplementation(projects.ghlintTesting)
+}
+
+buildConfig {
+	packageName("net.twisterrob.ghlint")
+	buildConfigField(String, "APP_VERSION", provider { project.version.toString() })
 }

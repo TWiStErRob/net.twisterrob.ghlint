@@ -1,6 +1,5 @@
 plugins {
 	id("net.twisterrob.ghlint.library")
-	alias(libs.plugins.buildConfig)
 }
 
 dependencies {
@@ -8,9 +7,4 @@ dependencies {
 	implementation(libs.sarif4k)
 
 	testImplementation(projects.ghlintTesting)
-}
-
-buildConfig {
-	packageName("net.twisterrob.ghlint.reporting.sarif")
-	buildConfigField(String, "APP_VERSION", provider { project.version.toString() })
 }

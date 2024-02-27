@@ -1,18 +1,13 @@
 plugins {
 	id("net.twisterrob.ghlint.cli")
-	alias(libs.plugins.buildConfig)
 }
 
 dependencies {
 	api(projects.ghlint)
+	implementation(projects.ghlintApi)
 	api(libs.clikt)
 }
 
 application {
 	mainClass = "net.twisterrob.ghlint.cli.MainKt"
-}
-
-buildConfig {
-	packageName("net.twisterrob.ghlint.cli")
-	buildConfigField(String, "APP_VERSION", provider { project.version.toString() })
 }

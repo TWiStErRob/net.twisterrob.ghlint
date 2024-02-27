@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.reporting.sarif
 
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
@@ -45,7 +46,7 @@ private fun testResource(path: String): String {
 
 private fun sarifReport(root: Path, resourcePath: String): String =
 	testResource(resourcePath)
-		.replace("<version>", BuildConfig.APP_VERSION)
+		.replace("<version>", GHLINT_VERSION)
 		.replace("<root>", root.toUri().toString())
 		.removeSuffix("\n")
 

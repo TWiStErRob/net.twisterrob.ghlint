@@ -17,6 +17,7 @@ import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
 import net.twisterrob.ghlint.Configuration
+import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
 import java.nio.file.Path
 
@@ -84,7 +85,7 @@ public class CLI : CliktCommand(
 
 	init {
 		eagerOption("-v", "--version", help = "Prints the version and exits.") {
-			throw PrintMessage("GH-Lint (${commandName}) version ${BuildConfig.APP_VERSION}")
+			throw PrintMessage("GH-Lint (${commandName}) version ${GHLINT_VERSION}")
 		}
 	}
 
