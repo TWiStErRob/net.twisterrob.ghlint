@@ -9,7 +9,7 @@ dependencies {
 }
 
 application {
-	mainClass = "net.twisterrob.ghlint.MainKt"
+	mainClass = "net.twisterrob.ghlint.cli.MainKt"
 }
 
 buildConfig {
