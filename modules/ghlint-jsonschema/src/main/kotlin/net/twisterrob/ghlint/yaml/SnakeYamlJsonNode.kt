@@ -23,14 +23,13 @@ public class SnakeYamlJsonNode private constructor(
 
 	public override fun getJsonPointer(): String = jsonPointer
 	public override fun getNodeType(): SimpleType = nodeType
-	public override fun asBoolean(): Boolean = (node as ScalarNode).value.toBoolean()
-	public override fun asString(): String = (node as ScalarNode).value
 
-	public override fun asInteger(): BigInteger =
-		BigInteger((node as ScalarNode).value)
+	public override fun asBoolean(): Boolean = asString().toBoolean()
+	public override fun asInteger(): BigInteger = asString().toBigInteger()
+	public override fun asNumber(): BigDecimal = asString().toBigDecimal()
 
-	public override fun asNumber(): BigDecimal =
-		BigDecimal((node as ScalarNode).value)
+	public override fun asString(): String =
+		(node as ScalarNode).value
 
 	public override fun asArray(): List<JsonNode> =
 		(node as SequenceNode).value.mapIndexed { index, node ->
@@ -64,52 +63,33 @@ public class SnakeYamlJsonNode private constructor(
 
 		internal companion object {
 
-			private fun isNull(node: Node): Boolean =
-				node.tag == Tag.NULL
-
-			private fun isArray(node: Node): Boolean =
-				node.nodeType == NodeType.SEQUENCE
-
-			private fun isObject(node: Node): Boolean =
-				node.nodeType == NodeType.MAPPING
-
 			private fun isLiteral(node: Node): Boolean =
 				isNull(node) || isBoolean(node) || isString(node) || isInteger(node) || isDecimal(node)
 
-			private fun isBoolean(node: Node): Boolean =
-				node.tag == Tag.BOOL
+			private fun isNull(node: Node): Boolean = node.tag == Tag.NULL
+			private fun isArray(node: Node): Boolean = node.nodeType == NodeType.SEQUENCE
+			private fun isObject(node: Node): Boolean = node.nodeType == NodeType.MAPPING
 
-			private fun isString(node: Node): Boolean =
-				node.tag == Tag.STR
-
-			private fun isInteger(node: Node): Boolean =
-				node.tag == Tag.INT
-
-			private fun isDecimal(node: Node): Boolean =
-				node.tag == Tag.FLOAT
+			private fun isBoolean(node: Node): Boolean = node.tag == Tag.BOOL
+			private fun isString(node: Node): Boolean = node.tag == Tag.STR
+			private fun isInteger(node: Node): Boolean = node.tag == Tag.INT
+			private fun isDecimal(node: Node): Boolean = node.tag == Tag.FLOAT
 
 			internal fun computeNodeType(node: Node): SimpleType =
-				if (isNull(node)) {
-					SimpleType.NULL
-				} else if (isBoolean(node)) {
-					SimpleType.BOOLEAN
-				} else if (isString(node)) {
-					SimpleType.STRING
-				} else if (isDecimal(node)) {
-					if (BigDecimal((node as ScalarNode).value).stripTrailingZeros().scale() <= 0) {
-						SimpleType.INTEGER
-					} else {
-						SimpleType.NUMBER
-					}
-				} else if (isInteger(node)) {
-					SimpleType.INTEGER
-				} else if (isArray(node)) {
-					SimpleType.ARRAY
-				} else if (isObject(node)) {
-					SimpleType.OBJECT
-				} else {
-					error("Cannot assign type to node ${node}")
+				when {
+					isNull(node) -> SimpleType.NULL
+					isBoolean(node) -> SimpleType.BOOLEAN
+					isString(node) -> SimpleType.STRING
+					isDecimal(node) && (node as ScalarNode).value.isInteger() -> SimpleType.INTEGER
+					isDecimal(node) -> SimpleType.NUMBER
+					isInteger(node) -> SimpleType.INTEGER
+					isArray(node) -> SimpleType.ARRAY
+					isObject(node) -> SimpleType.OBJECT
+					else -> error("Cannot assign type to node ${node}")
 				}
+
+			private fun String.isInteger(): Boolean =
+				BigDecimal(this).stripTrailingZeros().scale() <= 0
 		}
 	}
 }
