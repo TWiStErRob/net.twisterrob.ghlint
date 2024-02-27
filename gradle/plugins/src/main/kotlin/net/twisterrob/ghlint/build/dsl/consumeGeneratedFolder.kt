@@ -5,7 +5,6 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 
@@ -14,22 +13,22 @@ fun Project.consumeGeneratedFolder(
 	fromConfiguration: String,
 	intoFolder: String,
 ): TaskProvider<out Task> {
-	val configurationName = "generatedFilesFrom${fromConfiguration.capitalized()}"
-	val configurationDep = configurations.dependencyScope("${configurationName}Dependencies").get()
-	val configuration = configurations.resolvable(configurationName) {
-		extendsFrom(configurationDep)
+	val configurationName = "generatedFilesFrom${fromConfiguration.replaceFirstChar(Char::uppercaseChar)}"
+	val configuration = configurations.dependencyScope("${configurationName}Dependencies").get()
+	val resolvableConfiguration = configurations.resolvable(configurationName) {
+		extendsFrom(configuration)
 	}
 
 	dependencies {
-		configurationDep(fromProject) {
+		configuration(fromProject) {
 			targetConfiguration = fromConfiguration
 		}
 	}
 
-	return tasks.register<Copy>("copy${fromConfiguration.capitalized()}") {
+	return tasks.register<Copy>("copy${fromConfiguration.replaceFirstChar(Char::uppercaseChar)}") {
 		group = "Build"
 		description = "Copy generated files from ${fromProject.name}:${fromConfiguration} into ${intoFolder}"
-		from(configuration)
+		from(resolvableConfiguration)
 		into(layout.projectDirectory.dir(intoFolder))
 	}
 }
