@@ -15,7 +15,7 @@ import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
 import net.twisterrob.ghlint.Configuration
-import net.twisterrob.ghlint.Main
+import net.twisterrob.ghlint.GHLint
 import java.nio.file.Path
 
 public class CLI : CliktCommand(
@@ -29,7 +29,7 @@ public class CLI : CliktCommand(
 ), Configuration {
 
 	override fun run() {
-		val code = Main().run(this)
+		val code = GHLint().run(this)
 		throw ProgramResult(code)
 	}
 

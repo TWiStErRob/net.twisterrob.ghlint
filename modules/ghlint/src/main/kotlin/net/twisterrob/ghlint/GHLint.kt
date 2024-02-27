@@ -10,7 +10,7 @@ import net.twisterrob.ghlint.rules.DefaultRuleSet
 import net.twisterrob.ghlint.yaml.Yaml
 import kotlin.io.path.readText
 
-public class Main {
+public class GHLint {
 
 	public fun run(config: Configuration): Int {
 		if (config.verbose) {
