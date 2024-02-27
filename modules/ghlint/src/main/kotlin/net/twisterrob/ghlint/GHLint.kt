@@ -12,10 +12,10 @@ import kotlin.io.path.readText
 
 public class GHLint {
 
+	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	public fun run(config: Configuration): Int {
-		if (config.verbose) {
+		if (config.isVerbose) {
 			config.files.forEach {
-				@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 				println("Received ${it} for analysis against JSON-schema and rules.")
 			}
 		}
@@ -24,18 +24,18 @@ public class GHLint {
 		val ruleSets = listOf(DefaultRuleSet())
 		val analysisResults = Yaml.analyze(files, ruleSets)
 		val allFindings = validationResults + analysisResults
-		if (config.verbose) {
+		if (config.isVerbose) {
 			println("There are ${allFindings.size} findings.")
 		}
 
-		if (config.reportConsole) {
-			if (config.verbose) {
+		if (config.isReportConsole) {
+			if (config.isVerbose) {
 				println("Reporting findings to console.")
 			}
 			TextReporter(System.out).report(allFindings)
 		}
-		if (config.reportGitHubCommands) {
-			if (config.verbose) {
+		if (config.isReportGitHubCommands) {
+			if (config.isVerbose) {
 				println("Reporting findings via GitHub Commands.")
 			}
 			GitHubCommandReporter(
@@ -43,8 +43,8 @@ public class GHLint {
 				output = System.out,
 			).report(allFindings)
 		}
-		config.reportSarif?.run {
-			if (config.verbose) {
+		config.sarifReportLocation?.run {
+			if (config.isVerbose) {
 				println("Writing findings to SARIF file: ${this}.")
 			}
 			SarifReporter.report(
@@ -54,8 +54,8 @@ public class GHLint {
 				rootDir = config.root,
 			)
 		}
-		val code = if (config.reportExitCode && allFindings.isNotEmpty()) 1 else 0
-		if (config.verbose) {
+		val code = if (config.isReportExitCode && allFindings.isNotEmpty()) 1 else 0
+		if (config.isVerbose) {
 			println("Exiting with code ${code}.")
 		}
 		return code
