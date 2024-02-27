@@ -3,6 +3,8 @@ package net.twisterrob.ghlint.cli
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.ProgramResult
+import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.output.MordantHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -35,6 +37,17 @@ public class CLI : CliktCommand(
 	}
 
 	init {
+		context {
+			helpFormatter = {
+				MordantHelpFormatter(
+					context = it,
+					showRequiredTag = true,
+					showDefaultValues = true,
+					requiredOptionMarker = "*",
+				)
+			}
+		}
+
 		eagerOption("--version", help = "Prints the version and exits.") {
 			throw PrintMessage("GH-Lint (${commandName}) version ${BuildConfig.APP_VERSION}")
 		}
@@ -45,7 +58,7 @@ public class CLI : CliktCommand(
 	override val files: List<Path> by argument()
 		.path(mustExist = true, canBeDir = false)
 		.multiple(required = true)
-		.help("File to scan.")
+		.help("Workflow YML files to check for problems.")
 
 	private val inputs: InputOptions by InputOptions()
 
@@ -56,7 +69,7 @@ public class CLI : CliktCommand(
 	override val root: Path by option("--root")
 		.path(mustExist = true, canBeDir = true, canBeFile = false)
 		.default(Path.of("."))
-		.help("Root directory of the repository. Default: current working directory.")
+		.help("Root directory of the repository.")
 
 	override val isReportExitCode: Boolean get() = inputs.isReportExitCode
 	override val isReportConsole: Boolean get() = inputs.isReportConsole
@@ -66,15 +79,15 @@ public class CLI : CliktCommand(
 	private class InputOptions : OptionGroup("Reporting") {
 
 		val isReportExitCode: Boolean by option("--exit")
-			.flag("--ignore-failures", default = false)
-			.help("Exit with non-zero code if there are findings. Default: --ignore-failures.")
+			.flag("--ignore-failures", default = false, defaultForHelp = "--ignore-failures")
+			.help("Exit with non-zero code if there are findings.")
 
 		val isReportConsole: Boolean by option("--console")
-			.flag("--silent", default = true)
-			.help("Output to console. Default: --console. --silent does not affect --verbose, only findings.")
+			.flag("--silent", default = true, defaultForHelp = "--console")
+			.help("Output to console. --silent does not affect --verbose, only findings.")
 
 		val isReportGitHubCommands: Boolean by option("--ghcommands")
-			.flag()
+			.flag(defaultForHelp = "off")
 			.help("Output GitHub Commands (warnings).")
 
 		val sarifReportLocation: Path? by option("--sarif")
