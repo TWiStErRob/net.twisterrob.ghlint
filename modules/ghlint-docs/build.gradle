@@ -1,3 +1,5 @@
+import net.twisterrob.ghlint.build.dsl.LazyArgumentProvider
+
 plugins {
 	id("net.twisterrob.ghlint.library")
 }
@@ -42,21 +44,6 @@ def generateCliHelp = tasks.register("generateCliHelp", JavaExec.class) {
 	classpath(sourceSets.main.runtimeClasspath)
 	outputs.dir(generatedCliHelp).withPropertyName("generatedFiles")
 	argumentProviders.add(new LazyArgumentProvider(generatedCliHelp))
-}
-
-class LazyArgumentProvider implements CommandLineArgumentProvider {
-
-	@OutputDirectory
-	Provider<Directory> outputDir
-
-	LazyArgumentProvider(Provider<Directory> output) {
-		outputDir = output
-	}
-
-	@Override
-	Iterable<String> asArguments() {
-		[ getOutputDir().get().asFile.absolutePath ]
-	}
 }
 
 artifacts {
