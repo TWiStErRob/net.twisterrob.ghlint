@@ -23,10 +23,9 @@ internal object YamlValidation {
 	}
 
 	fun validate(yaml: Yaml): Validator.Result {
-		val factory = SnakeYamlJsonNode.Factory(SnakeYaml::load)
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
-			.withJsonNodeFactory(factory)
+			.withJsonNodeFactory(SnakeYamlJsonNode.Factory(SnakeYaml::load))
 			.withSchemaResolver(resolver)
 			.createValidator()
 		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), yaml.raw)
