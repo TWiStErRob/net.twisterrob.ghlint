@@ -5,7 +5,7 @@ plugins {
 dependencies {
 	implementation(projects.ghlintRules)
 	implementation(projects.ghlintSnakeyaml)
-	implementation(projects.ghlint)
+	implementation(projects.ghlintCli)
 }
 
 application {
@@ -20,4 +20,29 @@ tasks.named("run", JavaExec.class) {
 
 tasks.named("build") {
 	dependsOn("run")
+}
+
+tasks.register("generateCliHelp", JavaExec.class) {
+	group = "documentation"
+	description = "Generates the CLI help for the website"
+	mainClass = "net.twisterrob.ghlint.docs.cli.MainKt"
+	classpath(sourceSets.main.runtimeClasspath)
+	def output = layout.buildDirectory.dir("generated/cli-help")
+	outputs.dir(output).withPropertyName("generatedFiles")
+	argumentProviders.add(new LazyArgumentProvider(output))
+}
+
+class LazyArgumentProvider implements CommandLineArgumentProvider {
+
+	@OutputDirectory
+	Provider<Directory> outputDir
+
+	LazyArgumentProvider(Provider<Directory> output) {
+		outputDir = output
+	}
+
+	@Override
+	Iterable<String> asArguments() {
+		[ getOutputDir().get().asFile.absolutePath ]
+	}
 }

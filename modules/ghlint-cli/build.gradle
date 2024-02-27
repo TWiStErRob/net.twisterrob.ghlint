@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-	implementation(projects.ghlint)
-	implementation(libs.clikt)
+	api(projects.ghlint)
+	api(libs.clikt)
 }
 
 application {
