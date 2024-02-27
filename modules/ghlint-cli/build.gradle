@@ -1,0 +1,13 @@
+plugins {
+	id("net.twisterrob.ghlint.cli")
+}
+
+dependencies {
+	api(projects.ghlint)
+	implementation(projects.ghlintApi)
+	api(libs.clikt)
+}
+
+application {
+	mainClass = "net.twisterrob.ghlint.cli.MainKt"
+}

@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.docs
+package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.model.Workflow
@@ -164,7 +164,7 @@ class MarkdownRendererTest {
 	inner class `Issue rendering` {
 
 		@ParameterizedTest(name = "[{index}] {0}")
-		@MethodSource("net.twisterrob.ghlint.docs.MarkdownRendererTest#testCases")
+		@MethodSource("net.twisterrob.ghlint.docs.issues.MarkdownRendererTest#testCases")
 		fun `issue renders markdown`(
 			@Suppress("detekt.UnusedParameter", "UNUSED_PARAMETER") issueId: String,
 			issue: Issue,

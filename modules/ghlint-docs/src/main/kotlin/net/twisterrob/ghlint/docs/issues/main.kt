@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.docs
+package net.twisterrob.ghlint.docs.issues
 
 import net.twisterrob.ghlint.rules.DefaultRuleSet
 import java.nio.file.Path

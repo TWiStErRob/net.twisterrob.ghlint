@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.docs
+package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.paths.aDirectory
 import io.kotest.matchers.paths.aFile

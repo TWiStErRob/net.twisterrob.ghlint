@@ -1,5 +1,5 @@
 plugins {
-	id("net.twisterrob.ghlint.cli")
+	id("net.twisterrob.ghlint.library")
 }
 
 dependencies {
@@ -10,8 +10,4 @@ dependencies {
 	implementation(projects.ghlintReportingSarif)
 
 	testImplementation(projects.ghlintTesting)
-}
-
-application {
-	mainClass = "net.twisterrob.ghlint.MainKt"
 }

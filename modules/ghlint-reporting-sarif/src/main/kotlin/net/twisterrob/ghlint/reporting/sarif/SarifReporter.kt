@@ -14,6 +14,7 @@ import io.github.detekt.sarif4k.SarifSerializer
 import io.github.detekt.sarif4k.Tool
 import io.github.detekt.sarif4k.ToolComponent
 import io.github.detekt.sarif4k.Version
+import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.reporting.Reporter
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
@@ -39,10 +40,10 @@ public class SarifReporter(
 				Run(
 					tool = Tool(
 						driver = ToolComponent(
-							fullName = "GH-Lint ${BuildConfig.APP_VERSION}",
+							fullName = "GH-Lint ${GHLINT_VERSION}",
 							name = "GH-Lint",
-							version = BuildConfig.APP_VERSION,
-							semanticVersion = BuildConfig.APP_VERSION,
+							version = GHLINT_VERSION,
+							semanticVersion = GHLINT_VERSION,
 							rules = ruleSets
 								.asSequence()
 								.flatMap { it.createRules() }
