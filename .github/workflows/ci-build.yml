@@ -107,9 +107,7 @@ jobs:
 
       - name: "Run validator."
         id: validate
-        run: >
-          find ".github/workflows" -type f -name "*.yml" \
-            | xargs modules/ghlint-cli/build/libs/ghlint-cli-*-fat.jar
+        run: modules/ghlint-cli/build/libs/ghlint-cli-*-fat.jar --sarif="ghlint.sarif.json" .github/workflows/*.yml
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
@@ -118,11 +116,11 @@ jobs:
           name: 'GH-Lint Results'
           if-no-files-found: error
           path: |
-            report.sarif
+            ghlint.sarif.json
 
       - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:
           checkout_path: ${{ github.workspace }}
-          sarif_file: ${{ github.workspace }}/report.sarif
+          sarif_file: ${{ github.workspace }}/ghlint.sarif.json
