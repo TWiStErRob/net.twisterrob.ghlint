@@ -25,8 +25,23 @@ public class CLI : CliktCommand(
 	printHelpOnEmptyArgs = true,
 	help = """
 		GitHub Actions Linter (GH-Lint).
-		A tool to lint GitHub Actions workflows.
-		See https://ghlint.twisterrob.net for more.
+		A tool to lint GitHub Actions workflows.  
+		See https://ghlint.twisterrob.net for more information.
+	""".trimIndent(),
+	epilog = """
+		Example usages:
+		
+		**Lint a single workflow**:  
+		`$ ghlint .github/workflows/main.yml`
+		
+		**Lint all workflows in GitHub Actions CI**:  
+		`$ ghlint --verbose --sarif=report.sarif.json .github/workflows/*.yml`
+		
+		**Lint a single action in repository root.**:  
+		`$ ghlint action.yml`
+		
+		**Lint for CI actions in a directory**:  
+		`$ ghlint actions/my-action/action.yml`
 	""".trimIndent(),
 ), Configuration {
 
@@ -47,10 +62,6 @@ public class CLI : CliktCommand(
 				)
 			}
 		}
-
-		eagerOption("--version", help = "Prints the version and exits.") {
-			throw PrintMessage("GH-Lint (${commandName}) version ${BuildConfig.APP_VERSION}")
-		}
 	}
 
 	// IMPORTANT: The order of properties is important, it'll define how "--help" is printed.
@@ -62,14 +73,20 @@ public class CLI : CliktCommand(
 
 	private val inputs: InputOptions by InputOptions()
 
-	override val isVerbose: Boolean by option("-v", "--verbose")
-		.flag(default = false, defaultForHelp = "off")
-		.help("Prints more information.")
-
 	override val root: Path by option("--root")
 		.path(mustExist = true, canBeDir = true, canBeFile = false)
 		.default(Path.of("."))
 		.help("Root directory of the repository.")
+
+	override val isVerbose: Boolean by option("--verbose")
+		.flag(default = false, defaultForHelp = "off")
+		.help("Prints more information.")
+
+	init {
+		eagerOption("-v", "--version", help = "Prints the version and exits.") {
+			throw PrintMessage("GH-Lint (${commandName}) version ${BuildConfig.APP_VERSION}")
+		}
+	}
 
 	override val isReportExitCode: Boolean get() = inputs.isReportExitCode
 	override val isReportConsole: Boolean get() = inputs.isReportConsole
