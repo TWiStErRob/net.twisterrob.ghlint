@@ -103,7 +103,7 @@ jobs:
           name: 'CLI Application'
           if-no-files-found: error
           path: |
-            modules/ghlint-cli/build/libs/ghlint-*-fat.jar
+            modules/ghlint-cli/build/libs/ghlint-cli-*-fat.jar
 
       - name: "Run validator."
         id: validate
