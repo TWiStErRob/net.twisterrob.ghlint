@@ -23,13 +23,12 @@ public object YamlValidation {
 	}
 
 	public fun validate(@Language("yaml") yaml: String): Validator.Result {
-		val factory = SnakeYamlJsonNode.Factory(Yaml::load)
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
-			.withJsonNodeFactory(factory)
+			.withJsonNodeFactory(SnakeYamlJsonNode.Factory(Yaml::load))
 			.withSchemaResolver(resolver)
 			.createValidator()
-		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), factory.create(yaml))
+		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), yaml)
 	}
 }
 
