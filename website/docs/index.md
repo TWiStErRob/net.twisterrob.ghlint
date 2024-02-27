@@ -8,4 +8,4 @@ See [project README](https://www.github.com/TWiStErRob/net.twisterrob.ghlint) fo
 
 ## Issue Documentation
 
-See [issue documentation](issues/default) for a list of rules and their details.
+See [issue documentation](issues/default/index.md) for a list of rules and their details.
