@@ -7,7 +7,7 @@ import kotlin.io.path.writeText
 
 public fun main(vararg args: String) {
 	val output = Path.of(args[0])
-	val target = output.resolve("cli.md").also { it.createParentDirectories() }
+	val target = output.resolve("cli.md").apply { createParentDirectories() }
 	val cliHelp = CLI().getFormattedHelp() ?: error("No help")
 	target.writeText(buildString {
 		appendLine("# Command Line Interface")
