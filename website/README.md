@@ -9,12 +9,8 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 ```
-Run Gradle `:ghlint-docs:run` task to generate the files in `docs/issues`:
-```shell
-ghlint$ gradlew .. :ghlint-docs:run
-# or 
-website$ ..\gradlew -p .. :ghlint-docs:run
-```
+Run Gradle `:website:generateDocs` task to generate some files in `docs`.
+
 Run MkDocs to serve the website:
 ```shell
 mkdocs serve

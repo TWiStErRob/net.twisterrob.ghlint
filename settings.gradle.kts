@@ -37,6 +37,7 @@ includeModule(":ghlint-rules")
 includeModule(":ghlint-snakeyaml")
 includeModule(":ghlint-testing")
 includeModule(":test-helpers")
+include(":website")
 
 fun includeModule(path: String) {
 	include(path)

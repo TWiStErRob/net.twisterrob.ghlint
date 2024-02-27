@@ -9,6 +9,7 @@ public fun main(vararg args: String) {
 	val target = output.resolve("cli.md")
 	val cliHelp = CLI().getFormattedHelp() ?: error("No help")
 	target.writeText(buildString {
+		appendLine("# Command Line Interface")
 		appendLine("```text")
 		appendLine(cliHelp)
 		appendLine("```")
