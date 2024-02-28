@@ -26,7 +26,7 @@ public fun Rule.check(
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yml}")
 	require(yml.isNotEmpty()) { "A non-empty workflow.yml file must be provided." }
-	val findings = this.check(SnakeYaml.loadWorkflow(Yaml.from(FileLocation(fileName), yml)))
+	val findings = this.check(SnakeYaml.load(Yaml.from(FileLocation(fileName), yml)))
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)

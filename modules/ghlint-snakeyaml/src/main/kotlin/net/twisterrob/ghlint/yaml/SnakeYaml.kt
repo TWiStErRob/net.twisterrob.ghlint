@@ -4,6 +4,7 @@ import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.SnakeComponentFactory
 import net.twisterrob.ghlint.model.Yaml
+import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
@@ -13,6 +14,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.StreamDataWriter
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.composer.Composer
+import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.Tag
@@ -27,12 +29,22 @@ public object SnakeYaml {
 	private val factory = SnakeComponentFactory()
 
 	public fun analyze(files: List<File>, ruleSets: List<RuleSet>): List<Finding> {
-		val workflows = files.map(::loadWorkflow)
+		val workflows = files.map(this::load)
 		return Analyzer().analyzeWorkflows(workflows, ruleSets)
 	}
 
-	public fun loadWorkflow(file: File): File =
-		File(file.location, factory.createWorkflow(file))
+	public fun load(file: File): File {
+		val node = load(file.content as Yaml) as MappingNode
+		@Suppress("UseIfInsteadOfWhen")
+		val content = when {
+			file.location.name == "action.yml" && !file.location.path.endsWith(".github/workflows/action.yml") ->
+				factory.createAction(file, node)
+
+			else ->
+				factory.createWorkflow(file, node)
+		}
+		return File(file.location, content)
+	}
 
 	public fun load(yaml: Yaml): Node =
 		load(yaml.raw)
