@@ -14,6 +14,7 @@ import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.testing.validate
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.whenever
 
 class SafeRuleTest {
 
@@ -73,6 +74,7 @@ class SafeRuleTest {
 		val stubFailure = RuntimeException("Fake failure")
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val fakeFile: File = fakeFile()
+		whenever(fakeFile.content.location).thenReturn(mock())
 
 		val findings = subject.check(fakeFile)
 
@@ -93,6 +95,7 @@ class SafeRuleTest {
 		val stubFailure = OutOfMemoryError("Fake failure")
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val fakeFile: File = fakeFile()
+		whenever(fakeFile.content.location).thenReturn(mock())
 
 		val findings = subject.check(fakeFile)
 
