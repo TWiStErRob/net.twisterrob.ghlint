@@ -3,8 +3,10 @@ package net.twisterrob.ghlint.analysis
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.model.Content
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
@@ -109,8 +111,10 @@ class SafeRuleTest {
 		finding.location shouldBe fakeFile.content.location
 	}
 
-	private fun fakeFile(): File =
-		File(FileLocation("test.yml"), mock(withSettings().strictness(Strictness.STRICT_STUBS)))
+	private fun fakeFile(): File {
+		val content: Content = mock<InvalidContent>(withSettings().strictness(Strictness.STRICT_STUBS))
+		return File(FileLocation("test.yml"), content)
+	}
 }
 
 private class AlwaysFailingRule(private val stubFailure: Throwable) : Rule {
