@@ -14,8 +14,6 @@ import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.testing.validate
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.withSettings
-import org.mockito.quality.Strictness
 
 class SafeRuleTest {
 
@@ -112,7 +110,7 @@ class SafeRuleTest {
 	}
 
 	private fun fakeFile(): File {
-		val content: Content = mock<InvalidContent>(withSettings().strictness(Strictness.STRICT_STUBS))
+		val content: Content = mock<InvalidContent>()
 		return File(FileLocation("test.yml"), content)
 	}
 }

@@ -6,9 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.withSettings
 import org.mockito.kotlin.whenever
-import org.mockito.quality.Strictness
 
 class WorkflowTest {
 
@@ -24,8 +22,8 @@ class WorkflowTest {
 			]
 		)
 		fun `strips extension`(fileName: String) {
-			val workflow: Workflow = mock(withSettings().strictness(Strictness.STRICT_STUBS))
-			val content: Content = mock<InvalidContent>(withSettings().strictness(Strictness.STRICT_STUBS))
+			val workflow: Workflow = mock()
+			val content: Content = mock<InvalidContent>()
 			whenever(workflow.parent).thenReturn(File(FileLocation(fileName), content))
 
 			workflow.id shouldBe "file-name"
@@ -39,8 +37,8 @@ class WorkflowTest {
 			"file-name.yaml.yaml, file-name.yaml",
 		)
 		fun `keeps duplicate extension`(fileName: String, expectedId: String) {
-			val workflow: Workflow = mock(withSettings().strictness(Strictness.STRICT_STUBS))
-			val content: Content = mock<InvalidContent>(withSettings().strictness(Strictness.STRICT_STUBS))
+			val workflow: Workflow = mock()
+			val content: Content = mock<InvalidContent>()
 			whenever(workflow.parent).thenReturn(File(FileLocation(fileName), content))
 
 			workflow.id shouldBe expectedId
