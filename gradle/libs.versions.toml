@@ -18,7 +18,7 @@ buildConfig = "5.3.5"
 junit-jupiter = "5.10.2"
 kotest = "5.8.0"
 mockito-kotlin = "5.2.1"
-jsonSchema = "1.5.1"
+jsonSchema = "1.5.2"
 
 
 [libraries]
