@@ -6,11 +6,10 @@ import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
-public interface Visitor : WorkflowVisitor, ActionVisitor, YamlVisitor {
+public interface Visitor : WorkflowVisitor, ActionVisitor {
 
 	@OverridingMethodsMustInvokeSuper
 	public override fun visitFile(reporting: Reporting, file: File) {
-		super<YamlVisitor>.visitFile(reporting, file)
 		when (file.content) {
 			is Workflow -> super<WorkflowVisitor>.visitFile(reporting, file)
 			is Action -> super<ActionVisitor>.visitFile(reporting, file)

@@ -3,8 +3,9 @@ package net.twisterrob.ghlint.model
 import net.twisterrob.ghlint.results.Location
 import org.intellij.lang.annotations.Language
 
-// STOPSHIP swap order?
-public sealed interface Content : Yaml {
+public sealed interface Content {
+
+	public val parent: File
 
 	public val location: Location
 }
