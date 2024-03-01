@@ -2,7 +2,8 @@ package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
 
-public sealed interface Content {
+// STOPSHIP swap order?
+public sealed interface Content : Yaml {
 
 	public val location: Location
 }

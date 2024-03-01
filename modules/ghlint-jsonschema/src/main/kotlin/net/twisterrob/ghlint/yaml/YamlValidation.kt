@@ -4,7 +4,9 @@ import dev.harrel.jsonschema.Error
 import dev.harrel.jsonschema.SchemaResolver
 import dev.harrel.jsonschema.Validator
 import dev.harrel.jsonschema.ValidatorFactory
-import net.twisterrob.ghlint.model.Yaml
+import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
+import org.snakeyaml.engine.v2.nodes.Node
 import java.net.URI
 import java.net.URL
 
@@ -22,13 +24,15 @@ internal object YamlValidation {
 			}
 	}
 
-	fun validate(yaml: Yaml): Validator.Result {
+	fun validate(node: Node): Validator.Result {
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
-			.withJsonNodeFactory(SnakeYamlJsonNode.Factory(SnakeYaml::load))
+			.withJsonNodeFactory(SnakeYamlJsonNode.Factory {
+				SnakeYaml.loadRaw(RawFile(FileLocation("unknown"), it))
+			})
 			.withSchemaResolver(resolver)
 			.createValidator()
-		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), yaml.raw)
+		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), node)
 	}
 }
 

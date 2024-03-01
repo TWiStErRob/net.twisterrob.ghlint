@@ -33,7 +33,7 @@ class WorkflowTest {
 	}
 
 	private fun load(@Language("yaml") yaml: String): Workflow {
-		val yamlFile = Yaml.from(FileLocation("test.yml"), yaml.trimIndent())
-		return SnakeComponentFactory().createWorkflow(yamlFile, SnakeYaml.load(yamlFile.content as Yaml))
+		val yamlFile = RawFile(FileLocation("test.yml"), yaml.trimIndent())
+		return SnakeComponentFactory().createWorkflow(yamlFile, SnakeYaml.loadRaw(yamlFile))
 	}
 }

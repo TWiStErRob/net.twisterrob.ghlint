@@ -7,3 +7,11 @@ public class File(
 
 	public companion object
 }
+
+public class RawFile(
+	public val location: FileLocation,
+	public val content: String,
+) {
+
+	public companion object
+}

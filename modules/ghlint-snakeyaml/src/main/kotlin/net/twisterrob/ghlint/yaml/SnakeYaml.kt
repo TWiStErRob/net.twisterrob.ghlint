@@ -2,39 +2,31 @@ package net.twisterrob.ghlint.yaml
 
 import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.SnakeComponentFactory
-import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
 import org.snakeyaml.engine.v2.api.Dump
 import org.snakeyaml.engine.v2.api.DumpSettings
-import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.StreamDataWriter
-import org.snakeyaml.engine.v2.common.ScalarStyle
-import org.snakeyaml.engine.v2.composer.Composer
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.Tag
-import org.snakeyaml.engine.v2.parser.ParserImpl
-import org.snakeyaml.engine.v2.scanner.StreamReader
-import org.snakeyaml.engine.v2.schema.JsonSchema
 import java.io.StringWriter
-import kotlin.jvm.optionals.getOrElse
 
 public object SnakeYaml {
 
 	private val factory = SnakeComponentFactory()
 
-	public fun analyze(files: List<File>, ruleSets: List<RuleSet>): List<Finding> {
+	public fun analyze(files: List<RawFile>, ruleSets: List<RuleSet>): List<Finding> {
 		val workflows = files.map(this::load)
 		return Analyzer().analyzeWorkflows(workflows, ruleSets)
 	}
 
-	public fun load(file: File): File {
-		val node = load(file.content as Yaml) as MappingNode
+	public fun load(file: RawFile): File {
+		val node = factory.loadYaml(file) as MappingNode
+
 		@Suppress("UseIfInsteadOfWhen")
 		val content = when {
 			file.location.name == "action.yml" && !file.location.path.endsWith(".github/workflows/action.yml") ->
@@ -46,21 +38,8 @@ public object SnakeYaml {
 		return File(file.location, content)
 	}
 
-	public fun load(yaml: Yaml): Node =
-		load(yaml.raw)
-
-	public fun load(@Language("yaml") yaml: String): Node {
-		val settings = LoadSettings.builder()
-			.setParseComments(true)
-			.setSchema(JsonSchema())
-			.build()
-		try {
-			return Composer(settings, ParserImpl(settings, StreamReader(settings, yaml))).singleNode
-				.getOrElse { ScalarNode(Tag.NULL, "", ScalarStyle.PLAIN) }
-		} catch (ex: org.snakeyaml.engine.v2.exceptions.YamlEngineException) {
-			throw IllegalArgumentException("Failed to parse YAML: ${ex.message ?: ex}\nFull input:\n${yaml}", ex)
-		}
-	}
+	public fun loadRaw(yaml: RawFile): Node =
+		factory.loadYaml(yaml)
 
 	@Language("yaml")
 	public fun save(node: Node): String {

@@ -6,13 +6,14 @@ import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.Workflow
-import net.twisterrob.ghlint.model.Yaml
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.testing.validate
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.withSettings
+import org.mockito.quality.Strictness
 
 class SafeRuleTest {
 
@@ -109,7 +110,7 @@ class SafeRuleTest {
 	}
 
 	private fun fakeFile(): File =
-		Yaml.from(FileLocation("test.yml"), "")
+		File(FileLocation("test.yml"), mock(withSettings().strictness(Strictness.STRICT_STUBS)))
 }
 
 private class AlwaysFailingRule(private val stubFailure: Throwable) : Rule {

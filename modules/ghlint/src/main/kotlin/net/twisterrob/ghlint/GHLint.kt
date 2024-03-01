@@ -2,7 +2,7 @@ package net.twisterrob.ghlint
 
 import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.model.Yaml
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.reporting.sarif.SarifReporter
@@ -19,7 +19,7 @@ public class GHLint {
 				println("Received ${it} for analysis against JSON-schema and rules.")
 			}
 		}
-		val files = config.files.map { Yaml.from(FileLocation(it.toString()), it.readText()) }
+		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
 		val ruleSets = listOf(JsonSchemaRuleSet(), DefaultRuleSet())
 		val findings = SnakeYaml.analyze(files, ruleSets)
 		if (config.isVerbose) {

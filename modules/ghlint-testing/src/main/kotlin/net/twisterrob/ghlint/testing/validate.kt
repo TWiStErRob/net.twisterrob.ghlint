@@ -9,10 +9,11 @@ import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.model.Yaml
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 import io.kotest.matchers.string.beEmpty as beEmptyString
 
@@ -20,7 +21,7 @@ public fun validate(
 	@Language("yaml") yml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {
-	val file = Yaml.from(FileLocation(fileName), yml)
+	val file = SnakeYaml.load(RawFile(FileLocation(fileName), yml))
 	return JsonSchemaRuleSet().createRules().flatMap { it.check(file) }
 }
 

@@ -1,6 +1,8 @@
 package net.twisterrob.ghlint.yaml
 
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -120,7 +122,7 @@ class YamlTest {
 	}
 
 	private fun reserialize(yaml: String) {
-		val result = SnakeYaml.load(yaml)
+		val result = SnakeYaml.loadRaw(RawFile(FileLocation("test.yml"), yaml))
 		val dumped = SnakeYaml.save(result)
 		dumped shouldBe yaml
 	}
