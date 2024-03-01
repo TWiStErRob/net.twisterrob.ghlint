@@ -7,3 +7,8 @@ public sealed interface Content : Yaml {
 
 	public val location: Location
 }
+
+public interface InvalidContent : Content {
+
+	public val error: Throwable
+}

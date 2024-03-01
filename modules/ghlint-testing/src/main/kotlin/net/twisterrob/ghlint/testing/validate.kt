@@ -60,7 +60,8 @@ internal fun Rule.validateNonCompliantExamples(issue: Issue) {
 		issue.nonCompliant shouldHave atLeastSize(1)
 		issue.nonCompliant.forEachIndexed { index, example ->
 			withClue("${issue.id} non-compliant example #${index + 1}:\n${example.content}") {
-				val findings = validate(example.content) + check(example.content)
+				val findings = validate(example.content, "non-compliant.yml") +
+						check(example.content, "non-compliant.yml")
 				findings shouldHave onlyFindings(issue.id)
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
@@ -74,8 +75,8 @@ internal fun Rule.validateCompliantExamples(issue: Issue) {
 		issue.compliant shouldHave atLeastSize(1)
 		issue.compliant.forEachIndexed { index, example ->
 			withClue("${issue.id} compliant example #${index + 1}:\n${example.content}") {
-				validate(example.content) shouldHave noFindings()
-				check(example.content) shouldHave noFindings()
+				validate(example.content, "compliant.yml") shouldHave noFindings()
+				check(example.content, "compliant.yml") shouldHave noFindings()
 				example.explanation shouldNot beEmptyString()
 				example.explanation shouldNotStartWith "TODO"
 			}

@@ -34,7 +34,7 @@ public class SnakeComponentFactory {
 		} catch (ex: YamlEngineException) {
 			val message = "Failed to parse YAML: ${ex.message ?: ex}\n" +
 					"Full input (${file.location.path}):\n" +
-					"${file.content}"
+					file.content
 			throw IllegalArgumentException(message, ex)
 		}
 		return node

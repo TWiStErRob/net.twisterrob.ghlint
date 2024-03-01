@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rule
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
@@ -13,6 +14,11 @@ public interface Visitor : WorkflowVisitor, ActionVisitor, YamlVisitor {
 		when (file.content) {
 			is Workflow -> super<WorkflowVisitor>.visitFile(reporting, file)
 			is Action -> super<ActionVisitor>.visitFile(reporting, file)
+			is InvalidContent -> visitInvalidContent(reporting, file.content)
 		}
+	}
+
+	public fun visitInvalidContent(reporting: Reporting, content: InvalidContent) {
+		error("Invalid content: ${content}")
 	}
 }

@@ -1,8 +1,12 @@
 package net.twisterrob.ghlint.analysis
 
 import dev.harrel.jsonschema.Validator
+import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.InvalidContent
+import net.twisterrob.ghlint.model.SnakeAction
 import net.twisterrob.ghlint.model.SnakeWorkflow
+import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -17,22 +21,39 @@ internal class JsonSchemaValidationRule : Rule {
 	override val issues: List<Issue> = listOf(JsonSchemaValidation)
 
 	override fun check(file: File): List<Finding> =
-		if (file.location.path == "test.yml") {
-			emptyList()
-		} else {
-			val yaml = file.content as SnakeWorkflow
-			val root: Node = yaml.node
-			val result: Validator.Result = YamlValidation.validate(root)
-			result.errors
-				.filter { it.error != "False schema always fails" }
-				.map { error ->
+		when (val content = file.content) {
+			is Workflow -> {
+				content as SnakeWorkflow
+				YamlValidation.validate(content.node).toFindings(content.node, file)
+			}
+
+			is Action -> {
+				content as SnakeAction
+				YamlValidation.validate(content.node).toFindings(content.node, file)
+			}
+
+			is InvalidContent -> {
+				listOf(
 					Finding(
-						rule = this,
+						rule = this@JsonSchemaValidationRule,
 						issue = JsonSchemaValidation,
-						location = root.resolve(error.instanceLocation).toLocation(file),
-						message = "${error.error} (${error.instanceLocation})"
+						location = content.location,
+						message = "File could not be parsed: ${content.error}\n${content.raw}"
 					)
-				}
+				)
+			}
+		}
+
+	private fun Validator.Result.toFindings(root: Node, file: File): List<Finding> = this
+		.errors
+		.filter { it.error != "False schema always fails" }
+		.map { error ->
+			Finding(
+				rule = this@JsonSchemaValidationRule,
+				issue = JsonSchemaValidation,
+				location = root.resolve(error.instanceLocation).toLocation(file),
+				message = "${error.error} (${error.instanceLocation})"
+			)
 		}
 
 	companion object {
@@ -65,10 +86,20 @@ internal class JsonSchemaValidationRule : Rule {
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "Missing `on:` and requires at least one job in `jobs:`.",
+					explanation = "Requires at least one job in `jobs:`.",
 					content = """
 						on: push
 						jobs: {}
+					""".trimIndent(),
+				),
+				Example(
+					explanation = "Missing `on:` trigger list.",
+					content = """
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - run: echo "Example"
 					""".trimIndent(),
 				),
 			),

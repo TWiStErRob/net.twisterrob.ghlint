@@ -24,10 +24,26 @@ public object SnakeYaml {
 		return Analyzer().analyzeWorkflows(workflows, ruleSets)
 	}
 
+	@Suppress("LiftReturnOrAssignment", "detekt.ReturnCount")
 	public fun load(file: RawFile): File {
-		val node = factory.loadYaml(file) as MappingNode
+		val node = try {
+			factory.loadYaml(file)
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
+			return ErrorInvalidContent.create(file, ex)
+		}
+		if (node !is MappingNode) {
+			val error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
+			return ErrorInvalidContent.create(file, error)
+		}
+		try {
+			return loadUnsafe(file, node)
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
+			return ErrorInvalidContent.create(file, ex)
+		}
+	}
 
-		@Suppress("UseIfInsteadOfWhen")
+	private fun loadUnsafe(file: RawFile, node: MappingNode): File {
+		@Suppress("detekt.UseIfInsteadOfWhen")
 		val content = when {
 			file.location.name == "action.yml" && !file.location.path.endsWith(".github/workflows/action.yml") ->
 				factory.createAction(file, node)
