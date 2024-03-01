@@ -6,7 +6,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 @Suppress("detekt.TrimMultilineRawString") // See load().
-class WorkflowTest {
+class SnakeWorkflowTest {
 
 	@Test fun `no jobs`() {
 		val workflow = load(
