@@ -17,7 +17,8 @@ public interface Visitor : WorkflowVisitor, ActionVisitor {
 		}
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	public fun visitInvalidContent(reporting: Reporting, content: InvalidContent) {
-		error("Invalid content: ${content}")
+		// No op, the system should already have reported this as an error.
 	}
 }
