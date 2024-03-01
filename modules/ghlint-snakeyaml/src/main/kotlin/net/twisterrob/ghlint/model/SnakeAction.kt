@@ -17,9 +17,6 @@ public class SnakeAction internal constructor(
 	override lateinit var parent: File
 		internal set
 
-	override val raw: String
-		get() = parent.content.raw
-
 	override val location: Location
 		get() = super.location
 

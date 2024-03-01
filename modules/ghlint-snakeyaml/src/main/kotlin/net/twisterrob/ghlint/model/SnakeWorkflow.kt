@@ -19,9 +19,6 @@ public class SnakeWorkflow internal constructor(
 	override lateinit var parent: File
 		internal set
 
-	override val raw: String
-		get() = parent.content.raw
-
 	override val location: Location
 		get() = super.location
 
