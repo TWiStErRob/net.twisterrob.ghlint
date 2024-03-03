@@ -77,9 +77,8 @@ runs:
       working-directory: ${{ inputs.location }}
       env:
         FILES: ${{ steps.files.outputs.result }}
-        VERBOSE: ${{ env.ACTIONS_STEP_DEBUG == 'true' && '--verbose' || '' }}
       shell: bash
       run: |
         # Hackaround for https://github.com/orgs/community/discussions/73309
         PATH="${JAVA_HOME_17_X64}/bin:${PATH}"
-        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar" ${VERBOSE} --sarif=ghlint.sarif.json
+        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar" --verbose --sarif=ghlint.sarif.json
