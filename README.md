@@ -33,6 +33,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 1. Copy [usage.yml](.github/workflows/usage.yml) to your repository to `.github/workflows/ghlint.yml`.
 2. Change the `on:` trigger to your liking (usually `on: pull_request` or `on: push`).
 3. Change the action reference to external syntax (see `TODO`).
+4. Remove the `if:` condition on the job, it's specific to this repository only.
 
 #### Renovate
 
