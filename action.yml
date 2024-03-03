@@ -38,7 +38,7 @@ outputs:
       The absolute path of the SARIF report file.
       Slashes might be mixed, forward slash only on Linux.
       This can be used to upload the report to GitHub Code Scanning.
-    value: ${{ inputs.location }}/report.sarif
+    value: ${{ inputs.location }}/ghlint.sarif.json
 
 runs:
   using: composite
@@ -81,4 +81,4 @@ runs:
       run: |
         # Hackaround for https://github.com/orgs/community/discussions/73309
         PATH="${JAVA_HOME_17_X64}/bin:${PATH}"
-        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar"
+        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar" --verbose --sarif=ghlint.sarif.json
