@@ -41,6 +41,8 @@ jobs:
           # Remove -SNAPSHOT suffix in gradle.properties version.
           sed -re 's/^(project.version=[0-9]+\.[0-9]+\.[0-9]+)-SNAPSHOT$/\1/' -i gradle.properties
           version=$(grep -P --only-matching '(?<=project.version=)(.*)' gradle.properties)
+          # Update GitHub action to use latest (under preparation) version.
+          sed -re "s/default: \".*?\" # RELEASE/default: \"${version}\" # RELEASE/" -i action.yml
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
 
       - name: "Prepare git for ${{ env.VERSION }}."
@@ -53,7 +55,7 @@ jobs:
           git config user.name "${GIT_USER}"
           git config user.email "${GIT_EMAIL}"
           git checkout -b "${GIT_BRANCH}"
-          git add gradle.properties
+          git add gradle.properties action.yml
           git commit -m "Release v${VERSION}"
           git push origin HEAD:"${GIT_BRANCH}" -u -f
 

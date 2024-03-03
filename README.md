@@ -34,6 +34,47 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 2. Change the `on:` trigger to your liking (usually `on: pull_request` or `on: push`).
 3. Change the action reference to external syntax (see `TODO`).
 
+#### Renovate
+
+If you want to explicitly list the GH-Lint CLI version in your workflows, expand this:
+
+<details><summary>Custom Renovate ghlint upgrade rule</summary>
+
+If you want to separately upgrade the GH-Lint CLI version in your workflows,
+specify the `version: "..."` input (inside `with:`) for the GitHub Action:
+```yml
+# Inside ghlint.yml in a step:
+
+      - name: ...
+        uses: ...
+        with:
+          version: '0.1.0' # ghlint
+```
+
+In `renovate.json` configuration file add a custom regex manager:
+```json
+{
+	"customManagers": [
+		{
+			"description": "Update ghlint CLI inside GH-Lint action.",
+			"customType": "regex",
+			"fileMatch": ["^\\.github/workflows/ghlint\\.yml$"],
+			"datasourceTemplate": "github-releases",
+			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
+			"matchStrings": [
+				"version: '(?<currentValue>.*?)' # ghlint"
+			],
+			"extractVersionTemplate": "^v(?<version>.*)$",
+			"versioningTemplate": "semver"
+		}
+	]
+}
+```
+
+Note: The GitHub Action and the regex must match, otherwise Renovate will not see it.
+
+</details>
+
 ### Troubleshooting
 
 <details><summary>Advanced Security must be enabled for this repository to use code scanning.</summary>
