@@ -36,12 +36,22 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 
 #### Renovate
 
-If you want to separately upgrade the GH-Lint CLI version in your workflows,
-specify the `version: "..."` input (inside `with:`) for the GitHub Action,
-and add the following Renovate regex manager:
+If you want to explicitly list the GH-Lint CLI version in your workflows, expand this:
 
 <details><summary>Custom Renovate ghlint upgrade rule</summary>
 
+If you want to separately upgrade the GH-Lint CLI version in your workflows,
+specify the `version: "..."` input (inside `with:`) for the GitHub Action:
+```yml
+# Inside ghlint.yml in a step:
+
+      - name: ...
+        uses: ...
+        with:
+          version: '0.1.0' # ghlint
+```
+
+In `renovate.json` configuration file add a custom regex manager:
 ```json
 {
 	"customManagers": [
@@ -52,7 +62,7 @@ and add the following Renovate regex manager:
 			"datasourceTemplate": "github-releases",
 			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
 			"matchStrings": [
-				"version: \"(?<currentValue>.*?)\""
+				"version: '(?<currentValue>.*?)' # ghlint"
 			],
 			"extractVersionTemplate": "^v(?<version>.*)$",
 			"versioningTemplate": "semver"
@@ -60,6 +70,8 @@ and add the following Renovate regex manager:
 	]
 }
 ```
+
+Note: The GitHub Action and the regex must match, otherwise Renovate will not see it.
 
 </details>
 
