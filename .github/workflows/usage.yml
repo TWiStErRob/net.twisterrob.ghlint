@@ -31,6 +31,8 @@ jobs:
         # TODO When using this file in your repo, change the following line to:
         # uses: TWiStErRob/net.twisterrob.ghlint@v0
         uses: ./
+        with:
+          version: '0.1.0' # ghlint
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ success() || failure() }}

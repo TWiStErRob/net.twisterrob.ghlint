@@ -3,6 +3,20 @@
 	"extends": [
 		"local>TWiStErRob/renovate-config"
 	],
+	"customManagers": [
+		{
+			"description": "Update ghlint CLI inside GH-Lint action.",
+			"customType": "regex",
+			"fileMatch": ["^\\.github/workflows/usage\\.yml$"],
+			"datasourceTemplate": "github-releases",
+			"depNameTemplate": "TWiStErRob/net.twisterrob.ghlint",
+			"matchStrings": [
+				"version: '(?<currentValue>.*?)' # ghlint"
+			],
+			"extractVersionTemplate": "^v(?<version>.*)$",
+			"versioningTemplate": "semver"
+		}
+	],
 	"packageRules": [
 		{
 			"description": "Auto-merge own package, because it's still 0.x, which means each release is assumed 'breaking'.",
