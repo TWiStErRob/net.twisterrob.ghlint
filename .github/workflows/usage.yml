@@ -12,7 +12,7 @@ jobs:
     name: "Validate GitHub Workflows"
     # Don't run if the pull request is a release preparation.
     # Action will reference a non-existing version, so it'll always fail.
-    if: ${{ github.event.pull_request.head.ref != 'refs/heads/release' }}
+    if: ${{ github.head_ref != 'release' }}
  
     permissions:
       # actions/checkout
