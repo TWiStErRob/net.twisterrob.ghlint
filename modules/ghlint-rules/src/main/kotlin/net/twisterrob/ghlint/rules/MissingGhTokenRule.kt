@@ -34,7 +34,7 @@ public class MissingGhTokenRule : VisitorRule {
 		private val GH_CLI_EMBEDDED = Regex("""\$\(\s*gh\s+""")
 
 		private val Map<String, String>?.hasTokenVar: Boolean
-			get() = orEmpty().containsKey(TOKEN_ENV_VAR)
+			get() = this.orEmpty().containsKey(TOKEN_ENV_VAR)
 
 		val MissingGhToken = Issue(
 			id = "MissingGhToken",
