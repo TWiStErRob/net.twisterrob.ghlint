@@ -116,6 +116,43 @@ public class ScriptInjectionRule : VisitorRule {
 						is correct, but the remaining code after is meaningless for shells: `) needs a pair."`.
 					""".trimIndent(),
 				),
+				Example(
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - name: "Produce some output"
+						        id: producer
+						        run: |
+						          echo 'result={"add":"one","remove":["two","three"]}' >> "${'$'}{GITHUB_OUTPUT}"
+						
+						      - name: "Consume some output directly"
+						        run: echo "${'$'}{{ steps.producer.outputs.result }}"
+					""".trimIndent(),
+					explanation = """
+						Directly using the output in the shell script is vulnerable to script injection.
+						
+						In this example, the output is:
+						```log
+						{add:one,remove:[two,three]}
+						```
+						instead of
+						```log
+						{"add":"one","remove":["two","three"]}
+						```
+						because after resolving the `${'$'}{{ ... }}` expression, the script becomes:
+						```shell
+						echo "{"add":"one","remove":["two","three"]}"
+						```
+						which looks OK at first glance, but shells can actually understand it differently than expected
+						(spaces added for clarity):
+						```shell
+						echo "{" add ":" one "," remove ":[" two "," three "]}"
+						```
+					""".trimIndent(),
+				),
 			),
 		)
 
