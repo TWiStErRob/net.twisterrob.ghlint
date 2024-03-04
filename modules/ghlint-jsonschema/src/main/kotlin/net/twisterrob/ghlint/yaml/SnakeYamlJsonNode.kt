@@ -55,7 +55,7 @@ public class SnakeYamlJsonNode private constructor(
 				node is Node && (isLiteral(node) || isArray(node) || isObject(node)) ->
 					SnakeYamlJsonNode(this, node)
 
-				else -> error("Cannot wrap object which is not a Sequence, Mapping or Scalar.")
+				else -> error("Cannot wrap object (${node}) which is not a Sequence, Mapping or Scalar.")
 			}
 
 		public override fun create(rawJson: String): JsonNode =

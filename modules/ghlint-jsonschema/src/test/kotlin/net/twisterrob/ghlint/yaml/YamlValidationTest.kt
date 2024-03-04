@@ -3,12 +3,16 @@ package net.twisterrob.ghlint.yaml
 import dev.harrel.jsonschema.Validator
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 class YamlValidationTest {
 
-	private fun validate(yaml: String, expectedValid: Boolean): Validator.Result {
-		val result = YamlValidation.validate(yaml)
+	private fun validate(@Language("yaml") yaml: String, expectedValid: Boolean): Validator.Result {
+		val node = SnakeYaml.loadRaw(RawFile(FileLocation("test.yaml"), yaml))
+		val result = YamlValidation.validate(node)
 		if (expectedValid) {
 			@Suppress("detekt.ForbiddenMethodCall") // Required to diagnose.
 			result.errors.forEach { println(it.toDisplayString()) }

@@ -22,10 +22,11 @@ class WorkflowTest {
 			]
 		)
 		fun `strips extension`(fileName: String) {
-			val wf = mock<Workflow>()
-			whenever(wf.parent).thenReturn(File(FileLocation(fileName), ""))
+			val workflow: Workflow = mock()
+			val content: Content = mock<InvalidContent>()
+			whenever(workflow.parent).thenReturn(File(FileLocation(fileName), content))
 
-			wf.id shouldBe "file-name"
+			workflow.id shouldBe "file-name"
 		}
 
 		@ParameterizedTest
@@ -36,10 +37,11 @@ class WorkflowTest {
 			"file-name.yaml.yaml, file-name.yaml",
 		)
 		fun `keeps duplicate extension`(fileName: String, expectedId: String) {
-			val wf = mock<Workflow>()
-			whenever(wf.parent).thenReturn(File(FileLocation(fileName), ""))
+			val workflow: Workflow = mock()
+			val content: Content = mock<InvalidContent>()
+			whenever(workflow.parent).thenReturn(File(FileLocation(fileName), content))
 
-			wf.id shouldBe expectedId
+			workflow.id shouldBe expectedId
 		}
 	}
 }

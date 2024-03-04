@@ -3,9 +3,9 @@ package net.twisterrob.ghlint.model
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#workflows
  */
-public interface Workflow : Component {
+public interface Workflow : Component, Content {
 
-	public val parent: File
+	public override val parent: File
 	public val name: String?
 	public val env: Map<String, String>?
 	public val jobs: Map<String, Job>

@@ -4,11 +4,13 @@ import dev.harrel.jsonschema.Error
 import dev.harrel.jsonschema.SchemaResolver
 import dev.harrel.jsonschema.Validator
 import dev.harrel.jsonschema.ValidatorFactory
-import org.intellij.lang.annotations.Language
+import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
+import org.snakeyaml.engine.v2.nodes.Node
 import java.net.URI
 import java.net.URL
 
-public object YamlValidation {
+internal object YamlValidation {
 
 	private const val WORKFLOW_SCHEMA_URL =
 		"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json"
@@ -22,14 +24,15 @@ public object YamlValidation {
 			}
 	}
 
-	public fun validate(@Language("yaml") yaml: String): Validator.Result {
-		val factory = SnakeYamlJsonNode.Factory(Yaml::load)
+	fun validate(node: Node): Validator.Result {
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
-			.withJsonNodeFactory(factory)
+			.withJsonNodeFactory(SnakeYamlJsonNode.Factory {
+				SnakeYaml.loadRaw(RawFile(FileLocation("unknown"), it))
+			})
 			.withSchemaResolver(resolver)
 			.createValidator()
-		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), factory.create(yaml))
+		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), node)
 	}
 }
 

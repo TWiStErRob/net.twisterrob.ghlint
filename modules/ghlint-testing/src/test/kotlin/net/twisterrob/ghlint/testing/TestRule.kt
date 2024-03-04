@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.testing
 
-import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -9,7 +9,7 @@ internal class TestRule : Rule {
 
 	override val issues: List<Issue> = listOf(TestIssue1, TestIssue2, TestIssue3, TestIssue4)
 
-	override fun check(workflow: Workflow): List<Finding> =
+	override fun check(file: File): List<Finding> =
 		error("Should never be called.")
 
 	override fun toString(): String =

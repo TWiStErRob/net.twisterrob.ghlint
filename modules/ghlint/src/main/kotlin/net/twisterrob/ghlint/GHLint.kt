@@ -1,13 +1,13 @@
 package net.twisterrob.ghlint
 
-import net.twisterrob.ghlint.analysis.Validator
-import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.reporting.sarif.SarifReporter
 import net.twisterrob.ghlint.rules.DefaultRuleSet
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import kotlin.io.path.readText
 
 public class GHLint {
@@ -19,20 +19,18 @@ public class GHLint {
 				println("Received ${it} for analysis against JSON-schema and rules.")
 			}
 		}
-		val files = config.files.map { File(FileLocation(it.toString()), it.readText()) }
-		val validationResults = Validator().validateWorkflows(files)
-		val ruleSets = listOf(DefaultRuleSet())
-		val analysisResults = Yaml.analyze(files, ruleSets)
-		val allFindings = validationResults + analysisResults
+		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
+		val ruleSets = listOf(JsonSchemaRuleSet(), DefaultRuleSet())
+		val findings = SnakeYaml.analyze(files, ruleSets)
 		if (config.isVerbose) {
-			println("There are ${allFindings.size} findings.")
+			println("There are ${findings.size} findings.")
 		}
 
 		if (config.isReportConsole) {
 			if (config.isVerbose) {
 				println("Reporting findings to console.")
 			}
-			TextReporter(System.out).report(allFindings)
+			TextReporter(System.out).report(findings)
 		}
 		if (config.isReportGitHubCommands) {
 			if (config.isVerbose) {
@@ -41,7 +39,7 @@ public class GHLint {
 			GitHubCommandReporter(
 				repositoryRoot = config.root,
 				output = System.out,
-			).report(allFindings)
+			).report(findings)
 		}
 		config.sarifReportLocation?.run {
 			if (config.isVerbose) {
@@ -49,12 +47,12 @@ public class GHLint {
 			}
 			SarifReporter.report(
 				ruleSets = ruleSets,
-				findings = allFindings,
+				findings = findings,
 				target = this,
 				rootDir = config.root,
 			)
 		}
-		val code = if (config.isReportExitCode && allFindings.isNotEmpty()) 1 else 0
+		val code = if (config.isReportExitCode && findings.isNotEmpty()) 1 else 0
 		if (config.isVerbose) {
 			println("Exiting with code ${code}.")
 		}
