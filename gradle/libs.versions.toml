@@ -4,7 +4,7 @@ java-source = "17"
 java-target = "17"
 java-toolchain = "17"
 java-toolchainTest = "17"
-kotlin-build = "1.9.22"
+kotlin-build = "1.9.23"
 kotlin-target = { strictly = "1.9.23" }
 kotlin-language = "1.9"
 
