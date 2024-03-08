@@ -1,3 +1,4 @@
+import net.twisterrob.ghlint.build.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 
 plugins {
@@ -29,6 +30,12 @@ val fatJar = tasks.register<Jar>("fatJar") {
 		"META-INF/versions/9/module-info.class"
 	)
 	duplicatesStrategy = DuplicatesStrategy.FAIL
+}
+
+val r8Deps: Configuration = @Suppress("UnstableApiUsage") configurations.dependencyScope("r8").get()
+
+dependencies {
+	r8Deps(libs.r8)
 }
 
 val cliJar = tasks.register<Sync>("cliJar") {
