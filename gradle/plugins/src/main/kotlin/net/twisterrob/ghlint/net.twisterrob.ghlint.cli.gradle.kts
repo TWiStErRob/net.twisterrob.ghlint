@@ -27,7 +27,14 @@ val fatJar = tasks.register<Jar>("fatJar") {
 	from(configurations.runtimeClasspath.map { it.map(::zipTree) })
 	with(tasks.jar.get())
 	exclude(
-		"META-INF/versions/9/module-info.class"
+		// JVM metadata.
+		"**/module-info.class",
+		// Kotlin metadata.
+		"**/*.kotlin_builtins",
+		"**/*.kotlin_module",
+		"**/*.kotlin_metadata",
+		// Maven metadata.
+		"META-INF/maven/**",
 	)
 	duplicatesStrategy = DuplicatesStrategy.FAIL
 }
