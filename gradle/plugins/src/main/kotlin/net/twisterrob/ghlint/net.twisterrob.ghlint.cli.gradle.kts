@@ -71,11 +71,14 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 		vendor = JvmVendorSpec.ADOPTIUM // Temurin
 	}
 
+	maxHeapSize = "1G"
+
 	classpath(r8)
 	val additionalClasspath = r8Classpath.get().resolve().flatMap { listOf("--classpath", it.absolutePath) }
 	mainClass = "com.android.tools.r8.R8"
 	args = @Suppress("detekt.SpreadOperator") listOf(
-		"--release",
+		"--debug",
+		"--no-minification",
 		"--classfile",
 		"--pg-conf-output", configFile.get().asFile.absolutePath,
 		"--output", r8File.get().asFile.absolutePath,
