@@ -6,6 +6,7 @@ dependencies {
 	api(projects.ghlint)
 	implementation(projects.ghlintApi)
 	api(libs.clikt)
+	r8Library(libs.graalvmSvm)
 }
 
 application {

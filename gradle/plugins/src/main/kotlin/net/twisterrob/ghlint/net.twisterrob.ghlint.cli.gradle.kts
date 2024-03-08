@@ -38,8 +38,14 @@ dependencies {
 	r8Deps(libs.r8)
 }
 
-val r8: Provider<out Configuration> = @Suppress("UnstableApiUsage") configurations.resolvable("r8RuntimeClasspath") {
+val r8: Provider<out Configuration> = configurations.resolvable("r8RuntimeClasspath") {
 	extendsFrom(r8Deps)
+}
+
+val r8Lib: Configuration = configurations.dependencyScope("r8Library").get()
+
+val r8Classpath: Provider<out Configuration> = configurations.resolvable("r8LibraryClasspath") {
+	extendsFrom(r8Lib)
 }
 
 val r8Jar = tasks.register<JavaExec>("r8Jar") {
@@ -66,13 +72,15 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	}
 
 	classpath(r8)
+	val additionalClasspath = r8Classpath.get().resolve().flatMap { listOf("--classpath", it.absolutePath) }
 	mainClass = "com.android.tools.r8.R8"
-	args = listOf(
+	args = @Suppress("detekt.SpreadOperator") listOf(
 		"--release",
 		"--classfile",
 		"--pg-conf-output", configFile.get().asFile.absolutePath,
 		"--output", r8File.get().asFile.absolutePath,
 		"--lib", javaLauncher.get().metadata.installationPath.asFile.absolutePath,
+		*additionalClasspath.toTypedArray(),
 		fatJarFile.get().asFile.absolutePath,
 	)
 }

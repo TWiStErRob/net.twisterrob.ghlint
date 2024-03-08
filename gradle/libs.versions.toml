@@ -31,6 +31,7 @@ snakeyaml2 = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeya
 sarif4k = { module = "io.github.detekt.sarif4k:sarif4k", version.ref = "sarif4k" }
 jsonSchema = { module = "dev.harrel:json-schema", version.ref = "jsonSchema" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+graalvmSvm = { module = "org.graalvm.nativeimage:svm", version = "23.1.0" }
 r8 = { module = "com.android.tools:r8", version.ref = "r8" }
 
 test-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
