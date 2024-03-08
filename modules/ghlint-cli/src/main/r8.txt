@@ -7,3 +7,6 @@
 
 # It was working before without missing classes, it should keep working now.
 -dontwarn com.github.ajalt.mordant.internal.**
+
+# Keep annotations some of them are reflected on.
+-keepattributes *Annotation*
