@@ -46,10 +46,15 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	val r8File: Provider<RegularFile> = base.libsDirectory.flatMap { libs ->
 		libs.file(base.archivesName.map { "${it}-r8.jar" })
 	}
+	val rulesFile: RegularFile = layout.projectDirectory.file("src/main/r8.txt")
 	val fatJarFile = fatJar.flatMap { it.archiveFile }
 	inputs.file(fatJarFile)
 		.withPropertyName("fatJarFile")
 		.withPathSensitivity(PathSensitivity.NONE)
+	inputs.file(rulesFile)
+		.withPropertyName("rulesFile")
+		.withPathSensitivity(PathSensitivity.NONE)
+		.normalizeLineEndings()
 	outputs.file(r8File)
 
 	// R8 uses the executing JDK to determine the classfile target.
