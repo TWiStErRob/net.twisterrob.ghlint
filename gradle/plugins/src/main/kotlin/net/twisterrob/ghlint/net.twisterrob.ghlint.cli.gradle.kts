@@ -87,6 +87,7 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 		"--debug",
 		"--no-minification",
 		"--classfile",
+		"--pg-conf", rulesFile.asFile.absolutePath,
 		"--pg-conf-output", configFile.get().asFile.absolutePath,
 		"--output", r8File.get().asFile.absolutePath,
 		"--lib", javaLauncher.get().metadata.installationPath.asFile.absolutePath,
