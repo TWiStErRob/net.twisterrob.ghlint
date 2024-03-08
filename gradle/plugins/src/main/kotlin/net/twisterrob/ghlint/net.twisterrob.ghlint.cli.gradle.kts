@@ -43,6 +43,15 @@ val r8: Provider<out Configuration> = @Suppress("UnstableApiUsage") configuratio
 }
 
 val r8Jar = tasks.register<JavaExec>("r8Jar") {
+	val r8File: Provider<RegularFile> = base.libsDirectory.flatMap { libs ->
+		libs.file(base.archivesName.map { "${it}-r8.jar" })
+	}
+	val fatJarFile = fatJar.flatMap { it.archiveFile }
+	inputs.file(fatJarFile)
+		.withPropertyName("fatJarFile")
+		.withPathSensitivity(PathSensitivity.NONE)
+	outputs.file(r8File)
+
 	// R8 uses the executing JDK to determine the classfile target.
 	javaLauncher = javaToolchains.launcherFor {
 		languageVersion = libs.versions.java.target.map(JavaLanguageVersion::of)
@@ -52,7 +61,11 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	classpath(r8)
 	mainClass = "com.android.tools.r8.R8"
 	args = listOf(
-		"--help",
+		"--release",
+		"--classfile",
+		"--output", r8File.get().asFile.absolutePath,
+		"--lib", javaLauncher.get().metadata.installationPath.asFile.absolutePath,
+		fatJarFile.get().asFile.absolutePath,
 	)
 }
 
