@@ -1,0 +1,6 @@
+-keep public class net.twisterrob.ghlint.cli.MainKt {
+	public static void main(java.lang.String[]);
+}
+
+# The providers in this package are all for external libraries, which are not actually used.
+-dontwarn dev.harrel.jsonschema.providers.**
