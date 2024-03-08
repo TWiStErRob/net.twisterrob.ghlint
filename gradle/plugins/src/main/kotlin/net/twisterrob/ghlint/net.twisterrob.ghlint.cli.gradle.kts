@@ -15,7 +15,7 @@ kotlin {
 
 tasks.named<JavaExec>("run").configure { setWorkingDir(rootProject.layout.projectDirectory) }
 
-tasks.register<Jar>("fatJar") {
+val fatJar = tasks.register<Jar>("fatJar") {
 	manifest {
 		attributes(
 			"Main-Class" to application.mainClass.get()
@@ -49,3 +49,5 @@ tasks.register("versionFile") {
 		versionFile.get().asFile.writeText(version.toString())
 	}
 }
+
+tasks.jar { finalizedBy(fatJar) }
