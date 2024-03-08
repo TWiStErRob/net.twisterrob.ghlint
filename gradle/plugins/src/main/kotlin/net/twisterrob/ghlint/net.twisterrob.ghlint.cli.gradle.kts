@@ -38,6 +38,24 @@ dependencies {
 	r8Deps(libs.r8)
 }
 
+val r8: Provider<out Configuration> = @Suppress("UnstableApiUsage") configurations.resolvable("r8RuntimeClasspath") {
+	extendsFrom(r8Deps)
+}
+
+val r8Jar = tasks.register<JavaExec>("r8Jar") {
+	// R8 uses the executing JDK to determine the classfile target.
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = libs.versions.java.target.map(JavaLanguageVersion::of)
+		vendor = JvmVendorSpec.ADOPTIUM // Temurin
+	}
+
+	classpath(r8)
+	mainClass = "com.android.tools.r8.R8"
+	args = listOf(
+		"--help",
+	)
+}
+
 val cliJar = tasks.register<Sync>("cliJar") {
 	from(fatJar)
 	into(layout.buildDirectory.dir("cli"))
