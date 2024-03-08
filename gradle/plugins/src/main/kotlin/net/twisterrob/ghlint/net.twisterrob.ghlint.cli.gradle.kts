@@ -49,12 +49,6 @@ val r8: Provider<out Configuration> = configurations.resolvable("r8RuntimeClassp
 	extendsFrom(r8Deps)
 }
 
-val r8Lib: Configuration = configurations.dependencyScope("r8Library").get()
-
-val r8Classpath: Provider<out Configuration> = configurations.resolvable("r8LibraryClasspath") {
-	extendsFrom(r8Lib)
-}
-
 val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	val r8File: Provider<RegularFile> = base.libsDirectory.flatMap { libs ->
 		libs.file(base.archivesName.map { "${it}-r8.jar" })
@@ -81,9 +75,8 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	maxHeapSize = "1G"
 
 	classpath(r8)
-	val additionalClasspath = r8Classpath.get().resolve().flatMap { listOf("--classpath", it.absolutePath) }
 	mainClass = "com.android.tools.r8.R8"
-	args = @Suppress("detekt.SpreadOperator") listOf(
+	args = listOf(
 		"--debug",
 		"--no-minification",
 		"--classfile",
@@ -91,7 +84,6 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 		"--pg-conf-output", configFile.get().asFile.absolutePath,
 		"--output", r8File.get().asFile.absolutePath,
 		"--lib", javaLauncher.get().metadata.installationPath.asFile.absolutePath,
-		*additionalClasspath.toTypedArray(),
 		fatJarFile.get().asFile.absolutePath,
 	)
 }

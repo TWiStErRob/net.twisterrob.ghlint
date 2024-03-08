@@ -4,3 +4,6 @@
 
 # The providers in this package are all for external libraries, which are not actually used.
 -dontwarn dev.harrel.jsonschema.providers.**
+
+# It was working before without missing classes, it should keep working now.
+-dontwarn com.github.ajalt.mordant.internal.**
