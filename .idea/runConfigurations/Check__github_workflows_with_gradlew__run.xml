@@ -11,7 +11,7 @@
       <option name="taskNames">
         <list>
           <option value=":ghlint-cli:run" />
-          <option value="--args=&quot;.github/workflows/*.yml --verbose --sarif=output.sarif.json&quot;" />
+          <option value="--args=&quot;.github/workflows/*.yml --verbose --sarif=build/ghlint.sarif.json&quot;" />
         </list>
       </option>
       <option name="vmOptions" />
