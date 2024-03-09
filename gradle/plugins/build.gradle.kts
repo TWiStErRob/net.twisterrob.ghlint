@@ -17,7 +17,7 @@ fun Provider<PluginDependency>.asDependency(): Provider<String> =
 idea {
 	module {
 		excludeDirs = excludeDirs + listOf(
-			file("build/generated-sources/kotlin-dsl-accessors/kotlin/gradle/kotlin/dsl/accessors"),
+			//file("build/generated-sources/kotlin-dsl-accessors/kotlin/gradle/kotlin/dsl/accessors"),
 			file("build/generated-sources/kotlin-dsl-external-plugin-spec-builders/kotlin/gradle/kotlin/dsl/plugins"),
 			file("build/generated-sources/kotlin-dsl-plugins/kotlin"),
 		)
