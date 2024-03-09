@@ -10,14 +10,3 @@
 
 # Keep annotations some of them are reflected on.
 -keepattributes *Annotation*
-
-# STOPSHIP none of these help
-# test: gradlew cliJar && java -jar modules\ghlint-cli\build\cli\ghlint.jar
-
-# java.lang.VerifyError: Bad invokespecial instruction: interface method reference is in an indirect superinterface.
-# it/unimi/dsi/fastutil/ints/IntList.forEach(Ljava/util/function/IntConsumer;)V @2: invokespecial
-# at org.intellij.markdown.flavours.gfm.lexer._GFMLexer.<init>(_GFMLexer.kt:59)
--keepattributes Signature
--keep class it.unimi.dsi.fastutil.**
--keep interface it.unimi.dsi.fastutil.**
--keep class org.intellij.markdown.**
