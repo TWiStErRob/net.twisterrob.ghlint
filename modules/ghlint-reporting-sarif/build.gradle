@@ -5,6 +5,7 @@ plugins {
 dependencies {
 	implementation(projects.ghlintApi)
 	implementation(libs.sarif4k)
+	implementation(libs.kotlin.serialization)
 
 	testImplementation(projects.ghlintTesting)
 }
