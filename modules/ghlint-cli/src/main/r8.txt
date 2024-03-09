@@ -2,6 +2,11 @@
 	public static void main(java.lang.String[]);
 }
 
+-keepclassmembers class * implements net.twisterrob.ghlint.rule.Rule {
+	# See net.twisterrob.ghlint.ruleset.ReflectiveRuleSet#createRules().
+	public <init>();
+}
+
 # The providers in this package are all for external libraries, which are not actually used.
 -dontwarn dev.harrel.jsonschema.providers.**
 
