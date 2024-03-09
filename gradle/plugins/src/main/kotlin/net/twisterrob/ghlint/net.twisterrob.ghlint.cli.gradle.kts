@@ -15,7 +15,7 @@ kotlin {
 
 tasks.named<JavaExec>("run").configure { setWorkingDir(rootProject.layout.projectDirectory) }
 
-tasks.register<Jar>("fatJar") {
+val fatJar = tasks.register<Jar>("fatJar") {
 	manifest {
 		attributes(
 			"Main-Class" to application.mainClass.get()
@@ -29,10 +29,15 @@ tasks.register<Jar>("fatJar") {
 		"META-INF/versions/9/module-info.class"
 	)
 	duplicatesStrategy = DuplicatesStrategy.FAIL
+}
 
+val cliJar = tasks.register<Sync>("cliJar") {
+	from(fatJar)
+	into(layout.buildDirectory.dir("cli"))
+	rename { "ghlint.jar" }
 	doLast {
 		// https://www.reddit.com/r/programminghorror/comments/3c4mtn/comment/kqt797p/
-		val file = archiveFile.get().asFile
+		val file = destinationDir.listFiles()!!.single()
 		val bytes = file.readBytes()
 		file.writeText("#!/bin/sh\nexec java -jar \$0 \"\$@\"\n")
 		file.appendBytes(bytes)
