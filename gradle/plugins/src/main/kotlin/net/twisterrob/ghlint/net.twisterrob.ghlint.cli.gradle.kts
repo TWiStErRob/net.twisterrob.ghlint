@@ -53,8 +53,8 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	val r8File: Provider<RegularFile> = base.libsDirectory.flatMap { libs ->
 		libs.file(base.archivesName.map { "${it}-r8.jar" })
 	}
-	val rulesFile = layout.projectDirectory.file("src/main/r8.txt")
-	val configFile = base.libsDirectory.file("r8-config.txt")
+	val rulesFile = layout.projectDirectory.file("src/main/r8.pro")
+	val configFile = base.libsDirectory.file("r8.pro")
 	val fatJarFile = fatJar.flatMap { it.archiveFile }
 	inputs.file(fatJarFile)
 		.withPropertyName("fatJarFile")
@@ -77,7 +77,7 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	classpath(r8)
 	mainClass = "com.android.tools.r8.R8"
 	args = listOf(
-		"--debug",
+		"--release",
 		"--no-minification",
 		"--classfile",
 		"--pg-conf", rulesFile.asFile.absolutePath,
