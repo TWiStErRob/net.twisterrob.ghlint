@@ -48,7 +48,7 @@ jobs:
           --stacktrace
           --scan
           build
-          fatJar
+          cliJar
 
       - name: "Upload 'Unit Test Results' artifact."
         if: ${{ success() || failure() }}
@@ -103,11 +103,11 @@ jobs:
           name: 'CLI Application'
           if-no-files-found: error
           path: |
-            modules/ghlint-cli/build/libs/ghlint-cli-*-fat.jar
+            modules/ghlint-cli/build/cli/ghlint.jar
 
       - name: "Run validator."
         id: validate
-        run: modules/ghlint-cli/build/libs/ghlint-cli-*-fat.jar --sarif="ghlint.sarif.json" .github/workflows/*.yml
+        run: modules/ghlint-cli/build/cli/ghlint.jar --sarif="ghlint.sarif.json" .github/workflows/*.yml
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
