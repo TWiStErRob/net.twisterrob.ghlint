@@ -97,8 +97,9 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 }
 
 val cliJar = tasks.register<Sync>("cliJar") {
-	from(fatJar)
+	from(r8Jar)
 	into(layout.buildDirectory.dir("cli"))
+	include("*.jar")
 	rename { "ghlint.jar" }
 	doLast {
 		// https://www.reddit.com/r/programminghorror/comments/3c4mtn/comment/kqt797p/
