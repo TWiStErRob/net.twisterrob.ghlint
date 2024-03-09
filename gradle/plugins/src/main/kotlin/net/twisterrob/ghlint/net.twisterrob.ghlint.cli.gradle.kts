@@ -50,11 +50,10 @@ val r8: Provider<out Configuration> = configurations.resolvable("r8RuntimeClassp
 }
 
 val r8Jar = tasks.register<JavaExec>("r8Jar") {
-	val r8File: Provider<RegularFile> = base.libsDirectory.flatMap { libs ->
-		libs.file(base.archivesName.map { "${it}-r8.jar" })
-	}
+	val r8Dir = layout.buildDirectory.dir("r8")
+	val r8File = r8Dir.map { it.file("minified.jar") }
 	val rulesFile = layout.projectDirectory.file("src/main/r8.pro")
-	val configFile = base.libsDirectory.file("r8.pro")
+	val configFile = r8Dir.map { it.file("full-configuration.pro") }
 	val fatJarFile = fatJar.flatMap { it.archiveFile }
 	inputs.file(fatJarFile)
 		.withPropertyName("fatJarFile")
