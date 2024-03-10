@@ -81,11 +81,42 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:  \n" +
-				"Fake failure\n" +
-				"```\n" +
-				"${stubFailure.stackTraceToString()}\n" +
-				"```"
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+				"````\n" +
+				stubFailure.stackTraceToString() +
+				"````"
+		finding.location shouldBe mockLocation
+	}
+
+	@Test fun `escapes exception markdown`() {
+		val stubFailure = RuntimeException(
+			"""
+				## Markdown failure
+				
+				 * List `item` 1
+				 * List `item` 2
+				
+				```kotlin
+				fun some(code: String) = TODO()
+				```
+			""".trimIndent()
+		)
+		val subject = SafeRule(AlwaysFailingRule(stubFailure))
+		val mockWorkflow: Workflow = mock()
+		val mockLocation: Location = mock()
+		whenever(mockWorkflow.location).thenReturn(mockLocation)
+
+		val findings = subject.check(mockWorkflow)
+
+		findings shouldHaveSize 1
+		val finding = findings.single()
+		finding.issue shouldBe SafeRule.RuleErrored
+		finding.rule shouldBe subject
+		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+				"````\n" +
+				stubFailure.stackTraceToString() +
+				"````"
 		finding.location shouldBe mockLocation
 	}
 
@@ -103,11 +134,10 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:  \n" +
-				"Fake failure\n" +
-				"```\n" +
-				"${stubFailure.stackTraceToString()}\n" +
-				"```"
+		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
+				"````\n" +
+				stubFailure.stackTraceToString() +
+				"````"
 		finding.location shouldBe mockLocation
 	}
 }
