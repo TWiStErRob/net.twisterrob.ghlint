@@ -83,7 +83,7 @@ class SafeRuleTest {
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
 				"````\n" +
-				"${stubFailure.stackTraceToString()}\n" +
+				stubFailure.stackTraceToString() +
 				"````"
 		finding.location shouldBe mockLocation
 	}
@@ -115,7 +115,7 @@ class SafeRuleTest {
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
 				"````\n" +
-				"${stubFailure.stackTraceToString()}\n" +
+				stubFailure.stackTraceToString() +
 				"````"
 		finding.location shouldBe mockLocation
 	}
@@ -136,7 +136,7 @@ class SafeRuleTest {
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
 				"````\n" +
-				"${stubFailure.stackTraceToString()}\n" +
+				stubFailure.stackTraceToString() +
 				"````"
 		finding.location shouldBe mockLocation
 	}
