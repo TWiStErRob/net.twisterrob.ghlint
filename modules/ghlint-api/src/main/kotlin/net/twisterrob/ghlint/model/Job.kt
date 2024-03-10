@@ -23,7 +23,7 @@ public sealed interface Job : Component {
 
 		public val steps: List<Step>
 		public val defaults: Defaults?
-		public val timeoutMinutes: Int?
+		public val timeoutMinutes: String?
 
 		public companion object
 	}

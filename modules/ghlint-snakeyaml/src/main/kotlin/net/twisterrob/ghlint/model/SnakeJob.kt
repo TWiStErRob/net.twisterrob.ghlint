@@ -49,8 +49,8 @@ public sealed class SnakeJob protected constructor(
 		override val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { factory.createDefaults(it) }
 
-		override val timeoutMinutes: Int?
-			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
+		override val timeoutMinutes: String?
+			get() = node.getOptionalText("timeout-minutes")
 	}
 
 	public class SnakeReusableWorkflowCallJob internal constructor(
