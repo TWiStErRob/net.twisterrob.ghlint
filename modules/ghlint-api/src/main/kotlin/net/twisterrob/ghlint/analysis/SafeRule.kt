@@ -24,7 +24,7 @@ internal class SafeRule(
 				location = workflow.location,
 				message = @Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 				"${unsafeRule} errored while checking:  \n${ex.message ?: "null"}\n"
-						+ "```\n${ex.stackTraceToString()}\n```",
+						+ "````\n${ex.stackTraceToString()}\n````", // This toString might contain ```, so using ```` instead.
 			)
 			return listOf(errorFinding)
 		}
