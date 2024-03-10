@@ -44,6 +44,7 @@ class ComponentCountRuleTest {
 		}.prependIndent("\t\t\t\t\t    ")
 
 	@Nested
+	@Suppress("TrimMultilineRawString") // Verifying exact indentations.
 	inner class GenerateTest {
 
 		@Test fun `generate single step`() {
