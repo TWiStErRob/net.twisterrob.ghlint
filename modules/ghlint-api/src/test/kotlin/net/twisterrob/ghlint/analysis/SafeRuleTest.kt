@@ -81,8 +81,7 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:  \n" +
-				"Fake failure\n" +
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
 				"````\n" +
 				"${stubFailure.stackTraceToString()}\n" +
 				"````"
@@ -114,15 +113,7 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:  \n" +
-				"## Markdown failure\n" +
-				"\n" +
-				" * List `item` 1\n" +
-				" * List `item` 2\n" +
-				"\n" +
-				"```kotlin\n" +
-				"fun some(code: String) = TODO()\n" +
-				"```\n" +
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
 				"````\n" +
 				"${stubFailure.stackTraceToString()}\n" +
 				"````"
@@ -143,8 +134,7 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:  \n" +
-				"Fake failure\n" +
+		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
 				"````\n" +
 				"${stubFailure.stackTraceToString()}\n" +
 				"````"
