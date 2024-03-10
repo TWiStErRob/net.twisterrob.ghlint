@@ -94,7 +94,8 @@ public class IdNamingRule : VisitorRule {
 			title = "Job should have a lower-case kebab ID.",
 			description = """
 				> The Job id must start with a letter or _ and contain only alphanumeric characters, -, or _.
-				> --- [jobs.<job_id>](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id)
+				> -- [jobs.<job_id>](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id)
+				> -- [Setting an ID for a job](https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#setting-an-id-for-a-job)
 				
 				Job IDs appear
 				

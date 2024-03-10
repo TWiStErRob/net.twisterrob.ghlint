@@ -1,0 +1,56 @@
+# https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+
+changelog:
+  categories:
+
+    - title: "💥 Breaking Changes"
+      labels:
+        - 'is:breaking'
+
+    - title: "✨ New Features"
+      labels:
+        - 'a:feature'
+      exclude:
+        labels:
+          - 'is:invalid'
+          - 'is:wontfix'
+          - 'is:duplicate'
+          - 'in:rules'
+
+    - title: "🔍 New Rules"
+      labels:
+        #- a:feature
+        - in:rules
+      exclude:
+        labels:
+          - 'is:invalid'
+          - 'is:wontfix'
+          - 'is:duplicate'
+          # == "not a:feature"
+          - 'a:enhancement'
+          - 'a:bug'
+          - 'a:question'
+
+    - title: "🐛 Rule Changes"
+      labels:
+        - 'in:rules'
+      exclude:
+        labels:
+          - 'is:invalid'
+          - 'is:wontfix'
+          - 'is:duplicate'
+          - 'a:question'
+
+    - title: "⬆️ Dependency Updates"
+      labels:
+        - 'in:dependencies'
+
+    - title: "🤫 Not Included"
+      labels:
+        - 'is:invalid'
+        - 'is:wontfix'
+        - 'is:duplicate'
+
+    - title: "❓ Other Changes"
+      labels:
+        - '*'
