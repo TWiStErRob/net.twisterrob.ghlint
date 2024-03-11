@@ -31,6 +31,8 @@ public sealed interface Job : Component {
 	public interface ReusableWorkflowCallJob : BaseJob {
 
 		public val uses: String
+		public val with: Map<String, String>?
+		public val secrets: Map<String, String>?
 
 		public companion object
 	}

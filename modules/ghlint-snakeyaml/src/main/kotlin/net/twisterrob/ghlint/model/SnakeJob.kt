@@ -62,5 +62,11 @@ public sealed class SnakeJob protected constructor(
 
 		override val uses: String
 			get() = node.getRequiredText("uses")
+
+		override val with: Map<String, String>?
+			get() = node.getOptional("with")?.run { map.toTextMap() }
+
+		override val secrets: Map<String, String>?
+			get() = node.getOptional("secrets")?.run { map.toTextMap() }
 	}
 }
