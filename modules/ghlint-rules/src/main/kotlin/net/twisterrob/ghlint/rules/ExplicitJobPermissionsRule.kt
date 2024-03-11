@@ -123,6 +123,11 @@ public class ExplicitJobPermissionsRule : VisitorRule {
 				References:
 				
 				 * [Best practice in documentation](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token:~:text=The%20two,permissions%27%20scope.)
+				   > The two workflow[s ...] show the permissions key being used at the job level,
+				   > as it is best practice to limit the permissions' scope.
+				 * [Explanation of the above](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow)
+				   > As a good security practice, you should always make sure that actions
+				   > only have the minimum access they require by limiting the permissions granted to the GITHUB_TOKEN.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
