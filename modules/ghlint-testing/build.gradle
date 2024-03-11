@@ -8,4 +8,5 @@ dependencies {
 	implementation(projects.ghlintJsonschema)
 	api(libs.test.kotest.assertions)
 	api(libs.test.jupiter.api)
+	implementation(libs.classgraph)
 }
