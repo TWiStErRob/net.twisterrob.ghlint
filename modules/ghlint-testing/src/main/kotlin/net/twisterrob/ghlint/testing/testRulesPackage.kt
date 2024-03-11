@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.testing
 
 import io.github.classgraph.ClassGraph
+import io.github.classgraph.ClassInfo
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
@@ -36,5 +37,9 @@ private fun ClassLoader.getRulesFrom(rulesPackage: Package): List<Class<Rule>> =
 		.use { scanResult ->
 			scanResult.getClassesImplementing(Rule::class.java)
 				.filterNot { it.isAbstract }
-				.map { @Suppress("UNCHECKED_CAST") (it.loadClass() as Class<Rule>) }
+				.map { it.loadClass<Rule>() }
 		}
+
+@Suppress("UNCHECKED_CAST", "EXTENSION_SHADOWED_BY_MEMBER")
+private inline fun <reified T> ClassInfo.loadClass(): Class<T> =
+	(this.loadClass() ?: error("Class not found: ${this.name}")) as Class<T>
