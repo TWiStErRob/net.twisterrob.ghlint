@@ -27,7 +27,6 @@ class FileLocatorTest {
 
 		result.name shouldBe "index.md"
 		result shouldNot exist()
-		result shouldBe aFile()
 
 		result.parent should exist()
 		result.parent shouldBe aDirectory()
@@ -48,7 +47,6 @@ class FileLocatorTest {
 
 		result.name shouldBe "TestIssue.md"
 		result shouldNot exist()
-		result shouldBe aFile()
 
 		result.parent should exist()
 		result.parent shouldBe aDirectory()
