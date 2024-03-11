@@ -25,7 +25,7 @@ import io.kotest.matchers.string.beEmpty as beEmptyString
  * ```
  */
 public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
-	listOfNotNull(
+	listOf(
 		dynamicTest("RuleSet ${ruleSet.simplerName} is instantiatable") {
 			ruleSet.java.getDeclaredConstructor().newInstance()
 		},
