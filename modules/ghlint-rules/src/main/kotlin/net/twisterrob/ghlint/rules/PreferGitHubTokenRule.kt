@@ -10,6 +10,7 @@ import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.VisitorRule
 import net.twisterrob.ghlint.rule.report
 
+@Suppress("detekt.StringLiteralDuplication") // Simpler to keep them duplicated.
 public class PreferGitHubTokenRule : VisitorRule {
 
 	override val issues: List<Issue> = listOf(PreferGitHubToken)
