@@ -42,7 +42,7 @@ public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
 				.flatMap { rule ->
 					test(rule).stream()
 				}
-		)
+		),
 	)
 
 /**
