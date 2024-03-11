@@ -67,7 +67,7 @@ public class MissingGhTokenRule : VisitorRule {
 				 * `GITHUB_TOKEN` environment variables used by `gh` CLI
 				 * `GITHUB_TOKEN` secret automatically defined by GitHub Actions
 				
-				it's recommended to always use `GH_TOKEN` and `${'$'}{{ github.token }}`.
+				it's recommended to always use `GH_TOKEN` and `${'$'}{{ github.token }}`, see [`PreferGitHubToken`](PreferGitHubToken.md).
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
