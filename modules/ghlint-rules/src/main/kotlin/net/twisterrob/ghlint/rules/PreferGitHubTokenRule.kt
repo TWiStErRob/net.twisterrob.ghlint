@@ -59,17 +59,22 @@ public class PreferGitHubTokenRule : VisitorRule {
 			description = """
 				Mixing built-in `GITHUB_TOKEN` with repository/org-level secrets is confusing.
 				
-				Whenever a `secrets.` prefix is used, the reference is expected to be defined
-				in _Settings > Security > Secrets and variables > Actions_;
+				Whenever the [`secrets` context](https://docs.github.com/en/actions/learn-github-actions/contexts#secrets-context)
+				is used, the reference is expected to be defined in _Settings > Security > Secrets and variables > Actions_;
 				*except*, when it's about `GITHUB_TOKEN`.
 				
 				`GITHUB_TOKEN` is very special in several aspects, a few more examples:
 				
 				 * [It's passed to forked workflow runs.](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow)
-				 * [It's accessible in actions, even when not passed in.](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow) 
+				 * [It's accessible in actions, even when not passed in.](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow)
+				 * [Actions don't have access to the `secrets` context](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#accessing-your-secrets),
+				   but [they can access `github.token`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#:~:text=An%20action%20can%20access,action.). 
 				
 				To clarify this special case to the reader,
-				it's recommended to use `github.token` instead of `secrets.GITHUB_TOKEN`.
+				it's recommended to use `github.token` instead of `secrets.GITHUB_TOKEN` everywhere.
+				
+				This will make the usages of `github.token` consistent across workflows and actions,
+				resulting in better maintainability due to easier copy-paste-ability between them.
 				
 				In case of `gh` CLI, this preference will also help disambiguate between
 				
