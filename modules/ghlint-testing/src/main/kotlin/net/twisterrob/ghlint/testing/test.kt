@@ -1,8 +1,6 @@
 package net.twisterrob.ghlint.testing
 
-import io.github.classgraph.ClassGraph
 import io.kotest.matchers.collections.atLeastSize
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotStartWith
@@ -26,7 +24,7 @@ import io.kotest.matchers.string.beEmpty as beEmptyString
  *     validate(DefaultRuleSet::class)
  * ```
  */
-public fun test(ruleSet: KClass<out RuleSet>, rulesPackage: Package? = ruleSet.java.`package`): List<DynamicNode> =
+public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
 	listOfNotNull(
 		dynamicTest("RuleSet ${ruleSet.simplerName} is instantiatable") {
 			ruleSet.java.getDeclaredConstructor().newInstance()
@@ -45,31 +43,7 @@ public fun test(ruleSet: KClass<out RuleSet>, rulesPackage: Package? = ruleSet.j
 					test(rule).stream()
 				}
 		),
-		// STOPSHIP extract to separate test
-		if (rulesPackage != null) {
-			dynamicTest("includes all rules in the package") {
-				val instance = ruleSet.java.getDeclaredConstructor().newInstance()
-				val actualRules = instance.createRules().map { it::class.java }
-				val expectedRules = ruleSet.java.classLoader.getRulesFrom(rulesPackage)
-				actualRules shouldContainExactlyInAnyOrder expectedRules
-			}
-		} else {
-			null
-		}
 	)
-
-private fun ClassLoader.getRulesFrom(rulesPackage: Package): List<Class<Rule>> =
-	ClassGraph()
-		.enableClassInfo()
-		.overrideClassLoaders(this)
-		.ignoreParentClassLoaders()
-		.acceptPackages(rulesPackage.name) // Includes subpackages.
-		.scan()
-		.use { scanResult ->
-			scanResult.getClassesImplementing(Rule::class.java)
-				.filterNot { it.isAbstract }
-				.map { @Suppress("UNCHECKED_CAST") (it.loadClass() as Class<Rule>) }
-		}
 
 /**
  * Validates a [Rule] and its [Issue]s.
