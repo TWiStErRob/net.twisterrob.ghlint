@@ -8,6 +8,7 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	name = "Default",
 	DoubleCurlyIfRule::class,
 	ExplicitJobPermissionsRule::class,
+	PreferGitHubTokenRule::class,
 	IdNamingRule::class,
 	MissingShellRule::class,
 	MissingNameRule::class,
