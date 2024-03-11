@@ -10,6 +10,8 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	ExplicitJobPermissionsRule::class,
 	IdNamingRule::class,
 	MissingShellRule::class,
+	ComponentCountRule::class,
+	DuplicateStepIdRule::class,
 	MissingNameRule::class,
 	MissingJobTimeoutRule::class,
 	ImplicitStatusCheckRule::class,
