@@ -155,6 +155,19 @@ class PreferGitHubTokenRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes job secret inherit`() {
+		val results = check<PreferGitHubTokenRule>(
+			"""
+				jobs:
+				  test:
+				    uses: test
+				    secrets: inherit
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when GITHUB_TOKEN variable is used in job secret`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""

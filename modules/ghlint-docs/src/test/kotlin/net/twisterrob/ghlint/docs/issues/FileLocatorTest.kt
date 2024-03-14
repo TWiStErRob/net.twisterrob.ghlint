@@ -1,7 +1,6 @@
 package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.paths.aDirectory
-import io.kotest.matchers.paths.aFile
 import io.kotest.matchers.paths.exist
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe

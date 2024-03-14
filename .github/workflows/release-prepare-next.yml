@@ -36,7 +36,7 @@ jobs:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
         uses: actions/checkout@v4
-  
+
       - name: "Prepare changes."
         id: changes
         run: |
@@ -44,7 +44,7 @@ jobs:
           new_version=$(echo "${old_version}" | awk --field-separator=. '{print $1"."$2"."$3+1"-SNAPSHOT"}')
           sed -re "s/^(project.version=)[0-9]+\.[0-9]+\.[0-9]+\$/\1${new_version}/" -i gradle.properties
           echo "version=${new_version}" >> "${GITHUB_OUTPUT}"
-  
+
       - name: "Prepare git for ${{ env.VERSION }}."
         env:
           VERSION: ${{ steps.changes.outputs.version }}
@@ -58,7 +58,7 @@ jobs:
           git add gradle.properties
           git commit -m "Prepare next development version v${VERSION}"
           git push origin HEAD:"${GIT_BRANCH}" -u -f
-  
+
       - name: "Create Release pull request."
         env:
           GH_TOKEN: ${{ github.token }}

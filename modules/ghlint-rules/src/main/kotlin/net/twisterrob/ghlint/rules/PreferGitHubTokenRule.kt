@@ -28,7 +28,7 @@ public class PreferGitHubTokenRule : VisitorRule {
 	override fun visitReusableWorkflowCallJob(reporting: Reporting, job: Job.ReusableWorkflowCallJob) {
 		super.visitReusableWorkflowCallJob(reporting, job)
 		job.with.check(reporting, "input", job)
-		job.secrets.check(reporting, "secret", job)
+		(job.secrets as? Job.Secrets.Explicit).check(reporting, "secret", job)
 	}
 
 	override fun visitRunStep(reporting: Reporting, step: Step.Run) {

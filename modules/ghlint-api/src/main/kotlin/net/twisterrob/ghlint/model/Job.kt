@@ -32,8 +32,14 @@ public sealed interface Job : Component {
 
 		public val uses: String
 		public val with: Map<String, String>?
-		public val secrets: Map<String, String>?
+		public val secrets: Secrets?
 
 		public companion object
+	}
+
+	public sealed interface Secrets {
+
+		public interface Inherit : Secrets
+		public interface Explicit : Secrets, Map<String, String>
 	}
 }
