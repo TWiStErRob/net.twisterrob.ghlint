@@ -12,8 +12,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeJob protected constructor(
-	override val node: MappingNode,
-) : Job.BaseJob, HasSnakeNode, HasSnakeTarget {
+) : Job.BaseJob, HasSnakeNode {
 
 	override val location: Location
 		get() = super.location
@@ -36,7 +35,7 @@ public sealed class SnakeJob protected constructor(
 		override val id: String,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Job.NormalJob, SnakeJob(node) {
+	) : Job.NormalJob, SnakeJob() {
 
 		override val steps: List<Step>
 			get() = node.getRequired("steps").array.mapIndexed { index, node ->
@@ -60,7 +59,7 @@ public sealed class SnakeJob protected constructor(
 		override val id: String,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Job.ReusableWorkflowCallJob, SnakeJob(node) {
+	) : Job.ReusableWorkflowCallJob, SnakeJob() {
 
 		override val uses: String
 			get() = node.getRequiredText("uses")
@@ -76,10 +75,10 @@ public sealed class SnakeJob protected constructor(
 		override val node: MappingNode,
 		override val target: Node,
 		private val map: Map<String, String>
-	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode, HasSnakeTarget
+	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode
 
 	public class SnakeSecretsInherit internal constructor(
-		override val node: Node,
+		override val node: MappingNode,
 		override val target: Node,
-	) : Job.Secrets.Inherit, HasSnakeNode, HasSnakeTarget
+	) : Job.Secrets.Inherit, HasSnakeNode
 }
