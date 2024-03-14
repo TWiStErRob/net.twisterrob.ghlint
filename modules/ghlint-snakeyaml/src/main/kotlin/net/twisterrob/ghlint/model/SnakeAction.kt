@@ -12,7 +12,7 @@ public class SnakeAction internal constructor(
 	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
-) : Action, HasSnakeNode {
+) : Action, HasSnakeNode<MappingNode> {
 
 	override val location: Location
 		get() = super.location
