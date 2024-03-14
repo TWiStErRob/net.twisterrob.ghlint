@@ -54,6 +54,7 @@ public sealed class SnakeJob protected constructor(
 	}
 
 	public class SnakeReusableWorkflowCallJob internal constructor(
+		private val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -66,7 +67,18 @@ public sealed class SnakeJob protected constructor(
 		override val with: Map<String, String>?
 			get() = node.getOptional("with")?.run { map.toTextMap() }
 
-		override val secrets: Map<String, String>?
-			get() = node.getOptional("secrets")?.run { map.toTextMap() }
+		override val secrets: Job.Secrets?
+			get() = node.getOptional("secrets")?.let { factory.createSecrets(it) }
 	}
+
+	public class SnakeSecretsExplicit internal constructor(
+		override val node: MappingNode,
+		override val target: Node,
+		private val map: Map<String, String>
+	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode
+
+	public class SnakeSecretsInherit internal constructor(
+		override val node: MappingNode,
+		override val target: Node,
+	) : Job.Secrets.Inherit, HasSnakeNode
 }

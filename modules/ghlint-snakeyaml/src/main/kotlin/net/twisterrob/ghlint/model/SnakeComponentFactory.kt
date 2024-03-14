@@ -8,9 +8,14 @@ import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredKey
+import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
+import net.twisterrob.ghlint.yaml.toTextMap
+import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
+import org.snakeyaml.engine.v2.nodes.Tag
 
 public class SnakeComponentFactory {
 
@@ -29,6 +34,7 @@ public class SnakeComponentFactory {
 		return when {
 			node.getOptionalText("uses") != null ->
 				SnakeReusableWorkflowCallJob(
+					factory = this,
 					parent = workflow,
 					id = key.text,
 					node = node,
@@ -110,4 +116,20 @@ public class SnakeComponentFactory {
 			uses = uses,
 			versionComment = versionComment,
 		)
+
+	public fun createSecrets(it: Node): Job.Secrets =
+		if (it is MappingNode) {
+			SnakeJob.SnakeSecretsExplicit(
+				node = it,
+				target = it,
+				map = it.map.toTextMap()
+			)
+		} else if (it is ScalarNode && it.text == "inherit") {
+			SnakeJob.SnakeSecretsInherit(
+				node = MappingNode(Tag.NULL, emptyList(), FlowStyle.AUTO),
+				target = it,
+			)
+		} else {
+			error("Unsupported secrets: ${it}")
+		}
 }
