@@ -14,7 +14,7 @@ public class SnakeWorkflow internal constructor(
 	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
-) : Workflow, HasSnakeNode {
+) : Workflow, HasSnakeNode<MappingNode> {
 
 	override val location: Location
 		get() = super.location

@@ -10,7 +10,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeStep protected constructor(
-) : Step.BaseStep, HasSnakeNode {
+) : Step.BaseStep, HasSnakeNode<MappingNode> {
 
 	override val location: Location
 		get() = super.location

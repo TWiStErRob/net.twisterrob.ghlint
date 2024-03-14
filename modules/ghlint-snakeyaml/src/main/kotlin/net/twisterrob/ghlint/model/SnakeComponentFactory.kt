@@ -11,11 +11,9 @@ import net.twisterrob.ghlint.yaml.getRequiredKey
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
-import org.snakeyaml.engine.v2.common.FlowStyle
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
-import org.snakeyaml.engine.v2.nodes.Tag
 
 public class SnakeComponentFactory {
 
@@ -126,7 +124,7 @@ public class SnakeComponentFactory {
 			)
 		} else if (it is ScalarNode && it.text == "inherit") {
 			SnakeJob.SnakeSecretsInherit(
-				node = MappingNode(Tag.NULL, emptyList(), FlowStyle.AUTO),
+				node = it,
 				target = it,
 			)
 		} else {
