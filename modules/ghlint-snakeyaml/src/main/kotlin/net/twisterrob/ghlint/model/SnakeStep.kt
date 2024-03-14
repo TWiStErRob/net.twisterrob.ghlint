@@ -10,7 +10,8 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeStep protected constructor(
-) : Step.BaseStep, HasSnakeNode {
+	override val node: MappingNode,
+) : Step.BaseStep, HasSnakeNode, HasSnakeTarget {
 
 	override val location: Location
 		get() = super.location
@@ -29,7 +30,7 @@ public sealed class SnakeStep protected constructor(
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Step.Run, SnakeStep() {
+	) : Step.Run, SnakeStep(node) {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val run: String
@@ -48,7 +49,7 @@ public sealed class SnakeStep protected constructor(
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Step.Uses, SnakeStep() {
+	) : Step.Uses, SnakeStep(node) {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val uses: Step.UsesAction
