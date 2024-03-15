@@ -14,6 +14,7 @@ jsr305 = "3.0.2"
 snakeyaml2 = "2.7"
 sarif4k = "0.6.0"
 clikt = "4.2.2"
+mordant = "2.4.0"
 buildConfig = "5.3.5"
 r8 = "8.3.37"
 classgraph = "4.8.168"
@@ -34,6 +35,7 @@ snakeyaml2 = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeya
 sarif4k = { module = "io.github.detekt.sarif4k:sarif4k", version.ref = "sarif4k" }
 jsonSchema = { module = "dev.harrel:json-schema", version.ref = "jsonSchema" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
 r8 = { module = "com.android.tools:r8", version.ref = "r8" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 
