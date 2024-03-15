@@ -36,7 +36,7 @@ internal fun Node.getDash(): Node {
 		this.startMark.map { Mark(it.name, it.index - 2, it.line, it.column - 2, it.buffer, it.pointer - 2) },
 		this.startMark.map { Mark(it.name, it.index - 1, it.line, it.column - 1, it.buffer, it.pointer - 1) },
 	) {
-		override fun getNodeType(): NodeType = NodeType.ANCHOR
+		override fun getNodeType(): NodeType = NodeType.SEQUENCE
 		override fun toString(): String = "-"
 	}
 }
