@@ -31,6 +31,56 @@ class NodeExtensionsTest {
 			dash.anchor shouldNot bePresent()
 		}
 
+		@Test fun `scalar fails`() {
+			val root = Yaml.load(
+				"""
+				item
+				""".trimIndent()
+			)
+			assertThrows<IllegalArgumentException> { root.getDash() }
+		}
+
+		@Test fun `array fails`() {
+			val root = Yaml.load(
+				"""
+				- item
+				- item
+				""".trimIndent()
+			)
+			assertThrows<IllegalArgumentException> { root.getDash() }
+		}
+
+		@Test fun `array item 1`() {
+			val root = Yaml.load(
+				"""
+				- item
+				- item
+				""".trimIndent()
+			)
+			val dash = root.array[0].getDash()
+			validateDash(dash, 0, 0, 0, 1)
+		}
+
+		@Test fun `array item 2`() {
+			val root = Yaml.load(
+				"""
+				- item
+				- item
+				""".trimIndent()
+			)
+			val dash = root.array[1].getDash()
+			validateDash(dash, 1, 0, 1, 1)
+		}
+
+		@Test fun `mapping fails`() {
+			val root = Yaml.load(
+				"""
+				foo: bar
+				""".trimIndent()
+			)
+			assertThrows<IllegalArgumentException> { root.getDash() }
+		}
+
 		@Test fun `mapping array item 1`() {
 			val root = Yaml.load(
 				"""
@@ -104,7 +154,7 @@ class NodeExtensionsTest {
 				""".trimIndent()
 			) as MappingNode
 			val array = root.getRequired("array")
-			assertThrows<IllegalStateException> { array.getDash() }
+			assertThrows<IllegalArgumentException> { array.getDash() }
 		}
 
 		@Test fun `array mapping item value`() {
@@ -119,7 +169,7 @@ class NodeExtensionsTest {
 			) as MappingNode
 			val value = (root.getRequired("array").array[1] as MappingNode).getRequired("value")
 
-			assertThrows<IllegalStateException> { value.getDash() }
+			assertThrows<IllegalArgumentException> { value.getDash() }
 		}
 	}
 }
