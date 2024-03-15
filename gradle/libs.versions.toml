@@ -15,7 +15,7 @@ snakeyaml2 = "2.7"
 sarif4k = "0.6.0"
 clikt = "4.2.2"
 buildConfig = "5.3.5"
-r8 = "8.2.47"
+r8 = "8.3.37"
 classgraph = "4.8.168"
 
 junit-jupiter = "5.10.2"
