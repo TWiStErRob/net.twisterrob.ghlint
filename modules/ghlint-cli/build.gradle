@@ -6,6 +6,8 @@ dependencies {
 	api(projects.ghlint)
 	implementation(projects.ghlintApi)
 	api(libs.clikt)
+	// TODEL when https://github.com/ajalt/mordant/issues/160 is released in Clikt.
+	api(libs.mordant)
 }
 
 application {
