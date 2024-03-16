@@ -171,6 +171,22 @@ class NodeExtensionsTest {
 
 			assertThrows<IllegalArgumentException> { value.getDash() }
 		}
+
+		/**
+		 * Fails with the default buffer size.
+		 * From https://github.com/TWiStErRob/net.twisterrob.gradle/security/code-scanning/2087
+		 */
+		@Test fun `buffer problem`() {
+			val root = Yaml.load(
+				"""
+					x: ${"x".repeat(2035)}
+					y:
+					  - z:
+				""".trimIndent()
+			)
+			val z = root.mapping.getRequired("y").array.single()
+			validateDash(z.getDash(), 2, 2, 2, 3)
+		}
 	}
 }
 
