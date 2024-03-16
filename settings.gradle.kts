@@ -23,9 +23,9 @@ dependencyResolutionManagement {
 	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 	repositories {
 		mavenCentral()
-		exclusiveContent { 
-			forRepository { 
-				google()
+		exclusiveContent {
+			forRepository {
+				maven("https://storage.googleapis.com/r8-releases/raw") { name = "R8 releases" }
 			}
 			filter {
 				includeModule("com.android.tools", "r8")
