@@ -88,8 +88,8 @@ class NodeExtensionsTest {
 					  - item
 					  - item
 				""".trimIndent()
-			) as MappingNode
-			val dash = root.getRequired("array").array[0].getDash()
+			)
+			val dash = root.mapping.getRequired("array").array[0].getDash()
 			validateDash(dash, 1, 2, 1, 3)
 		}
 
@@ -100,8 +100,8 @@ class NodeExtensionsTest {
 					  - item
 					  - item
 				""".trimIndent()
-			) as MappingNode
-			val dash = root.getRequired("array").array[1].getDash()
+			)
+			val dash = root.mapping.getRequired("array").array[1].getDash()
 			validateDash(dash, 2, 2, 2, 3)
 		}
 
@@ -113,8 +113,8 @@ class NodeExtensionsTest {
 					  - item
 					  - item
 				""".trimIndent()
-			) as MappingNode
-			val dash = (root.getRequired("array") as MappingNode).getRequired("nested").array[1].getDash()
+			)
+			val dash = root.mapping.getRequired("array").mapping.getRequired("nested").array[1].getDash()
 			validateDash(dash, 3, 2, 3, 3)
 		}
 
@@ -126,8 +126,8 @@ class NodeExtensionsTest {
 					    - item
 					    - item
 				""".trimIndent()
-			) as MappingNode
-			val dash = (root.getRequired("array") as MappingNode).getRequired("nested").array[1].getDash()
+			)
+			val dash = root.mapping.getRequired("array").mapping.getRequired("nested").array[1].getDash()
 			validateDash(dash, 3, 4, 3, 5)
 		}
 
@@ -140,8 +140,8 @@ class NodeExtensionsTest {
 					  - name: item
 					    value: item2
 				""".trimIndent()
-			) as MappingNode
-			val dash = root.getRequired("array").array[1].getDash()
+			)
+			val dash = root.mapping.getRequired("array").array[1].getDash()
 			validateDash(dash, 3, 2, 3, 3)
 		}
 
@@ -152,8 +152,8 @@ class NodeExtensionsTest {
 					  - item
 					  - item
 				""".trimIndent()
-			) as MappingNode
-			val array = root.getRequired("array")
+			)
+			val array = root.mapping.getRequired("array")
 			assertThrows<IllegalArgumentException> { array.getDash() }
 		}
 
@@ -166,10 +166,13 @@ class NodeExtensionsTest {
 					  - name: item
 					    value: item2
 				""".trimIndent()
-			) as MappingNode
-			val value = (root.getRequired("array").array[1] as MappingNode).getRequired("value")
+			)
+			val value = root.mapping.getRequired("array").array[1].mapping.getRequired("value")
 
 			assertThrows<IllegalArgumentException> { value.getDash() }
 		}
 	}
 }
+
+private val Node.mapping: MappingNode
+	get() = this as MappingNode
