@@ -16,7 +16,7 @@ sarif4k = "0.6.0"
 clikt = "4.2.2"
 mordant = "2.4.0"
 buildConfig = "5.3.5"
-r8 = "8.3.37"
+r8 = "8.4.17"
 classgraph = "4.8.168"
 
 junit-jupiter = "5.10.2"
