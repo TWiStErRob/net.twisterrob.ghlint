@@ -75,6 +75,52 @@ public class ScriptInjectionRule : VisitorRule {
 						```
 					""".trimIndent(),
 				),
+				Example(
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - run: cp -r "${'$'}{GITHUB_WORKSPACE}" "${'$'}{RUNNER_TEMP}"
+					""".trimIndent(),
+					explanation = """
+						A note on GitHub variables vs contexts.
+						There are a few examples where using `${'$'}{{ github.* }}` would result in an unsafe script,
+						for example:
+						```yaml
+						- run: cp "${'$'}{{ github.workspace }}" "${'$'}{{ runner.temp }}"
+						```
+						
+						Instead of introducing an `env:` section like this:
+						```yaml
+						- env:
+						    WS: ${'$'}{{ github.workspace }}
+						    RT: ${'$'}{{ runner.temp }}
+						  run: cp -r "${'$'}{WS}" "${'$'}{RT}"
+						```
+						consider using the `${'$'}{GITHUB_*}` and `${'$'}{RUNNER_*}` environment variables as shown in the example.
+						
+						Compare:
+						
+						 * [`GITHUB_*` and `RUNNER_*` environment variables](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables)
+						 * [`github.*` context](https://docs.github.com/en/actions/learn-github-actions/contexts#github-context)
+						 * [`runner.*` context](https://docs.github.com/en/actions/learn-github-actions/contexts#runner-context)
+						
+						---
+						
+						An exception to this might be when there's a project-specific path that is appended and used multiple times:
+						```yaml
+						- env:
+						    WS: ${'$'}{{ github.workspace }}/some/thing
+						    RT: ${'$'}{{ runner.temp }}/other/place
+						  run: |
+						    unzip "${'$'}{WS}/foo.zip" -d "${'$'}{RT}"
+						    rm -rf "${'$'}{WS}"
+						    mv "${'$'}{RT}" "${'$'}{WS}"
+						```
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
