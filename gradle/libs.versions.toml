@@ -9,7 +9,7 @@ kotlin-target = { strictly = "1.9.23" }
 kotlin-language = "1.9"
 kotlin-serialization = "1.6.3"
 
-detekt = "1.23.5"
+detekt = "1.23.6"
 jsr305 = "3.0.2"
 snakeyaml2 = "2.7"
 sarif4k = "0.6.0"
