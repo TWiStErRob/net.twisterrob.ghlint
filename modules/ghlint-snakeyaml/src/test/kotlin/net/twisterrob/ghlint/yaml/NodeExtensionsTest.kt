@@ -34,7 +34,7 @@ class NodeExtensionsTest {
 		@Test fun `scalar fails`() {
 			val root = Yaml.load(
 				"""
-				item
+					item
 				""".trimIndent()
 			)
 			assertThrows<IllegalArgumentException> { root.getDash() }
@@ -43,8 +43,8 @@ class NodeExtensionsTest {
 		@Test fun `array fails`() {
 			val root = Yaml.load(
 				"""
-				- item
-				- item
+					- item
+					- item
 				""".trimIndent()
 			)
 			assertThrows<IllegalArgumentException> { root.getDash() }
@@ -53,29 +53,29 @@ class NodeExtensionsTest {
 		@Test fun `array item 1`() {
 			val root = Yaml.load(
 				"""
-				- item
-				- item
+					- item
+					- item
 				""".trimIndent()
 			)
 			val dash = root.array[0].getDash()
-			validateDash(dash, 0, 0, 0, 1)
+			validateDash(dash = dash, startLine = 0, startColumn = 0, endLine = 0, endColumn = 1)
 		}
 
 		@Test fun `array item 2`() {
 			val root = Yaml.load(
 				"""
-				- item
-				- item
+					- item
+					- item
 				""".trimIndent()
 			)
 			val dash = root.array[1].getDash()
-			validateDash(dash, 1, 0, 1, 1)
+			validateDash(dash = dash, startLine = 1, startColumn = 0, endLine = 1, endColumn = 1)
 		}
 
 		@Test fun `mapping fails`() {
 			val root = Yaml.load(
 				"""
-				foo: bar
+					foo: bar
 				""".trimIndent()
 			)
 			assertThrows<IllegalArgumentException> { root.getDash() }
@@ -90,7 +90,7 @@ class NodeExtensionsTest {
 				""".trimIndent()
 			)
 			val dash = root.mapping.getRequired("array").array[0].getDash()
-			validateDash(dash, 1, 2, 1, 3)
+			validateDash(dash = dash, startLine = 1, startColumn = 2, endLine = 1, endColumn = 3)
 		}
 
 		@Test fun `mapping array item 2`() {
@@ -102,33 +102,37 @@ class NodeExtensionsTest {
 				""".trimIndent()
 			)
 			val dash = root.mapping.getRequired("array").array[1].getDash()
-			validateDash(dash, 2, 2, 2, 3)
+			validateDash(dash = dash, startLine = 2, startColumn = 2, endLine = 2, endColumn = 3)
 		}
 
 		@Test fun `nested mapping array item 2`() {
 			val root = Yaml.load(
 				"""
-					array:
-					  nested:
+					map:
+					  array:
 					  - item
 					  - item
 				""".trimIndent()
 			)
-			val dash = root.mapping.getRequired("array").mapping.getRequired("nested").array[1].getDash()
-			validateDash(dash, 3, 2, 3, 3)
+			val map = root.mapping.getRequired("map")
+			val array = map.mapping.getRequired("array")
+			val dash = array.array[1].getDash()
+			validateDash(dash = dash, startLine = 3, startColumn = 2, endLine = 3, endColumn = 3)
 		}
 
 		@Test fun `nested indented mapping array item 2`() {
 			val root = Yaml.load(
 				"""
-					array:
-					  nested:
+					map:
+					  array:
 					    - item
 					    - item
 				""".trimIndent()
 			)
-			val dash = root.mapping.getRequired("array").mapping.getRequired("nested").array[1].getDash()
-			validateDash(dash, 3, 4, 3, 5)
+			val map = root.mapping.getRequired("map")
+			val array = map.mapping.getRequired("array")
+			val dash = array.array[1].getDash()
+			validateDash(dash = dash, startLine = 3, startColumn = 4, endLine = 3, endColumn = 5)
 		}
 
 		@Test fun `array mapping item`() {
@@ -142,7 +146,7 @@ class NodeExtensionsTest {
 				""".trimIndent()
 			)
 			val dash = root.mapping.getRequired("array").array[1].getDash()
-			validateDash(dash, 3, 2, 3, 3)
+			validateDash(dash = dash, startLine = 3, startColumn = 2, endLine = 3, endColumn = 3)
 		}
 
 		@Test fun `mapping array`() {
@@ -185,7 +189,7 @@ class NodeExtensionsTest {
 				""".trimIndent()
 			)
 			val z = root.mapping.getRequired("y").array.single()
-			validateDash(z.getDash(), 2, 2, 2, 3)
+			validateDash(dash = z.getDash(), startLine = 2, startColumn = 2, endLine = 2, endColumn = 3)
 		}
 	}
 }
