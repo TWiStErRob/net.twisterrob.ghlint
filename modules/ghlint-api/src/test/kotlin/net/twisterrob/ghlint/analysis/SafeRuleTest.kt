@@ -8,26 +8,27 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.testing.validate
+import net.twisterrob.ghlint.testing.testIssue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 
 class SafeRuleTest {
 
-	@Test fun metadata() {
-		val subject = SafeRule(object : Rule {
-			override val issues: List<Issue> = emptyList()
-			override fun check(workflow: Workflow): List<Finding> =
-				if (workflow.name == "Invalid") {
-					error("Fake failure")
-				} else {
-					emptyList()
-				}
-		})
-
-		validate(subject, SafeRule.RuleErrored)
-	}
+	@TestFactory fun metadata() =
+		testIssue(
+			rule = SafeRule(object : Rule {
+				override val issues: List<Issue> = emptyList()
+				override fun check(workflow: Workflow): List<Finding> =
+					if (workflow.name == "Invalid") {
+						error("Fake failure")
+					} else {
+						emptyList()
+					}
+			}),
+			issue = SafeRule.RuleErrored
+		)
 
 	@Test fun `meaningful toString`() {
 		val subject = SafeRule(object : Rule {

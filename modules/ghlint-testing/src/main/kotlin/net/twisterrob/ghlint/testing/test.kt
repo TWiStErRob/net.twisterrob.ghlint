@@ -7,6 +7,7 @@ import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
+import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -23,6 +24,8 @@ import io.kotest.matchers.string.beEmpty as beEmptyString
  * fun test(): List<DynamicNode> =
  *     validate(DefaultRuleSet::class)
  * ```
+ *
+ * @see AcceptFailingDynamicTest
  */
 public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
 	listOf(
@@ -71,37 +74,41 @@ public fun test(rule: KClass<out Rule>): DynamicNode =
 		)
 	)
 
-private fun test(instance: Rule): List<DynamicNode> = listOf(
-	dynamicTest("Rule ${instance::class.simplerName} issues are not empty") {
-		instance.issues shouldNot io.kotest.matchers.collections.beEmpty()
+private fun test(rule: Rule): List<DynamicNode> = listOf(
+	dynamicTest("Rule ${rule::class.simplerName} issues are not empty") {
+		rule.issues shouldNot io.kotest.matchers.collections.beEmpty()
 	},
 	dynamicContainer(
-		"Rule ${instance::class.simplerName} issues",
-		instance.issues.map { issue ->
-			dynamicContainer(
-				"Issue ${issue.id}",
-				listOf(
-					dynamicTest("Issue ${issue.id} title") {
-						validateIssueTitle(issue)
-					},
-					dynamicTest("Issue ${issue.id} description") {
-						validateIssueDescription(issue)
-					},
-					dynamicContainer(
-						"Issue ${issue.id} compliant examples",
-						testCompliantExamples(instance, issue)
-					),
-					dynamicContainer(
-						"Issue ${issue.id} non-compliant examples",
-						testNonCompliantExamples(instance, issue)
-					),
-				)
-			)
+		"Rule ${rule::class.simplerName} issues",
+		rule.issues.flatMap { issue ->
+			testIssue(rule, issue)
 		}
 	)
 )
 
-private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNode> {
+public fun testIssue(rule: Rule, issue: Issue): List<DynamicNode> = listOf(
+	dynamicContainer(
+		"Issue ${issue.id}",
+		listOf(
+			dynamicTest("Issue ${issue.id} title") {
+				validateIssueTitle(issue)
+			},
+			dynamicTest("Issue ${issue.id} description") {
+				validateIssueDescription(issue)
+			},
+			dynamicContainer(
+				"Issue ${issue.id} compliant examples",
+				testCompliantExamples(rule, issue)
+			),
+			dynamicContainer(
+				"Issue ${issue.id} non-compliant examples",
+				testNonCompliantExamples(rule, issue)
+			),
+		)
+	)
+)
+
+private fun testCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 	val basics = listOf(
 		dynamicTest("Issue ${issue.id} compliant examples are not empty") {
 			issue.compliant shouldHave atLeastSize(1)
@@ -116,7 +123,7 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 					validate(example.content) shouldHave noFindings()
 				},
 				dynamicTest("${name} has no findings") {
-					instance.check(example.content) shouldHave noFindings()
+					rule.check(example.content) shouldHave noFindings()
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot beEmptyString()
@@ -128,7 +135,7 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 	return basics + examples
 }
 
-private fun testNonCompliantExamples(instance: Rule, issue: Issue): List<DynamicNode> {
+private fun testNonCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 	val basics = listOf(
 		dynamicTest("Issue ${issue.id} non-compliant examples are not empty") {
 			issue.nonCompliant shouldHave atLeastSize(1)
@@ -140,7 +147,7 @@ private fun testNonCompliantExamples(instance: Rule, issue: Issue): List<Dynamic
 			name,
 			listOf(
 				dynamicTest("${name} has findings") {
-					val findings = validate(example.content) + instance.check(example.content)
+					val findings = validate(example.content) + rule.check(example.content)
 					findings shouldHave onlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {

@@ -42,14 +42,15 @@ internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 					You can remove @DisableDynamicTest annotation from ${method}.
 				""".trimIndent()
 			)
-		} catch (e: AssertionError) {
-			if (e.message.orEmpty().matches(Regex(disabled.acceptableFailure))) {
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") e: Throwable) {
+			// TooGenericExceptionCaught: allow to accept any failure, including error crashes.
+			if (e.message.orEmpty().matches(Regex(disabled.acceptableFailure, RegexOption.DOT_MATCHES_ALL))) {
 				Assumptions.abort("Test has been disabled: ${disabled.reason}.")
 			} else {
 				throw AssertionError(
 					// Using concatenation, because regex and message can be multiline.
 					disabled.displayName + " failed with unexpected message.\n"
-							+ "Expected: " + disabled.acceptableFailure + "\n"
+							+ "Expected to match: " + disabled.acceptableFailure + "\n"
 							+ "Actual: " + e.message
 				).apply { initCause(e) }
 			}

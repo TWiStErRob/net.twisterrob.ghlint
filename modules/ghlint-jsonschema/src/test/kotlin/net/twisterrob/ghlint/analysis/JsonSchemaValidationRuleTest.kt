@@ -1,11 +1,9 @@
 package net.twisterrob.ghlint.analysis
 
-import net.twisterrob.ghlint.testing.validate
-import org.junit.jupiter.api.Test
+import net.twisterrob.ghlint.testing.test
+import org.junit.jupiter.api.TestFactory
 
 class JsonSchemaValidationRuleTest {
 
-	@Test fun metadata() {
-		validate(JsonSchemaValidationRule(), JsonSchemaValidationRule.JsonSchemaValidation)
-	}
+	@TestFactory fun metadata() = test(JsonSchemaValidationRule::class)
 }
