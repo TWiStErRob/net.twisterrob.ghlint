@@ -11,7 +11,7 @@ internal class JsonSchemaValidationRule : Rule {
 	override val issues: List<Issue> = listOf(JsonSchemaValidation)
 
 	override fun check(workflow: Workflow): List<Finding> =
-		if (workflow.parent.location.path == "test.yml") {
+		if (workflow.parent.location.path == "test.yml" || workflow.parent.location.path == "example.yml") {
 			emptyList()
 		} else {
 			error("Should never be called.")
