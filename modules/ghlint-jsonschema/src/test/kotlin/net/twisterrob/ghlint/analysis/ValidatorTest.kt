@@ -62,7 +62,35 @@ class ValidatorTest {
 		)
 	}
 
+	@Test fun `empty file is flagged`() {
+		val results = Validator().validateWorkflows(listOf(empty))
+
+		results shouldHave singleFinding(
+			issue = "JsonSchemaValidation",
+			message = "Object has less than 1 properties (/jobs)"
+		)
+	}
+
+	@Test fun `newline file is flagged`() {
+		val results = Validator().validateWorkflows(listOf(newLine))
+
+		results shouldHave singleFinding(
+			issue = "JsonSchemaValidation",
+			message = "Object has less than 1 properties (/jobs)"
+		)
+	}
+
 	companion object {
+
+		val empty = File(
+			location = FileLocation("empty.yml"),
+			content = ""
+		)
+
+		val newLine = File(
+			location = FileLocation("newline.yml"),
+			content = "\n"
+		)
 
 		val validFile1 = File(
 			location = FileLocation("test-valid1.yml"),
