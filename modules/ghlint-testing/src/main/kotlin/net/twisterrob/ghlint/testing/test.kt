@@ -7,6 +7,7 @@ import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
+import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -23,6 +24,8 @@ import io.kotest.matchers.string.beEmpty as beEmptyString
  * fun test(): List<DynamicNode> =
  *     validate(DefaultRuleSet::class)
  * ```
+ *
+ * @see AcceptFailingDynamicTest
  */
 public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
 	listOf(
@@ -77,27 +80,31 @@ private fun test(instance: Rule): List<DynamicNode> = listOf(
 	},
 	dynamicContainer(
 		"Rule ${instance::class.simplerName} issues",
-		instance.issues.map { issue ->
-			dynamicContainer(
-				"Issue ${issue.id}",
-				listOf(
-					dynamicTest("Issue ${issue.id} title") {
-						validateIssueTitle(issue)
-					},
-					dynamicTest("Issue ${issue.id} description") {
-						validateIssueDescription(issue)
-					},
-					dynamicContainer(
-						"Issue ${issue.id} compliant examples",
-						testCompliantExamples(instance, issue)
-					),
-					dynamicContainer(
-						"Issue ${issue.id} non-compliant examples",
-						testNonCompliantExamples(instance, issue)
-					),
-				)
-			)
+		instance.issues.flatMap { issue ->
+			testIssue(instance, issue)
 		}
+	)
+)
+
+public fun testIssue(rule: Rule, issue: Issue): List<DynamicNode> = listOf(
+	dynamicContainer(
+		"Issue ${issue.id}",
+		listOf(
+			dynamicTest("Issue ${issue.id} title") {
+				validateIssueTitle(issue)
+			},
+			dynamicTest("Issue ${issue.id} description") {
+				validateIssueDescription(issue)
+			},
+			dynamicContainer(
+				"Issue ${issue.id} compliant examples",
+				testCompliantExamples(rule, issue)
+			),
+			dynamicContainer(
+				"Issue ${issue.id} non-compliant examples",
+				testNonCompliantExamples(rule, issue)
+			),
+		)
 	)
 )
 
