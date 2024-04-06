@@ -112,18 +112,19 @@ jobs:
         id: validate
         run: modules/ghlint-cli/build/cli/ghlint.jar --sarif="ghlint.sarif.json" .github/workflows/*.yml
 
-      - name: "Upload 'GH-Lint Results' artifact."
+      - name: "Upload 'GH-Lint Snapshot Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'GH-Lint Results'
+          name: 'GH-Lint Snapshot Results'
           if-no-files-found: error
           path: |
             ghlint.sarif.json
 
-      - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
+      - name: "Publish 'GH-Lint Snapshot' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:
+          category: 'GH-Lint Snapshot'
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/ghlint.sarif.json
