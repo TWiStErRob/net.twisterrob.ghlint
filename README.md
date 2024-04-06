@@ -28,7 +28,12 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 
 ## Usage
 
-### Quick start
+### Quick start (CLI)
+See [CLI documentation][cli].
+
+[cli]: https://ghlint.twisterrob.net/cli/
+
+### Quick start (GitHub Actions workflow)
 
 1. Copy [usage.yml](.github/workflows/usage.yml) to your repository to `.github/workflows/ghlint.yml`.
 2. Change the `on:` trigger to your liking (usually `on: pull_request` or `on: push`).
