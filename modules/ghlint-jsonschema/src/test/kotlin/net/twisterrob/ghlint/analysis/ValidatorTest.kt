@@ -67,7 +67,7 @@ class ValidatorTest {
 
 		results shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
-			message = "Object has less than 1 properties (/jobs)"
+			message = "Value is [null] but should be [object] ()"
 		)
 	}
 
@@ -76,7 +76,7 @@ class ValidatorTest {
 
 		results shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
-			message = "Object has less than 1 properties (/jobs)"
+			message = "Value is [null] but should be [object] ()"
 		)
 	}
 
