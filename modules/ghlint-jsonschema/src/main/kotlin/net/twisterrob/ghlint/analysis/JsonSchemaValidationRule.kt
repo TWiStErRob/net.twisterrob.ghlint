@@ -75,6 +75,8 @@ internal class JsonSchemaValidationRule : Rule {
 					content = """
 						on: push
 						jobs:
+						  example:
+						    uses: reusable/workflow.yml
 					""".trimIndent(),
 				),
 			),
