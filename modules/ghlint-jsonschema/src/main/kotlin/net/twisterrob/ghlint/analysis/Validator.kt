@@ -7,6 +7,8 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.results.LineNumber
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.results.Position
+import net.twisterrob.ghlint.rule.Example
+import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.yaml.Yaml
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.resolve
@@ -31,7 +33,7 @@ public class Validator {
 	private fun findingForError(rule: JsonSchemaValidationRule, file: File, e: Throwable) =
 		Finding(
 			rule = rule,
-			issue = JsonSchemaValidationRule.SyntaxError,
+			issue = SyntaxError,
 			location = Location(
 				file.location,
 				Position(LineNumber(1), ColumnNumber(1)),
@@ -58,5 +60,43 @@ public class Validator {
 			}
 	}
 
-	public companion object
+	public companion object {
+
+		internal val SyntaxError = Issue(
+			id = "SyntaxError",
+			title = "YAML syntax error.",
+			description = """
+				Parseable YAML file is required to ensure the GHLint object model is valid.
+				
+				Fix the problems in the workflow file to make it valid.
+				GitHub would also very likely reject the file with an error message similar to:
+				```
+				Invalid workflow file: .github/workflows/test.yml#L5
+				The workflow is not valid. .github/workflows/test.yml (Line: 5, Col: 17): Error message
+				```
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "Valid yaml file.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    uses: reusable/workflow.yml
+					""".trimIndent(),
+				),
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Tabs cannot be used as indentation.",
+					content = """
+						on: push
+						jobs:
+							example:
+								uses: reusable/workflow.yml
+					""".trimIndent(),
+				),
+			),
+		)
+	}
 }
