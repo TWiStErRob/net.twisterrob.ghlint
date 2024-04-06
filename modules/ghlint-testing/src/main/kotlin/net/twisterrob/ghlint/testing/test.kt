@@ -74,14 +74,14 @@ public fun test(rule: KClass<out Rule>): DynamicNode =
 		)
 	)
 
-private fun test(instance: Rule): List<DynamicNode> = listOf(
-	dynamicTest("Rule ${instance::class.simplerName} issues are not empty") {
-		instance.issues shouldNot io.kotest.matchers.collections.beEmpty()
+private fun test(rule: Rule): List<DynamicNode> = listOf(
+	dynamicTest("Rule ${rule::class.simplerName} issues are not empty") {
+		rule.issues shouldNot io.kotest.matchers.collections.beEmpty()
 	},
 	dynamicContainer(
-		"Rule ${instance::class.simplerName} issues",
-		instance.issues.flatMap { issue ->
-			testIssue(instance, issue)
+		"Rule ${rule::class.simplerName} issues",
+		rule.issues.flatMap { issue ->
+			testIssue(rule, issue)
 		}
 	)
 )
@@ -108,7 +108,7 @@ public fun testIssue(rule: Rule, issue: Issue): List<DynamicNode> = listOf(
 	)
 )
 
-private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNode> {
+private fun testCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 	val basics = listOf(
 		dynamicTest("Issue ${issue.id} compliant examples are not empty") {
 			issue.compliant shouldHave atLeastSize(1)
@@ -123,7 +123,7 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 					validate(example.content) shouldHave noFindings()
 				},
 				dynamicTest("${name} has no findings") {
-					instance.check(example.content) shouldHave noFindings()
+					rule.check(example.content) shouldHave noFindings()
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot beEmptyString()
@@ -135,7 +135,7 @@ private fun testCompliantExamples(instance: Rule, issue: Issue): List<DynamicNod
 	return basics + examples
 }
 
-private fun testNonCompliantExamples(instance: Rule, issue: Issue): List<DynamicNode> {
+private fun testNonCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 	val basics = listOf(
 		dynamicTest("Issue ${issue.id} non-compliant examples are not empty") {
 			issue.nonCompliant shouldHave atLeastSize(1)
@@ -147,7 +147,7 @@ private fun testNonCompliantExamples(instance: Rule, issue: Issue): List<Dynamic
 			name,
 			listOf(
 				dynamicTest("${name} has findings") {
-					val findings = validate(example.content) + instance.check(example.content)
+					val findings = validate(example.content) + rule.check(example.content)
 					findings shouldHave onlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {
