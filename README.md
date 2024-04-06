@@ -37,7 +37,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 
 #### Renovate
 
-If you want to explicitly list the GH-Lint CLI version in your workflows, expand this:
+If you want to explicitly set the GH-Lint CLI version in your workflows, expand this:
 
 <details><summary>Custom Renovate ghlint upgrade rule</summary>
 
