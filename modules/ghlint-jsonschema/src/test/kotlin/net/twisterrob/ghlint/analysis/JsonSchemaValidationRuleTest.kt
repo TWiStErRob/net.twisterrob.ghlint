@@ -1,13 +1,13 @@
 package net.twisterrob.ghlint.analysis
 
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
+import net.twisterrob.ghlint.testing.test
 import net.twisterrob.ghlint.testing.testIssue
 import org.junit.jupiter.api.TestFactory
 
 class JsonSchemaValidationRuleTest {
 
-	@TestFactory fun metadata() =
-		testIssue(JsonSchemaValidationRule(), JsonSchemaValidationRule.JsonSchemaValidation)
+	@TestFactory fun metadata() = test(JsonSchemaValidationRule::class)
 
 	@AcceptFailingDynamicTest(
 		displayName = "Issue SyntaxError non-compliant example #1 has findings",
