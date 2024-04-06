@@ -140,6 +140,65 @@ class FailFastActionsRuleTest {
 		}
 	}
 
+	@Nested
+	inner class FailFastSoftpropsGhReleaseTest {
+
+		@ParameterizedTest
+		@ValueSource(strings = ["true", "false"])
+		fun `passes input is defined`(value: String) {
+			val results = check<FailFastActionsRule>(
+				"""
+					jobs:
+					  test:
+					    steps:
+					      - uses: softprops/action-gh-release@v2
+					        with:
+					          fail_on_unmatched_files: ${value}
+					          files: |
+					            LICENCE
+					            executable.exe
+					            package*.zip
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `reports when input is missing`() {
+			val results = check<FailFastActionsRule>(
+				"""
+					jobs:
+					  test:
+					    steps:
+					      - uses: softprops/action-gh-release@v2
+					        with:
+					          files: |
+					            LICENCE
+					            executable.exe
+					            package*.zip
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"FailFastSoftpropsGhRelease",
+				"Step[softprops/action-gh-release@v2] in Job[test] should have input `fail_on_unmatched_files: true`."
+			)
+		}
+
+		@Test fun `passes when input is not relevant`() {
+			val results = check<FailFastActionsRule>(
+				"""
+					jobs:
+					  test:
+					    steps:
+					      - uses: softprops/action-gh-release@v2
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
+	}
+
 	@Test fun `passes on other actions`() {
 		val results = check<FailFastActionsRule>(
 			"""
