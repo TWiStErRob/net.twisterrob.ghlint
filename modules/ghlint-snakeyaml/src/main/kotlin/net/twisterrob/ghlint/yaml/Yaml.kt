@@ -38,7 +38,7 @@ public object Yaml {
 		val settings = LoadSettings.builder()
 			.setParseComments(true)
 			// Load the whole YAML into one buffer to prevent problems with getDash().
-			.setBufferSize(yaml.length)
+			.setBufferSize(yaml.length.coerceAtLeast(1))
 			.setSchema(JsonSchema())
 			.build()
 		try {
