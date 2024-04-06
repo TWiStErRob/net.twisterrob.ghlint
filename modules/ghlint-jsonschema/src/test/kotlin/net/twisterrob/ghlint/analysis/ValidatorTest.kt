@@ -63,7 +63,12 @@ class ValidatorTest {
 	}
 
 	@Test fun `empty file is flagged`() {
-		val results = Validator().validateWorkflows(listOf(empty))
+		val testFile = File(
+			location = FileLocation("empty.yml"),
+			content = ""
+		)
+
+		val results = Validator().validateWorkflows(listOf(testFile))
 
 		results shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
@@ -72,7 +77,12 @@ class ValidatorTest {
 	}
 
 	@Test fun `newline file is flagged`() {
-		val results = Validator().validateWorkflows(listOf(newLine))
+		val testFile = File(
+			location = FileLocation("newline.yml"),
+			content = "\n"
+		)
+
+		val results = Validator().validateWorkflows(listOf(testFile))
 
 		results shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
@@ -80,17 +90,30 @@ class ValidatorTest {
 		)
 	}
 
+	@Test fun `syntax error is flagged`() {
+		val testFile = File(
+			location = FileLocation("tabs.yml"),
+			content = "\t\t"
+		)
+
+		val results = Validator().validateWorkflows(listOf(testFile))
+
+		results shouldHave singleFinding(
+			issue = "SyntaxError",
+			message = """
+				Failed to parse YAML: while scanning for the next token
+				found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
+				 in reader, line 1, column 1:
+				    		
+				    ^
+				
+				Full input:
+						
+			""".trimIndent()
+		)
+	}
+
 	companion object {
-
-		val empty = File(
-			location = FileLocation("empty.yml"),
-			content = ""
-		)
-
-		val newLine = File(
-			location = FileLocation("newline.yml"),
-			content = "\n"
-		)
 
 		val validFile1 = File(
 			location = FileLocation("test-valid1.yml"),
