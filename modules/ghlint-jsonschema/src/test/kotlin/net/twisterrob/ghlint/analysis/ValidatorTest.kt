@@ -116,25 +116,26 @@ class ValidatorTest {
 	}
 
 	@Test fun `syntax error is flagged`() {
-		val testFile = File(
-			location = FileLocation("tabs.yml"),
-			content = "\t\t"
-		)
-
-		val results = Validator().validateWorkflows(listOf(testFile))
+		val results = Validator().validateWorkflows(listOf(errorFile))
 
 		results shouldHave singleFinding(
 			issue = "SyntaxError",
-			message = """
-				Failed to parse YAML: while scanning for the next token
-				found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
-				 in reader, line 1, column 1:
-				    		
-				    ^
-				
-				Full input:
-						
-			""".trimIndent()
+			message = errorFileMessage
+		)
+	}
+
+	@Test fun `invalid file after syntax error is still flagged`() {
+		val results = Validator().validateWorkflows(listOf(validFile1, errorFile, invalidFile1))
+
+		results shouldHave exactFindings(
+			aFinding(
+				issue = "SyntaxError",
+				message = errorFileMessage
+			),
+			aFinding(
+				issue = "JsonSchemaValidation",
+				message = "Object does not have some of the required properties [[jobs]] ()"
+			),
 		)
 	}
 
@@ -176,5 +177,21 @@ class ValidatorTest {
 				jobs: {}
 			""".trimIndent()
 		)
+
+		val errorFile = File(
+			location = FileLocation("tabs.yml"),
+			content = "\t\t"
+		)
+
+		val errorFileMessage = """
+			Failed to parse YAML: while scanning for the next token
+			found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
+			 in reader, line 1, column 1:
+			    		
+			    ^
+			
+			Full input:
+					
+		""".trimIndent()
 	}
 }
