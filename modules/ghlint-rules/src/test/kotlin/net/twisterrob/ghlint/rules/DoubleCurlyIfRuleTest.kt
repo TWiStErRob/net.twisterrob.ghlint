@@ -1,6 +1,8 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import io.kotest.matchers.throwable.shouldHaveMessage
+import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -11,6 +13,10 @@ import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.Mockito.spy
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.whenever
 
 class DoubleCurlyIfRuleTest {
 
@@ -195,14 +201,18 @@ class DoubleCurlyIfRuleTest {
 	@MethodSource("getValidButSyntaxErrorConditions")
 	@ParameterizedTest
 	fun `test validation for syntax error`(condition: String) {
+		val rule = spy<DoubleCurlyIfRule>()
+		doAnswer { throw it.getArgument(1, InvalidContent::class.java).error }
+			.whenever(rule)
+			.visitInvalidContent(any(), any())
 		val ex = assertThrows<RuntimeException> {
-			check<DoubleCurlyIfRule>(
+			rule.check(
 				"""
 					if: ${condition}
 				""".trimIndent()
 			)
 		}
-		ex.printStackTrace()
+		ex shouldHaveMessage """(?s)^Failed to parse YAML: .*\Q${condition}\E$""".toRegex()
 	}
 
 	companion object {
