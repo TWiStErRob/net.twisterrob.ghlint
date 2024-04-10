@@ -12,7 +12,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeJob protected constructor(
-) : Job.BaseJob, HasSnakeNode {
+) : Job.BaseJob, HasSnakeNode<MappingNode> {
 
 	override val location: Location
 		get() = super.location
@@ -49,11 +49,12 @@ public sealed class SnakeJob protected constructor(
 		override val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { factory.createDefaults(it) }
 
-		override val timeoutMinutes: Int?
-			get() = node.getOptionalText("timeout-minutes")?.toIntOrNull()
+		override val timeoutMinutes: String?
+			get() = node.getOptionalText("timeout-minutes")
 	}
 
 	public class SnakeReusableWorkflowCallJob internal constructor(
+		private val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -62,5 +63,22 @@ public sealed class SnakeJob protected constructor(
 
 		override val uses: String
 			get() = node.getRequiredText("uses")
+
+		override val with: Map<String, String>?
+			get() = node.getOptional("with")?.run { map.toTextMap() }
+
+		override val secrets: Job.Secrets?
+			get() = node.getOptional("secrets")?.let { factory.createSecrets(it) }
 	}
+
+	public class SnakeSecretsExplicit internal constructor(
+		override val node: MappingNode,
+		override val target: Node,
+		private val map: Map<String, String>
+	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode<MappingNode>
+
+	public class SnakeSecretsInherit internal constructor(
+		override val node: Node,
+		override val target: Node,
+	) : Job.Secrets.Inherit, HasSnakeNode<Node>
 }

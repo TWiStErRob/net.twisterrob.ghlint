@@ -16,8 +16,10 @@ public fun Node.toLocation(file: File): Location =
 		end = endMark.toPosition(),
 	)
 
+private val EMPTY_MARK = Mark("NOTHING", 0, 0, 0, intArrayOf(), 0)
+
 private fun Optional<Mark>.toPosition(): Position =
-	this.get().toPosition()
+	this.orElse(EMPTY_MARK).toPosition()
 
 private fun Mark.toPosition(): Position =
 	Position(LineNumber(1 + this.line), ColumnNumber(1 + this.column))

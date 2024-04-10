@@ -13,7 +13,7 @@ public class SnakeWorkflow internal constructor(
 	private val factory: SnakeComponentFactory,
 	override val node: MappingNode,
 	override val target: Node,
-) : Workflow, HasSnakeNode {
+) : Workflow, HasSnakeNode<MappingNode> {
 
 	@Suppress("LateinitUsage") // Can't figure out a better way.
 	override lateinit var parent: File

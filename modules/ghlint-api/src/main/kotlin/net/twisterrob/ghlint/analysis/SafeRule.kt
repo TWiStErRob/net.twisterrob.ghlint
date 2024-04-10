@@ -23,8 +23,8 @@ internal class SafeRule(
 				issue = RuleErrored,
 				location = file.content.location,
 				message = @Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-				"${unsafeRule} errored while checking:  \n${ex.message ?: "null"}\n"
-						+ "```\n${ex.stackTraceToString()}\n```",
+				// This stackTraceToString ends with \n and it might contain ```, so using ```` to wrap it.
+				"${unsafeRule} errored while checking:\n````\n${ex.stackTraceToString()}````",
 			)
 			return listOf(errorFinding)
 		}

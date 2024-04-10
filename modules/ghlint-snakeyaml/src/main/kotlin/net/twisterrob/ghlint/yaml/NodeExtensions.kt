@@ -27,7 +27,9 @@ internal fun MappingNode.getRequiredText(key: String): String =
 
 internal fun Node.getDash(): Node {
 	startMark.ifPresent { mark ->
-		check(mark.buffer[mark.pointer - 1] == ' '.code && mark.buffer[mark.pointer - 2] == '-'.code) {
+		require(mark.pointer - 1 in 0..mark.buffer.size)
+		require(mark.pointer - 2 in 0..mark.buffer.size)
+		require(mark.buffer[mark.pointer - 1] == ' '.code && mark.buffer[mark.pointer - 2] == '-'.code) {
 			"Invalid context: expected a space and a '-' character before pointer in \n${mark.createSnippet()}"
 		}
 	}
@@ -36,7 +38,7 @@ internal fun Node.getDash(): Node {
 		this.startMark.map { Mark(it.name, it.index - 2, it.line, it.column - 2, it.buffer, it.pointer - 2) },
 		this.startMark.map { Mark(it.name, it.index - 1, it.line, it.column - 1, it.buffer, it.pointer - 1) },
 	) {
-		override fun getNodeType(): NodeType = NodeType.ANCHOR
+		override fun getNodeType(): NodeType = NodeType.SEQUENCE
 		override fun toString(): String = "-"
 	}
 }

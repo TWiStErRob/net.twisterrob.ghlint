@@ -2,17 +2,16 @@ package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.toLocation
-import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-internal interface HasSnakeNode {
+internal interface HasSnakeNode<N : Node> {
 
 	/**
 	 * The node that represents this object in the YAML document.
 	 *
 	 * This is used to drill down and extract more information from the document.
 	 */
-	val node: MappingNode
+	val node: N
 
 	/**
 	 * The node that represents the location of this object in reporting.

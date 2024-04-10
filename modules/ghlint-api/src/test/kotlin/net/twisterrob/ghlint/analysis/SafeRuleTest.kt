@@ -11,26 +11,27 @@ import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.testing.validate
+import net.twisterrob.ghlint.testing.testIssue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 
 class SafeRuleTest {
 
-	@Test fun metadata() {
-		val subject = SafeRule(object : Rule {
-			override val issues: List<Issue> = emptyList()
-			override fun check(file: File): List<Finding> =
-				if ((file.content as Workflow).name == "Invalid") {
-					error("Fake failure")
-				} else {
-					emptyList()
-				}
-		})
-
-		validate(subject, SafeRule.RuleErrored)
-	}
+	@TestFactory fun metadata() =
+		testIssue(
+			rule = SafeRule(object : Rule {
+				override val issues: List<Issue> = emptyList()
+				override fun check(file: File): List<Finding> =
+					if ((file.content as Workflow).name == "Invalid") {
+						error("Fake failure")
+					} else {
+						emptyList()
+					}
+			}),
+			issue = SafeRule.RuleErrored
+		)
 
 	@Test fun `meaningful toString`() {
 		val subject = SafeRule(object : Rule {
@@ -83,11 +84,41 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:  \n" +
-				"Fake failure\n" +
-				"```\n" +
-				"${stubFailure.stackTraceToString()}\n" +
-				"```"
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+				"````\n" +
+				stubFailure.stackTraceToString() +
+				"````"
+		finding.location shouldBe fakeFile.content.location
+	}
+
+	@Test fun `escapes exception markdown`() {
+		val stubFailure = RuntimeException(
+			"""
+				## Markdown failure
+				
+				 * List `item` 1
+				 * List `item` 2
+				
+				```kotlin
+				fun some(code: String) = TODO()
+				```
+			""".trimIndent()
+		)
+		val subject = SafeRule(AlwaysFailingRule(stubFailure))
+		val fakeFile: File = fakeFile()
+		whenever(fakeFile.content.location).thenReturn(mock())
+
+		val findings = subject.check(fakeFile)
+
+		findings shouldHaveSize 1
+		val finding = findings.single()
+		finding.issue shouldBe SafeRule.RuleErrored
+		finding.rule shouldBe subject
+		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+				"````\n" +
+				stubFailure.stackTraceToString() +
+				"````"
 		finding.location shouldBe fakeFile.content.location
 	}
 
@@ -104,11 +135,10 @@ class SafeRuleTest {
 		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
 		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:  \n" +
-				"Fake failure\n" +
-				"```\n" +
-				"${stubFailure.stackTraceToString()}\n" +
-				"```"
+		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
+				"````\n" +
+				stubFailure.stackTraceToString() +
+				"````"
 		finding.location shouldBe fakeFile.content.location
 	}
 

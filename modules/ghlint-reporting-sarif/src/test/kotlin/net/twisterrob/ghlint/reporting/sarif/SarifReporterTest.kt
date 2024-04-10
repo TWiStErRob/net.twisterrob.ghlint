@@ -49,7 +49,6 @@ private fun sarifReport(root: Path, resourcePath: String): String =
 	testResource(resourcePath)
 		.replace("<version>", GHLINT_VERSION)
 		.replace("<root>", root.toUri().toString())
-		.removeSuffix("\n")
 
 internal class IntegrationTestRule : Rule {
 

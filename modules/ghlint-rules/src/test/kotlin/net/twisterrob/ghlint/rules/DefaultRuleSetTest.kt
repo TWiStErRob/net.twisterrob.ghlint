@@ -2,6 +2,8 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.testRulesPackage
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 class DefaultRuleSetTest {
@@ -27,4 +29,9 @@ class DefaultRuleSetTest {
 	)
 	@Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
 	@TestFactory fun test() = test(DefaultRuleSet::class)
+
+	@Test
+	fun `includes all rules in the package`() {
+		testRulesPackage(DefaultRuleSet::class)
+	}
 }

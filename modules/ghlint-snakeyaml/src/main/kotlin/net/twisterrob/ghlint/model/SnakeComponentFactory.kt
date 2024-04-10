@@ -7,7 +7,9 @@ import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredKey
+import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
+import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.common.ScalarStyle
 import org.snakeyaml.engine.v2.composer.Composer
@@ -26,6 +28,8 @@ public class SnakeComponentFactory {
 	public fun loadYaml(file: RawFile): Node {
 		val settings = LoadSettings.builder()
 			.setParseComments(true)
+			// Load the whole YAML into one buffer to prevent problems with getDash().
+			.setBufferSize(file.content.length.coerceAtLeast(1))
 			.setSchema(JsonSchema())
 			.build()
 		val node = try {
@@ -54,6 +58,7 @@ public class SnakeComponentFactory {
 		return when {
 			node.getOptionalText("uses") != null ->
 				SnakeReusableWorkflowCallJob(
+					factory = this,
 					parent = workflow,
 					id = key.text,
 					node = node,
@@ -134,4 +139,20 @@ public class SnakeComponentFactory {
 			uses = uses,
 			versionComment = versionComment,
 		)
+
+	public fun createSecrets(it: Node): Job.Secrets =
+		if (it is MappingNode) {
+			SnakeJob.SnakeSecretsExplicit(
+				node = it,
+				target = it,
+				map = it.map.toTextMap()
+			)
+		} else if (it is ScalarNode && it.text == "inherit") {
+			SnakeJob.SnakeSecretsInherit(
+				node = it,
+				target = it,
+			)
+		} else {
+			error("Unsupported secrets: ${it}")
+		}
 }

@@ -34,7 +34,7 @@ public class MissingGhTokenRule : VisitorRule {
 		private val GH_CLI_EMBEDDED = Regex("""\$\(\s*gh\s+""")
 
 		private val Map<String, String>?.hasTokenVar: Boolean
-			get() = orEmpty().containsKey(TOKEN_ENV_VAR)
+			get() = this.orEmpty().containsKey(TOKEN_ENV_VAR)
 
 		val MissingGhToken = Issue(
 			id = "MissingGhToken",
@@ -67,7 +67,7 @@ public class MissingGhTokenRule : VisitorRule {
 				 * `GITHUB_TOKEN` environment variables used by `gh` CLI
 				 * `GITHUB_TOKEN` secret automatically defined by GitHub Actions
 				
-				it's recommended to always use `GH_TOKEN` and `${'$'}{{ github.token }}`.
+				it's recommended to always use `GH_TOKEN` and `${'$'}{{ github.token }}`, see [`PreferGitHubToken`](PreferGitHubToken.md).
 			""".trimIndent(),
 			compliant = listOf(
 				Example(

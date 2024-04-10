@@ -23,7 +23,7 @@ public sealed interface Job : Component {
 
 		public val steps: List<Step>
 		public val defaults: Defaults?
-		public val timeoutMinutes: Int?
+		public val timeoutMinutes: String?
 
 		public companion object
 	}
@@ -31,7 +31,15 @@ public sealed interface Job : Component {
 	public interface ReusableWorkflowCallJob : BaseJob {
 
 		public val uses: String
+		public val with: Map<String, String>?
+		public val secrets: Secrets?
 
 		public companion object
+	}
+
+	public sealed interface Secrets {
+
+		public interface Inherit : Secrets
+		public interface Explicit : Secrets, Map<String, String>
 	}
 }

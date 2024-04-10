@@ -11,7 +11,7 @@ public class SnakeAction internal constructor(
 	private val factory: SnakeComponentFactory,
 	override val node: MappingNode,
 	override val target: Node,
-) : Action, HasSnakeNode {
+) : Action, HasSnakeNode<MappingNode> {
 
 	@Suppress("LateinitUsage") // Can't figure out a better way.
 	override lateinit var parent: File

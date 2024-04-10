@@ -13,6 +13,7 @@ public class FailFastActionsRule : VisitorRule {
 		FailFastUploadArtifact,
 		FailFastPublishUnitTestResults,
 		FailFastPeterEvansCreatePullRequest,
+		FailFastSoftpropsGhRelease,
 	)
 
 	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
@@ -39,6 +40,16 @@ public class FailFastActionsRule : VisitorRule {
 			"peter-evans/create-pull-request" -> {
 				reporting.report(FailFastPeterEvansCreatePullRequest, step) {
 					"Use `gh pr create` to open a PR instead of ${it}."
+				}
+			}
+
+			"softprops/action-gh-release" -> {
+				val isRelevant = step.with.orEmpty().containsKey("files")
+				val isSpecified = step.with.orEmpty().containsKey("fail_on_unmatched_files")
+				if (isRelevant && !isSpecified) {
+					reporting.report(FailFastSoftpropsGhRelease, step) {
+						"${it} should have input `fail_on_unmatched_files: true`."
+					}
 				}
 			}
 		}
@@ -94,6 +105,62 @@ public class FailFastActionsRule : VisitorRule {
 						        with:
 						          path: |
 						            build/some/report/
+					""".trimIndent(),
+				),
+			),
+		)
+
+		val FailFastSoftpropsGhRelease = Issue(
+			id = "FailFastSoftpropsGhRelease",
+			title = "`action-gh-release` should fail fast.",
+			description = """
+				`softprops/action-gh-release` should be configured to fail the CI when no files are found.
+				
+				When the action is not configured to fail on missing files,
+				the action step will be successful even when the artifact is not uploaded.
+				
+				This means the produced releases might be missing important attached artifacts.
+				The release step should fail to alert the maintainer of the broken process.
+				
+				See the [`fail_on_unmatched_files` input declaration](https://github.com/softprops/action-gh-release/blob/v2.0.4/action.yml#L27-L29).
+				
+				In case you're certain this if acceptable behavior,
+				disable this by explicitly setting `fail_on_unmatched_files: false`.
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "`fail_on_unmatched_files` input is specified.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - uses: softprops/action-gh-release@v2
+						        with:
+						          fail_on_unmatched_files: true
+						          files: |
+						            LICENCE
+						            executable.exe
+						            package*.zip
+					""".trimIndent(),
+				),
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "`fail_on_unmatched_files` input is not declared, so it uses the default `false` value.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - uses: softprops/action-gh-release@v2
+						        with:
+						          files: |
+						            LICENCE
+						            executable.exe
+						            package*.zip
 					""".trimIndent(),
 				),
 			),

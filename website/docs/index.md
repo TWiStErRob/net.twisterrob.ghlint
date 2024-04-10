@@ -4,7 +4,9 @@ This is the documentation for `ghlint`, a tool to lint GitHub files.
 
 ## Getting Started
 
-See [project README](https://www.github.com/TWiStErRob/net.twisterrob.ghlint) for installation and usage instructions.
+See the [CLI documentation](cli.md) or the [project README][readme] for installation and usage instructions.
+
+[readme]: https://github.com/TWiStErRob/net.twisterrob.ghlint?tab=readme-ov-file
 
 ## Issue Documentation
 

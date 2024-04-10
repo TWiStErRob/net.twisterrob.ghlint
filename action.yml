@@ -14,7 +14,7 @@ inputs:
       Use 'latest' to always use the latest version, may break over time.
       Prefer using a fixed version and use Renovate to update it, see .github/renovate.json for an example.
       First supported version: 0.2.0.
-    default: "0.3.1" # RELEASE: Updated during release by workflow.
+    default: "0.4.0" # RELEASE: Updated during release by workflow.
 
   location:
     description: |
@@ -81,4 +81,5 @@ runs:
       run: |
         # Hackaround for https://github.com/orgs/community/discussions/73309
         PATH="${JAVA_HOME_17_X64}/bin:${PATH}"
-        echo "${FILES}" | xargs "${{ runner.temp }}/ghlint.jar" --verbose --sarif=ghlint.sarif.json
+        # Known issue: file names with new lines in them will be split into multiple files.
+        echo "${FILES}" | tr '\n' '\0' | xargs -0 "${{ runner.temp }}/ghlint.jar" --verbose --sarif=ghlint.sarif.json

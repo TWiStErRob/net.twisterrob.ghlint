@@ -4,32 +4,38 @@ java-source = "17"
 java-target = "17"
 java-toolchain = "17"
 java-toolchainTest = "17"
-kotlin-build = "1.9.22"
-kotlin-target = { strictly = "1.9.22" }
+kotlin-build = "1.9.23"
+kotlin-target = { strictly = "1.9.23" }
 kotlin-language = "1.9"
+kotlin-serialization = "1.6.3"
 
-detekt = "1.23.5"
+detekt = "1.23.6"
 jsr305 = "3.0.2"
 snakeyaml2 = "2.7"
-sarif4k = "0.5.0"
-clikt = "4.2.2"
+sarif4k = "0.6.0"
+clikt = "4.3.0"
 buildConfig = "5.3.5"
+r8 = "8.4.21"
+classgraph = "4.8.170"
 
 junit-jupiter = "5.10.2"
-kotest = "5.8.0"
-mockito-kotlin = "5.2.1"
+kotest = "5.8.1"
+mockito-kotlin = "5.3.1"
 jsonSchema = "1.5.2"
 
 
 [libraries]
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
+kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 detekt-rules-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 snakeyaml2 = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml2" }
 sarif4k = { module = "io.github.detekt.sarif4k:sarif4k", version.ref = "sarif4k" }
 jsonSchema = { module = "dev.harrel:json-schema", version.ref = "jsonSchema" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+r8 = { module = "com.android.tools:r8", version.ref = "r8" }
+classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 
 test-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 test-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }

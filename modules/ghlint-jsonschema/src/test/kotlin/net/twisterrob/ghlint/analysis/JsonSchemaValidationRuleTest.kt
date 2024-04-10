@@ -3,14 +3,13 @@ package net.twisterrob.ghlint.analysis
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.validate
+import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 class JsonSchemaValidationRuleTest {
 
-	@Test fun metadata() {
-		validate(JsonSchemaValidationRule(), JsonSchemaValidationRule.JsonSchemaValidation)
-	}
+	@TestFactory fun metadata() = test(JsonSchemaValidationRule::class)
 
 	@Test fun `syntax error`() {
 		val findings = check<JsonSchemaValidationRule>("<invalid json />")

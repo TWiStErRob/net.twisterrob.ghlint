@@ -1,7 +1,6 @@
 package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.paths.aDirectory
-import io.kotest.matchers.paths.aFile
 import io.kotest.matchers.paths.exist
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -27,7 +26,6 @@ class FileLocatorTest {
 
 		result.name shouldBe "index.md"
 		result shouldNot exist()
-		result shouldBe aFile()
 
 		result.parent should exist()
 		result.parent shouldBe aDirectory()
@@ -48,7 +46,6 @@ class FileLocatorTest {
 
 		result.name shouldBe "TestIssue.md"
 		result shouldNot exist()
-		result shouldBe aFile()
 
 		result.parent should exist()
 		result.parent shouldBe aDirectory()
