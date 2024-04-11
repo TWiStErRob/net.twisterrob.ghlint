@@ -72,6 +72,24 @@ class DuplicateStepIdRuleTest {
 		)
 	}
 
+	// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
+	@Test fun `passes when ids are close, but different`() {
+		val results = check<DuplicateStepIdRule>(
+			"""
+				jobs:
+				  repro:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - id: params
+				        run: 'true'
+				      - id: pages
+				        run: 'true'
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `reports when multiple ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
