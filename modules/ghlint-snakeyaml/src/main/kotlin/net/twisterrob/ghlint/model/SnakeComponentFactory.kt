@@ -5,8 +5,8 @@ import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
+import net.twisterrob.ghlint.yaml.getOptionalKey
 import net.twisterrob.ghlint.yaml.getOptionalText
-import net.twisterrob.ghlint.yaml.getRequiredKey
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
@@ -49,7 +49,7 @@ public class SnakeComponentFactory {
 		return SnakeWorkflow(
 			factory = this,
 			node = node,
-			target = node.getRequiredKey("jobs")
+			target = node.getOptionalKey("jobs") ?: node
 		).apply { parent = File(file.location, this) }
 	}
 
@@ -120,7 +120,7 @@ public class SnakeComponentFactory {
 		return SnakeAction(
 			factory = this,
 			node = node,
-			target = node.getRequiredKey("name"),
+			target = node.getOptionalKey("name") ?: node,
 		).apply { parent = File(file.location, this) }
 	}
 
