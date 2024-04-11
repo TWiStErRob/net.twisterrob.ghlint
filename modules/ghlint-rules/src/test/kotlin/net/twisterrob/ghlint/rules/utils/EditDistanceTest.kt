@@ -20,6 +20,16 @@ class EditDistanceTest {
 
 	@ParameterizedTest
 	@CsvSource(
+		"set-release-status, set-release-notes, 4",
+		"get-version-number, set-release-status, 13",
+		"get-version, check-for-approved-release, 21",
+	)
+	fun `editDistance realistic`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
+	}
+
+	@ParameterizedTest
+	@CsvSource(
 		"'', '', 0",
 		"a, a, 0",
 		"ab, ab, 0",
@@ -87,6 +97,26 @@ class EditDistanceTest {
 		"abcde, ebcda, 2", // 2 replacements wins over transposition (which is not swap).
 	)
 	fun `editDistance transpose`(string1: String, string2: String, expected: Int) {
+		test(string1, string2, expected)
+	}
+
+	@ParameterizedTest
+	@CsvSource(
+		"a, b, 1",
+		"ab, cd, 2",
+		"abc, def, 3",
+		"abcd, efgh, 4",
+		"abcde, fghij, 5",
+		"abcdef, ghijkl, 6",
+		"abcdefg, hijklmn, 7",
+		"abcdefgh, ijklmnop, 8",
+		"abcdefghi, jklmnopqr, 9",
+		"abcdefghij, klmnopqrst, 10",
+		"abcdefghijk, lmnopqrstuv, 11",
+		"abcdefghijkl, mnopqrstuvwx, 12",
+		"abcdefghijklm, nopqrstuvwxyz, 13",
+	)
+	fun `editDistance far`(string1: String, string2: String, expected: Int) {
 		test(string1, string2, expected)
 	}
 
