@@ -79,7 +79,7 @@ class DuplicateStepIdRuleTest {
 	}
 
 	// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
-	@Test fun `reports when ids are different`() {
+	@Test fun `passes when ids are close, but different`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
 				jobs:
