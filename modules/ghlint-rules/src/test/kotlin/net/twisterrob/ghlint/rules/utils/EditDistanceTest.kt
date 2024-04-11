@@ -2,9 +2,12 @@ package net.twisterrob.ghlint.rules.utils
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.Timeout
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import java.util.concurrent.TimeUnit
 
+@Timeout(1, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
 class EditDistanceTest {
 
 	@ParameterizedTest
