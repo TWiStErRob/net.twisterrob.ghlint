@@ -153,7 +153,7 @@ class DuplicateStepIdRuleTest {
 				jobs:
 				  test:
 				    steps:${
-						"\n" + (0..256).joinToString(separator = "\n") {
+						"\n" + (0..1000).joinToString(separator = "\n") {
 							"""
 								|      - run: echo "Example"
 								|        id: step-id-${it}
@@ -163,7 +163,7 @@ class DuplicateStepIdRuleTest {
 			""".trimIndent()
 		)
 
-		results should haveSize(32896)
+		results should haveSize(159_931)
 		val messageRegex = """Job\[test] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
 		results.forEach { finding ->
 			finding.issue.id shouldBe "SimilarStepId"
