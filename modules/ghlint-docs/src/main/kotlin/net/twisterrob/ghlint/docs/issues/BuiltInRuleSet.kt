@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.docs.issues
 
+import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
@@ -15,9 +16,11 @@ internal class BuiltInRuleSet : RuleSet {
 	override fun createRules(): List<Rule> {
 		val safeRule = load<Rule>("net.twisterrob.ghlint.analysis.SafeRule")
 		val validRule = load<Rule>("net.twisterrob.ghlint.analysis.JsonSchemaValidationRule")
+		@Suppress("SpreadOperator")
 		return listOf(
 			validRule.getDeclaredConstructor().newInstance(),
 			safeRule.getDeclaredConstructor(Rule::class.java).newInstance(ProblematicRule()),
+			*JsonSchemaRuleSet().createRules().toTypedArray()
 		)
 	}
 }

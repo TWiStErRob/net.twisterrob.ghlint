@@ -21,7 +21,6 @@ class JsonSchemaValidationRuleTest {
 	@Test fun `wrong yaml contents`() {
 		val findings = check<JsonSchemaValidationRule>("foo: bar")
 		findings shouldHaveSize 1
-		findings.single().message shouldBe "File could not be parsed: java.lang.IllegalStateException: " +
-				"Missing required key: jobs in [foo]\nfoo: bar"
+		findings.single().message shouldBe "Object does not have some of the required properties [[jobs, on]] ()"
 	}
 }
