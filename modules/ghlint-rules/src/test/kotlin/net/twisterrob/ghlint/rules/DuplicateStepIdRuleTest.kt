@@ -78,6 +78,24 @@ class DuplicateStepIdRuleTest {
 		)
 	}
 
+	// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
+	@Test fun `reports when ids are different`() {
+		val results = check<DuplicateStepIdRule>(
+			"""
+				jobs:
+				  repro:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - id: params
+				        run: 'true'
+				      - id: pages
+				        run: 'true'
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `reports when multiple ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
@@ -135,21 +153,21 @@ class DuplicateStepIdRuleTest {
 				jobs:
 				  test:
 				    steps:${
-				"\n" + (0..256).joinToString(separator = "\n") {
-					"""
-						|      - run: echo "Example"
-						|        id: step-id-${it}
-					""".trimMargin()
-				}.prependIndent("\t\t\t\t")
-			}
+						"\n" + (0..256).joinToString(separator = "\n") {
+							"""
+								|      - run: echo "Example"
+								|        id: step-id-${it}
+							""".trimMargin()
+						}.prependIndent("\t\t\t\t")
+					}
 			""".trimIndent()
 		)
 
 		results should haveSize(32896)
 		val messageRegex = """Job\[test] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
-		results.forEach {
-			it.issue.id shouldBe "SimilarStepId"
-			it.message shouldMatch messageRegex
+		results.forEach { finding ->
+			finding.issue.id shouldBe "SimilarStepId"
+			finding.message shouldMatch messageRegex
 		}
 	}
 
@@ -160,20 +178,20 @@ class DuplicateStepIdRuleTest {
 				jobs:
 				  test:
 				    steps:${
-				"\n" + (0..100).joinToString(separator = "\n") {
-					"""
-						|      - run: echo "Example"
-						|        id: step-id
-					""".trimMargin()
-				}.prependIndent("\t\t\t\t")
-			}
+						"\n" + (0..100).joinToString(separator = "\n") {
+							"""
+								|      - run: echo "Example"
+								|        id: step-id
+							""".trimMargin()
+						}.prependIndent("\t\t\t\t")
+					}
 			""".trimIndent()
 		)
 
 		results should haveSize(5050)
-		results.forEach {
-			it.issue.id shouldBe "DuplicateStepId"
-			it.message shouldBe "Job[test] has the `step-id` step identifier multiple times."
+		results.forEach { finding ->
+			finding.issue.id shouldBe "DuplicateStepId"
+			finding.message shouldBe "Job[test] has the `step-id` step identifier multiple times."
 		}
 	}
 }
