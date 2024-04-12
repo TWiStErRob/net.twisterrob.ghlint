@@ -1,6 +1,10 @@
 package net.twisterrob.ghlint.rules
 
+import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
+import io.kotest.matchers.string.shouldMatch
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.exactFindings
@@ -9,6 +13,8 @@ import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.Timeout
+import java.util.concurrent.TimeUnit
 
 class DuplicateStepIdRuleTest {
 
@@ -138,5 +144,54 @@ class DuplicateStepIdRuleTest {
 			"DuplicateStepId",
 			"Job[test] has the `test` step identifier multiple times.",
 		)
+	}
+
+	@Timeout(5, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
+	@Test fun `reports when myriad of ids are similar`() {
+		val results = check<DuplicateStepIdRule>(
+			"""
+				jobs:
+				  test:
+				    steps:${
+						"\n" + (0..1000).joinToString(separator = "\n") {
+							"""
+								|      - run: echo "Example"
+								|        id: step-id-${it}
+							""".trimMargin()
+						}.prependIndent("\t\t\t\t")
+					}
+			""".trimIndent()
+		)
+
+		results should haveSize(159_931)
+		val messageRegex = """Job\[test] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
+		results.forEach { finding ->
+			finding.issue.id shouldBe "SimilarStepId"
+			finding.message shouldMatch messageRegex
+		}
+	}
+
+	@Timeout(2, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
+	@Test fun `reports when myriad of ids are the same`() {
+		val results = check<DuplicateStepIdRule>(
+			"""
+				jobs:
+				  test:
+				    steps:${
+						"\n" + (0..100).joinToString(separator = "\n") {
+							"""
+								|      - run: echo "Example"
+								|        id: step-id
+							""".trimMargin()
+						}.prependIndent("\t\t\t\t")
+					}
+			""".trimIndent()
+		)
+
+		results should haveSize(5050)
+		results.forEach { finding ->
+			finding.issue.id shouldBe "DuplicateStepId"
+			finding.message shouldBe "Job[test] has the `step-id` step identifier multiple times."
+		}
 	}
 }
