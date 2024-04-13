@@ -14,7 +14,7 @@ class JsonSchemaValidationRuleTest {
 	@Test fun `syntax error`() {
 		val findings = check<JsonSchemaValidationRule>("<invalid json />")
 		findings shouldHave singleFinding(
-			"JsonSchemaValidation",
+			"SyntaxError",
 			"File could not be parsed: java.lang.IllegalArgumentException: " +
 					"Root node is not a mapping: ScalarNode.\n<invalid json />"
 		)

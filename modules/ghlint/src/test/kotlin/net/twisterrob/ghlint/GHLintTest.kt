@@ -154,7 +154,7 @@ class GHLintTest {
 			val results = analyze(testFile)
 
 			results shouldHave singleFinding(
-				issue = "JsonSchemaValidation",
+				issue = "SyntaxError",
 				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
 				message = "File could not be parsed: java.lang.IllegalArgumentException: " +
 						"Root node is not a mapping: ScalarNode.\n${testFile.content}"
@@ -170,7 +170,7 @@ class GHLintTest {
 			val results = analyze(testFile)
 
 			results shouldHave singleFinding(
-				issue = "JsonSchemaValidation",
+				issue = "SyntaxError",
 				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
 				message = "File could not be parsed: java.lang.IllegalArgumentException: " +
 						"Root node is not a mapping: ScalarNode.\n${testFile.content}"
@@ -181,7 +181,7 @@ class GHLintTest {
 			val results = analyze(errorFile)
 
 			results shouldHave singleFinding(
-				issue = "JsonSchemaValidation",
+				issue = "SyntaxError",
 				message = errorFileMessage
 			)
 		}
@@ -191,7 +191,7 @@ class GHLintTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					issue = "JsonSchemaValidation",
+					issue = "SyntaxError",
 					message = errorFileMessage
 				),
 				aFinding(

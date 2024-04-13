@@ -18,7 +18,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 internal class JsonSchemaValidationRule : Rule {
 
-	override val issues: List<Issue> = listOf(JsonSchemaValidation)
+	override val issues: List<Issue> = listOf(SyntaxError, JsonSchemaValidation)
 
 	override fun check(file: File): List<Finding> =
 		when (val content = file.content) {
@@ -36,7 +36,7 @@ internal class JsonSchemaValidationRule : Rule {
 				listOf(
 					Finding(
 						rule = this@JsonSchemaValidationRule,
-						issue = JsonSchemaValidation,
+						issue = SyntaxError,
 						location = content.location,
 						message = "File could not be parsed: ${content.error}\n${content.raw}"
 					)
@@ -57,6 +57,43 @@ internal class JsonSchemaValidationRule : Rule {
 		}
 
 	companion object {
+
+		val SyntaxError = Issue(
+			id = "SyntaxError",
+			title = "YAML syntax error.",
+			description = """
+				Parseable YAML file is required to ensure the GHLint object model is valid.
+				
+				Fix the problems in the workflow file to make it valid.
+				GitHub would also very likely reject the file with an error message similar to:
+				```
+				Invalid workflow file: .github/workflows/test.yml#L5
+				The workflow is not valid. .github/workflows/test.yml (Line: 5, Col: 17): Error message
+				```
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "Valid yaml file.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    uses: reusable/workflow.yml
+					""".trimIndent(),
+				),
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Tabs cannot be used as indentation.",
+					content = """
+						on: push
+						jobs:
+							example:
+								uses: reusable/workflow.yml
+					""".trimIndent(),
+				),
+			),
+		)
 
 		val JsonSchemaValidation = Issue(
 			id = "JsonSchemaValidation",
