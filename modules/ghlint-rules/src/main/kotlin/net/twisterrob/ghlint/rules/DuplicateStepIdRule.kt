@@ -37,7 +37,7 @@ public class DuplicateStepIdRule : VisitorRule {
 		 * Maximum edit distance to consider two strings similar.
 		 * @sample 0 = same string.
 		 */
-		private const val MAX_EDIT_DISTANCE = 3
+		private const val MAX_EDIT_DISTANCE = 2
 
 		val DuplicateStepId = Issue(
 			id = "DuplicateStepId",
