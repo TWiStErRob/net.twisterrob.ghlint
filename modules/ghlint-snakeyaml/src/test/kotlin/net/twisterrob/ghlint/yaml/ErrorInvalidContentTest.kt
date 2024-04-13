@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.yaml
 
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
@@ -26,7 +25,7 @@ class ErrorInvalidContentTest {
 		subject.error shouldBe error
 		subject.parent.content shouldBe subject
 		subject.parent.location shouldBe FileLocation("unknown")
-		subject.location should aLocation(
+		subject.location shouldBe aLocation(
 			Location(
 				file = FileLocation("unknown"),
 				// TODO these look strange, does it work in Sarif?
@@ -51,7 +50,7 @@ class ErrorInvalidContentTest {
 		subject.error shouldBe error
 		subject.parent.content shouldBe subject
 		subject.parent.location shouldBe FileLocation("unknown")
-		subject.location should aLocation(
+		subject.location shouldBe aLocation(
 			Location(
 				file = FileLocation("unknown"),
 				start = Position(LineNumber(1), ColumnNumber(1)),
@@ -77,7 +76,7 @@ class ErrorInvalidContentTest {
 		subject.error shouldBe error
 		subject.parent.content shouldBe subject
 		subject.parent.location shouldBe FileLocation("unknown")
-		subject.location should aLocation(
+		subject.location shouldBe aLocation(
 			Location(
 				file = FileLocation("unknown"),
 				start = Position(LineNumber(1), ColumnNumber(1)),
