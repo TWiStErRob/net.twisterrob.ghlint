@@ -156,7 +156,7 @@ class GHLintTest {
 				issue = "SyntaxError",
 				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
 				message = "File empty.yml could not be parsed: java.lang.IllegalArgumentException: " +
-						"Root node is not a mapping: ScalarNode.\n${testFile.content}"
+						"Root node is not a mapping: ScalarNode."
 			)
 		}
 
@@ -172,7 +172,7 @@ class GHLintTest {
 				issue = "SyntaxError",
 				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
 				message = "File newline.yml could not be parsed: java.lang.IllegalArgumentException: " +
-						"Root node is not a mapping: ScalarNode.\n${testFile.content}"
+						"Root node is not a mapping: ScalarNode."
 			)
 		}
 
@@ -253,7 +253,6 @@ class GHLintTest {
 			    ^
 			
 			Full input (tabs.yml):
-			${errorFile.content}
 			${errorFile.content}
 		""".trimIndent()
 	}

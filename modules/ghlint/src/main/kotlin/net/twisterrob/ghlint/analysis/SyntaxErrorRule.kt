@@ -19,7 +19,7 @@ internal class SyntaxErrorRule : Rule {
 					rule = this,
 					issue = SyntaxError,
 					location = content.location,
-					message = "File ${file.location.path} could not be parsed: ${content.error}\n${content.raw}"
+					message = "File ${file.location.path} could not be parsed: ${content.error}"
 				)
 			)
 		} else {

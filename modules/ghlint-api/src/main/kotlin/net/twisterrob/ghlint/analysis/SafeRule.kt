@@ -57,6 +57,7 @@ internal class SafeRule(
 			nonCompliant = listOf(
 				Example(
 					explanation = "Fake example to satisfy the validation framework.",
+					// The name is used in documentation generation, see ProblematicRule.
 					content = """
 						name: "Invalid"
 						on: push

@@ -2,7 +2,7 @@ package net.twisterrob.ghlint.docs.issues
 
 import net.twisterrob.ghlint.BuiltInRuleSet
 import net.twisterrob.ghlint.model.File
-import net.twisterrob.ghlint.model.name
+import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -26,7 +26,8 @@ private class ProblematicRule : Rule {
 
 	override val issues: List<Issue> = emptyList()
 	override fun check(file: File): List<Finding> =
-		if (file.location.name == "Invalid") {
+		if ((file.content as Workflow).name == "Invalid") {
+			// Non-compliant example in SafeRule.
 			error("Demonstrative failure.")
 		} else {
 			emptyList()

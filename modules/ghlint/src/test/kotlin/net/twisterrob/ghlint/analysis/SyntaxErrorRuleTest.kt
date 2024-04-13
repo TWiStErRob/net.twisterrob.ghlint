@@ -18,7 +18,7 @@ class SyntaxErrorRuleTest {
 		findings shouldHave singleFinding(
 			"SyntaxError",
 			"File test.yml could not be parsed: java.lang.IllegalArgumentException: " +
-					"Root node is not a mapping: ScalarNode.\n<invalid json />"
+					"Root node is not a mapping: ScalarNode."
 		)
 	}
 
