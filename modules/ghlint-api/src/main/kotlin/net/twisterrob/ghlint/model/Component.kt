@@ -12,7 +12,7 @@ public sealed interface Component {
 	public companion object
 }
 
-public val Component.file: File
+public val Component.file: RawFile
 	get() = when (this) {
 		is Workflow -> parent
 		is Job -> parent.parent

@@ -3,7 +3,7 @@ package net.twisterrob.ghlint.model
 import net.twisterrob.ghlint.model.Action.ActionInput
 import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -17,8 +17,8 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 public class SnakeComponentFactory {
 
-	public fun createWorkflow(file: File): Workflow {
-		val node = Yaml.load(file.content) as MappingNode
+	public fun createWorkflow(file: RawFile): Workflow {
+		val node = SnakeYaml.load(file.content) as MappingNode
 		return SnakeWorkflow(
 			factory = this,
 			parent = file,
@@ -89,8 +89,8 @@ public class SnakeComponentFactory {
 			node = node as MappingNode,
 		)
 
-	public fun createAction(file: File): Action {
-		val node = Yaml.load(file.content) as MappingNode
+	public fun createAction(file: RawFile): Action {
+		val node = SnakeYaml.load(file.content) as MappingNode
 		return SnakeAction(
 			factory = this,
 			parent = file,

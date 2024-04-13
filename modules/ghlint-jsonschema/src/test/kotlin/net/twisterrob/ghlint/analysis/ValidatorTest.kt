@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.analysis
 
 import io.kotest.matchers.shouldHave
-import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
@@ -88,7 +88,7 @@ class ValidatorTest {
 	}
 
 	@Test fun `empty file is flagged`() {
-		val testFile = File(
+		val testFile = RawFile(
 			location = FileLocation("empty.yml"),
 			content = ""
 		)
@@ -102,7 +102,7 @@ class ValidatorTest {
 	}
 
 	@Test fun `newline file is flagged`() {
-		val testFile = File(
+		val testFile = RawFile(
 			location = FileLocation("newline.yml"),
 			content = "\n"
 		)
@@ -141,7 +141,7 @@ class ValidatorTest {
 
 	companion object {
 
-		val validFile1 = File(
+		val validFile1 = RawFile(
 			location = FileLocation("test-valid1.yml"),
 			content = """
 				on: push
@@ -151,7 +151,7 @@ class ValidatorTest {
 			""".trimIndent()
 		)
 
-		val validFile2 = File(
+		val validFile2 = RawFile(
 			location = FileLocation("test-valid2.yml"),
 			content = """
 				on: push
@@ -163,14 +163,14 @@ class ValidatorTest {
 			""".trimIndent()
 		)
 
-		val invalidFile1 = File(
+		val invalidFile1 = RawFile(
 			location = FileLocation("test-invalid1.yml"),
 			content = """
 				on: push
 			""".trimIndent()
 		)
 
-		val invalidFile2 = File(
+		val invalidFile2 = RawFile(
 			location = FileLocation("test-invalid2.yml"),
 			content = """
 				on: push
@@ -178,7 +178,7 @@ class ValidatorTest {
 			""".trimIndent()
 		)
 
-		val errorFile = File(
+		val errorFile = RawFile(
 			location = FileLocation("tabs.yml"),
 			content = "\t\t"
 		)

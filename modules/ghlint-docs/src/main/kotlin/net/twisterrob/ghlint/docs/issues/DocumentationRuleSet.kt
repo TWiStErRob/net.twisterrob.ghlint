@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
 
-internal class BuiltInRuleSet : RuleSet {
+internal class DocumentationRuleSet : RuleSet {
 
 	override val id: String = "builtins"
 	override val name: String = "Built-ins"

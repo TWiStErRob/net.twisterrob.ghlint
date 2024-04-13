@@ -23,7 +23,7 @@ class WorkflowTest {
 		)
 		fun `strips extension`(fileName: String) {
 			val wf = mock<Workflow>()
-			whenever(wf.parent).thenReturn(File(FileLocation(fileName), ""))
+			whenever(wf.parent).thenReturn(RawFile(FileLocation(fileName), ""))
 
 			wf.id shouldBe "file-name"
 		}
@@ -37,7 +37,7 @@ class WorkflowTest {
 		)
 		fun `keeps duplicate extension`(fileName: String, expectedId: String) {
 			val wf = mock<Workflow>()
-			whenever(wf.parent).thenReturn(File(FileLocation(fileName), ""))
+			whenever(wf.parent).thenReturn(RawFile(FileLocation(fileName), ""))
 
 			wf.id shouldBe expectedId
 		}

@@ -1,13 +1,13 @@
 package net.twisterrob.ghlint
 
 import net.twisterrob.ghlint.analysis.Validator
-import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.reporting.sarif.SarifReporter
 import net.twisterrob.ghlint.rules.DefaultRuleSet
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import kotlin.io.path.readText
 
 public class GHLint {
@@ -19,10 +19,10 @@ public class GHLint {
 				println("Received ${it} for analysis against JSON-schema and rules.")
 			}
 		}
-		val files = config.files.map { File(FileLocation(it.toString()), it.readText()) }
+		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
 		val validationResults = Validator().validateWorkflows(files)
 		val ruleSets = listOf(DefaultRuleSet())
-		val analysisResults = Yaml.analyze(files, ruleSets)
+		val analysisResults = SnakeYaml.analyze(files, ruleSets)
 		val allFindings = validationResults + analysisResults
 		if (config.isVerbose) {
 			println("There are ${allFindings.size} findings.")

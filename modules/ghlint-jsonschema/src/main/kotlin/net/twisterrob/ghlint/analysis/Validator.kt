@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.analysis
 
 import dev.harrel.jsonschema.Validator
-import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.ColumnNumber
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.results.LineNumber
@@ -9,7 +9,7 @@ import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.results.Position
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.resolve
 import net.twisterrob.ghlint.yaml.toLocation
@@ -17,7 +17,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 public class Validator {
 
-	public fun validateWorkflows(files: List<File>): List<Finding> {
+	public fun validateWorkflows(files: List<RawFile>): List<Finding> {
 		val rule = JsonSchemaValidationRule()
 		return files.flatMap { file ->
 			try {
@@ -30,7 +30,7 @@ public class Validator {
 		}
 	}
 
-	private fun findingForError(rule: JsonSchemaValidationRule, file: File, e: Throwable) =
+	private fun findingForError(rule: JsonSchemaValidationRule, file: RawFile, e: Throwable) =
 		Finding(
 			rule = rule,
 			issue = SyntaxError,
@@ -45,8 +45,8 @@ public class Validator {
 			message = e.message ?: "Unknown error in ${file.location.path}"
 		)
 
-	private fun validateWorkflow(rule: JsonSchemaValidationRule, file: File): List<Finding> {
-		val root: Node = Yaml.load(file.content)
+	private fun validateWorkflow(rule: JsonSchemaValidationRule, file: RawFile): List<Finding> {
+		val root: Node = SnakeYaml.load(file.content)
 		val result: Validator.Result = YamlValidation.validate(file.content)
 		return result.errors
 			.filter { it.error != "False schema always fails" }
