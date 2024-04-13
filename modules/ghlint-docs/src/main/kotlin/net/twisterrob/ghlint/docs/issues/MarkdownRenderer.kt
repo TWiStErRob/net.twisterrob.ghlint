@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.docs.issues
 
+import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.results.ColumnNumber
 import net.twisterrob.ghlint.model.RawFile
@@ -92,7 +93,7 @@ private fun StringBuilder.renderExamples(rule: Rule, issue: Issue, examples: Lis
 }
 
 private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding> {
-	val exampleFile = RawFile(FileLocation("example.yml"), example.content)
+	val exampleFile = SnakeYaml.load(RawFile(FileLocation("example.yml"), example.content))
 	val exampleRuleSet = object : RuleSet {
 		override val id: String = "example"
 		override val name: String = "Example"
@@ -100,7 +101,7 @@ private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding
 	}
 	val findings =
 		try {
-			SnakeYaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+			Analyzer().analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") e: Exception) {
 			// TooGenericExceptionCaught: Catch all exceptions to prevent the whole process from failing.
 			listOf(

@@ -1,13 +1,17 @@
 package net.twisterrob.ghlint
 
+import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.reporting.sarif.SarifReporter
+import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rules.DefaultRuleSet
+import net.twisterrob.ghlint.ruleset.RuleSet
 import net.twisterrob.ghlint.yaml.SnakeYaml
+import org.jetbrains.annotations.TestOnly
 import kotlin.io.path.readText
 
 public class GHLint {
@@ -21,7 +25,7 @@ public class GHLint {
 		}
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
 		val ruleSets = listOf(JsonSchemaRuleSet(), DefaultRuleSet())
-		val findings = SnakeYaml.analyze(files, ruleSets)
+		val findings = analyze(files, ruleSets)
 		if (config.isVerbose) {
 			println("There are ${findings.size} findings.")
 		}
@@ -57,5 +61,11 @@ public class GHLint {
 			println("Exiting with code ${code}.")
 		}
 		return code
+	}
+
+	@TestOnly
+	internal fun analyze(files: List<RawFile>, ruleSets: List<RuleSet>): List<Finding> {
+		val loadedFiles = files.map(SnakeYaml::load)
+		return Analyzer().analyze(loadedFiles, ruleSets)
 	}
 }

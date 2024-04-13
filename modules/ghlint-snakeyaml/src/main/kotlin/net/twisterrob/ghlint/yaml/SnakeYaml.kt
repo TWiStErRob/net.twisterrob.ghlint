@@ -1,12 +1,9 @@
 package net.twisterrob.ghlint.yaml
 
-import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.SnakeComponentFactory
 import net.twisterrob.ghlint.model.name
-import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
 import org.snakeyaml.engine.v2.api.Dump
 import org.snakeyaml.engine.v2.api.DumpSettings
@@ -18,11 +15,6 @@ import java.io.StringWriter
 public object SnakeYaml {
 
 	private val factory = SnakeComponentFactory()
-
-	public fun analyze(files: List<RawFile>, ruleSets: List<RuleSet>): List<Finding> {
-		val workflows = files.map(this::load)
-		return Analyzer().analyzeWorkflows(workflows, ruleSets)
-	}
 
 	@Suppress("LiftReturnOrAssignment", "detekt.ReturnCount")
 	public fun load(file: RawFile): File {
