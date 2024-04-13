@@ -5,7 +5,6 @@ package net.twisterrob.ghlint.model
  */
 public interface Action : Component, Content {
 
-	public override val parent: File
 	public val name: String
 	public val description: String
 	public val inputs: Map<String, ActionInput>

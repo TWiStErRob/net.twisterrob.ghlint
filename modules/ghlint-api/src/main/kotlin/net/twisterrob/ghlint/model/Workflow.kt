@@ -5,7 +5,6 @@ package net.twisterrob.ghlint.model
  */
 public interface Workflow : Component, Content {
 
-	public override val parent: File
 	public val name: String?
 	public val env: Map<String, String>?
 	public val jobs: Map<String, Job>

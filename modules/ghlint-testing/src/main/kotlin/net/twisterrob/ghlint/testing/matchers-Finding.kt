@@ -114,7 +114,7 @@ internal fun onlyFindings(issue: String): Matcher<List<Finding>> =
 	object : Matcher<List<Finding>> {
 		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 			value.isNotEmpty() && value.all { it.issue.id == issue },
-			{ "Could not find ${issue} among findings:\n${value.testString()}" },
-			{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
+			{ "Could not find exclusively `${issue}`s among findings:\n${value.testString()}" },
+			{ "Collection should not have `${issue}`s, but contained:\n${value.testString()}" }
 		)
 	}

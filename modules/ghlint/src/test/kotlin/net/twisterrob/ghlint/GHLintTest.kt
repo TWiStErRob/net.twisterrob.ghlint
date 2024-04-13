@@ -114,9 +114,16 @@ class GHLintTest {
 		@Test fun `one invalid file is flagged`() {
 			val results = analyze(invalidFile1)
 
-			results shouldHave singleFinding(
-				issue = "JsonSchemaValidation",
-				message = "Object does not have some of the required properties [[jobs]] ()"
+			results shouldHave exactFindings(
+				aFinding(
+					issue = "JsonSchemaValidation",
+					message = "Object does not have some of the required properties [[jobs]] ()"
+				),
+				aFinding(
+					issue = "YamlLoadError",
+					message = "File test-invalid1.yml could not be parsed: " +
+							"java.lang.IllegalStateException: Missing required key: jobs in [on]"
+				),
 			)
 		}
 
@@ -138,6 +145,11 @@ class GHLintTest {
 					message = "Object does not have some of the required properties [[jobs]] ()"
 				),
 				aFinding(
+					issue = "YamlLoadError",
+					message = "File test-invalid1.yml could not be parsed: " +
+							"java.lang.IllegalStateException: Missing required key: jobs in [on]"
+				),
+				aFinding(
 					issue = "JsonSchemaValidation",
 					message = "Object has less than 1 properties (/jobs)"
 				),
@@ -152,11 +164,17 @@ class GHLintTest {
 
 			val results = analyze(testFile)
 
-			results shouldHave singleFinding(
-				issue = "SyntaxError",
-				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
-				message = "File empty.yml could not be parsed: java.lang.IllegalArgumentException: " +
-						"Root node is not a mapping: ScalarNode."
+
+			results shouldHave exactFindings(
+				aFinding(
+					issue = "JsonSchemaValidation",
+					message = "Value is [null] but should be [object] ()"
+				),
+				aFinding(
+					issue = "YamlLoadError",
+					message = "File empty.yml could not be parsed: " +
+							"java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
+				),
 			)
 		}
 
@@ -168,11 +186,16 @@ class GHLintTest {
 
 			val results = analyze(testFile)
 
-			results shouldHave singleFinding(
-				issue = "SyntaxError",
-				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
-				message = "File newline.yml could not be parsed: java.lang.IllegalArgumentException: " +
-						"Root node is not a mapping: ScalarNode."
+			results shouldHave exactFindings(
+				aFinding(
+					"JsonSchemaValidation",
+					"Value is [null] but should be [object] ()"
+				),
+				aFinding(
+					"YamlLoadError",
+					"File newline.yml could not be parsed: " +
+							"java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
+				),
 			)
 		}
 
@@ -180,7 +203,7 @@ class GHLintTest {
 			val results = analyze(errorFile)
 
 			results shouldHave singleFinding(
-				issue = "SyntaxError",
+				issue = "YamlSyntaxError",
 				message = errorFileMessage
 			)
 		}
@@ -190,12 +213,17 @@ class GHLintTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					issue = "SyntaxError",
+					issue = "YamlSyntaxError",
 					message = errorFileMessage
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = "Object does not have some of the required properties [[jobs]] ()"
+				),
+				aFinding(
+					issue = "YamlLoadError",
+					message = "File test-invalid1.yml could not be parsed: " +
+							"java.lang.IllegalStateException: Missing required key: jobs in [on]"
 				),
 			)
 		}

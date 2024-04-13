@@ -3,6 +3,8 @@ package net.twisterrob.ghlint.model
 import net.twisterrob.ghlint.model.Action.ActionInput
 import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
+import net.twisterrob.ghlint.yaml.SnakeErrorContent
+import net.twisterrob.ghlint.yaml.SnakeUnknownContent
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -48,14 +50,82 @@ public class SnakeComponentFactory {
 	public fun createFile(file: RawFile): File =
 		SnakeFile(file, this)
 
-	public fun createContent(file: File, node: MappingNode): Content =
-		@Suppress("detekt.UseIfInsteadOfWhen")
+	// STOPSHIP separate? part of model?
+	public enum class FileType {
+		ACTION,
+		WORKFLOW,
+		UNKNOWN,
+	}
+
+	internal fun inferType(file: File, @Suppress("UNUSED_PARAMETER") node: Node): FileType =
 		when {
 			file.location.name == "action.yml" && !file.location.path.endsWith(".github/workflows/action.yml") ->
-				createAction(file, node)
+				FileType.ACTION
+
+			file.location.name.endsWith(".yml") ->
+				FileType.WORKFLOW
 
 			else ->
+				FileType.UNKNOWN
+		}
+
+	internal fun createContent(file: File, node: Node): Content =
+		when (val type = inferType(file, node)) {
+			FileType.WORKFLOW ->
+				createWorkflowSafe(file, node)
+
+			FileType.ACTION ->
+				createActionSafe(file, node)
+
+			FileType.UNKNOWN ->
+				SnakeUnknownContent(
+					parent = file,
+					node = node,
+					inferredType = type,
+					error = IllegalArgumentException("Unknown file type: ${file.location}")
+				)
+		}
+
+	private fun createWorkflowSafe(file: File, node: Node): Content =
+		try {
+			if (node is MappingNode) {
 				createWorkflow(file, node)
+			} else {
+				SnakeErrorContent(
+					parent = file,
+					node = node,
+					inferredType = FileType.WORKFLOW,
+					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
+				)
+			}
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
+			SnakeErrorContent(
+				parent = file,
+				node = node,
+				inferredType = FileType.WORKFLOW,
+				error = ex
+			)
+		}
+
+	private fun createActionSafe(file: File, node: Node): Content =
+		try {
+			if (node is MappingNode) {
+				createAction(file, node)
+			} else {
+				SnakeErrorContent(
+					parent = file,
+					node = node,
+					inferredType = FileType.ACTION,
+					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
+				)
+			}
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
+			SnakeErrorContent(
+				parent = file,
+				node = node,
+				inferredType = FileType.ACTION,
+				error = ex
+			)
 		}
 
 	public fun createWorkflow(file: File, node: Node): Workflow {

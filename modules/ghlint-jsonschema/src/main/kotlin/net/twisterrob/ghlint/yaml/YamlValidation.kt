@@ -2,7 +2,6 @@ package net.twisterrob.ghlint.yaml
 
 import dev.harrel.jsonschema.Error
 import dev.harrel.jsonschema.SchemaResolver
-import dev.harrel.jsonschema.Validator
 import dev.harrel.jsonschema.ValidatorFactory
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
@@ -10,10 +9,12 @@ import org.snakeyaml.engine.v2.nodes.Node
 import java.net.URI
 import java.net.URL
 
-internal object YamlValidation {
+public object YamlValidation {
 
 	private const val WORKFLOW_SCHEMA_URL =
 		"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json"
+	private const val ACTION_SCHEMA_URL =
+		"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-action.json"
 
 	private val resolver = object : SchemaResolver {
 		private val cache: MutableMap<String, SchemaResolver.Result> = mutableMapOf()
@@ -24,7 +25,7 @@ internal object YamlValidation {
 			}
 	}
 
-	internal fun validate(node: Node): Validator.Result {
+	public fun validate(node: Node, type: YamlValidationType): List<YamlValidationProblem> {
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
 			.withJsonNodeFactory(SnakeYamlJsonNode.Factory {
@@ -32,9 +33,21 @@ internal object YamlValidation {
 			})
 			.withSchemaResolver(resolver)
 			.createValidator()
-		return validator.validate(URI.create(WORKFLOW_SCHEMA_URL), node)
+		val uri = URI.create(
+			when (type) {
+				YamlValidationType.WORKFLOW -> WORKFLOW_SCHEMA_URL
+				YamlValidationType.ACTION -> ACTION_SCHEMA_URL
+			}
+		)!!
+		return validator
+			.validate(uri, node)
+			.errors
+			.map { YamlValidationProblem(it.error, it.instanceLocation) }
 	}
 }
 
 internal fun Error.toDisplayString(): String =
 	"${this.instanceLocation}: ${this.error}\nvalidated by ${this.evaluationPath} (${this.schemaLocation})"
+
+internal fun YamlValidationProblem.toDisplayString(): String =
+	"${this.instanceLocation}: ${this.error}"

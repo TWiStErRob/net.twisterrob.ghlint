@@ -528,7 +528,7 @@ class Matchers_FindingKtTest {
 					results shouldHave onlyFindings(TestRule.TestIssue1.id)
 				}
 
-				failure shouldHaveMessage "Could not find TestIssue1 among findings:\nNo findings.\n"
+				failure shouldHaveMessage "Could not find exclusively `TestIssue1`s among findings:\nNo findings.\n"
 			}
 
 			@Test fun `different finding fails to match`() {
@@ -541,7 +541,7 @@ class Matchers_FindingKtTest {
 				}
 
 				failure shouldHaveMessage """
-					Could not find TestIssue1 among findings:
+					Could not find exclusively `TestIssue1`s among findings:
 					Finding(
 						rule=toString of TestRule,
 						issue=TestIssue2,
@@ -563,7 +563,7 @@ class Matchers_FindingKtTest {
 				}
 
 				failure shouldHaveMessage """
-					Could not find TestIssue1 among findings:
+					Could not find exclusively `TestIssue1`s among findings:
 					Finding(
 						rule=toString of TestRule,
 						issue=TestIssue2,
@@ -596,7 +596,7 @@ class Matchers_FindingKtTest {
 				}
 
 				failure shouldHaveMessage """
-					Could not find TestIssue1 among findings:
+					Could not find exclusively `TestIssue1`s among findings:
 					Finding(
 						rule=toString of TestRule,
 						issue=TestIssue1,
@@ -623,7 +623,7 @@ class Matchers_FindingKtTest {
 				}
 
 				failure shouldHaveMessage """
-					Could not find TestIssue1 among findings:
+					Could not find exclusively `TestIssue1`s among findings:
 					Finding(
 						rule=toString of TestRule,
 						issue=TestIssue2,
@@ -652,7 +652,7 @@ class Matchers_FindingKtTest {
 				}
 
 				failure shouldHaveMessage """
-					Collection should not have TestIssue1, but contained:
+					Collection should not have `TestIssue1`s, but contained:
 					Finding(
 						rule=toString of TestRule,
 						issue=TestIssue1,

@@ -11,7 +11,7 @@ class DefaultRuleSetTest {
 	@AcceptFailingDynamicTest(
 		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
 		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
-		acceptableFailure = """^Could not find WorkflowIdNaming among findings:\nNo findings.$""",
+		acceptableFailure = """^Could not find exclusively `WorkflowIdNaming`s among findings:\nNo findings.$""",
 	)
 	@AcceptFailingDynamicTest(
 		displayName = "Issue MissingJobPermissions compliant example #2 has no findings",

@@ -12,7 +12,8 @@ import org.snakeyaml.engine.v2.nodes.Tag
 import java.math.BigDecimal
 import java.math.BigInteger
 
-public class SnakeYamlJsonNode private constructor(
+@Suppress("RedundantVisibilityModifier", "detekt.NestedClassesVisibility")
+internal class SnakeYamlJsonNode private constructor(
 	private val factory: Factory,
 	private val node: Node,
 	private val jsonPointer: String,

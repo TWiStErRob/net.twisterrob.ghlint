@@ -1,30 +1,22 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.yaml.ErrorInvalidContent
-import org.snakeyaml.engine.v2.nodes.MappingNode
+import net.twisterrob.ghlint.yaml.SnakeSyntaxErrorContent
 
 public class SnakeFile internal constructor(
-	private val rawFile: RawFile,
+	override val origin: RawFile,
 	factory: SnakeComponentFactory,
 ) : File {
-
-	override val location: FileLocation = rawFile.location
 
 	@Suppress("detekt.LabeledExpression")
 	override val content: Content by lazy {
 		val node = try {
-			factory.loadYaml(rawFile)
+			factory.loadYaml(origin)
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
-			return@lazy ErrorInvalidContent(this, rawFile.content, ex)
+			return@lazy SnakeSyntaxErrorContent(
+				parent = this,
+				error = ex
+			)
 		}
-		if (node !is MappingNode) {
-			val error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
-			return@lazy ErrorInvalidContent(this, rawFile.content, error)
-		}
-		try {
-			return@lazy factory.createContent(this, node)
-		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
-			return@lazy ErrorInvalidContent(this, rawFile.content, ex)
-		}
+		factory.createContent(this, node)
 	}
 }
