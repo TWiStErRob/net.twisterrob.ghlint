@@ -18,7 +18,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 internal class JsonSchemaValidationRule : Rule {
 
-	override val issues: List<Issue> = listOf(SyntaxError, JsonSchemaValidation)
+	override val issues: List<Issue> = listOf(JsonSchemaValidation)
 
 	override fun check(file: File): List<Finding> =
 		when (val content = file.content) {
@@ -33,14 +33,8 @@ internal class JsonSchemaValidationRule : Rule {
 			}
 
 			is InvalidContent -> {
-				listOf(
-					Finding(
-						rule = this@JsonSchemaValidationRule,
-						issue = SyntaxError,
-						location = content.location,
-						message = "File ${file.location.path} could not be parsed: ${content.error}\n${content.raw}"
-					)
-				)
+				// Cannot run JSON-Schema validation on un-parseable content.
+				emptyList()
 			}
 		}
 
@@ -58,44 +52,7 @@ internal class JsonSchemaValidationRule : Rule {
 
 	companion object {
 
-		val SyntaxError = Issue(
-			id = "SyntaxError",
-			title = "YAML syntax error.",
-			description = """
-				Parseable YAML file is required to ensure the GHLint object model is valid.
-				
-				Fix the problems in the workflow file to make it valid.
-				GitHub would also very likely reject the file with an error message similar to:
-				```
-				Invalid workflow file: .github/workflows/test.yml#L5
-				The workflow is not valid. .github/workflows/test.yml (Line: 5, Col: 17): Error message
-				```
-			""".trimIndent(),
-			compliant = listOf(
-				Example(
-					explanation = "Valid yaml file.",
-					content = """
-						on: push
-						jobs:
-						  example:
-						    uses: reusable/workflow.yml
-					""".trimIndent(),
-				),
-			),
-			nonCompliant = listOf(
-				Example(
-					explanation = "Tabs cannot be used as indentation.",
-					content = """
-						on: push
-						jobs:
-							example:
-								uses: reusable/workflow.yml
-					""".trimIndent(),
-				),
-			),
-		)
-
-		val JsonSchemaValidation = Issue(
+		private val JsonSchemaValidation = Issue(
 			id = "JsonSchemaValidation",
 			title = "JSON-Schema based validation problem.",
 			description = """
