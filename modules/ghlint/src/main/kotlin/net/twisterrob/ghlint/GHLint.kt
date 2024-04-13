@@ -15,6 +15,7 @@ import kotlin.io.path.readText
 
 public class GHLint {
 
+	// TODO feels like an abstraction is missing in this long method, but it's not clear what it is.
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	public fun run(config: Configuration): Int {
 		if (config.isVerbose) {
@@ -22,9 +23,11 @@ public class GHLint {
 				println("Received ${it} for analysis against JSON-schema and rules.")
 			}
 		}
+
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
 		val ruleSets = listOf(BuiltInRuleSet(), DefaultRuleSet())
 		val findings = analyze(files, ruleSets)
+
 		if (config.isVerbose) {
 			println("There are ${findings.size} findings.")
 		}

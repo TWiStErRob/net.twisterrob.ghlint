@@ -24,7 +24,7 @@ internal object YamlValidation {
 			}
 	}
 
-	fun validate(node: Node): Validator.Result {
+	internal fun validate(node: Node): Validator.Result {
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
 			.withJsonNodeFactory(SnakeYamlJsonNode.Factory {

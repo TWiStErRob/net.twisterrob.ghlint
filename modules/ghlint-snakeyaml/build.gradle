@@ -7,5 +7,4 @@ dependencies {
 	api(libs.snakeyaml2)
 	implementation(libs.jsr305)
 	testImplementation(projects.ghlintTesting)
-	testImplementation(projects.ghlintJsonschema)
 }

@@ -2,8 +2,8 @@ package net.twisterrob.ghlint.docs.issues
 
 import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.results.ColumnNumber
 import net.twisterrob.ghlint.model.RawFile
+import net.twisterrob.ghlint.results.ColumnNumber
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.results.LineNumber
 import net.twisterrob.ghlint.results.Location

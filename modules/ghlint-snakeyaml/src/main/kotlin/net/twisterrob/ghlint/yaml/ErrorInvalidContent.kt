@@ -30,6 +30,7 @@ internal class ErrorInvalidContent private constructor(
 	companion object {
 
 		internal fun create(file: RawFile, error: Throwable): ErrorInvalidContent =
-			ErrorInvalidContent(file.content, error).apply { parent = File(file.location, this) }
+			ErrorInvalidContent(file.content, error)
+				.apply { parent = File(file.location, this) }
 	}
 }
