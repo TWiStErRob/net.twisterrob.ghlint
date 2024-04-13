@@ -76,7 +76,6 @@ class SafeRuleTest {
 		val stubFailure = RuntimeException("Fake failure")
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val fakeFile: File = fakeFile()
-		whenever(fakeFile.content.location).thenReturn(mock())
 
 		val findings = subject.check(fakeFile)
 
@@ -108,7 +107,6 @@ class SafeRuleTest {
 		)
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val fakeFile: File = fakeFile()
-		whenever(fakeFile.content.location).thenReturn(mock())
 
 		val findings = subject.check(fakeFile)
 
@@ -130,7 +128,6 @@ class SafeRuleTest {
 		val stubFailure = OutOfMemoryError("Fake failure")
 		val subject = SafeRule(AlwaysFailingRule(stubFailure))
 		val fakeFile: File = fakeFile()
-		whenever(fakeFile.content.location).thenReturn(mock())
 
 		val findings = subject.check(fakeFile)
 
@@ -149,6 +146,7 @@ class SafeRuleTest {
 
 	private fun fakeFile(): File {
 		val content: Content = mock<InvalidContent>()
+		whenever(content.location).thenReturn(mock())
 		return File(FileLocation("test.yml"), content)
 	}
 }
