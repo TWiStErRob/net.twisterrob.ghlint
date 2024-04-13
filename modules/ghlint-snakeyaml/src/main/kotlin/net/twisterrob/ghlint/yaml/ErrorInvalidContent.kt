@@ -8,25 +8,28 @@ import net.twisterrob.ghlint.results.LineNumber
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.results.Position
 
-internal class ErrorInvalidContent(
+internal class ErrorInvalidContent private constructor(
 	override val raw: String,
 	override val error: Throwable,
 ) : InvalidContent {
 
 	@Suppress("detekt.LateinitUsage") // Can't figure out a better way.
 	override lateinit var parent: File
-		internal set
+		private set
 
 	override val location: Location
 		get() = Location(
 			file = parent.location,
-			start = Position(LineNumber(0), ColumnNumber(0)),
-			end = Position(LineNumber(0), ColumnNumber(0)),
+			start = Position(LineNumber(1), ColumnNumber(1)),
+			end = Position(
+				LineNumber(raw.lineSequence().count()),
+				ColumnNumber(raw.lineSequence().last().count())
+			),
 		)
 
 	companion object {
 
-		fun create(file: RawFile, error: Throwable): File =
-			ErrorInvalidContent(file.content, error).apply { parent = File(file.location, this) }.parent
+		internal fun create(file: RawFile, error: Throwable): ErrorInvalidContent =
+			ErrorInvalidContent(file.content, error).apply { parent = File(file.location, this) }
 	}
 }

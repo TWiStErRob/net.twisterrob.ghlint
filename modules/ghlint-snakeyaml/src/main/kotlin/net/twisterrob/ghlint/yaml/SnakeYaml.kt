@@ -21,16 +21,16 @@ public object SnakeYaml {
 		val node = try {
 			factory.loadYaml(file)
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
-			return ErrorInvalidContent.create(file, ex)
+			return ErrorInvalidContent.create(file, ex).parent
 		}
 		if (node !is MappingNode) {
 			val error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
-			return ErrorInvalidContent.create(file, error)
+			return ErrorInvalidContent.create(file, error).parent
 		}
 		try {
 			return loadUnsafe(file, node)
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
-			return ErrorInvalidContent.create(file, ex)
+			return ErrorInvalidContent.create(file, ex).parent
 		}
 	}
 
