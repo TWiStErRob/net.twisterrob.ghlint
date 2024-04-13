@@ -23,7 +23,7 @@ public object YamlValidation {
 	}
 
 	public fun validate(@Language("yaml") yaml: String): Validator.Result {
-		val factory = SnakeYamlJsonNode.Factory(Yaml::load)
+		val factory = SnakeYamlJsonNode.Factory(SnakeYaml::load)
 		val validator = ValidatorFactory()
 			.withDisabledSchemaValidation(true)
 			.withJsonNodeFactory(factory)

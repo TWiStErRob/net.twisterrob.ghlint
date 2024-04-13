@@ -4,7 +4,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class YamlTest {
+class SnakeYamlTest {
 
 	@Nested
 	inner class Mapping {
@@ -120,8 +120,8 @@ class YamlTest {
 	}
 
 	private fun reserialize(yaml: String) {
-		val result = Yaml.load(yaml)
-		val dumped = Yaml.save(result)
+		val result = SnakeYaml.load(yaml)
+		val dumped = SnakeYaml.save(result)
 		dumped shouldBe yaml
 	}
 }

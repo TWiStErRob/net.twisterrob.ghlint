@@ -22,7 +22,7 @@ import org.snakeyaml.engine.v2.schema.JsonSchema
 import java.io.StringWriter
 import kotlin.jvm.optionals.getOrElse
 
-public object Yaml {
+public object SnakeYaml {
 
 	private val factory = SnakeComponentFactory()
 

@@ -11,7 +11,7 @@ import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import kotlin.io.path.relativeTo
 
 internal class MarkdownRenderer(
@@ -100,7 +100,7 @@ private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding
 	}
 	val findings =
 		try {
-			Yaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+			SnakeYaml.analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") e: Exception) {
 			// TooGenericExceptionCaught: Catch all exceptions to prevent the whole process from failing.
 			listOf(

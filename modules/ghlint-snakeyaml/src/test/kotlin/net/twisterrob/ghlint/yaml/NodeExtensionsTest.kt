@@ -32,7 +32,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `scalar fails`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					item
 				""".trimIndent()
@@ -41,7 +41,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array fails`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					- item
 					- item
@@ -51,7 +51,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array item 1`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					- item
 					- item
@@ -62,7 +62,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array item 2`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					- item
 					- item
@@ -73,7 +73,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping fails`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					foo: bar
 				""".trimIndent()
@@ -82,7 +82,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping array item 1`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					array:
 					  - item
@@ -94,7 +94,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping array item 2`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					array:
 					  - item
@@ -106,7 +106,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `nested mapping array item 2`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					map:
 					  array:
@@ -121,7 +121,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `nested indented mapping array item 2`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					map:
 					  array:
@@ -136,7 +136,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array mapping item`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					array:
 					  - name: item
@@ -150,7 +150,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping array`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					array:
 					  - item
@@ -162,7 +162,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array mapping item value`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					array:
 					  - name: item
@@ -181,7 +181,7 @@ class NodeExtensionsTest {
 		 * From https://github.com/TWiStErRob/net.twisterrob.gradle/security/code-scanning/2087
 		 */
 		@Test fun `buffer problem`() {
-			val root = Yaml.load(
+			val root = SnakeYaml.load(
 				"""
 					x: ${"x".repeat(2035)}
 					y:

@@ -9,7 +9,7 @@ import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.results.Position
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
-import net.twisterrob.ghlint.yaml.Yaml
+import net.twisterrob.ghlint.yaml.SnakeYaml
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.resolve
 import net.twisterrob.ghlint.yaml.toLocation
@@ -46,7 +46,7 @@ public class Validator {
 		)
 
 	private fun validateWorkflow(rule: JsonSchemaValidationRule, file: File): List<Finding> {
-		val root: Node = Yaml.load(file.content)
+		val root: Node = SnakeYaml.load(file.content)
 		val result: Validator.Result = YamlValidation.validate(file.content)
 		return result.errors
 			.filter { it.error != "False schema always fails" }
