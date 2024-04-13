@@ -16,7 +16,7 @@ internal class BuiltInRuleSet : RuleSet {
 	override fun createRules(): List<Rule> {
 		val safeRule = load<Rule>("net.twisterrob.ghlint.analysis.SafeRule")
 		val validRule = load<Rule>("net.twisterrob.ghlint.analysis.JsonSchemaValidationRule")
-		@Suppress("SpreadOperator")
+		@Suppress("detekt.SpreadOperator")
 		return listOf(
 			validRule.getDeclaredConstructor().newInstance(),
 			safeRule.getDeclaredConstructor(Rule::class.java).newInstance(ProblematicRule()),

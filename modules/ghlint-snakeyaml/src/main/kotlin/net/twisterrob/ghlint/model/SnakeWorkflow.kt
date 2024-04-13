@@ -15,7 +15,7 @@ public class SnakeWorkflow internal constructor(
 	override val target: Node,
 ) : Workflow, HasSnakeNode<MappingNode> {
 
-	@Suppress("LateinitUsage") // Can't figure out a better way.
+	@Suppress("detekt.LateinitUsage") // Can't figure out a better way.
 	override lateinit var parent: File
 		internal set
 

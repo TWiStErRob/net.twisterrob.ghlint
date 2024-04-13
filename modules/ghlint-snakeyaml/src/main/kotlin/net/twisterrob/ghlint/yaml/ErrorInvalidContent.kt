@@ -13,7 +13,7 @@ internal class ErrorInvalidContent(
 	override val error: Throwable,
 ) : InvalidContent {
 
-	@Suppress("LateinitUsage") // Can't figure out a better way.
+	@Suppress("detekt.LateinitUsage") // Can't figure out a better way.
 	override lateinit var parent: File
 		internal set
 
