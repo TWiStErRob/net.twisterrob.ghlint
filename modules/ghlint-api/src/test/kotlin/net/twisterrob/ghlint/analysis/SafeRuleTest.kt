@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.model.Content
 import net.twisterrob.ghlint.model.File
-import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
@@ -147,7 +146,11 @@ class SafeRuleTest {
 	private fun fakeFile(): File {
 		val content: Content = mock<InvalidContent>()
 		whenever(content.location).thenReturn(mock())
-		return File(FileLocation("test.yml"), content)
+
+		val file: File = mock()
+		whenever(file.content).thenReturn(content)
+
+		return file
 	}
 }
 

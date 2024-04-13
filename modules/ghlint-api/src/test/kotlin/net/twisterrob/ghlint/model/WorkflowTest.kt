@@ -56,9 +56,12 @@ class WorkflowTest {
 		}
 
 		private fun createWorkflow(path: String): Workflow {
+			val file: File = mock()
+			whenever(file.location.path).thenReturn(path)
+
 			val workflow: Workflow = mock()
-			val content: Content = mock<InvalidContent>()
-			whenever(workflow.parent).thenReturn(File(FileLocation(path), content))
+			whenever(workflow.parent).thenReturn(file)
+
 			return workflow
 		}
 	}

@@ -3,7 +3,6 @@ package net.twisterrob.ghlint.model
 import io.kotest.matchers.maps.beEmpty
 import io.kotest.matchers.maps.haveSize
 import io.kotest.matchers.should
-import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
@@ -33,8 +32,8 @@ class SnakeWorkflowTest {
 		workflow.jobs should haveSize(2)
 	}
 
-	private fun load(@Language("yaml") yaml: String): Workflow {
+	private fun load(@Language("yaml") yaml: String): SnakeWorkflow {
 		val yamlFile = RawFile(FileLocation("test.yml"), yaml)
-		return SnakeComponentFactory().createWorkflow(yamlFile, SnakeYaml.loadRaw(yamlFile))
+		return SnakeComponentFactory().createFile(yamlFile).content as SnakeWorkflow
 	}
 }

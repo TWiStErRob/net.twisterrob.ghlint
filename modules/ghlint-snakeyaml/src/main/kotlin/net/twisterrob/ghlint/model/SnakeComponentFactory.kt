@@ -5,8 +5,8 @@ import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
-import net.twisterrob.ghlint.yaml.getOptionalKey
 import net.twisterrob.ghlint.yaml.getOptionalText
+import net.twisterrob.ghlint.yaml.getRequiredKey
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
@@ -23,6 +23,7 @@ import org.snakeyaml.engine.v2.scanner.StreamReader
 import org.snakeyaml.engine.v2.schema.JsonSchema
 import kotlin.jvm.optionals.getOrElse
 
+@Suppress("detekt.TooManyFunctions")
 public class SnakeComponentFactory {
 
 	public fun loadYaml(file: RawFile): Node {
@@ -44,13 +45,27 @@ public class SnakeComponentFactory {
 		return node
 	}
 
-	public fun createWorkflow(file: RawFile, node: Node): Workflow {
+	public fun createFile(file: RawFile): File =
+		SnakeFile(file, this)
+
+	public fun createContent(file: File, node: MappingNode): Content =
+		@Suppress("detekt.UseIfInsteadOfWhen")
+		when {
+			file.location.name == "action.yml" && !file.location.path.endsWith(".github/workflows/action.yml") ->
+				createAction(file, node)
+
+			else ->
+				createWorkflow(file, node)
+		}
+
+	public fun createWorkflow(file: File, node: Node): Workflow {
 		node as MappingNode
 		return SnakeWorkflow(
+			parent = file,
 			factory = this,
 			node = node,
-			target = node.getOptionalKey("jobs") ?: node
-		).apply { parent = File(file.location, this) }
+			target = node.getRequiredKey("jobs")
+		)
 	}
 
 	internal fun createJob(workflow: Workflow, key: Node, node: Node): Job {
@@ -115,13 +130,14 @@ public class SnakeComponentFactory {
 			node = node as MappingNode,
 		)
 
-	public fun createAction(file: RawFile, node: Node): Action {
+	public fun createAction(file: File, node: Node): Action {
 		node as MappingNode
 		return SnakeAction(
+			parent = file,
 			factory = this,
 			node = node,
-			target = node.getOptionalKey("name") ?: node,
-		).apply { parent = File(file.location, this) }
+			target = node.getRequiredKey("name"),
+		)
 	}
 
 	internal fun createActionInput(action: SnakeAction, key: Node, node: Node): ActionInput {

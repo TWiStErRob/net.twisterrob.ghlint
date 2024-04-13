@@ -8,14 +8,11 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeAction internal constructor(
+	override var parent: File,
 	private val factory: SnakeComponentFactory,
 	override val node: MappingNode,
 	override val target: Node,
 ) : Action, HasSnakeNode<MappingNode> {
-
-	@Suppress("detekt.LateinitUsage") // Can't figure out a better way.
-	override lateinit var parent: File
-		internal set
 
 	override val location: Location
 		get() = super.location

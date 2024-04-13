@@ -10,10 +10,10 @@ public interface Visitor : WorkflowVisitor, ActionVisitor {
 
 	@OverridingMethodsMustInvokeSuper
 	public override fun visitFile(reporting: Reporting, file: File) {
-		when (file.content) {
+		when (val content = file.content) {
 			is Workflow -> super<WorkflowVisitor>.visitFile(reporting, file)
 			is Action -> super<ActionVisitor>.visitFile(reporting, file)
-			is InvalidContent -> visitInvalidContent(reporting, file.content)
+			is InvalidContent -> visitInvalidContent(reporting, content)
 		}
 	}
 
