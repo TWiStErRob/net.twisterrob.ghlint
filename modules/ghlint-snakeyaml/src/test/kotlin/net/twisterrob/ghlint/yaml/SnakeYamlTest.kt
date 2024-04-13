@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.model.RawFile
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class YamlTest {
+class SnakeYamlTest {
 
 	@Nested
 	inner class Mapping {
