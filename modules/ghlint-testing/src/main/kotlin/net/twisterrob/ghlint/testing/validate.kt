@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
-import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
+import net.twisterrob.ghlint.BuiltInRuleSet
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.Finding
@@ -22,7 +22,7 @@ public fun validate(
 	fileName: String = "test.yml",
 ): List<Finding> {
 	val file = SnakeYaml.load(RawFile(FileLocation(fileName), yml))
-	return JsonSchemaRuleSet().createRules().flatMap { it.check(file) }
+	return BuiltInRuleSet().createRules().flatMap { it.check(file) }
 }
 
 public inline fun <reified T : Rule> validate(issue: Issue) {

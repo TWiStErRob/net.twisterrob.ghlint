@@ -1,7 +1,6 @@
 package net.twisterrob.ghlint
 
 import net.twisterrob.ghlint.analysis.Analyzer
-import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
@@ -24,7 +23,7 @@ public class GHLint {
 			}
 		}
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
-		val ruleSets = listOf(JsonSchemaRuleSet(), DefaultRuleSet())
+		val ruleSets = listOf(BuiltInRuleSet(), DefaultRuleSet())
 		val findings = analyze(files, ruleSets)
 		if (config.isVerbose) {
 			println("There are ${findings.size} findings.")

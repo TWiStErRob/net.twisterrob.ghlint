@@ -10,10 +10,9 @@ import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile2
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile2
-import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
-import net.twisterrob.ghlint.ruleset.RuleSet
+import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
@@ -91,8 +90,8 @@ class GHLintTest {
 	@Nested
 	inner class AnalyzeTest {
 
-		private val standardRuleSets: List<RuleSet> = listOf(JsonSchemaRuleSet())
-		private fun analyze(vararg files: RawFile) = GHLint().analyze(files.toList(), standardRuleSets)
+		private fun analyze(vararg files: RawFile): List<Finding> =
+			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()))
 
 		@Test fun `no files validates`() {
 			val results = analyze(/* nothing */)

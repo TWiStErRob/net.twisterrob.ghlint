@@ -16,7 +16,7 @@ import net.twisterrob.ghlint.yaml.resolve
 import net.twisterrob.ghlint.yaml.toLocation
 import org.snakeyaml.engine.v2.nodes.Node
 
-internal class JsonSchemaValidationRule : Rule {
+public class JsonSchemaValidationRule : Rule {
 
 	override val issues: List<Issue> = listOf(JsonSchemaValidation)
 
@@ -50,7 +50,7 @@ internal class JsonSchemaValidationRule : Rule {
 			)
 		}
 
-	companion object {
+	private companion object {
 
 		private val JsonSchemaValidation = Issue(
 			id = "JsonSchemaValidation",

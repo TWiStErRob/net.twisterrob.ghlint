@@ -5,7 +5,7 @@ plugins {
 dependencies {
 	api(projects.ghlintApi)
 	implementation(projects.ghlintSnakeyaml)
-	implementation(projects.ghlintJsonschema)
+	implementation(projects.ghlint)
 	api(libs.test.kotest.assertions)
 	api(libs.test.jupiter.api)
 	implementation(libs.classgraph)

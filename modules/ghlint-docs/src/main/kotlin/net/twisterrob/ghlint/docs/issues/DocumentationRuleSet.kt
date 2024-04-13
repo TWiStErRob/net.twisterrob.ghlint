@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.docs.issues
 
-import net.twisterrob.ghlint.analysis.JsonSchemaRuleSet
+import net.twisterrob.ghlint.BuiltInRuleSet
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
@@ -8,19 +8,18 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
 
-internal class BuiltInRuleSet : RuleSet {
+internal class DocumentationRuleSet(
+	private val builtIn: BuiltInRuleSet = BuiltInRuleSet()
+) : RuleSet by builtIn {
 
-	override val id: String = "builtins"
-	override val name: String = "Built-ins"
-
-	override fun createRules(): List<Rule> {
-		val safeRule = load<Rule>("net.twisterrob.ghlint.analysis.SafeRule")
+	override fun createRules(): List<Rule> =
 		@Suppress("detekt.SpreadOperator")
-		return listOf(
-			safeRule.getDeclaredConstructor(Rule::class.java).newInstance(ProblematicRule()),
-			*JsonSchemaRuleSet().createRules().toTypedArray()
+		listOf(
+			*builtIn.createRules().toTypedArray(),
+			load<Rule>("net.twisterrob.ghlint.analysis.SafeRule")
+				.getDeclaredConstructor(Rule::class.java)
+				.newInstance(ProblematicRule()),
 		)
-	}
 }
 
 private class ProblematicRule : Rule {
@@ -34,6 +33,6 @@ private class ProblematicRule : Rule {
 		}
 }
 
-@Suppress("UNCHECKED_CAST", "detekt.CastNullableToNonNullableType")
+@Suppress("UNCHECKED_CAST", "detekt.CastNullableToNonNullableType", "SameParameterValue")
 private fun <T> load(className: String): Class<T> =
 	Class.forName(className) as Class<T>
