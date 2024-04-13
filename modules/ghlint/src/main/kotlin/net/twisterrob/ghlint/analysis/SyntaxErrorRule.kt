@@ -14,18 +14,19 @@ internal class SyntaxErrorRule : Rule {
 	override fun check(file: File): List<Finding> =
 		if (file.content is InvalidContent) {
 			val content = file.content as InvalidContent
-			listOf(
-				Finding(
-					rule = this,
-					issue = SyntaxError,
-					location = content.location,
-					message = "File ${file.location.path} could not be parsed: ${content.error}"
-				)
-			)
+			listOf(toFinding(content, file))
 		} else {
 			// Only concerned about syntax errors, not content errors, other rules will take care of that.
 			emptyList()
 		}
+
+	private fun toFinding(content: InvalidContent, file: File): Finding =
+		Finding(
+			rule = this,
+			issue = SyntaxError,
+			location = content.location,
+			message = "File ${file.location.path} could not be parsed: ${content.error}"
+		)
 
 	companion object {
 

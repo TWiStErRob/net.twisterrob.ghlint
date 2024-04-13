@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class Matchers_LocationKtTest {
 
 	@Nested
-	inner class `beLocation Test` {
+	inner class `aLocation Test` {
 
 		@Nested
 		inner class `working as intended` {
@@ -130,6 +130,18 @@ class Matchers_LocationKtTest {
 
 				shouldThrowMessage("Location test.file@1:2-3:4 should be test.file@1:2-3:5") {
 					location1 shouldBe aLocation(location2)
+				}
+			}
+
+			@Test fun `missing mismatch`() {
+				val location = Location(
+					file = FileLocation("test.file"),
+					start = Position(LineNumber(1), ColumnNumber(2)),
+					end = Position(LineNumber(3), ColumnNumber(4)),
+				)
+
+				shouldThrowMessage("Location test.file@1:2-3:4 should not be test.file@1:2-3:4") {
+					location shouldNotBe aLocation(location)
 				}
 			}
 		}
