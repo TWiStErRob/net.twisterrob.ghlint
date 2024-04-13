@@ -156,7 +156,7 @@ class GHLintTest {
 			results shouldHave singleFinding(
 				issue = "SyntaxError",
 				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
-				message = "File could not be parsed: java.lang.IllegalArgumentException: " +
+				message = "File empty.yml could not be parsed: java.lang.IllegalArgumentException: " +
 						"Root node is not a mapping: ScalarNode.\n${testFile.content}"
 			)
 		}
@@ -172,7 +172,7 @@ class GHLintTest {
 			results shouldHave singleFinding(
 				issue = "SyntaxError",
 				// JSON Schema Error would be: "Value is [null] but should be [object] ()"
-				message = "File could not be parsed: java.lang.IllegalArgumentException: " +
+				message = "File newline.yml could not be parsed: java.lang.IllegalArgumentException: " +
 						"Root node is not a mapping: ScalarNode.\n${testFile.content}"
 			)
 		}
@@ -247,7 +247,7 @@ class GHLintTest {
 		)
 
 		val errorFileMessage = """
-			File could not be parsed: java.lang.IllegalArgumentException: Failed to parse YAML: while scanning for the next token
+			File tabs.yml could not be parsed: java.lang.IllegalArgumentException: Failed to parse YAML: while scanning for the next token
 			found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
 			 in reader, line 1, column 1:
 			    ${errorFile.content}

@@ -38,7 +38,7 @@ internal class JsonSchemaValidationRule : Rule {
 						rule = this@JsonSchemaValidationRule,
 						issue = SyntaxError,
 						location = content.location,
-						message = "File could not be parsed: ${content.error}\n${content.raw}"
+						message = "File ${file.location.path} could not be parsed: ${content.error}\n${content.raw}"
 					)
 				)
 			}
