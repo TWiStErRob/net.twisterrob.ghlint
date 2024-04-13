@@ -8,7 +8,8 @@ import net.twisterrob.ghlint.results.Finding
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class MatcherKtTest {
+@Suppress("detekt.ClassNaming")
+class Matchers_FindingKtTest {
 
 	@Nested
 	inner class `noFindings Test` {
