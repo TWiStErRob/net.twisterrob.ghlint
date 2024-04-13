@@ -32,5 +32,5 @@ class WorkflowTest {
 	}
 
 	private fun load(@Language("yaml") yaml: String): Workflow =
-		SnakeComponentFactory().createWorkflow(File(FileLocation("test.yml"), yaml.trimIndent()))
+		SnakeComponentFactory().createWorkflow(RawFile(FileLocation("test.yml"), yaml.trimIndent()))
 }

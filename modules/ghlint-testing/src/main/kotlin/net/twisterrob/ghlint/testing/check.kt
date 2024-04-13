@@ -2,7 +2,7 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeIn
-import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
@@ -26,7 +26,7 @@ public fun Rule.check(
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yml}")
 	require(yml.isNotEmpty()) { "A non-empty workflow.yml file must be provided." }
-	val findings = this.check(SnakeYaml.loadWorkflow(File(FileLocation(fileName), yml)))
+	val findings = this.check(SnakeYaml.loadWorkflow(RawFile(FileLocation(fileName), yml)))
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)

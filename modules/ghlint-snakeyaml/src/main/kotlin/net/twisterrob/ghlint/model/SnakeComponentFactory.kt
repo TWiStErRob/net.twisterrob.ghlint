@@ -17,7 +17,7 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 public class SnakeComponentFactory {
 
-	public fun createWorkflow(file: File): Workflow {
+	public fun createWorkflow(file: RawFile): Workflow {
 		val node = SnakeYaml.load(file.content) as MappingNode
 		return SnakeWorkflow(
 			factory = this,
@@ -89,7 +89,7 @@ public class SnakeComponentFactory {
 			node = node as MappingNode,
 		)
 
-	public fun createAction(file: File): Action {
+	public fun createAction(file: RawFile): Action {
 		val node = SnakeYaml.load(file.content) as MappingNode
 		return SnakeAction(
 			factory = this,

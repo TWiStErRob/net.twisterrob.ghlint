@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.docs.issues
 
-import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.results.ColumnNumber
 import net.twisterrob.ghlint.results.Finding
@@ -92,7 +92,7 @@ private fun StringBuilder.renderExamples(rule: Rule, issue: Issue, examples: Lis
 }
 
 private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding> {
-	val exampleFile = File(FileLocation("example.yml"), example.content)
+	val exampleFile = RawFile(FileLocation("example.yml"), example.content)
 	val exampleRuleSet = object : RuleSet {
 		override val id: String = "example"
 		override val name: String = "Example"
