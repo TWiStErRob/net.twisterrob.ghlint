@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.analysis
 
-import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -13,14 +13,18 @@ class JsonSchemaValidationRuleTest {
 
 	@Test fun `syntax error`() {
 		val findings = check<JsonSchemaValidationRule>("<invalid json />")
-		findings shouldHaveSize 1
-		findings.single().message shouldBe "File could not be parsed: java.lang.IllegalArgumentException: " +
-				"Root node is not a mapping: ScalarNode.\n<invalid json />"
+		findings shouldHave singleFinding(
+			"JsonSchemaValidation",
+			"File could not be parsed: java.lang.IllegalArgumentException: " +
+					"Root node is not a mapping: ScalarNode.\n<invalid json />"
+		)
 	}
 
 	@Test fun `wrong yaml contents`() {
 		val findings = check<JsonSchemaValidationRule>("foo: bar")
-		findings shouldHaveSize 1
-		findings.single().message shouldBe "Object does not have some of the required properties [[jobs, on]] ()"
+		findings shouldHave singleFinding(
+			"JsonSchemaValidation",
+			"Object does not have some of the required properties [[jobs, on]] ()"
+		)
 	}
 }

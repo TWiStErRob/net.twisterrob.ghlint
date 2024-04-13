@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.analysis
 
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.model.Content
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
@@ -11,6 +11,7 @@ import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.testIssue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -79,15 +80,16 @@ class SafeRuleTest {
 
 		val findings = subject.check(fakeFile)
 
-		findings shouldHaveSize 1
+		findings shouldHave singleFinding(
+			"RuleErrored",
+			@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+			"toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+					"````\n" +
+					stubFailure.stackTraceToString() +
+					"````"
+		)
 		val finding = findings.single()
-		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
-		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
-				"````\n" +
-				stubFailure.stackTraceToString() +
-				"````"
 		finding.location shouldBe fakeFile.content.location
 	}
 
@@ -110,15 +112,17 @@ class SafeRuleTest {
 
 		val findings = subject.check(fakeFile)
 
-		findings shouldHaveSize 1
+		findings shouldHave singleFinding(
+			"RuleErrored",
+			@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+			"toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+					"````\n" +
+					stubFailure.stackTraceToString() +
+					"````"
+		)
+
 		val finding = findings.single()
-		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
-		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
-				"````\n" +
-				stubFailure.stackTraceToString() +
-				"````"
 		finding.location shouldBe fakeFile.content.location
 	}
 
@@ -130,15 +134,16 @@ class SafeRuleTest {
 
 		val findings = subject.check(fakeFile)
 
-		findings shouldHaveSize 1
+		findings shouldHave singleFinding(
+			"RuleErrored",
+			@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+			"toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
+					"````\n" +
+					stubFailure.stackTraceToString() +
+					"````"
+		)
 		val finding = findings.single()
-		finding.issue shouldBe SafeRule.RuleErrored
 		finding.rule shouldBe subject
-		@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
-		finding.message shouldBe "toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
-				"````\n" +
-				stubFailure.stackTraceToString() +
-				"````"
 		finding.location shouldBe fakeFile.content.location
 	}
 

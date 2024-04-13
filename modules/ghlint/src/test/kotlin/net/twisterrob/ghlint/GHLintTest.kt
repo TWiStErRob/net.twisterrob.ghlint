@@ -92,27 +92,28 @@ class GHLintTest {
 	inner class AnalyzeTest {
 
 		private val standardRuleSets: List<RuleSet> = listOf(JsonSchemaRuleSet())
+		private fun analyze(vararg files: RawFile) = GHLint().analyze(files.toList(), standardRuleSets)
 
 		@Test fun `no files validates`() {
-			val results = GHLint().analyze(emptyList(), standardRuleSets)
+			val results = analyze(/* nothing */)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `one valid file validates`() {
-			val results = GHLint().analyze(listOf(validFile1), standardRuleSets)
+			val results = analyze(validFile1)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `two valid files validates`() {
-			val results = GHLint().analyze(listOf(validFile1, validFile2), standardRuleSets)
+			val results = analyze(validFile1, validFile2)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `one invalid file is flagged`() {
-			val results = GHLint().analyze(listOf(invalidFile1), standardRuleSets)
+			val results = analyze(invalidFile1)
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
@@ -121,7 +122,7 @@ class GHLintTest {
 		}
 
 		@Test fun `other invalid file is flagged`() {
-			val results = GHLint().analyze(listOf(invalidFile2), standardRuleSets)
+			val results = analyze(invalidFile2)
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
@@ -130,7 +131,7 @@ class GHLintTest {
 		}
 
 		@Test fun `two invalid files are flagged in order`() {
-			val results = GHLint().analyze(listOf(invalidFile1, invalidFile2), standardRuleSets)
+			val results = analyze(invalidFile1, invalidFile2)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -150,7 +151,7 @@ class GHLintTest {
 				content = ""
 			)
 
-			val results = GHLint().analyze(listOf(testFile), standardRuleSets)
+			val results = analyze(testFile)
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
@@ -166,7 +167,7 @@ class GHLintTest {
 				content = "\n"
 			)
 
-			val results = GHLint().analyze(listOf(testFile), standardRuleSets)
+			val results = analyze(testFile)
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
@@ -177,7 +178,7 @@ class GHLintTest {
 		}
 
 		@Test fun `syntax error is flagged`() {
-			val results = GHLint().analyze(listOf(errorFile), standardRuleSets)
+			val results = analyze(errorFile)
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
@@ -186,7 +187,7 @@ class GHLintTest {
 		}
 
 		@Test fun `invalid file after syntax error is still flagged`() {
-			val results = GHLint().analyze(listOf(validFile1, errorFile, invalidFile1), standardRuleSets)
+			val results = analyze(validFile1, errorFile, invalidFile1)
 
 			results shouldHave exactFindings(
 				aFinding(

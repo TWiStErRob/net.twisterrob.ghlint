@@ -1,7 +1,8 @@
 package net.twisterrob.ghlint.yaml
 
 import dev.harrel.jsonschema.Validator
-import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
@@ -16,7 +17,7 @@ class YamlValidationTest {
 		if (expectedValid) {
 			@Suppress("detekt.ForbiddenMethodCall") // Required to diagnose.
 			result.errors.forEach { println(it.toDisplayString()) }
-			result.errors shouldHaveSize 0
+			result.errors should beEmpty()
 		}
 		result.isValid shouldBe expectedValid
 		return result
