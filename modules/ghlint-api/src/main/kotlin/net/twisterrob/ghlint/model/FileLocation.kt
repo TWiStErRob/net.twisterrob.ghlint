@@ -8,6 +8,10 @@ public value class FileLocation(
 	public val path: String,
 ) {
 
+	init {
+		require(path.isNotEmpty()) { "Path must not be empty." }
+	}
+
 	public companion object
 }
 
