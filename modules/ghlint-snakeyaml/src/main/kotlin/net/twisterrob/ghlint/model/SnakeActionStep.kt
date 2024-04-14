@@ -1,0 +1,66 @@
+package net.twisterrob.ghlint.model
+
+import net.twisterrob.ghlint.results.Location
+import net.twisterrob.ghlint.yaml.getOptional
+import net.twisterrob.ghlint.yaml.getOptionalText
+import net.twisterrob.ghlint.yaml.getRequiredText
+import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.toTextMap
+import org.snakeyaml.engine.v2.nodes.MappingNode
+import org.snakeyaml.engine.v2.nodes.Node
+
+public sealed class SnakeActionStep protected constructor(
+) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
+
+	override val location: Location
+		get() = super.location
+
+	override val name: String?
+		get() = node.getOptionalText("name")
+
+	override val id: String?
+		get() = node.getOptionalText("id")
+
+	override val `if`: String?
+		get() = node.getOptionalText("if")
+
+	override val env: Map<String, String>?
+		get() = node.getOptional("env")?.run { map.toTextMap() }
+
+	public class SnakeRun internal constructor(
+		override val parent: Action.Runs.CompositeRuns,
+		override val index: ActionStep.Index,
+		override val node: MappingNode,
+		override val target: Node,
+	) : ActionStep.Run, SnakeActionStep() {
+
+		@Suppress("detekt.MemberNameEqualsClassName")
+		override val run: String
+			get() = node.getRequiredText("run")
+
+		override val shell: String
+			get() = node.getRequiredText("shell")
+
+		override val workingDirectory: String?
+			get() = node.getOptionalText("working-directory")
+	}
+
+	public class SnakeUses internal constructor(
+		private val factory: SnakeComponentFactory,
+		override val parent: Action.Runs.CompositeRuns,
+		override val index: ActionStep.Index,
+		override val node: MappingNode,
+		override val target: Node,
+	) : ActionStep.Uses, SnakeActionStep() {
+
+		@Suppress("detekt.MemberNameEqualsClassName")
+		override val uses: Step.UsesAction
+			get() = factory.createUsesAction(
+				uses = node.getRequiredText("uses"),
+				versionComment = node.inLineComments?.singleOrNull()?.value,
+			)
+
+		override val with: Map<String, String>?
+			get() = node.getOptional("with")?.run { map.toTextMap() }
+	}
+}

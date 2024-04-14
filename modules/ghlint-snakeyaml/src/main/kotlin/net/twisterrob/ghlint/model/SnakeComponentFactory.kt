@@ -1,12 +1,12 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.model.Action.ActionInput
 import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredKey
+import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
@@ -183,9 +183,19 @@ public class SnakeComponentFactory {
 		)
 	}
 
-	internal fun createActionInput(action: SnakeAction, key: Node, node: Node): ActionInput {
+	internal fun createActionInput(action: Action, key: Node, node: Node): Action.ActionInput {
 		node as MappingNode
 		return SnakeActionInput(
+			parent = action,
+			id = key.text,
+			node = node,
+			target = key,
+		)
+	}
+
+	internal fun createActionOutput(action: Action, key: Node, node: Node): Action.ActionOutput {
+		node as MappingNode
+		return SnakeActionOutput(
 			parent = action,
 			id = key.text,
 			node = node,
@@ -199,19 +209,81 @@ public class SnakeComponentFactory {
 			versionComment = versionComment,
 		)
 
-	public fun createSecrets(it: Node): Job.Secrets =
-		if (it is MappingNode) {
+	internal fun createSecrets(node: Node): Job.Secrets =
+		if (node is MappingNode) {
 			SnakeJob.SnakeSecretsExplicit(
-				node = it,
-				target = it,
-				map = it.map.toTextMap()
+				node = node,
+				target = node,
+				map = node.map.toTextMap()
 			)
-		} else if (it is ScalarNode && it.text == "inherit") {
+		} else if (node is ScalarNode && node.text == "inherit") {
 			SnakeJob.SnakeSecretsInherit(
-				node = it,
-				target = it,
+				node = node,
+				target = node,
 			)
 		} else {
-			error("Unsupported secrets: ${it}")
+			error("Unsupported secrets: ${node}")
 		}
+
+	internal fun createRuns(action: Action, node: Node): Action.Runs {
+		node as MappingNode
+		val using = node.getRequiredText("using")
+		return when (using) {
+			"docker" ->
+				SnakeRuns.SnakeDockerRuns(
+					parent = action,
+					node = node,
+					target = node,
+				)
+
+			"composite" ->
+				SnakeRuns.SnakeCompositeRuns(
+					factory = this,
+					parent = action,
+					node = node,
+					target = node,
+				)
+
+			else ->
+				SnakeRuns.SnakeJavascriptRuns(
+					parent = action,
+					node = node,
+					target = node,
+				)
+		}
+	}
+
+	internal fun createActionStep(parent: Action.Runs.CompositeRuns, index: Int, node: Node): ActionStep {
+		node as MappingNode
+		return when {
+			node.getOptionalText("uses") != null ->
+				SnakeActionStep.SnakeUses(
+					factory = this,
+					parent = parent,
+					index = ActionStep.Index(index),
+					node = node,
+					target = node.getDash(),
+				)
+
+			node.getOptionalText("run") != null ->
+				SnakeActionStep.SnakeRun(
+					parent = parent,
+					index = ActionStep.Index(index),
+					node = node,
+					target = node.getDash(),
+				)
+
+			else ->
+				error("Unknown step type: ${node}")
+		}
+	}
+
+	internal fun createBranding(action: Action, node: Node): Action.Branding {
+		node as MappingNode
+		return SnakeBranding(
+			parent = action,
+			node = node,
+			target = node,
+		)
+	}
 }

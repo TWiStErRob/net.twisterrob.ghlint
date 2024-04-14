@@ -18,4 +18,5 @@ public val Component.file: File
 		is Job -> parent.parent
 		is Step -> parent.parent.parent
 		is Action -> parent
+		is ActionStep -> parent.parent.parent
 	}

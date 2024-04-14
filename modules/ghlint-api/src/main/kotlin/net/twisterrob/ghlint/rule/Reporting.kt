@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rule
 
 import net.twisterrob.ghlint.model.Action
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
@@ -31,9 +32,16 @@ public fun Component.toTarget(): String =
 		is Job -> "Job[${this.id}]"
 		is Step -> "Step[${this.identifier}] in ${this.parent.toTarget()}"
 		is Action -> "Action[${this.id ?: this.name}]"
+		is ActionStep -> "Step[${this.identifier}] in ${this.parent.parent.toTarget()}"
 	}
 
 private val Step.identifier: String
+	get() = this.id
+		?: this.name?.let { "\"${it}\"" }
+		?: (this as? Step.Uses)?.run { uses.uses }
+		?: "#${this.index.value}"
+
+private val ActionStep.identifier: String
 	get() = this.id
 		?: this.name?.let { "\"${it}\"" }
 		?: (this as? Step.Uses)?.run { uses.uses }
