@@ -1,9 +1,11 @@
 package net.twisterrob.ghlint.rule
 
 import net.twisterrob.ghlint.model.Action
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.File
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
+@Suppress("detekt.TooManyFunctions", "detekt.ComplexInterface")
 public interface ActionVisitor {
 
 	@OverridingMethodsMustInvokeSuper
@@ -47,8 +49,27 @@ public interface ActionVisitor {
 	@OverridingMethodsMustInvokeSuper
 	public fun visitCompositeRuns(reporting: Reporting, runs: Action.Runs.CompositeRuns) {
 		runs.steps.forEach { step ->
-			TODO("visitStep(reporting, $step)")
+			visitStep(reporting, step)
 		}
+	}
+
+	@OverridingMethodsMustInvokeSuper
+	public fun visitStep(reporting: Reporting, step: ActionStep) {
+		when (step) {
+			is ActionStep.Run -> visitRunStep(reporting, step)
+			is ActionStep.Uses -> visitUsesStep(reporting, step)
+			is ActionStep.BaseStep -> error("Unknown step type: ${step}")
+		}
+	}
+
+	@OverridingMethodsMustInvokeSuper
+	public fun visitUsesStep(reporting: Reporting, step: ActionStep.Uses) {
+		// No children.
+	}
+
+	@OverridingMethodsMustInvokeSuper
+	public fun visitRunStep(reporting: Reporting, step: ActionStep.Run) {
+		// No children.
 	}
 
 	@OverridingMethodsMustInvokeSuper
