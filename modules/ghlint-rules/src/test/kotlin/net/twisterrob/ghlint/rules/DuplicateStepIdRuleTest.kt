@@ -223,4 +223,204 @@ class DuplicateStepIdRuleTest {
 			}
 		}
 	}
+
+	@Nested
+	inner class Actions {
+
+		@Test fun `passes when no ids are defined`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Example"
+					      shell: bash
+					    - run: echo "Example"
+					      shell: bash
+					    - run: echo "Example"
+					      shell: bash
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `reports when ids are similar`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Example"
+					      shell: bash
+					      id: test1
+					    - run: echo "Example"
+					      shell: bash
+					      id: step
+					    - run: echo "Example"
+					      shell: bash
+					      id: test2
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"SimilarStepId",
+				"""Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+			)
+		}
+
+		// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
+		@Test fun `passes when ids are close, but different`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - id: params
+					      shell: bash
+					      run: 'true'
+					    - id: pages
+					      shell: bash
+					      run: 'true'
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `reports when multiple ids are similar`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Example"
+					      shell: bash
+					      id: test1
+					    - run: echo "Example"
+					      shell: bash
+					      id: test2
+					    - run: echo "Example"
+					      shell: bash
+					      id: test3
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"SimilarStepId",
+					"""Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+				),
+				aFinding(
+					"SimilarStepId",
+					"""Action["Test"] has similar step identifiers: `test1` and `test3`.""",
+				),
+				aFinding(
+					"SimilarStepId",
+					"""Action["Test"] has similar step identifiers: `test2` and `test3`.""",
+				),
+			)
+		}
+
+		@Test fun `reports when ids are the same`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Example"
+					      shell: bash
+					      id: test
+					    - run: echo "Example"
+					      shell: bash
+					      id: test
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"DuplicateStepId",
+				"""Action["Test"] has the `test` step identifier multiple times.""",
+			)
+		}
+
+		@Timeout(
+			10,
+			unit = TimeUnit.SECONDS,
+			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
+		)
+		@Test fun `reports when myriad of ids are similar`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${
+						"\n" + (0..1000).joinToString(separator = "\n") {
+							"""
+								|    - run: echo "Example"
+								|      shell: bash
+								|      id: step-id-${it}
+							""".trimMargin()
+						}.prependIndent("\t\t\t\t\t")
+					}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results should haveSize(159_931)
+			val messageRegex = """Action\["Test"] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
+			results.forEach { finding ->
+				finding.issue.id shouldBe "SimilarStepId"
+				finding.message shouldMatch messageRegex
+			}
+		}
+
+		@Timeout(
+			2,
+			unit = TimeUnit.SECONDS,
+			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
+		)
+		@Test fun `reports when myriad of ids are the same`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${
+						"\n" + (0..100).joinToString(separator = "\n") {
+							"""
+								|    - run: echo "Example"
+								|      shell: bash
+								|      id: step-id
+							""".trimMargin()
+						}.prependIndent("\t\t\t\t\t")
+					}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results should haveSize(5050)
+			results.forEach { finding ->
+				finding.issue.id shouldBe "DuplicateStepId"
+				finding.message shouldBe """Action["Test"] has the `step-id` step identifier multiple times."""
+			}
+		}
+	}
 }
