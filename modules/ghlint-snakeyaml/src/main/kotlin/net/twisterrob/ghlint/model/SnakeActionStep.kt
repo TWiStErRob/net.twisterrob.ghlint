@@ -9,8 +9,8 @@ import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-public sealed class SnakeStep protected constructor(
-) : Step.BaseStep, HasSnakeNode<MappingNode> {
+public sealed class SnakeActionStep protected constructor(
+) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
 
 	override val location: Location
 		get() = super.location
@@ -28,18 +28,18 @@ public sealed class SnakeStep protected constructor(
 		get() = node.getOptional("env")?.run { map.toTextMap() }
 
 	public class SnakeRun internal constructor(
-		override val parent: Job.NormalJob,
-		override val index: Step.Index,
+		override val parent: Action.Runs.CompositeRuns,
+		override val index: ActionStep.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Step.Run, SnakeStep() {
+	) : ActionStep.Run, SnakeActionStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val run: String
 			get() = node.getRequiredText("run")
 
-		override val shell: String?
-			get() = node.getOptionalText("shell")
+		override val shell: String
+			get() = node.getRequiredText("shell")
 
 		override val workingDirectory: String?
 			get() = node.getOptionalText("working-directory")
@@ -47,11 +47,11 @@ public sealed class SnakeStep protected constructor(
 
 	public class SnakeUses internal constructor(
 		private val factory: SnakeComponentFactory,
-		override val parent: Job.NormalJob,
-		override val index: Step.Index,
+		override val parent: Action.Runs.CompositeRuns,
+		override val index: ActionStep.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Step.Uses, SnakeStep() {
+	) : ActionStep.Uses, SnakeActionStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val uses: Step.UsesAction

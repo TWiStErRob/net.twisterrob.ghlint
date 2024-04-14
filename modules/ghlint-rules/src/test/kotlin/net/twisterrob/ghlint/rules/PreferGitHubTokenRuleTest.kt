@@ -199,13 +199,14 @@ class PreferGitHubTokenRuleTest {
 		)
 	}
 
+
 	@Test fun `passes when token is used in step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
 				jobs:
 				  test:
 				    steps:
-				      - run: "Test"
+				      - uses: some/action@v1
 				        env:
 				          MY_ENV: ${'$'}{{ github.token }}
 			""".trimIndent()
@@ -220,7 +221,7 @@ class PreferGitHubTokenRuleTest {
 				jobs:
 				  test:
 				    steps:
-				      - run: "Test"
+				      - uses: some/action@v1
 				        env:
 				          MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent()
@@ -230,6 +231,55 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in step env`() {
+		val results = check<PreferGitHubTokenRule>(
+			"""
+				jobs:
+				  test:
+				    steps:
+				      - uses: some/action@v1
+				        env:
+				          MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"PreferGitHubToken",
+			@Suppress("detekt.MaxLineLength")
+			"`MY_ENV` environment variable in Step[some/action@v1] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+		)
+	}
+
+	@Test fun `passes when token is used in run step env`() {
+		val results = check<PreferGitHubTokenRule>(
+			"""
+				jobs:
+				  test:
+				    steps:
+				      - run: "Test"
+				        env:
+				          MY_ENV: ${'$'}{{ github.token }}
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when GITHUB_TOKEN variable is used in run step env`() {
+		val results = check<PreferGitHubTokenRule>(
+			"""
+				jobs:
+				  test:
+				    steps:
+				      - run: "Test"
+				        env:
+				          MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `reports when GITHUB_TOKEN secret is used in run step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
 				jobs:

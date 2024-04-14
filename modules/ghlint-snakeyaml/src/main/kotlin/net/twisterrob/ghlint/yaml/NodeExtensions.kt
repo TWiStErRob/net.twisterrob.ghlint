@@ -59,6 +59,9 @@ internal val Node.map: Map<Node, Node>
 internal fun Map<Node, Node>.toTextMap(): Map<String, String> =
 	this.entries.associate { (key, value) -> key.text to value.text }
 
+internal fun List<Node>.toTextArray(): List<String> =
+	this.map { it.text }
+
 private fun MappingNode.throwMissingKey(key: String): Nothing {
 	error("Missing required key: ${key} in ${this.value.map { it.keyNode.text }}")
 }

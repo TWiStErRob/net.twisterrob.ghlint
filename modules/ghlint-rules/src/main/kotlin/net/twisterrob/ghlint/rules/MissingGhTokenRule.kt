@@ -21,6 +21,11 @@ public class MissingGhTokenRule : VisitorRule {
 		}
 	}
 
+	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
+		super.visitUsesStep(reporting, step)
+		// TODO check if referenced composite action uses gh cli without GH_TOKEN
+	}
+
 	private fun usesGhCli(script: String): Boolean =
 		script.contains(GH_CLI_START_OF_LINE)
 				|| script.contains(GH_CLI_EMBEDDED)

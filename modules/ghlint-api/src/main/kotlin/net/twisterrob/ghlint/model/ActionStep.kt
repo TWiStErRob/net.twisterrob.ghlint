@@ -3,9 +3,9 @@ package net.twisterrob.ghlint.model
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
  */
-public sealed interface Step : Component {
+public sealed interface ActionStep : Component {
 
-	public val parent: Job.NormalJob
+	public val parent: Action.Runs.CompositeRuns
 	public val index: Index
 	public val name: String?
 	public val id: String?
@@ -20,13 +20,13 @@ public sealed interface Step : Component {
 	public value class Index(public val value: Int)
 
 	// TODO find a way to remove this from the API.
-	public interface BaseStep : Step
+	public interface BaseStep : ActionStep
 
 	public interface Run : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val run: String
-		public val shell: String?
+		public val shell: String
 		public val workingDirectory: String?
 
 		public companion object
@@ -35,27 +35,9 @@ public sealed interface Step : Component {
 	public interface Uses : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
-		public val uses: UsesAction
+		public val uses: Step.UsesAction
 		public val with: Map<String, String>?
 
 		public companion object
-	}
-
-	/**
-	 * ```
-	 * uses ::= <action>@<ref> # <versionComment>
-	 * <action> ::= <owner>/<repository>(/<path>)?
-	 * ```
-	 */
-	public interface UsesAction { // TODO docker? local?
-
-		public val uses: String
-		public val versionComment: String?
-
-		public val action: String
-		public val owner: String
-		public val repository: String
-		public val path: String?
-		public val ref: String
 	}
 }
