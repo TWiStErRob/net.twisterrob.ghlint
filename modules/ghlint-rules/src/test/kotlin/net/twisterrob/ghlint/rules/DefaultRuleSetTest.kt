@@ -9,11 +9,6 @@ import org.junit.jupiter.api.TestFactory
 class DefaultRuleSetTest {
 
 	@AcceptFailingDynamicTest(
-		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
-		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
-		acceptableFailure = """^Could not find exclusively `WorkflowIdNaming`s among findings:\nNo findings.$""",
-	)
-	@AcceptFailingDynamicTest(
 		displayName = "Issue MissingJobPermissions compliant example #2 has no findings",
 		reason = "Rule triggers another another finding, but it's acceptable for this issue.",
 		acceptableFailure = "^\\Q"

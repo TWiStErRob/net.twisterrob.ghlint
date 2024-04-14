@@ -2,7 +2,6 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
-import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -13,11 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class IdNamingRuleTest {
 
-	@AcceptFailingDynamicTest(
-		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
-		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
-		acceptableFailure = """^Could not find exclusively `WorkflowIdNaming`s among findings:\nNo findings.$""",
-	)
 	@TestFactory fun metadata() = test(IdNamingRule::class)
 
 	@Test fun `passes when no step id`() {
