@@ -41,4 +41,4 @@ public fun FileLocation.inferType(): FileType {
 private val FileLocation.isInGitHubWorkflows: Boolean
 	get() =
 		// !endsWith(".github/workflows/action.y[a]ml"), but in a way that supports running in the folder.
-		Path.of(path).run { parent.parent.name == ".github" && parent.name == "workflows" }
+		Path.of(path).run { parent?.parent?.name == ".github" && parent?.name == "workflows" }

@@ -76,8 +76,12 @@ class ValidationRuleTest {
 		)
 	}
 
-	@Test fun `wrong yaml contents`() {
-		val findings = checkUnsafe<ValidationRule>("foo: bar")
+	@Test fun `wrong workflow yaml contents`() {
+		val findings = checkUnsafe<ValidationRule>(
+			"""
+				foo: bar
+			""".trimIndent()
+		)
 
 		findings shouldHave exactFindings(
 			aFinding(
@@ -98,6 +102,33 @@ class ValidationRuleTest {
 		)
 	}
 
+	@Test fun `wrong action yaml contents`() {
+		val findings = checkUnsafe<ValidationRule>(
+			"""
+				foo: bar
+			""".trimIndent(),
+			fileName = "action.yml"
+		)
+
+		findings shouldHave exactFindings(
+			aFinding(
+				issue = "JsonSchemaValidation",
+				message = """
+					Object does not have some of the required properties [[name, description, runs]] ()
+				""".trimIndent()
+			),
+			aFinding(
+				issue = "YamlLoadError",
+				message = """
+					File action.yml could not be loaded:
+					```
+					java.lang.IllegalStateException: Missing required key: name in [foo]
+					```
+				""".trimIndent()
+			),
+		)
+	}
+
 	@Test fun `valid workflow contents`() {
 		val findings = check<ValidationRule>(
 			"""
@@ -106,6 +137,21 @@ class ValidationRuleTest {
 				  example:
 				    uses: reusable/workflow.yml
 			""".trimIndent(),
+		)
+
+		findings shouldHave noFindings()
+	}
+
+	@Test fun `valid action contents`() {
+		val findings = check<ValidationRule>(
+			"""
+				name: ""
+				description: ""
+				runs:
+				  using: node20
+				  main: index.js
+			""".trimIndent(),
+			fileName = "action.yml",
 		)
 
 		findings shouldHave noFindings()
