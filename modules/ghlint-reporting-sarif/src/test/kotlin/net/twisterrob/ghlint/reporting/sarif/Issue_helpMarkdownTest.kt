@@ -52,6 +52,7 @@ class Issue_helpMarkdownTest {
 						Description of issue with only compliant example.
 						
 						## Compliant example
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithOnlyCompliantExample compliant"
 						on: push
@@ -69,6 +70,7 @@ class Issue_helpMarkdownTest {
 						Description of issue with only compliant example.
 						
 						## Non-compliant example
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithOnlyNonCompliantExample non-compliant"
 						on: push
@@ -86,6 +88,7 @@ class Issue_helpMarkdownTest {
 						Description of issue with one example each.
 						
 						## Compliant example
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithOneExampleEach compliant"
 						on: push
@@ -94,6 +97,7 @@ class Issue_helpMarkdownTest {
 						Compliant example description.
 						
 						## Non-compliant example
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithOneExampleEach non-compliant"
 						on: push
@@ -113,6 +117,7 @@ class Issue_helpMarkdownTest {
 						## Compliant examples
 						
 						### Compliant example #1
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithManyExamples compliant 1"
 						on: push
@@ -121,6 +126,7 @@ class Issue_helpMarkdownTest {
 						Compliant example 1 description.
 						
 						### Compliant example #2
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithManyExamples compliant 2"
 						on: push
@@ -129,6 +135,7 @@ class Issue_helpMarkdownTest {
 						Compliant example 2 description.
 						
 						### Compliant example #3
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithManyExamples compliant 3"
 						on: push
@@ -139,6 +146,7 @@ class Issue_helpMarkdownTest {
 						## Non-compliant examples
 						
 						### Non-compliant example #1
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithManyExamples non-compliant 1"
 						on: push
@@ -147,6 +155,7 @@ class Issue_helpMarkdownTest {
 						Non-compliant example 1 description.
 						
 						### Non-compliant example #2
+						_`example.yml`_
 						```yaml
 						name: "IssueNameWithManyExamples non-compliant 2"
 						on: push
