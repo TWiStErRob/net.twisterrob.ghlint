@@ -30,6 +30,9 @@ inputs:
       See https://github.com/actions/toolkit/tree/main/packages/glob#patterns for format.
     default: |
       ${{ github.workspace }}/.github/workflows/*.yml
+      ${{ github.workspace }}/.github/workflows/*.yaml
+      ${{ github.workspace }}/**/action.yml
+      ${{ github.workspace }}/**/action.yaml
 
 outputs:
 
