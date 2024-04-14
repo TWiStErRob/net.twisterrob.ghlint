@@ -37,6 +37,9 @@ class FileLocationTest {
 			strings = [
 				"workflow.yml",
 				"workflow.yaml",
+				"WORKFLOW.YML",
+				"WORKFLOW.YAML",
+				"Workflow.Yml",
 				".github/workflows/action.yaml",
 				".github/workflows/action.yml",
 			]

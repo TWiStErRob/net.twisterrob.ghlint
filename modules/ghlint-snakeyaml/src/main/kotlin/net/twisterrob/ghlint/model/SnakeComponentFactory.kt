@@ -3,8 +3,6 @@ package net.twisterrob.ghlint.model
 import net.twisterrob.ghlint.model.Action.ActionInput
 import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
-import net.twisterrob.ghlint.yaml.SnakeErrorContent
-import net.twisterrob.ghlint.yaml.SnakeUnknownContent
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -39,10 +37,7 @@ public class SnakeComponentFactory {
 			Composer(settings, ParserImpl(settings, StreamReader(settings, file.content))).singleNode
 				.getOrElse { ScalarNode(Tag.NULL, "", ScalarStyle.PLAIN) }
 		} catch (ex: YamlEngineException) {
-			val message = "Failed to parse YAML: ${ex.message ?: ex}\n" +
-					"Full input (${file.location.path}):\n" +
-					file.content
-			throw IllegalArgumentException(message, ex)
+			throw IllegalArgumentException("Failed to parse YAML: ${ex.message ?: ex}", ex)
 		}
 		return node
 	}
@@ -62,7 +57,7 @@ public class SnakeComponentFactory {
 				SnakeUnknownContent(
 					parent = file,
 					node = node,
-					error = IllegalArgumentException("Unknown file type: ${file.location}")
+					error = IllegalArgumentException("Unknown file type of ${file.location.path}")
 				)
 		}
 
@@ -74,6 +69,7 @@ public class SnakeComponentFactory {
 				SnakeErrorContent(
 					parent = file,
 					node = node,
+					// Intentionally redacting info to prevent TMI.
 					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
 				)
 			}
@@ -93,6 +89,7 @@ public class SnakeComponentFactory {
 				SnakeErrorContent(
 					parent = file,
 					node = node,
+					// Intentionally redacting info to prevent TMI.
 					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
 				)
 			}
@@ -104,11 +101,11 @@ public class SnakeComponentFactory {
 			)
 		}
 
-	public fun createWorkflow(file: File, node: Node): Workflow {
+	private fun createWorkflow(file: File, node: Node): Workflow {
 		node as MappingNode
 		return SnakeWorkflow(
-			parent = file,
 			factory = this,
+			parent = file,
 			node = node,
 			target = node.getRequiredKey("jobs")
 		)
@@ -176,11 +173,11 @@ public class SnakeComponentFactory {
 			node = node as MappingNode,
 		)
 
-	public fun createAction(file: File, node: Node): Action {
+	private fun createAction(file: File, node: Node): Action {
 		node as MappingNode
 		return SnakeAction(
-			parent = file,
 			factory = this,
+			parent = file,
 			node = node,
 			target = node.getRequiredKey("name"),
 		)

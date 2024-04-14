@@ -79,8 +79,9 @@ class SafeRuleTest {
 		val findings = subject.check(fakeFile)
 
 		findings shouldHave singleFinding(
-			"RuleErrored",
-			@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+			issue = "RuleErrored",
+			message = @Suppress("detekt.StringShouldBeRawString")
+			// Cannot be, because we don't control stackTraceToString.
 			"toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
@@ -110,8 +111,9 @@ class SafeRuleTest {
 		val findings = subject.check(fakeFile)
 
 		findings shouldHave singleFinding(
-			"RuleErrored",
-			@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+			issue = "RuleErrored",
+			message = @Suppress("detekt.StringShouldBeRawString")
+			// Cannot be, because we don't control stackTraceToString.
 			"toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
@@ -131,8 +133,9 @@ class SafeRuleTest {
 		val findings = subject.check(fakeFile)
 
 		findings shouldHave singleFinding(
-			"RuleErrored",
-			@Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
+			issue = "RuleErrored",
+			message = @Suppress("detekt.StringShouldBeRawString")
+			// Cannot be, because we don't control stackTraceToString.
 			"toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +

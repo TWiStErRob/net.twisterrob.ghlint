@@ -3,7 +3,6 @@ package net.twisterrob.ghlint.model
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.instanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import net.twisterrob.ghlint.yaml.SnakeSyntaxErrorContent
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 

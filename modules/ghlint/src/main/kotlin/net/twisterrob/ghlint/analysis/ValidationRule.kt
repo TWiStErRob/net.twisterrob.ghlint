@@ -5,6 +5,9 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileType
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.SnakeAction
+import net.twisterrob.ghlint.model.SnakeErrorContent
+import net.twisterrob.ghlint.model.SnakeSyntaxErrorContent
+import net.twisterrob.ghlint.model.SnakeUnknownContent
 import net.twisterrob.ghlint.model.SnakeWorkflow
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.inferType
@@ -12,9 +15,6 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.yaml.SnakeErrorContent
-import net.twisterrob.ghlint.yaml.SnakeSyntaxErrorContent
-import net.twisterrob.ghlint.yaml.SnakeUnknownContent
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.YamlValidationProblem
 import net.twisterrob.ghlint.yaml.YamlValidationType
@@ -48,15 +48,15 @@ internal class ValidationRule : Rule {
 							FileType.UNKNOWN -> return emptyList()
 						}
 						YamlValidation.validate(content.node, type).toFindings(content.node, file) +
-								listOf(toFinding(content, YamlLoadError, file))
+								listOf(content.toFinding(YamlLoadError, file, "loaded"))
 					}
 
 					is SnakeSyntaxErrorContent -> {
-						listOf(toFinding(content, YamlSyntaxError, file))
+						listOf(content.toFinding(YamlSyntaxError, file, "parsed"))
 					}
 
 					is SnakeUnknownContent -> {
-						listOf(toFinding(content, YamlLoadError, file))
+						listOf(content.toFinding(YamlLoadError, file, "loaded"))
 					}
 
 					else -> {
@@ -81,12 +81,14 @@ internal class ValidationRule : Rule {
 			message = "$error ($instanceLocation)"
 		)
 
-	private fun toFinding(content: InvalidContent, issue: Issue, file: File): Finding =
+	private fun InvalidContent.toFinding(issue: Issue, file: File, verb: String): Finding =
 		Finding(
 			rule = this@ValidationRule,
 			issue = issue,
-			location = content.location,
-			message = "File ${file.location.path} could not be parsed: ${content.error}"
+			location = this.location,
+			message = @Suppress("detekt.StringShouldBeRawString")
+			// Cannot be trimIndent'd, because we don't control the error message.
+			"File ${file.location.path} could not be ${verb}:\n```\n${this.error}\n```"
 		)
 
 	companion object {

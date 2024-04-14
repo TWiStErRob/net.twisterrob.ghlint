@@ -8,8 +8,8 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeAction internal constructor(
-	override var parent: File,
 	private val factory: SnakeComponentFactory,
+	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
 ) : Action, HasSnakeNode<MappingNode> {

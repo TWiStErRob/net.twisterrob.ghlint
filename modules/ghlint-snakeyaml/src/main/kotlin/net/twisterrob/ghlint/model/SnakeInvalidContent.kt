@@ -1,7 +1,5 @@
-package net.twisterrob.ghlint.yaml
+package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.model.File
-import net.twisterrob.ghlint.model.InvalidContent
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeSyntaxErrorContent internal constructor(

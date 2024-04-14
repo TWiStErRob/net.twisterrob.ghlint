@@ -118,13 +118,19 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					location = "test-invalid1.yml/1:1-1:9",
-					message = "Object does not have some of the required properties [[jobs]] ()"
+					message = """
+						Object does not have some of the required properties [[jobs]] ()
+					""".trimIndent()
 				),
 				aFinding(
 					issue = "YamlLoadError",
 					location = "test-invalid1.yml/1:1-1:8",
-					message = "File test-invalid1.yml could not be parsed: "
-							+ "java.lang.IllegalStateException: Missing required key: jobs in [on]"
+					message = """
+						File test-invalid1.yml could not be loaded:
+						```
+						java.lang.IllegalStateException: Missing required key: jobs in [on]
+						```
+					""".trimIndent()
 				),
 			)
 		}
@@ -135,7 +141,9 @@ class GHLintTest {
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
 				location = "test-invalid2.yml/2:7-2:9",
-				message = "Object has less than 1 properties (/jobs)"
+				message = """
+					Object has less than 1 properties (/jobs)
+				""".trimIndent()
 			)
 		}
 
@@ -146,18 +154,26 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					location = "test-invalid1.yml/1:1-1:9",
-					message = "Object does not have some of the required properties [[jobs]] ()"
+					message = """
+						Object does not have some of the required properties [[jobs]] ()
+					""".trimIndent()
 				),
 				aFinding(
 					issue = "YamlLoadError",
 					location = "test-invalid1.yml/1:1-1:8",
-					message = "File test-invalid1.yml could not be parsed: "
-							+ "java.lang.IllegalStateException: Missing required key: jobs in [on]"
+					message = """
+						File test-invalid1.yml could not be loaded:
+						```
+						java.lang.IllegalStateException: Missing required key: jobs in [on]
+						```
+					""".trimIndent()
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
 					location = "test-invalid2.yml/2:7-2:9",
-					message = "Object has less than 1 properties (/jobs)"
+					message = """
+						Object has less than 1 properties (/jobs)
+					""".trimIndent()
 				),
 			)
 		}
@@ -174,13 +190,19 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					location = "empty.yml/1:1-1:1",
-					message = "Value is [null] but should be [object] ()"
+					message = """
+						Value is [null] but should be [object] ()
+					""".trimIndent()
 				),
 				aFinding(
 					issue = "YamlLoadError",
 					location = "empty.yml/1:1-1:0",
-					message = "File empty.yml could not be parsed: "
-							+ "java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
+					message = """
+						File empty.yml could not be loaded:
+						```
+						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
+						```
+					""".trimIndent()
 				),
 			)
 		}
@@ -197,13 +219,19 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					location = "newline.yml/1:1-1:1",
-					message = "Value is [null] but should be [object] ()"
+					message = """
+						Value is [null] but should be [object] ()
+					""".trimIndent()
 				),
 				aFinding(
 					issue = "YamlLoadError",
 					location = "newline.yml/1:1-2:0",
-					message = "File newline.yml could not be parsed: "
-							+ "java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
+					message = """
+						File newline.yml could not be loaded:
+						```
+						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
+						```
+					""".trimIndent()
 				),
 			)
 		}
@@ -230,13 +258,19 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					location = "test-invalid1.yml/1:1-1:9",
-					message = "Object does not have some of the required properties [[jobs]] ()"
+					message = """
+						Object does not have some of the required properties [[jobs]] ()
+					""".trimIndent()
 				),
 				aFinding(
 					issue = "YamlLoadError",
 					location = "test-invalid1.yml/1:1-1:8",
-					message = "File test-invalid1.yml could not be parsed: "
-							+ "java.lang.IllegalStateException: Missing required key: jobs in [on]"
+					message = """
+						File test-invalid1.yml could not be loaded:
+						```
+						java.lang.IllegalStateException: Missing required key: jobs in [on]
+						```
+					""".trimIndent()
 				),
 			)
 		}
@@ -287,14 +321,15 @@ class GHLintTest {
 		)
 
 		val errorFileMessage = """
-			File tabs.yml could not be parsed: java.lang.IllegalArgumentException: Failed to parse YAML: while scanning for the next token
+			File tabs.yml could not be parsed:
+			```
+			java.lang.IllegalArgumentException: Failed to parse YAML: while scanning for the next token
 			found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
 			 in reader, line 1, column 1:
 			    ${errorFile.content}
 			    ^
 			
-			Full input (tabs.yml):
-			${errorFile.content}
+			```
 		""".trimIndent()
 	}
 }

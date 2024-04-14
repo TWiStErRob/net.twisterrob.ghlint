@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.model
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.instanceOf
-import net.twisterrob.ghlint.yaml.SnakeSyntaxErrorContent
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doThrow
@@ -29,10 +29,7 @@ class SnakeComponentFactoryTest {
 
 			val result = spy.createFile(file)
 
-			result shouldBe instanceOf<SnakeFile>()
-			result.origin shouldBe file
-			result.location shouldBe file.location
-			result.content shouldBe content
+			result.expectFileContent<Content>(file) shouldBe content
 			inOrder(spy) {
 				verify(spy).createFile(file)
 				verify(spy).loadYaml(file)
@@ -50,16 +47,30 @@ class SnakeComponentFactoryTest {
 
 			val result = spy.createFile(file)
 
-			result shouldBe instanceOf<SnakeFile>()
-			result.origin shouldBe file
-			result.location shouldBe file.location
-			result.content shouldBe instanceOf<SnakeSyntaxErrorContent>()
-			(result.content as SnakeSyntaxErrorContent).error shouldBe syntaxError
+			val content: SnakeSyntaxErrorContent = result.expectFileContent(file)
+			content.error shouldBe syntaxError
 			inOrder(spy) {
 				verify(spy).createFile(file)
 				verify(spy).loadYaml(file)
 				verifyNoMoreInteractions()
 			}
+		}
+
+		@Test fun `creates invalid content for unknown file`() {
+			val file = RawFile(FileLocation("test.unknown"), "content")
+
+			val result = subject.createFile(file)
+
+			val content: SnakeUnknownContent = result.expectFileContent(file)
+			content.error shouldHaveMessage "Unknown file type of test.unknown"
+		}
+
+		private inline fun <reified T : Content> File.expectFileContent(file: RawFile): T {
+			this shouldBe instanceOf<SnakeFile>()
+			origin shouldBe file
+			location shouldBe file.location
+			content shouldBe instanceOf<T>()
+			return content as T
 		}
 	}
 }

@@ -1,7 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.yaml.SnakeSyntaxErrorContent
-
 public class SnakeFile internal constructor(
 	override val origin: RawFile,
 	factory: SnakeComponentFactory,

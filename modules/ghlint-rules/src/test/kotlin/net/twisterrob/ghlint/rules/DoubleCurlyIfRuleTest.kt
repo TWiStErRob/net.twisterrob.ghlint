@@ -209,10 +209,13 @@ class DoubleCurlyIfRuleTest {
 			rule.check(
 				"""
 					if: ${condition}
+					
 				""".trimIndent()
+				// TODEL newline https://bitbucket.org/snakeyaml/snakeyaml/issues/1087
+				// New line at the end is required for SnakeYaml to show full condition in message.
 			)
 		}
-		ex shouldHaveMessage """(?s)^Failed to parse YAML: .*\Q${condition}\E$""".toRegex()
+		ex shouldHaveMessage """(?s)^Failed to parse YAML: .*\Q${condition}\E.*$""".toRegex()
 	}
 
 	companion object {

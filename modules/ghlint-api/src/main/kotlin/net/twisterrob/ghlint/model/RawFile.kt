@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.model;
+package net.twisterrob.ghlint.model
 
 public class RawFile(
 	public val location: FileLocation,
