@@ -69,15 +69,15 @@ class Matchers_LocationKtTest {
 				val location1 = Location(
 					file = FileLocation("test.file"),
 					start = Position(LineNumber(1), ColumnNumber(2)),
-					end = Position(LineNumber(3), ColumnNumber(4)),
+					end = Position(LineNumber(6), ColumnNumber(4)),
 				)
 				val location2 = Location(
 					file = FileLocation("test.file"),
 					start = Position(LineNumber(5), ColumnNumber(2)),
-					end = Position(LineNumber(3), ColumnNumber(4)),
+					end = Position(LineNumber(6), ColumnNumber(4)),
 				)
 
-				shouldThrowMessage("Location test.file/1:2-3:4 should be test.file/5:2-3:4") {
+				shouldThrowMessage("Location test.file/1:2-6:4 should be test.file/5:2-6:4") {
 					location1 shouldBe aLocation(location2)
 				}
 			}
