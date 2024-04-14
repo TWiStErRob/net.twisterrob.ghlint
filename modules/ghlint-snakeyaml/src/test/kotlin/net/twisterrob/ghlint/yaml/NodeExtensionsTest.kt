@@ -5,6 +5,9 @@ import io.kotest.matchers.optional.bePresent
 import io.kotest.matchers.optional.shouldBePresent
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -32,7 +35,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `scalar fails`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					item
 				""".trimIndent()
@@ -41,7 +44,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array fails`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					- item
 					- item
@@ -51,7 +54,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array item 1`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					- item
 					- item
@@ -62,7 +65,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array item 2`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					- item
 					- item
@@ -73,7 +76,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping fails`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					foo: bar
 				""".trimIndent()
@@ -82,7 +85,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping array item 1`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					array:
 					  - item
@@ -94,7 +97,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping array item 2`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					array:
 					  - item
@@ -106,7 +109,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `nested mapping array item 2`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					map:
 					  array:
@@ -121,7 +124,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `nested indented mapping array item 2`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					map:
 					  array:
@@ -136,7 +139,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array mapping item`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					array:
 					  - name: item
@@ -150,7 +153,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `mapping array`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					array:
 					  - item
@@ -162,7 +165,7 @@ class NodeExtensionsTest {
 		}
 
 		@Test fun `array mapping item value`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					array:
 					  - name: item
@@ -181,7 +184,7 @@ class NodeExtensionsTest {
 		 * From https://github.com/TWiStErRob/net.twisterrob.gradle/security/code-scanning/2087
 		 */
 		@Test fun `buffer problem`() {
-			val root = SnakeYaml.load(
+			val root = load(
 				"""
 					x: ${"x".repeat(2035)}
 					y:
@@ -196,3 +199,6 @@ class NodeExtensionsTest {
 
 private val Node.mapping: MappingNode
 	get() = this as MappingNode
+
+private fun load(@Language("yaml") yaml: String): Node =
+	SnakeYaml.loadRaw(RawFile(FileLocation("test.yml"), yaml))

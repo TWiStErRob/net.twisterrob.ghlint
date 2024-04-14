@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.reporting.sarif
 
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.GHLINT_VERSION
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
@@ -53,7 +54,8 @@ internal class IntegrationTestRule : Rule {
 
 	override val issues: List<Issue> = listOf(TestIssue)
 
-	override fun check(workflow: Workflow): List<Finding> {
+	override fun check(file: File): List<Finding> {
+		val workflow = file.content as Workflow
 		val job = workflow.jobs["test"] ?: return emptyList()
 		return listOf(
 			Finding(

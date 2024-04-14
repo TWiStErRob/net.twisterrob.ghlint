@@ -1,17 +1,21 @@
 package net.twisterrob.ghlint
 
-import net.twisterrob.ghlint.analysis.Validator
-import net.twisterrob.ghlint.model.RawFile
+import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.reporting.GitHubCommandReporter
 import net.twisterrob.ghlint.reporting.TextReporter
 import net.twisterrob.ghlint.reporting.sarif.SarifReporter
+import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rules.DefaultRuleSet
+import net.twisterrob.ghlint.ruleset.RuleSet
 import net.twisterrob.ghlint.yaml.SnakeYaml
+import org.jetbrains.annotations.TestOnly
 import kotlin.io.path.readText
 
 public class GHLint {
 
+	// TODO feels like an abstraction is missing in this long method, but it's not clear what it is.
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	public fun run(config: Configuration): Int {
 		if (config.isVerbose) {
@@ -19,20 +23,20 @@ public class GHLint {
 				println("Received ${it} for analysis against JSON-schema and rules.")
 			}
 		}
+
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
-		val validationResults = Validator().validateWorkflows(files)
-		val ruleSets = listOf(DefaultRuleSet())
-		val analysisResults = SnakeYaml.analyze(files, ruleSets)
-		val allFindings = validationResults + analysisResults
+		val ruleSets = listOf(BuiltInRuleSet(), DefaultRuleSet())
+		val findings = analyze(files, ruleSets)
+
 		if (config.isVerbose) {
-			println("There are ${allFindings.size} findings.")
+			println("There are ${findings.size} findings.")
 		}
 
 		if (config.isReportConsole) {
 			if (config.isVerbose) {
 				println("Reporting findings to console.")
 			}
-			TextReporter(System.out).report(allFindings)
+			TextReporter(System.out).report(findings)
 		}
 		if (config.isReportGitHubCommands) {
 			if (config.isVerbose) {
@@ -41,7 +45,7 @@ public class GHLint {
 			GitHubCommandReporter(
 				repositoryRoot = config.root,
 				output = System.out,
-			).report(allFindings)
+			).report(findings)
 		}
 		config.sarifReportLocation?.run {
 			if (config.isVerbose) {
@@ -49,15 +53,21 @@ public class GHLint {
 			}
 			SarifReporter.report(
 				ruleSets = ruleSets,
-				findings = allFindings,
+				findings = findings,
 				target = this,
 				rootDir = config.root,
 			)
 		}
-		val code = if (config.isReportExitCode && allFindings.isNotEmpty()) 1 else 0
+		val code = if (config.isReportExitCode && findings.isNotEmpty()) 1 else 0
 		if (config.isVerbose) {
 			println("Exiting with code ${code}.")
 		}
 		return code
+	}
+
+	@TestOnly
+	internal fun analyze(files: List<RawFile>, ruleSets: List<RuleSet>): List<Finding> {
+		val loadedFiles = files.map(SnakeYaml::load)
+		return Analyzer().analyze(loadedFiles, ruleSets)
 	}
 }

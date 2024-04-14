@@ -12,7 +12,8 @@ import org.snakeyaml.engine.v2.nodes.Tag
 import java.math.BigDecimal
 import java.math.BigInteger
 
-public class SnakeYamlJsonNode private constructor(
+@Suppress("RedundantVisibilityModifier", "detekt.NestedClassesVisibility")
+internal class SnakeYamlJsonNode private constructor(
 	private val factory: Factory,
 	private val node: Node,
 	private val jsonPointer: String,
@@ -55,7 +56,7 @@ public class SnakeYamlJsonNode private constructor(
 				node is Node && (isLiteral(node) || isArray(node) || isObject(node)) ->
 					SnakeYamlJsonNode(this, node)
 
-				else -> error("Cannot wrap object which is not a Sequence, Mapping or Scalar.")
+				else -> error("Cannot wrap object (${node}) which is not a Sequence, Mapping or Scalar.")
 			}
 
 		public override fun create(rawJson: String): JsonNode =

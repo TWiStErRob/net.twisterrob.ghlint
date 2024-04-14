@@ -3,9 +3,8 @@ package net.twisterrob.ghlint.model
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#workflows
  */
-public interface Action : Component {
+public interface Action : Component, Content {
 
-	public val parent: RawFile
 	public val name: String
 	public val description: String
 	public val inputs: Map<String, ActionInput>

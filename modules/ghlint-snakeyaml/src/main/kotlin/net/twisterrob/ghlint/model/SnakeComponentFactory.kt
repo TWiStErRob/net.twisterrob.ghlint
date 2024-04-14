@@ -3,7 +3,6 @@ package net.twisterrob.ghlint.model
 import net.twisterrob.ghlint.model.Action.ActionInput
 import net.twisterrob.ghlint.model.SnakeJob.SnakeNormalJob
 import net.twisterrob.ghlint.model.SnakeJob.SnakeReusableWorkflowCallJob
-import net.twisterrob.ghlint.yaml.SnakeYaml
 import net.twisterrob.ghlint.yaml.getDash
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -11,14 +10,99 @@ import net.twisterrob.ghlint.yaml.getRequiredKey
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
+import org.snakeyaml.engine.v2.api.LoadSettings
+import org.snakeyaml.engine.v2.common.ScalarStyle
+import org.snakeyaml.engine.v2.composer.Composer
+import org.snakeyaml.engine.v2.exceptions.YamlEngineException
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
+import org.snakeyaml.engine.v2.nodes.Tag
+import org.snakeyaml.engine.v2.parser.ParserImpl
+import org.snakeyaml.engine.v2.scanner.StreamReader
+import org.snakeyaml.engine.v2.schema.JsonSchema
+import kotlin.jvm.optionals.getOrElse
 
+@Suppress("detekt.TooManyFunctions")
 public class SnakeComponentFactory {
 
-	public fun createWorkflow(file: RawFile): Workflow {
-		val node = SnakeYaml.load(file.content) as MappingNode
+	public fun loadYaml(file: RawFile): Node {
+		val settings = LoadSettings.builder()
+			.setParseComments(true)
+			// Load the whole YAML into one buffer to prevent problems with getDash().
+			.setBufferSize(file.content.length.coerceAtLeast(1))
+			.setSchema(JsonSchema())
+			.build()
+		val node = try {
+			Composer(settings, ParserImpl(settings, StreamReader(settings, file.content))).singleNode
+				.getOrElse { ScalarNode(Tag.NULL, "", ScalarStyle.PLAIN) }
+		} catch (ex: YamlEngineException) {
+			throw IllegalArgumentException("Failed to parse YAML: ${ex.message ?: ex}", ex)
+		}
+		return node
+	}
+
+	public fun createFile(file: RawFile): File =
+		SnakeFile(file, this)
+
+	internal fun createContent(file: File, node: Node): Content =
+		when (file.location.inferType()) {
+			FileType.WORKFLOW ->
+				createWorkflowSafe(file, node)
+
+			FileType.ACTION ->
+				createActionSafe(file, node)
+
+			FileType.UNKNOWN ->
+				SnakeUnknownContent(
+					parent = file,
+					node = node,
+					error = IllegalArgumentException("Unknown file type of ${file.location.path}")
+				)
+		}
+
+	private fun createWorkflowSafe(file: File, node: Node): Content =
+		try {
+			if (node is MappingNode) {
+				createWorkflow(file, node)
+			} else {
+				SnakeErrorContent(
+					parent = file,
+					node = node,
+					// Intentionally redacting info to prevent TMI.
+					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
+				)
+			}
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
+			SnakeErrorContent(
+				parent = file,
+				node = node,
+				error = ex
+			)
+		}
+
+	private fun createActionSafe(file: File, node: Node): Content =
+		try {
+			if (node is MappingNode) {
+				createAction(file, node)
+			} else {
+				SnakeErrorContent(
+					parent = file,
+					node = node,
+					// Intentionally redacting info to prevent TMI.
+					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
+				)
+			}
+		} catch (@Suppress("detekt.TooGenericExceptionCaught") ex: Exception) {
+			SnakeErrorContent(
+				parent = file,
+				node = node,
+				error = ex
+			)
+		}
+
+	private fun createWorkflow(file: File, node: Node): Workflow {
+		node as MappingNode
 		return SnakeWorkflow(
 			factory = this,
 			parent = file,
@@ -89,8 +173,8 @@ public class SnakeComponentFactory {
 			node = node as MappingNode,
 		)
 
-	public fun createAction(file: RawFile): Action {
-		val node = SnakeYaml.load(file.content) as MappingNode
+	private fun createAction(file: File, node: Node): Action {
+		node as MappingNode
 		return SnakeAction(
 			factory = this,
 			parent = file,

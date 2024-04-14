@@ -11,7 +11,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeWorkflow internal constructor(
 	private val factory: SnakeComponentFactory,
-	override val parent: RawFile,
+	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
 ) : Workflow, HasSnakeNode<MappingNode> {

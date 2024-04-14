@@ -1,5 +1,7 @@
 import net.twisterrob.ghlint.build.dsl.LazyArgumentProvider
 
+import javax.inject.Inject
+
 plugins {
 	id("net.twisterrob.ghlint.library")
 }
@@ -7,6 +9,7 @@ plugins {
 dependencies {
 	implementation(projects.ghlintRules)
 	implementation(projects.ghlintSnakeyaml)
+	implementation(projects.ghlintJsonschema)
 	implementation(projects.ghlintCli)
 }
 
@@ -26,6 +29,10 @@ configurations {
 	consumable("generatedCliHelp")
 }
 
+interface FileSystemOpsInjected {
+	@Inject FileSystemOperations getFs()
+}
+
 def generateIssues = tasks.register("generateIssues", JavaExec.class) {
 	group = "documentation"
 	description = "Generates the CLI help for the website"
@@ -34,6 +41,8 @@ def generateIssues = tasks.register("generateIssues", JavaExec.class) {
 	classpath(sourceSets.main.runtimeClasspath)
 	outputs.dir(generatedIssues).withPropertyName("generatedFiles")
 	argumentProviders.add(new LazyArgumentProvider(generatedIssues))
+	def injected = project.objects.newInstance(FileSystemOpsInjected.class)
+	doFirst { injected.fs.delete { delete(generatedIssues) } }
 }
 
 def generateCliHelp = tasks.register("generateCliHelp", JavaExec.class) {
@@ -44,6 +53,8 @@ def generateCliHelp = tasks.register("generateCliHelp", JavaExec.class) {
 	classpath(sourceSets.main.runtimeClasspath)
 	outputs.dir(generatedCliHelp).withPropertyName("generatedFiles")
 	argumentProviders.add(new LazyArgumentProvider(generatedCliHelp))
+	def injected = project.objects.newInstance(FileSystemOpsInjected.class)
+	doFirst { injected.fs.delete { delete(generatedCliHelp) } }
 }
 
 artifacts {

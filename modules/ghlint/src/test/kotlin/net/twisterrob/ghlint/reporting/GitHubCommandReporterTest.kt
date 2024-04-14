@@ -1,13 +1,13 @@
 package net.twisterrob.ghlint.reporting
 
 import io.kotest.matchers.shouldBe
-import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.testing.testFinding
 import org.junit.jupiter.api.Test
-import java.io.File
+import java.io.File.separator
 import java.nio.file.Path
 
 private const val DOCS =
@@ -30,7 +30,7 @@ class GitHubCommandReporterTest {
 		reporter.report(findings)
 
 		output.toString() shouldBe """
-			::warning file=path${File.separator}to${File.separator}test.file,line=1,endLine=3,title=TestIssue::message${DOCS}
+			::warning file=path${separator}to${separator}test.file,line=1,endLine=3,title=TestIssue::message${DOCS}
 			
 		""".trimIndent()
 	}
@@ -113,7 +113,7 @@ private class TestRule : Rule {
 
 	override val issues: List<Issue> = listOf(TestIssue)
 
-	override fun check(workflow: Workflow): List<Finding> =
+	override fun check(file: File): List<Finding> =
 		error("Should never be called.")
 
 	companion object {

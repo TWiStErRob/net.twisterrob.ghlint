@@ -62,6 +62,31 @@ public fun singleFinding(issue: String, message: String): Matcher<List<Finding>>
 	haveSize<Finding>(1) and aFinding(issue, message)
 
 /**
+ * Matches findings containing exactly one specific issue.
+ * It fails if there are no or more findings, or if there's a mismatch.
+ *
+ * Recommended usage:
+ * ```
+ * results shouldHave singleFinding(
+ *     "IssueName1",
+ *     "test.yml/3:2-3:6",
+ *     "Finding message line 3."
+ * )
+ * ```
+ *
+ * Tip: if there's an extra finding that you don't care about, filter them first:
+ * ```
+ * results.filterNot { it.issue.id == "DontCareAboutThis" } shouldHave singleFinding(
+ *     "NegativeStatusCheck",
+ *     "Step[#0] in Job[test] uses a negative condition."
+ * )
+ * ```
+ * but it's recommended to use [exactFindings] wherever possible.
+ */
+public fun singleFinding(issue: String, location: String, message: String): Matcher<List<Finding>> =
+	haveSize<Finding>(1) and aFinding(issue, location, message)
+
+/**
  * Matches a specific finding in the list.
  * It fails if there is no finding with matching attributes.
  *
@@ -77,6 +102,29 @@ public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
 			{ "Could not find \"${issue}: ${message}\" among findings:\n${value.testString()}" },
 			@Suppress("detekt.StringShouldBeRawString")
 			{ "Collection should not have \"${issue}: ${message}\", but contained:\n${value.testString()}" }
+		)
+	}
+
+/**
+ * Matches a specific finding in the list.
+ * It fails if there is no finding with matching attributes.
+ *
+ * Recommended usage: do not use directly with [shouldHave].
+ *  * If you're matching one finding, use [singleFinding] instead.
+ *  * If you're matching multiple findings, use [exactFindings] instead.
+ *
+ * @see aLocation
+ */
+public fun aFinding(issue: String, location: String, message: String): Matcher<List<Finding>> =
+	object : Matcher<List<Finding>> {
+		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
+			value.singleOrNull {
+				it.issue.id == issue && it.message == message && it.location.testString() == location
+			} != null,
+			@Suppress("detekt.StringShouldBeRawString")
+			{ "Could not find \"${issue}: ${message}\" at ${location} among findings:\n${value.testString()}" },
+			@Suppress("detekt.StringShouldBeRawString")
+			{ "Collection should not have \"${issue}: ${message}\" at ${location}, but contained:\n${value.testString()}" }
 		)
 	}
 
@@ -114,7 +162,7 @@ internal fun onlyFindings(issue: String): Matcher<List<Finding>> =
 	object : Matcher<List<Finding>> {
 		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 			value.isNotEmpty() && value.all { it.issue.id == issue },
-			{ "Could not find ${issue} among findings:\n${value.testString()}" },
-			{ "Collection should not have ${issue}, but contained:\n${value.testString()}" }
+			{ "Could not find exclusively `${issue}`s among findings:\n${value.testString()}" },
+			{ "Collection should not have `${issue}`s, but contained:\n${value.testString()}" }
 		)
 	}

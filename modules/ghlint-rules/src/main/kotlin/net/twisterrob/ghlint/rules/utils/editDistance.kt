@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.rules.utils
 
-@Suppress("CognitiveComplexMethod", "NestedBlockDepth") // Yes.
+@Suppress("detekt.CognitiveComplexMethod", "detekt.NestedBlockDepth") // Yes.
 internal fun editDistance(string1: String, string2: String): Int {
 	val editDistance = Array(1 + string1.length) { IntArray(1 + string2.length) }
 	for (length2 in 0..string2.length) {

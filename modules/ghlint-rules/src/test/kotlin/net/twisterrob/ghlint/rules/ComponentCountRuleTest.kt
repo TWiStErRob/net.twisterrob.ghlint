@@ -157,7 +157,7 @@ class ComponentCountRuleTest {
 	}
 
 	@Nested
-	@Suppress("TrimMultilineRawString") // Verifying exact indentations.
+	@Suppress("detekt.TrimMultilineRawString") // Verifying exact indentations.
 	inner class GenerateTest {
 
 		@Test fun `generate single step`() {

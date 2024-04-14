@@ -21,11 +21,10 @@ class WorkflowTest {
 				"file-name.yaml",
 			]
 		)
-		fun `strips extension`(fileName: String) {
-			val wf = mock<Workflow>()
-			whenever(wf.parent).thenReturn(RawFile(FileLocation(fileName), ""))
+		fun `strips extension`(path: String) {
+			val workflow: Workflow = createWorkflow(path)
 
-			wf.id shouldBe "file-name"
+			workflow.id shouldBe "file-name"
 		}
 
 		@ParameterizedTest
@@ -35,11 +34,35 @@ class WorkflowTest {
 			"file-name.yaml.yml, file-name.yaml",
 			"file-name.yaml.yaml, file-name.yaml",
 		)
-		fun `keeps duplicate extension`(fileName: String, expectedId: String) {
-			val wf = mock<Workflow>()
-			whenever(wf.parent).thenReturn(RawFile(FileLocation(fileName), ""))
+		fun `keeps duplicate extension`(path: String, expectedId: String) {
+			val workflow: Workflow = createWorkflow(path)
 
-			wf.id shouldBe expectedId
+			workflow.id shouldBe expectedId
+		}
+
+		@ParameterizedTest
+		@CsvSource(
+			"folder/file-name.yaml, file-name",
+			".github/workflows/file-name, file-name",
+			".github/workflows/file-name.yml, file-name",
+			".github/workflows/file-name.yaml.yml, file-name.yaml",
+			"/other/folder/file-name.yaml, file-name",
+			"../super/folder/file-name.yml, file-name",
+		)
+		fun `path doesn't play in ID`(path: String, expectedId: String) {
+			val workflow: Workflow = createWorkflow(path)
+
+			workflow.id shouldBe expectedId
+		}
+
+		private fun createWorkflow(path: String): Workflow {
+			val file: File = mock()
+			whenever(file.location.path).thenReturn(path)
+
+			val workflow: Workflow = mock()
+			whenever(workflow.parent).thenReturn(file)
+
+			return workflow
 		}
 	}
 }
