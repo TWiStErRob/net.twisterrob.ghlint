@@ -23,6 +23,8 @@ import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import org.snakeyaml.engine.v2.schema.JsonSchema
+import java.nio.file.Path
+import kotlin.io.path.name
 import kotlin.jvm.optionals.getOrElse
 
 @Suppress("detekt.TooManyFunctions")
@@ -52,22 +54,25 @@ public class SnakeComponentFactory {
 
 	// STOPSHIP separate? part of model?
 	public enum class FileType {
+
 		ACTION,
 		WORKFLOW,
 		UNKNOWN,
 	}
 
-	internal fun inferType(file: File, @Suppress("UNUSED_PARAMETER") node: Node): FileType =
-		when {
-			file.location.name == "action.yml" && !file.location.path.endsWith(".github/workflows/action.yml") ->
+	private fun inferType(file: File, @Suppress("UNUSED_PARAMETER") node: Node): FileType {
+		val fileName = file.location.name.lowercase()
+		return when {
+			(fileName == "action.yml" || fileName == "action.yaml") && !file.location.isInGitHubWorkflows ->
 				FileType.ACTION
 
-			file.location.name.endsWith(".yml") ->
+			fileName.endsWith(".yml") || fileName.endsWith(".yaml") ->
 				FileType.WORKFLOW
 
 			else ->
 				FileType.UNKNOWN
 		}
+	}
 
 	internal fun createContent(file: File, node: Node): Content =
 		when (val type = inferType(file, node)) {
@@ -242,3 +247,8 @@ public class SnakeComponentFactory {
 			error("Unsupported secrets: ${it}")
 		}
 }
+
+private val FileLocation.isInGitHubWorkflows: Boolean
+	get() =
+		// !endsWith(".github/workflows/action.y[a]ml"), but in a way that supports running in the folder.
+		Path.of(path).run { parent.parent.name == ".github" && parent.name == "workflows" }
