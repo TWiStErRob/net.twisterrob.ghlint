@@ -13,3 +13,28 @@ public value class FileLocation(
 
 public val FileLocation.name: String
 	get() = Path.of(path).name
+
+public enum class FileType {
+	ACTION,
+	WORKFLOW,
+	UNKNOWN,
+}
+
+public fun FileLocation.inferType(): FileType {
+	val fileName = name.lowercase()
+	return when {
+		(fileName == "action.yml" || fileName == "action.yaml") && !isInGitHubWorkflows ->
+			FileType.ACTION
+
+		fileName.endsWith(".yml") || fileName.endsWith(".yaml") ->
+			FileType.WORKFLOW
+
+		else ->
+			FileType.UNKNOWN
+	}
+}
+
+private val FileLocation.isInGitHubWorkflows: Boolean
+	get() =
+		// !endsWith(".github/workflows/action.y[a]ml"), but in a way that supports running in the folder.
+		Path.of(path).run { parent.parent.name == ".github" && parent.name == "workflows" }

@@ -2,11 +2,12 @@ package net.twisterrob.ghlint.analysis
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.FileType
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.SnakeAction
-import net.twisterrob.ghlint.model.SnakeComponentFactory
 import net.twisterrob.ghlint.model.SnakeWorkflow
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.inferType
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -41,10 +42,10 @@ internal class ValidationRule : Rule {
 				@Suppress("detekt.ElseCaseInsteadOfExhaustiveWhen") // REPORT False positive: InvalidContent is not sealed.
 				when (content) {
 					is SnakeErrorContent -> {
-						val type = when (content.inferredType) {
-							SnakeComponentFactory.FileType.WORKFLOW -> YamlValidationType.WORKFLOW
-							SnakeComponentFactory.FileType.ACTION -> YamlValidationType.ACTION
-							SnakeComponentFactory.FileType.UNKNOWN -> return emptyList()
+						val type = when (file.location.inferType()) {
+							FileType.WORKFLOW -> YamlValidationType.WORKFLOW
+							FileType.ACTION -> YamlValidationType.ACTION
+							FileType.UNKNOWN -> return emptyList()
 						}
 						YamlValidation.validate(content.node, type).toFindings(content.node, file) +
 								listOf(toFinding(content, YamlLoadError, file))

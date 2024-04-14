@@ -23,8 +23,6 @@ import org.snakeyaml.engine.v2.nodes.Tag
 import org.snakeyaml.engine.v2.parser.ParserImpl
 import org.snakeyaml.engine.v2.scanner.StreamReader
 import org.snakeyaml.engine.v2.schema.JsonSchema
-import java.nio.file.Path
-import kotlin.io.path.name
 import kotlin.jvm.optionals.getOrElse
 
 @Suppress("detekt.TooManyFunctions")
@@ -52,30 +50,8 @@ public class SnakeComponentFactory {
 	public fun createFile(file: RawFile): File =
 		SnakeFile(file, this)
 
-	// STOPSHIP separate? part of model?
-	public enum class FileType {
-
-		ACTION,
-		WORKFLOW,
-		UNKNOWN,
-	}
-
-	private fun inferType(file: File, @Suppress("UNUSED_PARAMETER") node: Node): FileType {
-		val fileName = file.location.name.lowercase()
-		return when {
-			(fileName == "action.yml" || fileName == "action.yaml") && !file.location.isInGitHubWorkflows ->
-				FileType.ACTION
-
-			fileName.endsWith(".yml") || fileName.endsWith(".yaml") ->
-				FileType.WORKFLOW
-
-			else ->
-				FileType.UNKNOWN
-		}
-	}
-
 	internal fun createContent(file: File, node: Node): Content =
-		when (val type = inferType(file, node)) {
+		when (file.location.inferType()) {
 			FileType.WORKFLOW ->
 				createWorkflowSafe(file, node)
 
@@ -86,7 +62,6 @@ public class SnakeComponentFactory {
 				SnakeUnknownContent(
 					parent = file,
 					node = node,
-					inferredType = type,
 					error = IllegalArgumentException("Unknown file type: ${file.location}")
 				)
 		}
@@ -99,7 +74,6 @@ public class SnakeComponentFactory {
 				SnakeErrorContent(
 					parent = file,
 					node = node,
-					inferredType = FileType.WORKFLOW,
 					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
 				)
 			}
@@ -107,7 +81,6 @@ public class SnakeComponentFactory {
 			SnakeErrorContent(
 				parent = file,
 				node = node,
-				inferredType = FileType.WORKFLOW,
 				error = ex
 			)
 		}
@@ -120,7 +93,6 @@ public class SnakeComponentFactory {
 				SnakeErrorContent(
 					parent = file,
 					node = node,
-					inferredType = FileType.ACTION,
 					error = IllegalArgumentException("Root node is not a mapping: ${node::class.java.simpleName}.")
 				)
 			}
@@ -128,7 +100,6 @@ public class SnakeComponentFactory {
 			SnakeErrorContent(
 				parent = file,
 				node = node,
-				inferredType = FileType.ACTION,
 				error = ex
 			)
 		}
@@ -247,8 +218,3 @@ public class SnakeComponentFactory {
 			error("Unsupported secrets: ${it}")
 		}
 }
-
-private val FileLocation.isInGitHubWorkflows: Boolean
-	get() =
-		// !endsWith(".github/workflows/action.y[a]ml"), but in a way that supports running in the folder.
-		Path.of(path).run { parent.parent.name == ".github" && parent.name == "workflows" }
