@@ -102,4 +102,45 @@ class EmptyEnvRuleTest {
 			"Step[#0] in Job[test] should not have empty env."
 		)
 	}
+
+	@Test fun `reports when step has empty env in action`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - uses: some/action@v1
+				      env: {}
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave singleFinding(
+			"EmptyStepEnv",
+			"""Step[some/action@v1] in Action["Test"] should not have empty env."""
+		)
+	}
+
+	@Test fun `reports when run step has empty env in action`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test"
+				      shell: bash 
+				      env: {}
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave singleFinding(
+			"EmptyStepEnv",
+			"""Step[#0] in Action["Test"] should not have empty env."""
+		)
+	}
 }
