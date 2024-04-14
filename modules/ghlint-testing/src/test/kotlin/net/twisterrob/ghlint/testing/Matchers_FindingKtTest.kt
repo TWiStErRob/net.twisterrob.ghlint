@@ -257,6 +257,225 @@ class Matchers_FindingKtTest {
 	}
 
 	@Nested
+	inner class `singleFinding with location Test` {
+
+		@Nested
+		inner class positive {
+
+			@Test fun `exact match passes`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+				)
+
+				results shouldHave singleFinding(
+					TestRule.TestIssue1.id,
+					"test.file/1:2-3:4",
+					"message"
+				)
+			}
+
+			@Test fun `different location fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						TestRule.TestIssue1.id,
+						"file.test/5:6-7:8",
+						"not the right message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Could not find "TestIssue1: not the right message" at file.test/5:6-7:8 among findings:
+					Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					)
+				""".trimIndent()
+			}
+
+			@Test fun `different message fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						TestRule.TestIssue1.id,
+						"test.file/1:2-3:4",
+						"not the right message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Could not find "TestIssue1: not the right message" at test.file/1:2-3:4 among findings:
+					Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					)
+				""".trimIndent()
+			}
+
+			@Test fun `different issue fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						"WrongIssueId",
+						"test.file/1:2-3:4",
+						"message",
+					)
+				}
+
+				failure shouldHaveMessage """
+					Could not find "WrongIssueId: message" at test.file/1:2-3:4 among findings:
+					Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					)
+				""".trimIndent()
+			}
+
+			@Test fun `mismatching details fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						"WrongIssueId",
+						"test.file/5:6-7:8",
+						"not the right message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Could not find "WrongIssueId: not the right message" at test.file/5:6-7:8 among findings:
+					Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					)
+				""".trimIndent()
+			}
+
+			@Test fun `empty fails`() {
+				val results: List<Finding> = emptyList()
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						TestRule.TestIssue1.id,
+						"test.file/1:2-3:4",
+						"message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Collection should have size 1 but has size 0. Values: []
+				""".trimIndent()
+			}
+
+			@Test fun `duplicate fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						TestRule.TestIssue1.id,
+						"test.file/1:2-3:4",
+						"message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Collection should have size 1 but has size 2. Values: [Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					), Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					)]
+				""".trimIndent()
+			}
+
+			@Test fun `multiple partial match fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue1, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						TestRule.TestIssue1.id,
+						"test.file/1:2-3:4",
+						"message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Collection should have size 1 but has size 2. Values: [Finding(
+						rule=toString of TestRule,
+						issue=TestIssue1,
+						location=test.file/1:2-3:4,
+						message=message
+					), Finding(
+						rule=toString of TestRule,
+						issue=TestIssue2,
+						location=test.file/1:2-3:4,
+						message=message
+					)]
+				""".trimIndent()
+			}
+
+			@Test fun `multiple different findings fails`() {
+				val results: List<Finding> = listOf(
+					testFinding(TestRule(), TestRule.TestIssue2, message = "message"),
+					testFinding(TestRule(), TestRule.TestIssue3, message = "message"),
+				)
+
+				val failure = shouldThrow<AssertionError> {
+					results shouldHave singleFinding(
+						TestRule.TestIssue1.id,
+						"test.file/1:2-3:4",
+						"message"
+					)
+				}
+
+				failure shouldHaveMessage """
+					Collection should have size 1 but has size 2. Values: [Finding(
+						rule=toString of TestRule,
+						issue=TestIssue2,
+						location=test.file/1:2-3:4,
+						message=message
+					), Finding(
+						rule=toString of TestRule,
+						issue=TestIssue3,
+						location=test.file/1:2-3:4,
+						message=message
+					)]
+				""".trimIndent()
+			}
+		}
+	}
+
+	@Nested
 	inner class `exactFindings Test` {
 
 		@Nested

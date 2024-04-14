@@ -30,5 +30,5 @@ public fun aLocation(expected: Location): Matcher<Location> =
 		)
 	}
 
-private fun Location.testString(): String =
-	"${file.path}@${start.line.number}:${start.column.number}-${end.line.number}:${end.column.number}"
+internal fun Location.testString(): String =
+	"${file.path}/${start.line.number}:${start.column.number}-${end.line.number}:${end.column.number}"

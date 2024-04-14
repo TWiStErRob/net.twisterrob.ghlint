@@ -117,12 +117,14 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
+					location = "test-invalid1.yml/1:1-1:9",
 					message = "Object does not have some of the required properties [[jobs]] ()"
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					message = "File test-invalid1.yml could not be parsed: " +
-							"java.lang.IllegalStateException: Missing required key: jobs in [on]"
+					location = "test-invalid1.yml/1:1-1:8",
+					message = "File test-invalid1.yml could not be parsed: "
+							+ "java.lang.IllegalStateException: Missing required key: jobs in [on]"
 				),
 			)
 		}
@@ -132,6 +134,7 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
+				location = "test-invalid2.yml/2:7-2:9",
 				message = "Object has less than 1 properties (/jobs)"
 			)
 		}
@@ -142,15 +145,18 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
+					location = "test-invalid1.yml/1:1-1:9",
 					message = "Object does not have some of the required properties [[jobs]] ()"
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					message = "File test-invalid1.yml could not be parsed: " +
-							"java.lang.IllegalStateException: Missing required key: jobs in [on]"
+					location = "test-invalid1.yml/1:1-1:8",
+					message = "File test-invalid1.yml could not be parsed: "
+							+ "java.lang.IllegalStateException: Missing required key: jobs in [on]"
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
+					location = "test-invalid2.yml/2:7-2:9",
 					message = "Object has less than 1 properties (/jobs)"
 				),
 			)
@@ -164,16 +170,17 @@ class GHLintTest {
 
 			val results = analyze(testFile)
 
-
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
+					location = "empty.yml/1:1-1:1",
 					message = "Value is [null] but should be [object] ()"
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					message = "File empty.yml could not be parsed: " +
-							"java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
+					location = "empty.yml/1:1-1:0",
+					message = "File empty.yml could not be parsed: "
+							+ "java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
 				),
 			)
 		}
@@ -188,13 +195,15 @@ class GHLintTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"JsonSchemaValidation",
-					"Value is [null] but should be [object] ()"
+					issue = "JsonSchemaValidation",
+					location = "newline.yml/1:1-1:1",
+					message = "Value is [null] but should be [object] ()"
 				),
 				aFinding(
-					"YamlLoadError",
-					"File newline.yml could not be parsed: " +
-							"java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
+					issue = "YamlLoadError",
+					location = "newline.yml/1:1-2:0",
+					message = "File newline.yml could not be parsed: "
+							+ "java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode."
 				),
 			)
 		}
@@ -204,6 +213,7 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "YamlSyntaxError",
+				location = "tabs.yml/1:1-1:2",
 				message = errorFileMessage
 			)
 		}
@@ -214,16 +224,19 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "YamlSyntaxError",
+					location = "tabs.yml/1:1-1:2",
 					message = errorFileMessage
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
+					location = "test-invalid1.yml/1:1-1:9",
 					message = "Object does not have some of the required properties [[jobs]] ()"
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					message = "File test-invalid1.yml could not be parsed: " +
-							"java.lang.IllegalStateException: Missing required key: jobs in [on]"
+					location = "test-invalid1.yml/1:1-1:8",
+					message = "File test-invalid1.yml could not be parsed: "
+							+ "java.lang.IllegalStateException: Missing required key: jobs in [on]"
 				),
 			)
 		}

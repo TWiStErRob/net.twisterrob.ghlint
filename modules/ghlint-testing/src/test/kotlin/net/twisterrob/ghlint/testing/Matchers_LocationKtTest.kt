@@ -60,7 +60,7 @@ class Matchers_LocationKtTest {
 					end = Position(LineNumber(3), ColumnNumber(4)),
 				)
 
-				shouldThrowMessage("Location test1.file@1:2-3:4 should be test2.file@1:2-3:4") {
+				shouldThrowMessage("Location test1.file/1:2-3:4 should be test2.file/1:2-3:4") {
 					location1 shouldBe aLocation(location2)
 				}
 			}
@@ -77,7 +77,7 @@ class Matchers_LocationKtTest {
 					end = Position(LineNumber(3), ColumnNumber(4)),
 				)
 
-				shouldThrowMessage("Location test.file@1:2-3:4 should be test.file@5:2-3:4") {
+				shouldThrowMessage("Location test.file/1:2-3:4 should be test.file/5:2-3:4") {
 					location1 shouldBe aLocation(location2)
 				}
 			}
@@ -94,7 +94,7 @@ class Matchers_LocationKtTest {
 					end = Position(LineNumber(3), ColumnNumber(4)),
 				)
 
-				shouldThrowMessage("Location test.file@1:2-3:4 should be test.file@1:5-3:4") {
+				shouldThrowMessage("Location test.file/1:2-3:4 should be test.file/1:5-3:4") {
 					location1 shouldBe aLocation(location2)
 				}
 			}
@@ -111,7 +111,7 @@ class Matchers_LocationKtTest {
 					end = Position(LineNumber(5), ColumnNumber(4)),
 				)
 
-				shouldThrowMessage("Location test.file@1:2-3:4 should be test.file@1:2-5:4") {
+				shouldThrowMessage("Location test.file/1:2-3:4 should be test.file/1:2-5:4") {
 					location1 shouldBe aLocation(location2)
 				}
 			}
@@ -128,7 +128,7 @@ class Matchers_LocationKtTest {
 					end = Position(LineNumber(3), ColumnNumber(5)),
 				)
 
-				shouldThrowMessage("Location test.file@1:2-3:4 should be test.file@1:2-3:5") {
+				shouldThrowMessage("Location test.file/1:2-3:4 should be test.file/1:2-3:5") {
 					location1 shouldBe aLocation(location2)
 				}
 			}
@@ -140,7 +140,7 @@ class Matchers_LocationKtTest {
 					end = Position(LineNumber(3), ColumnNumber(4)),
 				)
 
-				shouldThrowMessage("Location test.file@1:2-3:4 should not be test.file@1:2-3:4") {
+				shouldThrowMessage("Location test.file/1:2-3:4 should not be test.file/1:2-3:4") {
 					location shouldNotBe aLocation(location)
 				}
 			}
