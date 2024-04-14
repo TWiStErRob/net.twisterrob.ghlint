@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.WorkflowStep
@@ -7,10 +8,11 @@ import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class DoubleCurlyIfRule : VisitorRule, WorkflowVisitor {
+public class DoubleCurlyIfRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(DoubleCurlyIf)
 
@@ -22,6 +24,12 @@ public class DoubleCurlyIfRule : VisitorRule, WorkflowVisitor {
 
 	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		super.visitWorkflowStep(reporting, step)
+		val condition = step.`if` ?: return
+		validate(reporting, step, condition)
+	}
+
+	override fun visitActionStep(reporting: Reporting, step: ActionStep) {
+		super.visitActionStep(reporting, step)
 		val condition = step.`if` ?: return
 		validate(reporting, step, condition)
 	}
