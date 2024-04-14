@@ -1,7 +1,9 @@
 package net.twisterrob.ghlint.model
 
+import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -9,6 +11,35 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Path
 
 class FileLocationTest {
+
+	@Nested
+	inner class `validation at creation` {
+
+		@ValueSource(
+			strings = [
+				" ",
+				"a",
+				"a/b",
+				"abc.def",
+				".",
+				"..",
+				"../a",
+			]
+		)
+		@ParameterizedTest
+		fun `valid paths`(path: String) {
+			val subject = FileLocation(path)
+
+			subject.path shouldBe path
+		}
+
+		@Test
+		fun `empty path is invalid`() {
+			shouldThrowMessage("Path must not be empty.") {
+				FileLocation("")
+			}
+		}
+	}
 
 	@Nested
 	inner class `name Test` {

@@ -124,7 +124,7 @@ class GHLintTest {
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:8",
+					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
@@ -160,7 +160,7 @@ class GHLintTest {
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:8",
+					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
@@ -196,7 +196,7 @@ class GHLintTest {
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "empty.yml/1:1-1:0",
+					location = "empty.yml/1:1-1:1",
 					message = """
 						File empty.yml could not be loaded:
 						```
@@ -225,7 +225,7 @@ class GHLintTest {
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "newline.yml/1:1-2:0",
+					location = "newline.yml/1:1-2:1",
 					message = """
 						File newline.yml could not be loaded:
 						```
@@ -241,7 +241,7 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "YamlSyntaxError",
-				location = "tabs.yml/1:1-1:2",
+				location = "tabs.yml/1:1-1:3",
 				message = errorFileMessage
 			)
 		}
@@ -252,7 +252,7 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "YamlSyntaxError",
-					location = "tabs.yml/1:1-1:2",
+					location = "tabs.yml/1:1-1:3",
 					message = errorFileMessage
 				),
 				aFinding(
@@ -264,7 +264,7 @@ class GHLintTest {
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:8",
+					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
