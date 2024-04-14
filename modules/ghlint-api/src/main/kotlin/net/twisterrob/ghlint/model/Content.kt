@@ -32,7 +32,7 @@ private val Content.wholeFile: Location
 			start = Position(LineNumber(1), ColumnNumber(1)),
 			end = Position(
 				LineNumber(lines.count()),
-				ColumnNumber(lines.last().count())
+				ColumnNumber(lines.last().count() + 1)
 			),
 		)
 	}

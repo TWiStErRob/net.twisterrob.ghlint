@@ -24,7 +24,7 @@ class InvalidContentTest {
 			Location(
 				file = file.location,
 				start = Position(LineNumber(1), ColumnNumber(1)),
-				end = Position(LineNumber(1), ColumnNumber(0)),
+				end = Position(LineNumber(1), ColumnNumber(1)),
 			)
 		)
 	}
@@ -45,7 +45,7 @@ class InvalidContentTest {
 			Location(
 				file = file.location,
 				start = Position(LineNumber(1), ColumnNumber(1)),
-				end = Position(LineNumber(1), ColumnNumber(31)),
+				end = Position(LineNumber(1), ColumnNumber(32)),
 			)
 		)
 	}
@@ -68,7 +68,7 @@ class InvalidContentTest {
 			Location(
 				file = file.location,
 				start = Position(LineNumber(1), ColumnNumber(1)),
-				end = Position(LineNumber(3), ColumnNumber(13)),
+				end = Position(LineNumber(3), ColumnNumber(14)),
 			)
 		)
 	}
