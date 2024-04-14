@@ -44,5 +44,5 @@ private val Step.identifier: String
 private val ActionStep.identifier: String
 	get() = this.id
 		?: this.name?.let { "\"${it}\"" }
-		?: (this as? Step.Uses)?.run { uses.uses }
+		?: (this as? ActionStep.Uses)?.run { uses.uses }
 		?: "#${this.index.value}"
