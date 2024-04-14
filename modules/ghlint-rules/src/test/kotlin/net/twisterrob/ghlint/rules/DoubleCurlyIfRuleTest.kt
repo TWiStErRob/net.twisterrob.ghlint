@@ -138,9 +138,9 @@ class DoubleCurlyIfRuleTest {
 				"""
 					jobs:
 					  test:
-					    if: ${'$'}{{ ${condition} }}
 					    steps:
 					      - run: echo "Test"
+					        if: ${'$'}{{ ${condition} }}
 				""".trimIndent()
 			)
 
