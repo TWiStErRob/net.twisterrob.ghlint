@@ -23,7 +23,6 @@ class InvalidContentTest {
 		subject.location shouldBe aLocation(
 			Location(
 				file = file.location,
-				// TODO these look strange, does it work in Sarif?
 				start = Position(LineNumber(1), ColumnNumber(1)),
 				end = Position(LineNumber(1), ColumnNumber(0)),
 			)
