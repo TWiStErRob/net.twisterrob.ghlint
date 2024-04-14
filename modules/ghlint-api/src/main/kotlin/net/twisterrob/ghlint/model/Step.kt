@@ -26,7 +26,8 @@ public sealed interface Step : Component {
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val run: String
 		public val shell: String?
-		public val env: Map<String, String>?
+		public val workingDirectory: String?
+		public val env: Map<String, String>? // STOPSHIP move to parent?
 
 		public companion object
 	}
@@ -46,7 +47,7 @@ public sealed interface Step : Component {
 	 * <action> ::= <owner>/<repository>(/<path>)?
 	 * ```
 	 */
-	public interface UsesAction {
+	public interface UsesAction { // TODO docker? local?
 
 		public val uses: String
 		public val versionComment: String?

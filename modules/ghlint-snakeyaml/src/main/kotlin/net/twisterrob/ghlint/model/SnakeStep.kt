@@ -38,6 +38,9 @@ public sealed class SnakeStep protected constructor(
 		override val shell: String?
 			get() = node.getOptionalText("shell")
 
+		override val workingDirectory: String?
+			get() = node.getOptionalText("working-directory")
+
 		override val env: Map<String, String>?
 			get() = node.getOptional("env")?.run { map.toTextMap() }
 	}
