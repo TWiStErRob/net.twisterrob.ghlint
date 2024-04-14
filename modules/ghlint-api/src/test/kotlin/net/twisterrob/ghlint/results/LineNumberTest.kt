@@ -11,9 +11,9 @@ class LineNumberTest {
 	@ValueSource(ints = [1, 42, Int.MAX_VALUE])
 	@ParameterizedTest
 	fun `created value works`(value: Int) {
-		val column = LineNumber(value)
+		val subject = LineNumber(value)
 
-		column.number shouldBe value
+		subject.number shouldBe value
 	}
 
 	@Test fun `0 is invalid`() {

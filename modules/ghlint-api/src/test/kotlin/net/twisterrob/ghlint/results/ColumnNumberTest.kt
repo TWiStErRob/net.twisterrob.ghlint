@@ -11,9 +11,9 @@ class ColumnNumberTest {
 	@ValueSource(ints = [1, 42, Int.MAX_VALUE])
 	@ParameterizedTest
 	fun `created value works`(value: Int) {
-		val column = ColumnNumber(value)
+		val subject = ColumnNumber(value)
 
-		column.number shouldBe value
+		subject.number shouldBe value
 	}
 
 	@Test fun `0 is invalid`() {
