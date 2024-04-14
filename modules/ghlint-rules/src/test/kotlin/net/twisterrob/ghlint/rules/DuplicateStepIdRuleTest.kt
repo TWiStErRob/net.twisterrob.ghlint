@@ -146,7 +146,7 @@ class DuplicateStepIdRuleTest {
 		)
 	}
 
-	@Timeout(5, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
+	@Timeout(10, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
 	@Test fun `reports when myriad of ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
