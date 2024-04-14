@@ -59,6 +59,23 @@ class EmptyEnvRuleTest {
 				jobs:
 				  test:
 				    steps:
+				      - uses: some/action@v1
+				        env:
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"EmptyStepEnv",
+			"Step[some/action@v1] in Job[test] should not have empty env."
+		)
+	}
+
+	@Test fun `reports when run step has empty env`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				jobs:
+				  test:
+				    steps:
 				      - run: echo "Test"
 				        env:
 			""".trimIndent()

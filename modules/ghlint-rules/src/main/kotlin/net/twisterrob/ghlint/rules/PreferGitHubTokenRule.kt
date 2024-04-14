@@ -31,8 +31,8 @@ public class PreferGitHubTokenRule : VisitorRule {
 		(job.secrets as? Job.Secrets.Explicit).check(reporting, "secret", job)
 	}
 
-	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitStep(reporting: Reporting, step: Step) {
+		super.visitStep(reporting, step)
 		step.env.check(reporting, "environment variable", step)
 	}
 

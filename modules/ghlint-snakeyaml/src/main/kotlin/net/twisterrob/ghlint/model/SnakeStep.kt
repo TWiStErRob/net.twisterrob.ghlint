@@ -24,6 +24,9 @@ public sealed class SnakeStep protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
+	override val env: Map<String, String>?
+		get() = node.getOptional("env")?.run { map.toTextMap() }
+
 	public class SnakeRun internal constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
@@ -40,9 +43,6 @@ public sealed class SnakeStep protected constructor(
 
 		override val workingDirectory: String?
 			get() = node.getOptionalText("working-directory")
-
-		override val env: Map<String, String>?
-			get() = node.getOptional("env")?.run { map.toTextMap() }
 	}
 
 	public class SnakeUses internal constructor(

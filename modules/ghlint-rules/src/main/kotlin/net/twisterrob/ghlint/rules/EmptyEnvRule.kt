@@ -27,8 +27,8 @@ public class EmptyEnvRule : VisitorRule {
 	}
 
 	@Suppress("detekt.NamedArguments")
-	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitStep(reporting: Reporting, step: Step) {
+		super.visitStep(reporting, step)
 		checkEmptyEnv(step, step.env, reporting, EmptyStepEnv)
 	}
 

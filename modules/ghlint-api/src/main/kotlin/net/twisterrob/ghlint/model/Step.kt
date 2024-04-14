@@ -12,6 +12,7 @@ public sealed interface Step : Component {
 
 	@Suppress("detekt.VariableNaming")
 	public val `if`: String?
+	public val env: Map<String, String>?
 
 	public companion object;
 
@@ -27,7 +28,6 @@ public sealed interface Step : Component {
 		public val run: String
 		public val shell: String?
 		public val workingDirectory: String?
-		public val env: Map<String, String>? // STOPSHIP move to parent?
 
 		public companion object
 	}
