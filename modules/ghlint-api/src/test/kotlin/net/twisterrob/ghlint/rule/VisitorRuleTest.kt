@@ -42,8 +42,8 @@ class VisitorRuleTest {
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
 		val finding: Finding = mock()
-		doAnswer {
-			it.getArgument<Reporting>(0).report(finding)
+		doAnswer { invocation ->
+			invocation.getArgument<Reporting>(0).report(finding)
 		}.whenever(subject).visitFile(any(), eq(file))
 
 		val results = subject.check(file)
@@ -59,9 +59,9 @@ class VisitorRuleTest {
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
 		val finding: Finding = mock()
-		doAnswer {
-			it.getArgument<Reporting>(0).report(finding)
-			it.getArgument<Reporting>(0).report(finding)
+		doAnswer { invocation ->
+			invocation.getArgument<Reporting>(0).report(finding)
+			invocation.getArgument<Reporting>(0).report(finding)
 		}.whenever(subject).visitFile(any(), eq(file))
 
 		val results = subject.check(file)
@@ -78,9 +78,9 @@ class VisitorRuleTest {
 		whenever(file.content).thenReturn(content)
 		val finding1: Finding = mock()
 		val finding2: Finding = mock()
-		doAnswer {
-			it.getArgument<Reporting>(0).report(finding1)
-			it.getArgument<Reporting>(0).report(finding2)
+		doAnswer { invocation ->
+			invocation.getArgument<Reporting>(0).report(finding1)
+			invocation.getArgument<Reporting>(0).report(finding2)
 		}.whenever(subject).visitFile(any(), eq(file))
 
 		val results = subject.check(file)
