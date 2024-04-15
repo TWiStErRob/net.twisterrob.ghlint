@@ -23,8 +23,10 @@ class FailFastActionsRuleTest {
 		fun `passes input is defined`(value: String) {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: actions/upload-artifact@v4
 					        with:
@@ -40,8 +42,10 @@ class FailFastActionsRuleTest {
 		@Test fun `reports when input is missing`() {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: actions/upload-artifact@v4
 					        with:
@@ -66,8 +70,10 @@ class FailFastActionsRuleTest {
 		fun `passes input is defined`(value: String) {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: EnricoMi/publish-unit-test-result-action@v2
 					        with:
@@ -83,8 +89,10 @@ class FailFastActionsRuleTest {
 		@Test fun `reports when input is missing`() {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: EnricoMi/publish-unit-test-result-action@v2
 					        with:
@@ -107,8 +115,10 @@ class FailFastActionsRuleTest {
 		@Test fun `reports when action is used`() {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: peter-evans/create-pull-request@v6
 				""".trimIndent()
@@ -123,8 +133,10 @@ class FailFastActionsRuleTest {
 		@Test fun `reports when action is used with hash`() {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50 # v6.0.0
 					        with:
@@ -148,8 +160,10 @@ class FailFastActionsRuleTest {
 		fun `passes input is defined`(value: String) {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: softprops/action-gh-release@v2
 					        with:
@@ -167,8 +181,10 @@ class FailFastActionsRuleTest {
 		@Test fun `reports when input is missing`() {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: softprops/action-gh-release@v2
 					        with:
@@ -188,8 +204,10 @@ class FailFastActionsRuleTest {
 		@Test fun `passes when input is not relevant`() {
 			val results = check<FailFastActionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: softprops/action-gh-release@v2
 				""".trimIndent()
@@ -202,8 +220,10 @@ class FailFastActionsRuleTest {
 	@Test fun `passes on other actions`() {
 		val results = check<FailFastActionsRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - name: "Simple action usage."
 				        uses: actions/checkout@v4

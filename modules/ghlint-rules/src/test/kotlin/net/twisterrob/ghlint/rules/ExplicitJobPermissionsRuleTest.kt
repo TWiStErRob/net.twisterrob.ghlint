@@ -35,8 +35,10 @@ class ExplicitJobPermissionsRuleTest {
 		@Test fun `reports when there are no permissions declared`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 				""".trimIndent()
@@ -51,8 +53,10 @@ class ExplicitJobPermissionsRuleTest {
 		@Test fun `passes explicit permissions on the job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    permissions:
 					      contents: read
 					    steps:
@@ -66,16 +70,20 @@ class ExplicitJobPermissionsRuleTest {
 		@Test fun `reports the job that has no permissions declared`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
+					on: push
 					jobs:
 					  has-perms-1:
+					    runs-on: test
 					    permissions:
 					      contents: read
 					    steps:
 					      - run: echo "Test"
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					  has-perms-2:
+					    runs-on: test
 					    permissions:
 					      contents: read
 					    steps:
@@ -92,8 +100,10 @@ class ExplicitJobPermissionsRuleTest {
 		@Test fun `passes explicit no permissions on the job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    permissions: {}
 					    steps:
 					      - run: echo "Test"
@@ -110,10 +120,12 @@ class ExplicitJobPermissionsRuleTest {
 		@Test fun `reports when permissions are on the workflow level`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
+					on: push
 					permissions:
 					  contents: read
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 				""".trimIndent()
@@ -128,8 +140,10 @@ class ExplicitJobPermissionsRuleTest {
 		@Test fun `passes when permissions are on the job level`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    permissions:
 					      contents: read
 					    steps:

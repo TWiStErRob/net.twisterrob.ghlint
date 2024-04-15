@@ -21,8 +21,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `passes when there's no variable usage`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 				""".trimIndent()
@@ -34,8 +36,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `passes when there's just an environment variable`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "${'$'}{VAR}"
 					        env:
@@ -49,8 +53,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `reports when there's possibility of shell injection`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "${'$'}{{ github.event.pull_request.title }}"
 				""".trimIndent()
@@ -69,8 +75,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `passes when there's no variable usage`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: actions/github-script@v7
 					        with:
@@ -84,8 +92,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `passes when there's just an environment variable`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: actions/github-script@v7
 					        env:
@@ -102,8 +112,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `passes when there's just string interpolation in JavaScript`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: actions/github-script@v7
 					        env:
@@ -120,8 +132,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `reports when there's possibility of script injection`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - uses: actions/github-script@v7
 					        with:
@@ -141,8 +155,10 @@ class ScriptInjectionRuleTest {
 		@Test fun `reports when there's possibility of script injection regardless of version`() {
 			val results = check<ScriptInjectionRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - name: "Get title"
 					        uses: actions/github-script@84724927e3e992f17768c17f57a47a85ea2a5160 # v7.0.1
@@ -164,11 +180,14 @@ class ScriptInjectionRuleTest {
 			val result = assertThrows<RuntimeException> {
 				check<ScriptInjectionRule>(
 					"""
+						on: push
 						jobs:
 						  test:
+						    runs-on: test
 						    steps:
 						      - uses: actions/github-script@v7
 						        with:
+						          scirpt: "Wrong"
 					""".trimIndent()
 				)
 			}
@@ -180,8 +199,10 @@ class ScriptInjectionRuleTest {
 			val result = assertThrows<RuntimeException> {
 				check<ScriptInjectionRule>(
 					"""
+						on: push
 						jobs:
 						  test:
+						    runs-on: test
 						    steps:
 						      - uses: actions/github-script@v7
 					""".trimIndent()

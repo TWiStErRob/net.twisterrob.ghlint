@@ -21,8 +21,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `passes when always is not in the condition`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: success() || failure()
@@ -35,8 +37,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `passes when always is explicitly expressed`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: success() || failure() || cancelled()
@@ -49,8 +53,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `fails when always is used`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: always()
@@ -66,8 +72,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `fails when always is used as part of a condition`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: github.context.value && (always() || failure())
@@ -87,8 +95,11 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `passes when always is not in the condition`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: success() || failure()
 					    steps:
 					      - run: echo "Test"
@@ -101,8 +112,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `passes when always is explicitly expressed`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: success() || failure() || cancelled()
 					    steps:
 					      - run: echo "Test"
@@ -115,8 +128,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `fails when always is used`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: always()
 					    steps:
 					      - run: echo "Test"
@@ -132,8 +147,10 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `fails when always is used as part of a condition`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: github.context.value && (always() || failure())
 					    steps:
 					      - run: echo "Test"
@@ -155,8 +172,10 @@ class ImplicitStatusCheckRuleTest {
 		fun `fails when negative status check condition is used`(function: String) {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: ${'$'}{{ ! ${function}() }}

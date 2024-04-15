@@ -15,8 +15,10 @@ class MissingShellRuleTest {
 	@Test fun `reports when step is missing a shell`() {
 		val results = check<MissingShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()
@@ -31,8 +33,10 @@ class MissingShellRuleTest {
 	@Test fun `passes when shell is declared on step`() {
 		val results = check<MissingShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
@@ -45,8 +49,10 @@ class MissingShellRuleTest {
 	@Test fun `passes when shell is declared on the job`() {
 		val results = check<MissingShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -62,11 +68,13 @@ class MissingShellRuleTest {
 	@Test fun `passes when shell is declared on the workflow`() {
 		val results = check<MissingShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()
@@ -78,14 +86,17 @@ class MissingShellRuleTest {
 	@Test fun `reports when step is declared on another job`() {
 		val results = check<MissingShellRule>(
 			"""
+				on: push
 				jobs:
 				  other:
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
 				    steps:
 				      - run: echo "Test"
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()

@@ -23,8 +23,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `passes when no ids are defined`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Example"
 				      - run: echo "Example"
@@ -38,14 +40,17 @@ class DuplicateStepIdRuleTest {
 	@Test fun `passes when same or similar ids are in different jobs`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test1:
+				    runs-on: test
 				    steps:
 				      - run: echo "Example"
 				        id: step-id
 				      - run: echo "Example"
 				        id: mystep1
 				  test2:
+				    runs-on: test
 				    steps:
 				      - run: echo "Example"
 				        id: step-id
@@ -60,8 +65,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `reports when ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Example"
 				        id: test1
@@ -82,9 +89,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `passes when ids are close, but different`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  repro:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    steps:
 				      - id: params
 				        run: 'true'
@@ -99,8 +107,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `reports when multiple ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Example"
 				        id: test1
@@ -130,8 +140,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `reports when ids are the same`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Example"
 				        id: test
@@ -150,8 +162,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `reports when myriad of ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:${
 						"\n" + (0..1000).joinToString(separator = "\n") {
 							"""
@@ -175,8 +189,10 @@ class DuplicateStepIdRuleTest {
 	@Test fun `reports when myriad of ids are the same`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:${
 						"\n" + (0..100).joinToString(separator = "\n") {
 							"""

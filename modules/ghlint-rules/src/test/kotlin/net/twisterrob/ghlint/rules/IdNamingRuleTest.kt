@@ -23,8 +23,10 @@ class IdNamingRuleTest {
 	@Test fun `passes when no step id`() {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent(),
@@ -38,8 +40,10 @@ class IdNamingRuleTest {
 	fun `passes when workflow id is lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent(),
@@ -54,8 +58,10 @@ class IdNamingRuleTest {
 	fun `passes when job id is lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  ${id}:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent(),
@@ -69,8 +75,10 @@ class IdNamingRuleTest {
 	fun `passes when step id is lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - id: ${id}
 				        run: echo "Test"
@@ -86,8 +94,10 @@ class IdNamingRuleTest {
 	fun `reports when workflow id is not lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent(),
@@ -105,8 +115,10 @@ class IdNamingRuleTest {
 	fun `reports when job id is not lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  ${id}:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent(),
@@ -123,8 +135,10 @@ class IdNamingRuleTest {
 	fun `reports when step id is not lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - id: ${id}
 				        run: echo "Test"

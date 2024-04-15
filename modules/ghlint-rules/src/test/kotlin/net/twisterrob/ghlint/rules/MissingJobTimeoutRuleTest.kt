@@ -15,8 +15,10 @@ class MissingJobTimeoutRuleTest {
 	@Test fun `passes when timeout is defined`() {
 		val results = check<MissingJobTimeoutRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    timeout-minutes: 5
 				    steps:
 				      - run: echo "Test"
@@ -29,8 +31,10 @@ class MissingJobTimeoutRuleTest {
 	@Test fun `passes when timeout is defined as expression`() {
 		val results = check<MissingJobTimeoutRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    timeout-minutes: ${'$'}{{ inputs.timeout-minutes }}
 				    steps:
 				      - run: echo "Test"
@@ -43,8 +47,10 @@ class MissingJobTimeoutRuleTest {
 	@Test fun `fails when timeout is missing`() {
 		val results = check<MissingJobTimeoutRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()
@@ -59,8 +65,10 @@ class MissingJobTimeoutRuleTest {
 	@Test fun `fails when timeout is missing even when a step has timeout`() {
 		val results = check<MissingJobTimeoutRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        timeout-minutes: 5
