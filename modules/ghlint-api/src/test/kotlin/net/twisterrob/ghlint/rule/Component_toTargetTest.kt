@@ -40,7 +40,7 @@ class Component_toTargetTest {
 
 		val result = component.toTarget()
 
-		result shouldBe """Action[Action Name]"""
+		result shouldBe """Action["Action Name"]"""
 	}
 
 	@Test fun `action with id as target`() {
@@ -114,7 +114,7 @@ class Component_toTargetTest {
 
 		val result = component.toTarget()
 
-		result shouldBe """Step[step-id] in Action[Action Name]"""
+		result shouldBe """Step[step-id] in Action["Action Name"]"""
 	}
 
 	@Test fun `action step with name as target`() {
@@ -127,7 +127,7 @@ class Component_toTargetTest {
 
 		val result = component.toTarget()
 
-		result shouldBe """Step["Step Name"] in Action[Action Name]"""
+		result shouldBe """Step["Step Name"] in Action["Action Name"]"""
 	}
 
 	@Test fun `action step with uses as target`() {
@@ -142,7 +142,7 @@ class Component_toTargetTest {
 
 		val result = component.toTarget()
 
-		result shouldBe """Step[action/name] in Action[Action Name]"""
+		result shouldBe """Step[action/name] in Action["Action Name"]"""
 	}
 
 	@Test fun `action step with index as target`() {
@@ -155,7 +155,7 @@ class Component_toTargetTest {
 
 		val result = component.toTarget()
 
-		result shouldBe """Step[#42] in Action[Action Name]"""
+		result shouldBe """Step[#42] in Action["Action Name"]"""
 	}
 
 	private fun actionWithName(name: String): Action {
