@@ -59,4 +59,13 @@ class VisitorTest {
 		verify(file, atLeastOnce()).content
 		verifyNoMoreInteractions(subject, reporting, file, content)
 	}
+
+	@Test fun `visitInvalidContent does nothing`() {
+		val target: InvalidContent = mock()
+
+		subject.visitInvalidContent(reporting, target)
+
+		verify(subject).visitInvalidContent(reporting, target)
+		verifyNoMoreInteractions(subject, reporting, target)
+	}
 }
