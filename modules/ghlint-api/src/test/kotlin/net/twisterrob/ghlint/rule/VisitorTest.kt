@@ -5,9 +5,8 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
@@ -20,41 +19,44 @@ class VisitorTest {
 	private val reporting: Reporting = mock()
 
 	@Test fun `workflow content is delegated`() {
-		doNothing().whenever(subject).visitWorkflow(any(), any())
 		val file: File = mock()
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
+		doNothing().whenever(subject).visitWorkflow(reporting, content)
 
 		subject.visitFile(reporting, file)
 
-		verify(subject).visitFile(eq(reporting), any())
-		verify(subject).visitWorkflow(eq(reporting), any())
-		verifyNoMoreInteractions(subject, reporting)
+		verify(subject).visitFile(reporting, file)
+		verify(subject).visitWorkflow(reporting, content)
+		verify(file, atLeastOnce()).content
+		verifyNoMoreInteractions(subject, reporting, file, content)
 	}
 
 	@Test fun `action content is delegated`() {
-		doNothing().whenever(subject).visitAction(any(), any())
 		val file: File = mock()
 		val content: Action = mock()
 		whenever(file.content).thenReturn(content)
+		doNothing().whenever(subject).visitAction(reporting, content)
 
 		subject.visitFile(reporting, file)
 
-		verify(subject).visitFile(eq(reporting), any())
-		verify(subject).visitAction(eq(reporting), any())
-		verifyNoMoreInteractions(subject, reporting)
+		verify(subject).visitFile(reporting, file)
+		verify(subject).visitAction(reporting, content)
+		verify(file, atLeastOnce()).content
+		verifyNoMoreInteractions(subject, reporting, file, content)
 	}
 
 	@Test fun `invalid content is delegated`() {
-		doNothing().whenever(subject).visitInvalidContent(any(), any())
 		val file: File = mock()
 		val content: InvalidContent = mock()
 		whenever(file.content).thenReturn(content)
+		doNothing().whenever(subject).visitInvalidContent(reporting, content)
 
 		subject.visitFile(reporting, file)
 
-		verify(subject).visitFile(eq(reporting), any())
-		verify(subject).visitInvalidContent(eq(reporting), any())
-		verifyNoMoreInteractions(subject, reporting)
+		verify(subject).visitFile(reporting, file)
+		verify(subject).visitInvalidContent(reporting, content)
+		verify(file, atLeastOnce()).content
+		verifyNoMoreInteractions(subject, reporting, file, content)
 	}
 }
