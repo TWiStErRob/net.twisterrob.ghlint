@@ -7,11 +7,12 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import org.junit.jupiter.api.Test
+import org.mockito.Answers
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.mock
+import org.mockito.Mockito.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
@@ -41,7 +42,7 @@ class VisitorRuleTest {
 		val file: File = mock()
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
-		val finding: Finding = mock()
+		val finding: Finding = mock(Answers.RETURNS_MOCKS)
 		doAnswer { invocation ->
 			invocation.getArgument<Reporting>(0).report(finding)
 		}.whenever(subject).visitFile(any(), eq(file))
@@ -58,7 +59,7 @@ class VisitorRuleTest {
 		val file: File = mock()
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
-		val finding: Finding = mock()
+		val finding: Finding = mock(Answers.RETURNS_MOCKS)
 		doAnswer { invocation ->
 			invocation.getArgument<Reporting>(0).report(finding)
 			invocation.getArgument<Reporting>(0).report(finding)
@@ -76,8 +77,8 @@ class VisitorRuleTest {
 		val file: File = mock()
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
-		val finding1: Finding = mock()
-		val finding2: Finding = mock()
+		val finding1: Finding = mock(Answers.RETURNS_MOCKS)
+		val finding2: Finding = mock(Answers.RETURNS_MOCKS)
 		doAnswer { invocation ->
 			invocation.getArgument<Reporting>(0).report(finding1)
 			invocation.getArgument<Reporting>(0).report(finding2)
