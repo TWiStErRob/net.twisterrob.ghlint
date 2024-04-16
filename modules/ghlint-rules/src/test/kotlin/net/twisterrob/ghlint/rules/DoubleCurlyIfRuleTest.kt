@@ -225,18 +225,18 @@ class DoubleCurlyIfRuleTest {
 		doAnswer { throw it.getArgument(1, InvalidContent::class.java).error }
 			.whenever(rule)
 			.visitInvalidContent(any(), any())
-		val ex = assertThrows<AssertionError> {
+		val ex = assertThrows<RuntimeException> {
 			rule.check(
 				"""
 					if: ${condition}
 					
-				""".trimIndent()
+				""".trimIndent(),
 				// TODEL newline https://bitbucket.org/snakeyaml/snakeyaml/issues/1087
 				// New line at the end is required for SnakeYaml to show full condition in message.
+				validate = false,
 			)
 		}
-		val exType = "java.lang.IllegalArgumentException"
-		ex shouldHaveMessage """(?s)^.*\Q${exType}\E: Failed to parse YAML: .*\Q${condition}\E.*$""".toRegex()
+		ex shouldHaveMessage """(?s)^Failed to parse YAML: .*\Q${condition}\E.*$""".toRegex()
 	}
 
 	companion object {

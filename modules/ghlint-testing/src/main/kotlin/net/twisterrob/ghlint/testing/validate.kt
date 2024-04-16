@@ -7,7 +7,7 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 
-public fun validate(
+internal fun validate(
 	@Language("yaml") yml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {

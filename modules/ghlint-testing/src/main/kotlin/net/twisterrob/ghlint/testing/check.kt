@@ -1,3 +1,9 @@
+@file:Suppress(
+	// Cannot extract private constant, because of inline,
+	// and don't want to pollute namespace with public constant.
+	"detekt.StringLiteralDuplication",
+)
+
 package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
@@ -10,27 +16,57 @@ import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 
+/**
+ * Enables debug logging for testing functions.
+ *
+ * @see check
+ * @see checkUnsafe
+ */
 public var isDebugEnabled: Boolean = System.getProperty("ghlint.debug", "false").toBooleanStrict()
 
 public inline fun <reified T : Rule> check(
-	@Language("yaml") yml: String,
+	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {
 	val rule = createRule<T>()
-	return rule.check(yml, fileName)
+	return rule.check(yaml, fileName)
 }
 
-public fun Rule.check(
-	@Language("yaml") yml: String,
+public inline fun <reified T : Rule> checkUnsafe(
+	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
 ): List<Finding> {
+	val rule = createRule<T>()
+	return rule.check(yaml, fileName, validate = false)
+}
+
+/**
+ * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
+ * Additional validation is performed to ensure correct syntax and internal consistency.
+ *
+ * Some of the internal validation can be turned off via the [validate] flag.
+ * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
+ *
+ * WARNING: This method is not recommended to be used directly,
+ * use [check]`<Rule>()` or [checkUnsafe]`<Rule>()` wherever possible.
+ *
+ * @see check
+ * @see checkUnsafe
+ */
+public fun Rule.check(
+	@Language("yaml") yaml: String,
+	fileName: String = "test.yml",
+	validate: Boolean = true,
+): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-	if (isDebugEnabled) println("${this} > ${fileName}:\n${yml}")
-	val validation = validate(yml, fileName)
-	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-	if (isDebugEnabled) validation.forEach { println(it.testString()) }
-	validation shouldHave noFindings()
-	val findings = this.check(SnakeYaml.load(RawFile(FileLocation(fileName), yml)))
+	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
+	if (validate) {
+		val validation = validate(yaml, fileName)
+		@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
+		if (isDebugEnabled) validation.forEach { println(it.testString()) }
+		validation shouldHave noFindings()
+	}
+	val findings = this.check(SnakeYaml.load(RawFile(FileLocation(fileName), yaml)))
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)

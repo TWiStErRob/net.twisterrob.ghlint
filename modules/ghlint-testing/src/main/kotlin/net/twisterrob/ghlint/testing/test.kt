@@ -141,7 +141,10 @@ private fun testCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 					validate(example.content) shouldHave noFindings()
 				},
 				dynamicTest("${name} has no findings") {
-					rule.check(example.content) shouldHave noFindings()
+					rule.check(
+						yaml = example.content,
+						validate = false
+					) shouldHave noFindings()
 				},
 				dynamicTest("${name} explanation") {
 					example.explanation shouldNot beEmptyString()
@@ -165,7 +168,9 @@ private fun testNonCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode
 			name,
 			listOf(
 				dynamicTest("${name} has findings") {
-					val findings = validate(example.content) + rule.check(example.content)
+					val validation = validate(example.content)
+					val ruleOutput = rule.check(example.content, validate = false)
+					val findings = validation + ruleOutput
 					findings shouldHave onlyFindings(issue.id)
 				},
 				dynamicTest("${name} explanation") {
