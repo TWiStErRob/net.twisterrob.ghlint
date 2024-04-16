@@ -1,8 +1,10 @@
 package net.twisterrob.ghlint.testing
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -21,8 +23,7 @@ import io.kotest.matchers.string.beEmpty as beEmptyString
  * Usage:
  * ```
  * @TestFactory
- * fun test(): List<DynamicNode> =
- *     validate(DefaultRuleSet::class)
+ * fun test(): List<DynamicNode> = test(DefaultRuleSet::class)
  * ```
  *
  * @see AcceptFailingDynamicTest
@@ -54,8 +55,7 @@ public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
  * Usage:
  * ```
  * @TestFactory
- * fun metadata(): List<DynamicNode> =
- *     validate(MyRule::class)
+ * fun metadata(): List<DynamicNode> = test(MyRule::class)
  * ```
  */
 public fun test(rule: KClass<out Rule>): DynamicNode =
@@ -107,6 +107,24 @@ public fun testIssue(rule: Rule, issue: Issue): List<DynamicNode> = listOf(
 		)
 	)
 )
+
+private fun validateIssueTitle(issue: Issue) {
+	withClue("Issue ${issue.id} title") {
+		issue.title shouldNot beEmptyString()
+		issue.title shouldNotStartWith "TODO"
+	}
+}
+
+private fun validateIssueDescription(issue: Issue) {
+	withClue("Issue ${issue.id} description") {
+		issue.description shouldNot beEmptyString()
+		// REPORT missing shouldNotMatch overload.
+		withClue("contains TODO") {
+			val todoRegex = Regex("""^TODO""", setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+			issue.description shouldNotContain todoRegex
+		}
+	}
+}
 
 private fun testCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 	val basics = listOf(
