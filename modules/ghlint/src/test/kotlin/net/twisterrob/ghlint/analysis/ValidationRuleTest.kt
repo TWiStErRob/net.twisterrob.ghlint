@@ -72,7 +72,7 @@ class ValidationRuleTest {
 				      ^
 				
 				```
-			""".trimIndent()
+			""".trimIndent(),
 		)
 	}
 
@@ -88,7 +88,7 @@ class ValidationRuleTest {
 				issue = "JsonSchemaValidation",
 				message = """
 					Object does not have some of the required properties [[jobs, on]] ()
-				""".trimIndent()
+				""".trimIndent(),
 			),
 			aFinding(
 				issue = "YamlLoadError",
@@ -97,7 +97,7 @@ class ValidationRuleTest {
 					```
 					java.lang.IllegalStateException: Missing required key: jobs in [foo]
 					```
-				""".trimIndent()
+				""".trimIndent(),
 			),
 		)
 	}
@@ -107,7 +107,7 @@ class ValidationRuleTest {
 			"""
 				foo: bar
 			""".trimIndent(),
-			fileName = "action.yml"
+			fileName = "action.yml",
 		)
 
 		findings shouldHave exactFindings(
@@ -115,7 +115,7 @@ class ValidationRuleTest {
 				issue = "JsonSchemaValidation",
 				message = """
 					Object does not have some of the required properties [[name, description, runs]] ()
-				""".trimIndent()
+				""".trimIndent(),
 			),
 			aFinding(
 				issue = "YamlLoadError",
@@ -124,7 +124,7 @@ class ValidationRuleTest {
 					```
 					java.lang.IllegalStateException: Missing required key: name in [foo]
 					```
-				""".trimIndent()
+				""".trimIndent(),
 			),
 		)
 	}
