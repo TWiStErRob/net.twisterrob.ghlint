@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
+@Suppress("detekt.TooManyFunctions", "detekt.ComplexInterface")
 public interface WorkflowVisitor {
 
 	@OverridingMethodsMustInvokeSuper

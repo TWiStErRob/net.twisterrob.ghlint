@@ -31,7 +31,7 @@ public fun Component.toTarget(): String =
 		is Workflow -> "Workflow[${this.id}]"
 		is Job -> "Job[${this.id}]"
 		is Step -> "Step[${this.identifier}] in ${this.parent.toTarget()}"
-		is Action -> "Action[${this.id ?: this.name}]"
+		is Action -> "Action[${this.id ?: "\"${this.name}\""}]"
 		is ActionStep -> "Step[${this.identifier}] in ${this.parent.parent.toTarget()}"
 	}
 
@@ -44,5 +44,5 @@ private val Step.identifier: String
 private val ActionStep.identifier: String
 	get() = this.id
 		?: this.name?.let { "\"${it}\"" }
-		?: (this as? Step.Uses)?.run { uses.uses }
+		?: (this as? ActionStep.Uses)?.run { uses.uses }
 		?: "#${this.index.value}"
