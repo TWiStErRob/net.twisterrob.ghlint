@@ -195,7 +195,6 @@ class MarkdownRendererTest {
 					## Compliant example
 					Workflow name is defined to be excepted in TestRule to crash.
 					
-					> _`example.yml`_
 					> ```yaml
 					> name: "IssueNameWithCrash compliant"
 					> on: push
