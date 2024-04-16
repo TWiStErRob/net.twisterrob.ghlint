@@ -3,11 +3,8 @@ package net.twisterrob.ghlint.docs.issues
 import net.twisterrob.ghlint.analysis.Analyzer
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
-import net.twisterrob.ghlint.results.ColumnNumber
+import net.twisterrob.ghlint.model.wholeFile
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.results.LineNumber
-import net.twisterrob.ghlint.results.Location
-import net.twisterrob.ghlint.results.Position
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
@@ -108,11 +105,7 @@ private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding
 				Finding(
 					rule = this,
 					issue = issue,
-					location = Location(
-						exampleFile.location,
-						Position(LineNumber(0), ColumnNumber(0)),
-						Position(LineNumber(0), ColumnNumber(0)),
-					),
+					location = exampleFile.wholeFile,
 					message = @Suppress("detekt.StringShouldBeRawString") "\n```\n${e.message ?: "null"}\n```\n"
 				)
 			)
