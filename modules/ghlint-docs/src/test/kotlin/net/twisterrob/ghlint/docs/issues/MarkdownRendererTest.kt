@@ -455,29 +455,7 @@ internal class TestRule : Rule {
 					rule = this,
 					issue = IssueWithComplexFindingMessage,
 					location = file.content.location,
-					message = """
-						Complex `finding` message.
-						
-						With empty lines:
-						
-						 * some
-						   * lists
-						 * and
-						   ```
-						   even
-						   
-						   code
-						   ```
-						 * and quotes:
-						   > why not?
-						
-						```kotlin
-						// Some
-						
-						code
-						```
-						
-					""".trimIndent()
+					message = IssueWithComplexFindingMessageResult
 				)
 			)
 
@@ -644,5 +622,28 @@ internal class TestRule : Rule {
 				),
 			),
 		)
+		val IssueWithComplexFindingMessageResult = """
+			Complex `finding` message.
+			
+			With empty lines:
+			
+			 * some
+			   * lists
+			 * and
+			   ```
+			   even
+			   
+			   code
+			   ```
+			 * and quotes:
+			   > why not?
+			
+			```kotlin
+			// Some
+			
+			code
+			```
+			
+		""".trimIndent()
 	}
 }
