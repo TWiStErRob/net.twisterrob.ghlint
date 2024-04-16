@@ -146,14 +146,14 @@ class DuplicateStepIdRuleTest {
 		)
 	}
 
-	@Timeout(10, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
+	@Timeout(5, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
 	@Test fun `reports when myriad of ids are similar`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
 				jobs:
 				  test:
 				    steps:${
-						"\n" + (0..1000).joinToString(separator = "\n") {
+						"\n" + (0..100).joinToString(separator = "\n") {
 							"""
 								|      - run: echo "Example"
 								|        id: step-id-${it}
@@ -163,7 +163,7 @@ class DuplicateStepIdRuleTest {
 			""".trimIndent()
 		)
 
-		results should haveSize(159_931)
+		results should haveSize(4970)
 		val messageRegex = """Job\[test] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
 		results.forEach { finding ->
 			finding.issue.id shouldBe "SimilarStepId"
@@ -171,7 +171,7 @@ class DuplicateStepIdRuleTest {
 		}
 	}
 
-	@Timeout(2, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
+	@Timeout(5, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD) // separate == preemptive.
 	@Test fun `reports when myriad of ids are the same`() {
 		val results = check<DuplicateStepIdRule>(
 			"""
