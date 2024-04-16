@@ -195,6 +195,7 @@ class MarkdownRendererTest {
 					## Compliant example
 					Workflow name is defined to be excepted in TestRule to crash.
 					
+					> _`example.yml`_
 					> ```yaml
 					> name: "IssueNameWithCrash compliant"
 					> on: push
@@ -297,6 +298,7 @@ class MarkdownRendererTest {
 						## Compliant example
 						Compliant example description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithOnlyCompliantExample compliant"
 						> on: push
@@ -319,6 +321,7 @@ class MarkdownRendererTest {
 						## Non-compliant example
 						Non-compliant example description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithOnlyNonCompliantExample non-compliant"
 						> on: push
@@ -343,6 +346,7 @@ class MarkdownRendererTest {
 						## Compliant example
 						Compliant example description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithOneExampleEach compliant"
 						> on: push
@@ -352,6 +356,7 @@ class MarkdownRendererTest {
 						## Non-compliant example
 						Non-compliant example description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithOneExampleEach non-compliant"
 						> on: push
@@ -378,6 +383,7 @@ class MarkdownRendererTest {
 						### Compliant example #1
 						Compliant example 1 description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithManyExamples compliant 1"
 						> on: push
@@ -387,6 +393,7 @@ class MarkdownRendererTest {
 						### Compliant example #2
 						Compliant example 2 description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithManyExamples compliant 2"
 						> on: push
@@ -396,6 +403,7 @@ class MarkdownRendererTest {
 						### Compliant example #3
 						Compliant example 3 description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithManyExamples compliant 3"
 						> on: push
@@ -407,6 +415,7 @@ class MarkdownRendererTest {
 						### Non-compliant example #1
 						Non-compliant example 1 description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithManyExamples non-compliant 1"
 						> on: push
@@ -418,6 +427,7 @@ class MarkdownRendererTest {
 						### Non-compliant example #2
 						Non-compliant example 2 description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueNameWithManyExamples non-compliant 2"
 						> on: push
@@ -442,6 +452,7 @@ class MarkdownRendererTest {
 						## Non-compliant example
 						Non-compliant example description.
 						
+						> _`example.yml`_
 						> ```yaml
 						> name: "IssueWithComplexFindingMessage non-compliant"
 						> on: push

@@ -80,6 +80,9 @@ private fun StringBuilder.renderExamples(rule: Rule, issue: Issue, examples: Lis
 			appendLine(example.explanation)
 			appendLine() // Add a line between explanation and example.
 			appendLine(buildString {
+				append("_`")
+				append(example.path)
+				append("`_\n")
 				append("```yaml\n")
 				append(example.content)
 				append("\n```")
@@ -90,7 +93,7 @@ private fun StringBuilder.renderExamples(rule: Rule, issue: Issue, examples: Lis
 }
 
 private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding> {
-	val exampleFile = SnakeYaml.load(RawFile(FileLocation("example.yml"), example.content))
+	val exampleFile = SnakeYaml.load(RawFile(FileLocation(example.path), example.content))
 	val exampleRuleSet = object : RuleSet {
 		override val id: String = "example"
 		override val name: String = "Example"

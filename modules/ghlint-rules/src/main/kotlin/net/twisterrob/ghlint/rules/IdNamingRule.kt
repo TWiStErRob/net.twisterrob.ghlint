@@ -63,7 +63,8 @@ public class IdNamingRule : VisitorRule {
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
-					explanation = "Workflow file named: `ci-build.yml`.",
+					explanation = "Workflow file has conventional lower-kebab-case name.",
+					path = "ci-build.yml",
 					content = """
 						on: push
 						jobs:
@@ -76,7 +77,8 @@ public class IdNamingRule : VisitorRule {
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "Workflow file named: `CI build.yml`.",
+					explanation = "Workflow has non-lower-kebab-case IDs.",
+					path = "CI build.yml",
 					content = """
 						on: push
 						jobs:

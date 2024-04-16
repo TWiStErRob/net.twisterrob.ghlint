@@ -9,11 +9,6 @@ import org.junit.jupiter.api.TestFactory
 class DefaultRuleSetTest {
 
 	@AcceptFailingDynamicTest(
-		displayName = "Issue WorkflowIdNaming non-compliant example #1 has findings",
-		reason = "Workflow ID (i.e. yml file name) is not part of the file content, so it cannot be validated in an example.",
-		acceptableFailure = """^Could not find exclusively `WorkflowIdNaming`s among findings:\nNo findings.$""",
-	)
-	@AcceptFailingDynamicTest(
 		displayName = "Issue MissingJobPermissions compliant example #2 has no findings",
 		reason = "Rule triggers another another finding, but it's acceptable for this issue.",
 		acceptableFailure = "^\\Q"
@@ -21,7 +16,7 @@ class DefaultRuleSetTest {
 				+ "Finding(\n"
 				+ "	rule=net.twisterrob.ghlint.rules.ExplicitJobPermissionsRule@\\E[0-9a-f]+\\Q,\n"
 				+ "	issue=ExplicitJobPermissions,\n"
-				+ "	location=test.yml/5:3-5:10,\n"
+				+ "	location=compliant/example.yml/5:3-5:10,\n"
 				+ "	message=Job[example] should have explicit permissions.\n"
 				+ ")"
 				+ "]"

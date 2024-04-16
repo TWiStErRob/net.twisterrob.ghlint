@@ -24,6 +24,9 @@ private fun StringBuilder.renderExamples(type: String, examples: List<Example>) 
 			if (examples.size != 1) {
 				append("\n### ${type} example #${index + 1}\n")
 			}
+			append("_`")
+			append(example.path)
+			append("`_\n")
 			append("```yaml\n")
 			append(example.content)
 			append("\n```\n")

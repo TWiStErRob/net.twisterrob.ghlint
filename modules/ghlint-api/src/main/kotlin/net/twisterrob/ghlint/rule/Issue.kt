@@ -18,6 +18,7 @@ public class Issue(
 )
 
 public class Example(
+	public val path: String = "example.yml",
 	@Language("yaml")
 	public val content: String,
 	@Language("markdown")
