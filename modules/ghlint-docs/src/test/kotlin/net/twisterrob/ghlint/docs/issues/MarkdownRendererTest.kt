@@ -2,7 +2,9 @@ package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
+import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
@@ -368,6 +370,37 @@ class MarkdownRendererTest {
 					""".trimIndent(),
 				),
 				testCase(
+					TestRule.IssueNameWithOneExampleEachForAction,
+					"""
+						# `IssueNameWithOneExampleEachForAction`
+						Issue with one example each.
+						
+						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
+						
+						## Description
+						Description of issue with one example each.
+						
+						## Compliant example
+						Compliant example description.
+						
+						> _`action.yml`_
+						> ```yaml
+						> name: "IssueNameWithOneExampleEachForAction compliant"
+						> ```
+						
+						## Non-compliant example
+						Non-compliant example description.
+						
+						> _`action.yml`_
+						> ```yaml
+						> name: "IssueNameWithOneExampleEachForAction non-compliant"
+						> ```
+						>
+						> - **Line 1**: Non-compliant `action`.
+						
+					""".trimIndent(),
+				),
+				testCase(
 					TestRule.IssueNameWithManyExamples,
 					"""
 						# `IssueNameWithManyExamples`
@@ -498,7 +531,16 @@ internal class TestRule : Rule {
 
 	override val issues: List<Issue> get() = error("Should never be called.")
 	override fun check(file: File): List<Finding> {
-		val name = (file.content as Workflow).name.orEmpty()
+		val name = when (val content = file.content) {
+			is Workflow -> content.name.orEmpty()
+			is Action -> content.name
+			is InvalidContent -> error("Invalid content: ${content.error}")
+		}
+		val type = when (val content = file.content) {
+			is Workflow -> "workflow"
+			is Action -> "action"
+			is InvalidContent -> error("Invalid content: ${content.error}")
+		}
 		return when {
 			name == "IssueNameWithCrash compliant" -> throw IssueNameWithCrashResult
 
@@ -516,9 +558,9 @@ internal class TestRule : Rule {
 					rule = this,
 					issue = Companion::class.java.declaredMethods
 						.single { it.name.removePrefix("get") == name.substringBefore(" ") }
-						.invoke(Companion) as? Issue ?: error("Unknown issue from workflow name: ${name}"),
+						.invoke(Companion) as? Issue ?: error("Unknown issue from name: ${name}"),
 					location = file.content.location,
-					message = "Non-compliant `workflow`."
+					message = "Non-compliant `${type}`."
 				)
 			)
 
@@ -640,6 +682,32 @@ internal class TestRule : Rule {
 						name: "IssueNameWithOneExampleEach non-compliant"
 						on: push
 						jobs: {}
+					""".trimIndent(),
+				),
+			),
+		)
+
+		val IssueNameWithOneExampleEachForAction = Issue(
+			id = "IssueNameWithOneExampleEachForAction",
+			title = "Issue with one example each.",
+			description = """
+				Description of issue with one example each.
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "Compliant example description.",
+					path = "action.yml",
+					content = """
+						name: "IssueNameWithOneExampleEachForAction compliant"
+					""".trimIndent(),
+				),
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Non-compliant example description.",
+					path = "action.yml",
+					content = """
+						name: "IssueNameWithOneExampleEachForAction non-compliant"
 					""".trimIndent(),
 				),
 			),
