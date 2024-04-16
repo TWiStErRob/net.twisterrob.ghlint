@@ -15,9 +15,14 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in workflow env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				env:
 				  MY_ENV: ${'$'}{{ github.token }}
-				jobs: {}
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -27,9 +32,14 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in workflow env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				env:
 				  MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
-				jobs: {}
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -39,9 +49,14 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in workflow env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				env:
 				  MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
-				jobs: {}
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -54,11 +69,14 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in job env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    env:
 				      MY_ENV: ${'$'}{{ github.token }}
-				    steps: []
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -68,11 +86,14 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in job env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    env:
 				      MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
-				    steps: []
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -82,11 +103,14 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in job env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    env:
 				      MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
-				    steps: []
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -99,9 +123,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in job input`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    with:
 				      input: ${'$'}{{ github.token }}
 			""".trimIndent()
@@ -113,9 +138,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in job input`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    with:
 				      input: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent()
@@ -127,9 +153,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in job input`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    with:
 				      test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent()
@@ -144,9 +171,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in job secret`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    secrets:
 				      input: ${'$'}{{ github.token }}
 			""".trimIndent()
@@ -158,9 +186,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes job secret inherit`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    secrets: inherit
 			""".trimIndent()
 		)
@@ -171,9 +200,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in job secret`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    secrets:
 				      input: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent()
@@ -185,9 +215,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in job secret`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    uses: test
+				    uses: test/workflow.yml
 				    secrets:
 				      test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent()
@@ -203,8 +234,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: some/action@v1
 				        env:
@@ -218,8 +251,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: some/action@v1
 				        env:
@@ -233,8 +268,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: some/action@v1
 				        env:
@@ -252,8 +289,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in run step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: "Test"
 				        env:
@@ -267,8 +306,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in run step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: "Test"
 				        env:
@@ -282,8 +323,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in run step env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: "Test"
 				        env:
@@ -301,8 +344,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when token is used in step input`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: test/action@v0
 				        with:
@@ -316,8 +361,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `passes when GITHUB_TOKEN variable is used in step input`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: test/action@v0
 				        with:
@@ -331,8 +378,10 @@ class PreferGitHubTokenRuleTest {
 	@Test fun `reports when GITHUB_TOKEN secret is used in step input`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: test/action@v0
 				        with:

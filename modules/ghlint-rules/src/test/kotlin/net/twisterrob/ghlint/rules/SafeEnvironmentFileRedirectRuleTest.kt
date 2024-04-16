@@ -19,8 +19,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 	@Test fun `passes when no environment file is used`() {
 		val results = check<SafeEnvironmentFileRedirectRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()
@@ -32,8 +34,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 	@Test fun `passes when non-environment file is used`() {
 		val results = check<SafeEnvironmentFileRedirectRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test" >> ${'$'}OUTPUT
 			""".trimIndent()
@@ -51,8 +55,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 					dynamicTest(name) {
 						val results = check<SafeEnvironmentFileRedirectRule>(
 							"""
+								on: push
 								jobs:
 								  test:
+								    runs-on: test
 								    steps:
 								      - run: echo ${syntax}
 							""".trimIndent()
@@ -75,8 +81,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 					dynamicTest(name) {
 						val results = check<SafeEnvironmentFileRedirectRule>(
 							"""
+								on: push
 								jobs:
 								  test:
+								    runs-on: test
 								    steps:
 								      - run: |
 								          echo ${syntax}
@@ -100,8 +108,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 					dynamicTest(name) {
 						val results = check<SafeEnvironmentFileRedirectRule>(
 							"""
+								on: push
 								jobs:
 								  test:
+								    runs-on: test
 								    steps:
 								      - run: |
 								          echo ${syntax}

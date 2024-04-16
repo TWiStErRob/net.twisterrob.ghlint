@@ -15,7 +15,12 @@ class EmptyEnvRuleTest {
 	@Test fun `passes when no env defined`() {
 		val results = check<EmptyEnvRule>(
 			"""
+				on: push
 				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -25,8 +30,13 @@ class EmptyEnvRuleTest {
 	@Test fun `reports when workflow has empty env`() {
 		val results = check<EmptyEnvRule>(
 			"""
-				env:
+				on: push
+				env: {}
 				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -39,9 +49,11 @@ class EmptyEnvRuleTest {
 	@Test fun `reports when job has empty env`() {
 		val results = check<EmptyEnvRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    env:
+				    runs-on: test
+				    env: {}
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()
@@ -56,11 +68,13 @@ class EmptyEnvRuleTest {
 	@Test fun `reports when step has empty env`() {
 		val results = check<EmptyEnvRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: some/action@v1
-				        env:
+				        env: {}
 			""".trimIndent()
 		)
 
@@ -73,11 +87,13 @@ class EmptyEnvRuleTest {
 	@Test fun `reports when run step has empty env`() {
 		val results = check<EmptyEnvRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-				        env:
+				        env: {}
 			""".trimIndent()
 		)
 

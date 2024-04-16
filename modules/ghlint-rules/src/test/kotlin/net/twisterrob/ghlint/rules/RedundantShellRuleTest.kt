@@ -17,12 +17,13 @@ class RedundantShellRuleTest {
 	@Test fun `reports when both job and workflow have the same default shell`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -40,12 +41,13 @@ class RedundantShellRuleTest {
 	@Test fun `passes when both job and workflow have different default shell`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: sh
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -60,9 +62,10 @@ class RedundantShellRuleTest {
 	@Test fun `reports when step has the same shell as the default in job`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -81,12 +84,13 @@ class RedundantShellRuleTest {
 	@Test fun `reports when step has the same shell as the default in workflow`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
@@ -102,12 +106,13 @@ class RedundantShellRuleTest {
 	@Test fun `reports when step has the same shell as the default in workflow and job`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -132,9 +137,10 @@ class RedundantShellRuleTest {
 	@Test fun `passes when job and step have different shell`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: sh
@@ -150,12 +156,13 @@ class RedundantShellRuleTest {
 	@Test fun `passes when workflow and step have different shell`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: sh
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
@@ -168,12 +175,13 @@ class RedundantShellRuleTest {
 	@Test fun `passes when workflow, job and step have different shell`() {
 		val results = check<RedundantShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: sh
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash

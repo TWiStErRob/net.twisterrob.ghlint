@@ -15,8 +15,10 @@ class DuplicateShellRuleTest {
 	@Test fun `reports when 2 steps have an explicit shell`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
@@ -34,8 +36,10 @@ class DuplicateShellRuleTest {
 	@Test fun `reports when 3 steps have an explicit shell`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
@@ -55,8 +59,10 @@ class DuplicateShellRuleTest {
 	@Test fun `reports when multiple steps have an explicit shell intermingled with other steps`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: echo "Test"
@@ -77,8 +83,10 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when there are no run steps`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - uses: actions/checkout@v4
 				      - uses: actions/setup-java@v4
@@ -92,8 +100,10 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when job has default shell`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -109,11 +119,13 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when workflow has default shell`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				      - run: echo "Test"
@@ -126,8 +138,10 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when steps have different shells`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
@@ -142,11 +156,13 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when steps override default shell`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
@@ -161,8 +177,10 @@ class DuplicateShellRuleTest {
 	@Test fun `reports when steps override default shell on job, but all the same`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -184,11 +202,13 @@ class DuplicateShellRuleTest {
 	@Test fun `reports when steps override default shell on workflow, but all the same`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
@@ -207,17 +227,20 @@ class DuplicateShellRuleTest {
 	@Test fun `reports when steps override default shell on workflow, but all the same, multiple jobs`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test1:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
 				      - run: echo "Test"
 				        shell: sh
 				  test2:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
@@ -236,17 +259,20 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when steps override default shell to different values`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test1:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
 				      - run: echo "Test"
 				        shell: sh
 				  test2:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: zsh
@@ -261,17 +287,20 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when a step overrides default shell to different values`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test1:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
 				      - run: echo "Test"
 				        shell: sh
 				  test2:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
@@ -288,8 +317,10 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when a step missing shell - job`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    defaults:
 				      run:
 				        shell: bash
@@ -308,17 +339,20 @@ class DuplicateShellRuleTest {
 	@Test fun `passes when a step missing shell - workflow`() {
 		val results = check<DuplicateShellRule>(
 			"""
+				on: push
 				defaults:
 				  run:
 				    shell: bash
 				jobs:
 				  test1:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh
 				      - run: echo "Test"
 				        shell: sh
 				  test2:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 				        shell: sh

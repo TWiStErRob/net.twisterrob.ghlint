@@ -15,7 +15,15 @@ class MissingNameRuleTest {
 	@Test fun `reports when workflow is missing a name`() {
 		val results = check<MissingNameRule>(
 			"""
+				on: push
+				#name: Missing
 				jobs:
+				  test:
+				    name: Irrelevant
+				    runs-on: test
+				    steps:
+				      - name: Irrelevant
+				        run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -29,7 +37,14 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(
 			"""
 				name: Test
+				on: push
 				jobs:
+				  test:
+				    name: Irrelevant
+				    runs-on: test
+				    steps:
+				      - name: Irrelevant
+				        run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -40,11 +55,14 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
+				on: push
 				jobs:
 				  test:
+				    #name: Missing
+				    runs-on: test
 				    steps:
 				      - name: Irrelevant
-				        run: true
+				        run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -58,12 +76,14 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
+				on: push
 				jobs:
 				  test:
 				    name: Test
+				    runs-on: test
 				    steps:
 				      - name: Irrelevant
-				        run: true
+				        run: echo "Test"
 			""".trimIndent()
 		)
 
@@ -74,11 +94,14 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
+				on: push
 				jobs:
 				  test:
 				    name: Irrelevant
+				    runs-on: test
 				    steps:
-				      - run: true
+				      - run: echo "Test"
+				        #name: Missing
 			""".trimIndent()
 		)
 
@@ -92,12 +115,14 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
+				on: push
 				jobs:
 				  test:
 				    name: Irrelevant
+				    runs-on: test
 				    steps:
 				      - name: Test
-				        run: true
+				        run: echo "Test"
 			""".trimIndent()
 		)
 

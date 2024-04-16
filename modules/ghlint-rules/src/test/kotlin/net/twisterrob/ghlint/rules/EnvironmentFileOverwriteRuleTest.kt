@@ -20,8 +20,10 @@ class EnvironmentFileOverwriteRuleTest {
 	@Test fun `passes when no environment file is used`() {
 		val results = check<EnvironmentFileOverwriteRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent()
@@ -39,8 +41,10 @@ class EnvironmentFileOverwriteRuleTest {
 					dynamicTest(name) {
 						val results = check<EnvironmentFileOverwriteRule>(
 							"""
+								on: push
 								jobs:
 								  test:
+								    runs-on: test
 								    steps:
 								      - run: echo ${syntax}
 							""".trimIndent()
@@ -61,8 +65,10 @@ class EnvironmentFileOverwriteRuleTest {
 					dynamicTest(name) {
 						val results = check<EnvironmentFileOverwriteRule>(
 							"""
+								on: push
 								jobs:
 								  test:
+								    runs-on: test
 								    steps:
 								      - run: |
 								          echo "Test" ${syntax}
@@ -84,8 +90,10 @@ class EnvironmentFileOverwriteRuleTest {
 					dynamicTest(name) {
 						val results = check<EnvironmentFileOverwriteRule>(
 							"""
+								on: push
 								jobs:
 								  test:
+								    runs-on: test
 								    steps:
 								      - run: |
 								          echo "Test" ${syntax}

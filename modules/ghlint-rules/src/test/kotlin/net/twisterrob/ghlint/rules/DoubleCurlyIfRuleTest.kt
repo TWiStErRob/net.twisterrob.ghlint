@@ -29,8 +29,10 @@ class DoubleCurlyIfRuleTest {
 		fun `passes even with lots of spacing`() {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if:     ${'$'}{{     true     }}    
 					    steps:
 					      - run: echo "Test"
@@ -48,8 +50,10 @@ class DoubleCurlyIfRuleTest {
 		fun `passes wrapped condition`(condition: String) {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: ${'$'}{{ ${condition} }}
 					    steps:
 					      - run: echo "Test"
@@ -60,8 +64,10 @@ class DoubleCurlyIfRuleTest {
 
 			val resultsNoSpacing = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: ${'$'}{{${condition}}}
 					    steps:
 					      - run: echo "Test"
@@ -76,8 +82,10 @@ class DoubleCurlyIfRuleTest {
 		fun `fails not fully wrapped condition`(condition: String) {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: ${condition}
 					    steps:
 					      - run: echo "Test"
@@ -95,8 +103,10 @@ class DoubleCurlyIfRuleTest {
 		fun `fails not strangely constructed condition`(condition: String) {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    if: ${condition}
 					    steps:
 					      - run: echo "Test"
@@ -117,8 +127,10 @@ class DoubleCurlyIfRuleTest {
 		fun `passes even with lots of spacing`() {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if:     ${'$'}{{     true     }}    
@@ -136,11 +148,13 @@ class DoubleCurlyIfRuleTest {
 		fun `passes wrapped condition`(condition: String) {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
-					    if: ${'$'}{{ ${condition} }}
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
+					        if: ${'$'}{{ ${condition} }}
 				""".trimIndent()
 			)
 
@@ -148,8 +162,10 @@ class DoubleCurlyIfRuleTest {
 
 			val resultsNoSpacing = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: ${'$'}{{${condition}}}
@@ -164,8 +180,10 @@ class DoubleCurlyIfRuleTest {
 		fun `fails not fully wrapped condition`(condition: String) {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: ${condition}
@@ -183,8 +201,10 @@ class DoubleCurlyIfRuleTest {
 		fun `fails not strangely constructed condition`(condition: String) {
 			val results = check<DoubleCurlyIfRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:
 					      - run: echo "Test"
 					        if: ${condition}
@@ -210,9 +230,10 @@ class DoubleCurlyIfRuleTest {
 				"""
 					if: ${condition}
 					
-				""".trimIndent()
+				""".trimIndent(),
 				// TODEL newline https://bitbucket.org/snakeyaml/snakeyaml/issues/1087
 				// New line at the end is required for SnakeYaml to show full condition in message.
+				validate = false,
 			)
 		}
 		ex shouldHaveMessage """(?s)^Failed to parse YAML: .*\Q${condition}\E.*$""".toRegex()
@@ -233,13 +254,11 @@ class DoubleCurlyIfRuleTest {
 		val validConditions = listOf(
 			"true",
 			"true || false",
-			"null",
 			"github.context.variable == 'bbb'",
 			"github.context.variable == \"bbb\"",
 			"123 == github.context.variable",
 			"true == github.context.variable",
 			"! github.invalid.yaml",
-			"!!github.invalid.yaml",
 		)
 
 		@JvmStatic
@@ -249,6 +268,7 @@ class DoubleCurlyIfRuleTest {
 			"\"aaa\" == \"bbb\"",
 			"'aaa' == github.context.variable",
 			"\"aaa\" == github.context.variable",
+			"!! github.invalid.yaml",
 		)
 	}
 }

@@ -23,6 +23,7 @@ class ComponentCountRuleTest {
 		fun `passes single step job`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:${Random.generateJobs(1)}
 				""".trimIndent()
 			)
@@ -34,6 +35,7 @@ class ComponentCountRuleTest {
 		fun `passes few step job`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:${Random.generateJobs(5)}
 				""".trimIndent()
 			)
@@ -45,6 +47,7 @@ class ComponentCountRuleTest {
 		fun `passes max steps count`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:${Random.generateJobs(10)}
 				""".trimIndent()
 			)
@@ -56,6 +59,7 @@ class ComponentCountRuleTest {
 		fun `fails max steps count + 1`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:${Random.generateJobs(11)}
 				""".trimIndent()
 			)
@@ -70,6 +74,7 @@ class ComponentCountRuleTest {
 		fun `fails double steps count`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:${Random.generateJobs(20)}
 				""".trimIndent()
 			)
@@ -88,8 +93,10 @@ class ComponentCountRuleTest {
 		fun `passes single step job`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:${Random.generateSteps(1)}
 				""".trimIndent()
 			)
@@ -101,8 +108,10 @@ class ComponentCountRuleTest {
 		fun `passes few step job`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:${Random.generateSteps(5)}
 				""".trimIndent()
 			)
@@ -114,8 +123,10 @@ class ComponentCountRuleTest {
 		fun `passes max steps count`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:${Random.generateSteps(20)}
 				""".trimIndent()
 			)
@@ -127,8 +138,10 @@ class ComponentCountRuleTest {
 		fun `fails max steps count + 1`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:${Random.generateSteps(21)}
 				""".trimIndent()
 			)
@@ -143,8 +156,10 @@ class ComponentCountRuleTest {
 		fun `fails double steps count`() {
 			val results = check<ComponentCountRule>(
 				"""
+					on: push
 					jobs:
 					  test:
+					    runs-on: test
 					    steps:${Random.generateSteps(40)}
 				""".trimIndent()
 			)
@@ -177,7 +192,7 @@ class ComponentCountRuleTest {
 		@Test fun `generate single job`() {
 			Random(0).generateJobs(1) shouldBe """
 					  test1:
-					    runs-on: ubuntu-latest
+					    runs-on: test
 					    steps:
 					      - run: echo "Test 1"
 					      - uses: some/action@v2
@@ -188,19 +203,19 @@ class ComponentCountRuleTest {
 		@Test fun `generate multiple jobs`() {
 			Random(0).generateJobs(3) shouldBe """
 					  test1:
-					    runs-on: ubuntu-latest
+					    runs-on: test
 					    steps:
 					      - run: echo "Test 1"
 					      - uses: some/action@v2
 					      - uses: some/action@v3
 					  test2:
-					    runs-on: ubuntu-latest
+					    runs-on: test
 					    steps:
 					      - run: echo "Test 1"
 					      - run: echo "Test 2"
 					      - run: echo "Test 3"
 					  test3:
-					    runs-on: ubuntu-latest
+					    runs-on: test
 					    steps:
 					      - uses: some/action@v1
 					      - run: echo "Test 2"
@@ -213,7 +228,7 @@ class ComponentCountRuleTest {
 			when (random().toInt() % 2) {
 				0 -> """
 					test${it}:
-					  runs-on: ubuntu-latest
+					  runs-on: test
 					  steps:${generateSteps(nextInt(1, 5))}
 				""".trimIndent()
 

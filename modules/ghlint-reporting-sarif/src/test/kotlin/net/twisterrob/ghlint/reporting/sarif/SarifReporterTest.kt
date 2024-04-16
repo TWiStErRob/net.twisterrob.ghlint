@@ -26,13 +26,15 @@ class SarifReporterTest {
 			IntegrationTestRule::class
 		)
 		val findings = check<IntegrationTestRule>(
-			fileName = temp.resolve("test.yml").toString(),
-			yml = """
-				on:
+			"""
+				on: push
 				jobs:
 				  test:
-				    steps: []
-			""".trimIndent()
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
+			""".trimIndent(),
+			fileName = temp.resolve("test.yml").toString(),
 		)
 		SarifReporter(writer, temp, listOf(testRuleSet)).report(findings)
 

@@ -17,8 +17,10 @@ class MissingGhTokenRuleTest {
 	@Test fun `passes when token is defined on step`() {
 		val results = check<MissingGhTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: gh pr view
 				        env:
@@ -32,8 +34,10 @@ class MissingGhTokenRuleTest {
 	@Test fun `passes when token is defined on job`() {
 		val results = check<MissingGhTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    env:
 				      GH_TOKEN: ${'$'}{{ github.token }}
 				    steps:
@@ -47,10 +51,12 @@ class MissingGhTokenRuleTest {
 	@Test fun `passes when token is defined on workflow`() {
 		val results = check<MissingGhTokenRule>(
 			"""
+				on: push
 				env:
 				  GH_TOKEN: ${'$'}{{ github.token }}
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: gh pr view
 			""".trimIndent()
@@ -62,8 +68,10 @@ class MissingGhTokenRuleTest {
 	@Test fun `passes when token is defined on step as secret`() {
 		val results = check<MissingGhTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: gh pr view
 				        env:
@@ -118,8 +126,10 @@ class MissingGhTokenRuleTest {
 	fun `reports when gh is used different contexts`(script: String) {
 		val results = check<MissingGhTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: |${'\n'}${script.trimIndent().prependIndent("\t\t\t\t          ")}
 			""".trimIndent()
@@ -143,8 +153,10 @@ class MissingGhTokenRuleTest {
 	fun `passes when gh command is not in the right context`(script: String) {
 		val results = check<MissingGhTokenRule>(
 			"""
+				on: push
 				jobs:
 				  test:
+				    runs-on: test
 				    steps:
 				      - run: |${'\n'}${script.trimIndent().prependIndent("\t\t\t\t          ")}
 			""".trimIndent()

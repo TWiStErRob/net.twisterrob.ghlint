@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.analysis
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.checkUnsafe
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
@@ -54,7 +55,7 @@ class ValidationRuleTest {
 	@TestFactory fun metadata() = test(ValidationRule::class)
 
 	@Test fun `syntax error`() {
-		val findings = check<ValidationRule>("mapping: *")
+		val findings = checkUnsafe<ValidationRule>("mapping: *")
 
 		findings shouldHave singleFinding(
 			issue = "YamlSyntaxError",
@@ -76,7 +77,7 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `wrong yaml contents`() {
-		val findings = check<ValidationRule>("foo: bar")
+		val findings = checkUnsafe<ValidationRule>("foo: bar")
 
 		findings shouldHave exactFindings(
 			aFinding(
