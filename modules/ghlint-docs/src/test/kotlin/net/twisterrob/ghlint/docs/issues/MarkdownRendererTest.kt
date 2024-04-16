@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.docs.issues
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
@@ -177,6 +178,44 @@ class MarkdownRendererTest {
 			val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), issue, emptyList())
 
 			markdown shouldBe expected
+		}
+
+		@Test fun `issue renders failure`(@TempDir temp: Path) {
+			@Suppress("RegExpUnexpectedAnchor") // REPORT false positive: trimIndent() will take care of it.
+			val expected = Regex(
+				"""
+					^\Q# `IssueNameWithCrash`
+					Crashing test issue.
+					
+					_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
+					
+					## Description
+					Issue that just crashes on analysis.
+					
+					## Compliant example
+					Workflow name is defined to be excepted in TestRule to crash.
+					
+					> ```yaml
+					> name: "IssueNameWithCrash compliant"
+					> on: push
+					> jobs: {}
+					> ```
+					>
+					> - **Line 3**: net.twisterrob.ghlint.docs.issues.TestRule@\E[0-9a-f]{8}\Q errored while checking:
+					>    ````
+					>    java.lang.NullPointerException: Crashing test issue.
+					>    	at net.twisterrob.ghlint.docs.issues.TestRule.check(TestRule.kt:0)
+					>    	at net.twisterrob.ghlint.docs.issues.MarkdownRenderer.calculateFindings(MarkdownRenderer.kt:0)
+					>    	at net.twisterrob.ghlint.docs.issues.MarkdownRendererTest.TestRule.check(IssueNameWithCrash)(MarkdownRendererTest.kt:0)
+					>    ````
+					\E$
+				""".trimIndent()
+			)
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val markdown = renderer.renderIssue(TestRuleSet(), TestRule(), TestRule.IssueNameWithCrash, emptyList())
+
+			markdown shouldMatch expected
 		}
 
 		@Test fun `related issue is listed`(@TempDir temp: Path) {
@@ -450,34 +489,14 @@ internal class TestRule : Rule {
 	override fun check(file: File): List<Finding> {
 		val name = (file.content as Workflow).name.orEmpty()
 		return when {
+			name == "IssueNameWithCrash compliant" -> throw IssueNameWithCrashResult
+
 			name == "IssueWithComplexFindingMessage non-compliant" -> listOf(
 				Finding(
 					rule = this,
 					issue = IssueWithComplexFindingMessage,
 					location = file.content.location,
-					message = """
-						Complex `finding` message.
-						
-						With empty lines:
-						
-						 * some
-						   * lists
-						 * and
-						   ```
-						   even
-						   
-						   code
-						   ```
-						 * and quotes:
-						   > why not?
-						
-						```kotlin
-						// Some
-						
-						code
-						```
-						
-					""".trimIndent()
+					message = IssueWithComplexFindingMessageResult
 				)
 			)
 
@@ -497,6 +516,47 @@ internal class TestRule : Rule {
 	}
 
 	companion object {
+
+		val IssueNameWithCrash = Issue(
+			id = "IssueNameWithCrash",
+			title = "Crashing test issue.",
+			description = """
+				Issue that just crashes on analysis.
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "Workflow name is defined to be excepted in TestRule to crash.",
+					content = """
+						name: "IssueNameWithCrash compliant"
+						on: push
+						jobs: {}
+					""".trimIndent(),
+				),
+			),
+			nonCompliant = emptyList(),
+		)
+		val IssueNameWithCrashResult = NullPointerException("Crashing test issue.").apply {
+			stackTrace = arrayOf(
+				StackTraceElement(
+					"net.twisterrob.ghlint.docs.issues.TestRule",
+					"check",
+					"TestRule.kt",
+					0
+				),
+				StackTraceElement(
+					"net.twisterrob.ghlint.docs.issues.MarkdownRenderer",
+					"calculateFindings",
+					"MarkdownRenderer.kt",
+					0
+				),
+				StackTraceElement(
+					"net.twisterrob.ghlint.docs.issues.MarkdownRendererTest",
+					"TestRule.check(IssueNameWithCrash)",
+					"MarkdownRendererTest.kt",
+					0
+				),
+			)
+		}
 
 		val IssueNameWithoutExamples = Issue(
 			id = "IssueNameWithoutExamples",
@@ -644,5 +704,28 @@ internal class TestRule : Rule {
 				),
 			),
 		)
+		val IssueWithComplexFindingMessageResult = """
+			Complex `finding` message.
+			
+			With empty lines:
+			
+			 * some
+			   * lists
+			 * and
+			   ```
+			   even
+			   
+			   code
+			   ```
+			 * and quotes:
+			   > why not?
+			
+			```kotlin
+			// Some
+			
+			code
+			```
+			
+		""".trimIndent()
 	}
 }
