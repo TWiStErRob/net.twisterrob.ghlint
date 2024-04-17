@@ -5,12 +5,15 @@ import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.should
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.twisterrob.ghlint.model.Action
+import net.twisterrob.ghlint.model.Content
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Answers
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
@@ -24,7 +27,7 @@ import org.mockito.kotlin.whenever
 
 class VisitorRuleTest {
 
-	@Test fun `check calls nothing when no visitor interface implemented`() {
+	@Test fun `check fails when no visitor interface implemented`() {
 		val subject = spy(object : VisitorRule {
 			override val issues: List<Issue> = emptyList()
 		})
@@ -34,10 +37,9 @@ class VisitorRuleTest {
 
 		val ex = assertThrows<IllegalStateException> { subject.check(file) }
 
-		ex shouldHaveMessage "A VisitorRule must also implement one of " +
+		ex shouldHaveMessage "A VisitorRule must also implement at least one of " +
 				"WorkflowVisitor, ActionVisitor, InvalidContentVisitor visitors."
 		verify(subject).check(file)
-		verify(file).content
 		verifyNoMoreInteractions(subject, file, content)
 	}
 
@@ -53,6 +55,31 @@ class VisitorRuleTest {
 		results should beEmpty()
 		verify(subject).check(file)
 		verify(subject).visitWorkflowFile(any(), eq(file))
+		verify(file).content
+		verifyNoMoreInteractions(subject, file, content)
+	}
+
+	@ValueSource(
+		strings = [
+			"Action",
+			"InvalidContent",
+		]
+	)
+	@ParameterizedTest
+	fun `check calls nothing when unhandled content is passed to workflow visitor`(unhandled: String) {
+		val subject = spy(WorkflowRule())
+		val file: File = mock()
+		val className = Workflow::class.java.packageName + ".${unhandled}"
+
+		@Suppress("UNCHECKED_CAST")
+		val clazz = Class.forName(className) as Class<Content>
+		val content: Content = mock(clazz)
+		whenever(file.content).thenReturn(content)
+
+		val results = subject.check(file)
+
+		results should beEmpty()
+		verify(subject).check(file)
 		verify(file).content
 		verifyNoMoreInteractions(subject, file, content)
 	}
@@ -73,6 +100,31 @@ class VisitorRuleTest {
 		verifyNoMoreInteractions(subject, file, content)
 	}
 
+	@ValueSource(
+		strings = [
+			"Workflow",
+			"InvalidContent",
+		]
+	)
+	@ParameterizedTest
+	fun `check calls nothing when unhandled content is passed to action visitor`(unhandled: String) {
+		val subject = spy(ActionRule())
+		val file: File = mock()
+		val className = Action::class.java.packageName + ".${unhandled}"
+
+		@Suppress("UNCHECKED_CAST")
+		val clazz = Class.forName(className) as Class<Content>
+		val content: Content = mock(clazz)
+		whenever(file.content).thenReturn(content)
+
+		val results = subject.check(file)
+
+		results should beEmpty()
+		verify(subject).check(file)
+		verify(file).content
+		verifyNoMoreInteractions(subject, file, content)
+	}
+
 	@Test fun `check calls visitInvalidContentFile for any() action content`() {
 		val subject = spy(InvalidContentRule())
 		val file: File = mock()
@@ -85,6 +137,31 @@ class VisitorRuleTest {
 		results should beEmpty()
 		verify(subject).check(file)
 		verify(subject).visitInvalidContentFile(any(), eq(file))
+		verify(file).content
+		verifyNoMoreInteractions(subject, file, content)
+	}
+
+	@ValueSource(
+		strings = [
+			"Workflow",
+			"Action",
+		]
+	)
+	@ParameterizedTest
+	fun `check calls nothing when unhandled content is passed to invalid visitor`(unhandled: String) {
+		val subject = spy(InvalidContentRule())
+		val file: File = mock()
+		val className = InvalidContent::class.java.packageName + ".${unhandled}"
+
+		@Suppress("UNCHECKED_CAST")
+		val clazz = Class.forName(className) as Class<Content>
+		val content: Content = mock(clazz)
+		whenever(file.content).thenReturn(content)
+
+		val results = subject.check(file)
+
+		results should beEmpty()
+		verify(subject).check(file)
 		verify(file).content
 		verifyNoMoreInteractions(subject, file, content)
 	}

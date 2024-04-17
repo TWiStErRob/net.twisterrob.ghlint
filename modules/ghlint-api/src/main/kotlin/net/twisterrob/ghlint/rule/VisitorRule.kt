@@ -20,17 +20,22 @@ public interface VisitorRule : Rule {
 	}
 
 	private fun visit(reporting: Reporting, file: File) {
-		val content = file.content
-		when {
-			this is WorkflowVisitor && content is Workflow -> visitWorkflowFile(reporting, file)
-			this is ActionVisitor && content is Action -> visitActionFile(reporting, file)
-			this is InvalidContentVisitor && content is InvalidContent -> visitInvalidContentFile(reporting, file)
-			else -> error(
-				"A ${VisitorRule::class.simpleName ?: error("No name!")} must also implement one of "
-						+ SUPPORTED_VISITORS.joinToString(separator = ", ") { it.simpleName ?: error("No name!") }
-						+ " visitors."
-			)
+		if (this !is WorkflowVisitor && this !is ActionVisitor && this !is InvalidContentVisitor) {
+			throwInvalidImplementation()
 		}
+		when (file.content) {
+			is Workflow -> if (this is WorkflowVisitor) visitWorkflowFile(reporting, file)
+			is Action -> if (this is ActionVisitor) visitActionFile(reporting, file)
+			is InvalidContent -> if (this is InvalidContentVisitor) visitInvalidContentFile(reporting, file)
+		}
+	}
+
+	private fun throwInvalidImplementation(): Nothing {
+		error(
+			"A ${VisitorRule::class.simpleName ?: error("No name!")} must also implement at least one of "
+					+ SUPPORTED_VISITORS.joinToString(separator = ", ") { it.simpleName ?: error("No name!") }
+					+ " visitors."
+		)
 	}
 
 	public companion object {
