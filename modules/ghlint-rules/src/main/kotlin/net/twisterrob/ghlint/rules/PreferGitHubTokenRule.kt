@@ -2,8 +2,8 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -32,12 +32,12 @@ public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor {
 		(job.secrets as? Job.Secrets.Explicit).check(reporting, "secret", job)
 	}
 
-	override fun visitStep(reporting: Reporting, step: Step) {
-		super.visitStep(reporting, step)
+	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
+		super.visitWorkflowStep(reporting, step)
 		step.env.check(reporting, "environment variable", step)
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
+	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitUsesStep(reporting, step)
 		step.with.check(reporting, "input", step)
 	}

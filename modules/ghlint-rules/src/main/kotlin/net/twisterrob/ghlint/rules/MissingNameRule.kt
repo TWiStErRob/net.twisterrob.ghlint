@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -28,8 +28,8 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor {
 		}
 	}
 
-	public override fun visitStep(reporting: Reporting, step: Step) {
-		super.visitStep(reporting, step)
+	public override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
+		super.visitWorkflowStep(reporting, step)
 		if (step.name == null) {
 			reporting.report(MissingStepName, step, Message)
 		}

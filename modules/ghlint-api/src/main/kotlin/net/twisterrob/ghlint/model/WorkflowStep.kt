@@ -3,21 +3,18 @@ package net.twisterrob.ghlint.model
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
  */
-public sealed interface ActionStep : Step, Component {
+public sealed interface WorkflowStep : Step, Component {
 
-	public val parent: Action.Runs.CompositeRuns
+	public val parent: Job.NormalJob
 
 	public companion object;
 
-	// TODO find a way to remove this from the API.
-	public interface BaseStep : ActionStep, Step.BaseStep {
+	public interface BaseStep : WorkflowStep, Step.BaseStep {
 
 		public companion object
 	}
 
 	public interface Run : BaseStep, Step.Run {
-
-		public override val shell: String
 
 		public companion object
 	}

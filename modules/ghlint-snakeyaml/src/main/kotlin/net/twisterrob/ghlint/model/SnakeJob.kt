@@ -37,7 +37,7 @@ public sealed class SnakeJob protected constructor(
 		override val target: Node,
 	) : Job.NormalJob, SnakeJob() {
 
-		override val steps: List<Step>
+		override val steps: List<WorkflowStep>
 			get() = node.getRequired("steps").array.mapIndexed { index, node ->
 				factory.createStep(
 					parent = this,

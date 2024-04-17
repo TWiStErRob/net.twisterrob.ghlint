@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.rules
 
-import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -12,7 +12,7 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(SafeEnvironmentFileRedirect)
 
-	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
+	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitRunStep(reporting, step)
 		GITHUB_ENVIRONMENT_FILE_REGEX.findAll(step.run).forEach { match ->
 			val environmentFile = match.groups.getRequired("environmentFile")

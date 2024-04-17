@@ -8,6 +8,7 @@ import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
@@ -54,10 +55,10 @@ class Component_toTargetTest {
 		result shouldBe """Action[action/name]"""
 	}
 
-	@Test fun `step with id as target`() {
+	@Test fun `workflow step with id as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: Step = mock<Step.BaseStep>()
+		val component: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.id).thenReturn("step-id")
 
@@ -66,10 +67,10 @@ class Component_toTargetTest {
 		result shouldBe """Step[step-id] in Job[job-id]"""
 	}
 
-	@Test fun `step with name as target`() {
+	@Test fun `workflow step with name as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: Step = mock<Step.BaseStep>()
+		val component: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.name).thenReturn("Step Name")
 
@@ -78,10 +79,10 @@ class Component_toTargetTest {
 		result shouldBe """Step["Step Name"] in Job[job-id]"""
 	}
 
-	@Test fun `step with uses as target`() {
+	@Test fun `workflow step with uses as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: Step.Uses = mock()
+		val component: WorkflowStep.Uses = mock()
 		whenever(component.parent).thenReturn(parent)
 		val uses: Step.UsesAction = mock()
 		whenever(uses.uses).thenReturn("action/name")
@@ -92,10 +93,10 @@ class Component_toTargetTest {
 		result shouldBe """Step[action/name] in Job[job-id]"""
 	}
 
-	@Test fun `step with index as target`() {
+	@Test fun `workflow step with index as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: Step = mock<Step.BaseStep>()
+		val component: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.index).thenReturn(Step.Index(42))
 
@@ -151,7 +152,7 @@ class Component_toTargetTest {
 		whenever(parent.parent).thenReturn(action)
 		val component: ActionStep = mock<ActionStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
-		whenever(component.index).thenReturn(ActionStep.Index(42))
+		whenever(component.index).thenReturn(Step.Index(42))
 
 		val result = component.toTarget()
 

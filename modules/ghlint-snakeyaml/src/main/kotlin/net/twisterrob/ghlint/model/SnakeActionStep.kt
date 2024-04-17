@@ -29,7 +29,7 @@ public sealed class SnakeActionStep protected constructor(
 
 	public class SnakeRun internal constructor(
 		override val parent: Action.Runs.CompositeRuns,
-		override val index: ActionStep.Index,
+		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
 	) : ActionStep.Run, SnakeActionStep() {
@@ -48,7 +48,7 @@ public sealed class SnakeActionStep protected constructor(
 	public class SnakeUses internal constructor(
 		private val factory: SnakeComponentFactory,
 		override val parent: Action.Runs.CompositeRuns,
-		override val index: ActionStep.Index,
+		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
 	) : ActionStep.Uses, SnakeActionStep() {

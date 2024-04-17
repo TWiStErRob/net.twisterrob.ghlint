@@ -2,8 +2,8 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -28,8 +28,8 @@ public class EmptyEnvRule : VisitorRule, WorkflowVisitor {
 	}
 
 	@Suppress("detekt.NamedArguments")
-	override fun visitStep(reporting: Reporting, step: Step) {
-		super.visitStep(reporting, step)
+	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
+		super.visitWorkflowStep(reporting, step)
 		checkEmptyEnv(step, step.env, reporting, EmptyStepEnv)
 	}
 

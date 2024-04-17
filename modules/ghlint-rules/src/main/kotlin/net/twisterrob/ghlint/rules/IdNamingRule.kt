@@ -1,15 +1,15 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.model.id
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
+import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
-import net.twisterrob.ghlint.rule.report
 
 @Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
 public class IdNamingRule : VisitorRule, WorkflowVisitor {
@@ -30,8 +30,8 @@ public class IdNamingRule : VisitorRule, WorkflowVisitor {
 		}
 	}
 
-	public override fun visitStep(reporting: Reporting, step: Step) {
-		super.visitStep(reporting, step)
+	public override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
+		super.visitWorkflowStep(reporting, step)
 		if (step.id?.let(::isValid) == false) {
 			reporting.report(StepIdNaming, step) { "${it} should have a lower-case kebab ID." }
 		}

@@ -3,9 +3,8 @@ package net.twisterrob.ghlint.model
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
  */
-public sealed interface Step : Component {
+public sealed interface Step {
 
-	public val parent: Job.NormalJob
 	public val index: Index
 	public val name: String?
 	public val id: String?
@@ -20,7 +19,10 @@ public sealed interface Step : Component {
 	public value class Index(public val value: Int)
 
 	// TODO find a way to remove this from the API.
-	public interface BaseStep : Step
+	public interface BaseStep : Step {
+
+		public companion object
+	}
 
 	public interface Run : BaseStep {
 

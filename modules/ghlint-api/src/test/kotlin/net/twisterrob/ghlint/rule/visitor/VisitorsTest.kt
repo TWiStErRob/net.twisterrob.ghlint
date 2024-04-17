@@ -8,8 +8,8 @@ import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -78,15 +78,15 @@ private class OverrideEverythingVisitorRule
 		super.visitReusableWorkflowCallJob(reporting, job)
 	}
 
-	override fun visitStep(reporting: Reporting, step: Step) {
-		super.visitStep(reporting, step)
+	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
+		super.visitWorkflowStep(reporting, step)
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
+	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitUsesStep(reporting, step)
 	}
 
-	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
+	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitRunStep(reporting, step)
 	}
 

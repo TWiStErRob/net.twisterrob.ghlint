@@ -1,6 +1,6 @@
 package net.twisterrob.ghlint.rules
 
-import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -12,7 +12,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(MissingGhToken)
 
-	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
+	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitRunStep(reporting, step)
 		if (usesGhCli(step.run)) {
 			val hasGhToken = step.env.hasTokenVar || step.parent.env.hasTokenVar || step.parent.parent.env.hasTokenVar
@@ -22,7 +22,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
 		}
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
+	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitUsesStep(reporting, step)
 		// TODO check if referenced composite action uses gh cli without GH_TOKEN
 	}
