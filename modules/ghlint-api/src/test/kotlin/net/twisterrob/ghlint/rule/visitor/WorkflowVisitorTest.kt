@@ -1,9 +1,10 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.rule.Reporting
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.doNothing
@@ -18,16 +19,16 @@ class WorkflowVisitorTest {
 	private val subject: WorkflowVisitor = spy(object : WorkflowVisitor {})
 	private val reporting: Reporting = mock()
 
-	@Test fun `visitFile delegates workflow`() {
+	@Test fun `visitWorkflowFile delegates workflow`() {
 		val target: File = mock()
 		val child: Workflow = mock()
 		whenever(target.content).thenReturn(child)
 		doNothing().whenever(subject).visitWorkflow(reporting, child)
 
-		subject.visitFile(reporting, target)
+		subject.visitWorkflowFile(reporting, target)
 
 		verify(target).content
-		verify(subject).visitFile(reporting, target)
+		verify(subject).visitWorkflowFile(reporting, target)
 		verify(subject).visitWorkflow(reporting, child)
 		verifyNoMoreInteractions(subject, reporting, target, child)
 	}

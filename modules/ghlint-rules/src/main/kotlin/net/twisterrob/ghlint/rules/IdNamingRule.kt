@@ -7,11 +7,12 @@ import net.twisterrob.ghlint.model.id
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
-import net.twisterrob.ghlint.rule.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.rule.report
 
 @Suppress("detekt.StringLiteralDuplication") // Inside lambda, only visually identical.
-public class IdNamingRule : VisitorRule {
+public class IdNamingRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(WorkflowIdNaming, JobIdNaming, StepIdNaming)
 

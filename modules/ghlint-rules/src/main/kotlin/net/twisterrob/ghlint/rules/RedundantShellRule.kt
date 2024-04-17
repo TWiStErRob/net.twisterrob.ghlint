@@ -6,11 +6,12 @@ import net.twisterrob.ghlint.model.defaultShell
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
-import net.twisterrob.ghlint.rule.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.toTarget
 
-public class RedundantShellRule : VisitorRule {
+public class RedundantShellRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(RedundantDefaultShell, RedundantShell)
 

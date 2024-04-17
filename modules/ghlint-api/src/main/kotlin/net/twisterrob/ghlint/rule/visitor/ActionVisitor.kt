@@ -1,15 +1,16 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.rule.Reporting
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
 @Suppress("detekt.TooManyFunctions", "detekt.ComplexInterface")
 public interface ActionVisitor {
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitFile(reporting: Reporting, file: File) {
+	public fun visitActionFile(reporting: Reporting, file: File) {
 		visitAction(reporting, file.content as Action)
 	}
 
@@ -49,26 +50,26 @@ public interface ActionVisitor {
 	@OverridingMethodsMustInvokeSuper
 	public fun visitCompositeRuns(reporting: Reporting, runs: Action.Runs.CompositeRuns) {
 		runs.steps.forEach { step ->
-			visitStep(reporting, step)
+			visitActionStep(reporting, step)
 		}
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitStep(reporting: Reporting, step: ActionStep) {
+	public fun visitActionStep(reporting: Reporting, step: ActionStep) {
 		when (step) {
-			is ActionStep.Run -> visitRunStep(reporting, step)
-			is ActionStep.Uses -> visitUsesStep(reporting, step)
+			is ActionStep.Run -> visitActionRunStep(reporting, step)
+			is ActionStep.Uses -> visitActionUsesStep(reporting, step)
 			is ActionStep.BaseStep -> error("Unknown step type: ${step}")
 		}
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitUsesStep(reporting: Reporting, step: ActionStep.Uses) {
+	public fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
 		// No children.
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitRunStep(reporting: Reporting, step: ActionStep.Run) {
+	public fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
 		// No children.
 	}
 

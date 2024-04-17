@@ -8,10 +8,11 @@ import net.twisterrob.ghlint.model.effectiveShell
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
-import net.twisterrob.ghlint.rule.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.rule.report
 
-public class DuplicateShellRule : VisitorRule {
+public class DuplicateShellRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(DuplicateShellOnSteps)
 

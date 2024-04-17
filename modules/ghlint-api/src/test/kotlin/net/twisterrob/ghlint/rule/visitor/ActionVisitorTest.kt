@@ -1,8 +1,9 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.rule.Reporting
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.doNothing
@@ -17,16 +18,16 @@ class ActionVisitorTest {
 	private val subject: ActionVisitor = spy(object : ActionVisitor {})
 	private val reporting: Reporting = mock()
 
-	@Test fun `visitFile delegates actions`() {
+	@Test fun `visitActionFile delegates actions`() {
 		val target: File = mock()
 		val child: Action = mock()
 		whenever(target.content).thenReturn(child)
 		doNothing().whenever(subject).visitAction(reporting, child)
 
-		subject.visitFile(reporting, target)
+		subject.visitActionFile(reporting, target)
 
 		verify(target).content
-		verify(subject).visitFile(reporting, target)
+		verify(subject).visitActionFile(reporting, target)
 		verify(subject).visitAction(reporting, child)
 		verifyNoMoreInteractions(subject, reporting, target, child)
 	}
@@ -169,54 +170,54 @@ class ActionVisitorTest {
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitStep fails for base step`() {
+	@Test fun `visitActionStep fails for base step`() {
 		val target: ActionStep.BaseStep = mock()
 
 		assertThrows<IllegalStateException> {
-			subject.visitStep(reporting, target)
+			subject.visitActionStep(reporting, target)
 		}
 
-		verify(subject).visitStep(reporting, target)
+		verify(subject).visitActionStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitUsesStep does nothing`() {
+	@Test fun `visitActionUsesStep does nothing`() {
 		val target: ActionStep.Uses = mock()
 
-		subject.visitUsesStep(reporting, target)
+		subject.visitActionUsesStep(reporting, target)
 
-		verify(subject).visitUsesStep(reporting, target)
+		verify(subject).visitActionUsesStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitUsesStep delegates for run steps`() {
+	@Test fun `visitActionUsesStep delegates for run steps`() {
 		val target: ActionStep.Uses = mock()
-		doNothing().whenever(subject).visitUsesStep(reporting, target)
+		doNothing().whenever(subject).visitActionUsesStep(reporting, target)
 
-		subject.visitStep(reporting, target)
+		subject.visitActionStep(reporting, target)
 
-		verify(subject).visitStep(reporting, target)
-		verify(subject).visitUsesStep(reporting, target)
+		verify(subject).visitActionStep(reporting, target)
+		verify(subject).visitActionUsesStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitRunStep does nothing`() {
+	@Test fun `visitActionRunStep does nothing`() {
 		val target: ActionStep.Run = mock()
 
-		subject.visitRunStep(reporting, target)
+		subject.visitActionRunStep(reporting, target)
 
-		verify(subject).visitRunStep(reporting, target)
+		verify(subject).visitActionRunStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitStep delegates for run steps`() {
+	@Test fun `visitActionStep delegates for run steps`() {
 		val target: ActionStep.Run = mock()
-		doNothing().whenever(subject).visitRunStep(reporting, target)
+		doNothing().whenever(subject).visitActionRunStep(reporting, target)
 
-		subject.visitStep(reporting, target)
+		subject.visitActionStep(reporting, target)
 
-		verify(subject).visitStep(reporting, target)
-		verify(subject).visitRunStep(reporting, target)
+		verify(subject).visitActionStep(reporting, target)
+		verify(subject).visitActionRunStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
@@ -225,15 +226,15 @@ class ActionVisitorTest {
 		val child1: ActionStep = mock<ActionStep.BaseStep>()
 		val child2: ActionStep = mock<ActionStep.BaseStep>()
 		whenever(target.steps).thenReturn(listOf(child1, child2))
-		doNothing().whenever(subject).visitStep(reporting, child1)
-		doNothing().whenever(subject).visitStep(reporting, child2)
+		doNothing().whenever(subject).visitActionStep(reporting, child1)
+		doNothing().whenever(subject).visitActionStep(reporting, child2)
 
 		subject.visitCompositeRuns(reporting, target)
 
 		verify(target).steps
 		verify(subject).visitCompositeRuns(reporting, target)
-		verify(subject).visitStep(reporting, child1)
-		verify(subject).visitStep(reporting, child2)
+		verify(subject).visitActionStep(reporting, child1)
+		verify(subject).visitActionStep(reporting, child2)
 		verifyNoMoreInteractions(subject, reporting, target, child1, child2)
 	}
 

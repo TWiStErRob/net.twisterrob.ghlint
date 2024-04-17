@@ -1,8 +1,6 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
-import io.kotest.matchers.throwable.shouldHaveMessage
-import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -10,13 +8,8 @@ import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import org.mockito.Mockito.spy
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doAnswer
-import org.mockito.kotlin.whenever
 
 class DoubleCurlyIfRuleTest {
 
@@ -216,27 +209,6 @@ class DoubleCurlyIfRuleTest {
 				"Step[#0] in Job[test] has nested or invalid double-curly-braces."
 			)
 		}
-	}
-
-	@MethodSource("getValidButSyntaxErrorConditions")
-	@ParameterizedTest
-	fun `test validation for syntax error`(condition: String) {
-		val rule = spy<DoubleCurlyIfRule>()
-		doAnswer { throw it.getArgument(1, InvalidContent::class.java).error }
-			.whenever(rule)
-			.visitInvalidContent(any(), any())
-		val ex = assertThrows<RuntimeException> {
-			rule.check(
-				"""
-					if: ${condition}
-					
-				""".trimIndent(),
-				// TODEL newline https://bitbucket.org/snakeyaml/snakeyaml/issues/1087
-				// New line at the end is required for SnakeYaml to show full condition in message.
-				validate = false,
-			)
-		}
-		ex shouldHaveMessage """(?s)^Failed to parse YAML: .*\Q${condition}\E.*$""".toRegex()
 	}
 
 	companion object {

@@ -1,16 +1,17 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.rule.Reporting
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
 @Suppress("detekt.TooManyFunctions", "detekt.ComplexInterface")
 public interface WorkflowVisitor {
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitFile(reporting: Reporting, file: File) {
+	public fun visitWorkflowFile(reporting: Reporting, file: File) {
 		visitWorkflow(reporting, file.content as Workflow)
 	}
 
