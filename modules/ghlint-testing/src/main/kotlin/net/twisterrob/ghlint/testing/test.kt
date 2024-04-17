@@ -43,8 +43,11 @@ public fun test(ruleSet: KClass<out RuleSet>): List<DynamicNode> =
 				.generate { ruleSet.java.getDeclaredConstructor().newInstance() }
 				.limit(1)
 				.flatMap { it.createRules().stream() }
-				.flatMap { rule ->
-					test(rule).stream()
+				.map { rule ->
+					dynamicContainer(
+						"Rule ${rule::class.simplerName}",
+						test(rule)
+					)
 				}
 		),
 	)
