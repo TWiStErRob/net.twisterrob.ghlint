@@ -2,12 +2,16 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.atLeastSize
+import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotStartWith
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
+import net.twisterrob.ghlint.rule.visitor.InvalidContentVisitor
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.ruleset.RuleSet
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import java.util.stream.Stream
 import kotlin.reflect.KClass
+import kotlin.reflect.full.declaredFunctions
 import io.kotest.matchers.string.beEmpty as beEmptyString
 
 /**
@@ -77,6 +82,7 @@ public fun test(rule: KClass<out Rule>): DynamicNode =
 		)
 	)
 
+@Suppress("detekt.SpreadOperator") // More readable than a +.
 private fun test(rule: Rule): List<DynamicNode> = listOf(
 	dynamicTest("Rule ${rule::class.simplerName} issues are not empty") {
 		rule.issues shouldNot io.kotest.matchers.collections.beEmpty()
@@ -86,7 +92,21 @@ private fun test(rule: Rule): List<DynamicNode> = listOf(
 		rule.issues.flatMap { issue ->
 			testIssue(rule, issue)
 		}
+	),
+	*listOf(
+		WorkflowVisitor::class,
+		ActionVisitor::class,
+		InvalidContentVisitor::class
 	)
+		.filter { it.java.isAssignableFrom(rule::class.java) }
+		.map { visitorKlass ->
+			dynamicTest("Rule ${rule::class.simplerName} implements a ${visitorKlass.simplerName} function") {
+				val overriddenMethods = rule::class.declaredFunctions.map { it.name }
+				val interfaceMethods = visitorKlass.declaredFunctions.map { it.name }
+				overriddenMethods shouldContainAnyOf interfaceMethods
+			}
+		}
+		.toTypedArray(),
 )
 
 public fun testIssue(rule: Rule, issue: Issue): List<DynamicNode> = listOf(

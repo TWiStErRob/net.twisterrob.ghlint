@@ -9,4 +9,5 @@ dependencies {
 	api(libs.test.kotest.assertions)
 	api(libs.test.jupiter.api)
 	implementation(libs.classgraph)
+	implementation(libs.kotlin.reflection)
 }
