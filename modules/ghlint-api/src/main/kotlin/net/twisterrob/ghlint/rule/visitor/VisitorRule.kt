@@ -1,10 +1,12 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Reporting
+import net.twisterrob.ghlint.rule.Rule
 
 public interface VisitorRule : Rule {
 

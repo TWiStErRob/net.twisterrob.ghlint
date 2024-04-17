@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.ActionStep
@@ -8,6 +8,8 @@ import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.rule.Reporting
 import org.mockito.kotlin.verify
 
 class OverrideEverythingVisitorRule : VisitorRule, WorkflowVisitor, ActionVisitor, InvalidContentVisitor {

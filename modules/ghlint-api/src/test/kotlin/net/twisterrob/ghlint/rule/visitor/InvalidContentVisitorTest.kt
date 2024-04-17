@@ -1,7 +1,8 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.InvalidContent
+import net.twisterrob.ghlint.rule.Reporting
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.mock

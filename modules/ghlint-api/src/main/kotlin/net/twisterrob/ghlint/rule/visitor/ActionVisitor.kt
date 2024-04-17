@@ -1,8 +1,9 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.rule.Reporting
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
 @Suppress("detekt.TooManyFunctions", "detekt.ComplexInterface")

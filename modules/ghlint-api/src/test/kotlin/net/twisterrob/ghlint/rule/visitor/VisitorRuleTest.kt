@@ -1,4 +1,4 @@
-package net.twisterrob.ghlint.rule
+package net.twisterrob.ghlint.rule.visitor
 
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactly
@@ -10,6 +10,8 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Issue
+import net.twisterrob.ghlint.rule.Reporting
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest

@@ -7,8 +7,8 @@ import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
-import net.twisterrob.ghlint.rule.VisitorRule
-import net.twisterrob.ghlint.rule.WorkflowVisitor
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.rule.report
 
 @Suppress("detekt.StringLiteralDuplication") // Simpler to keep them duplicated.
