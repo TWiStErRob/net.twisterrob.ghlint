@@ -71,11 +71,7 @@ class VisitorRuleTest {
 	fun `check calls nothing when unhandled content is passed to workflow visitor`(unhandled: String) {
 		val subject = spy(WorkflowRule())
 		val file: File = mock()
-		val className = Workflow::class.java.packageName + ".${unhandled}"
-
-		@Suppress("UNCHECKED_CAST")
-		val clazz = Class.forName(className) as Class<Content>
-		val content: Content = mock(clazz)
+		val content: Content = createContent(unhandled)
 		whenever(file.content).thenReturn(content)
 
 		val results = subject.check(file)
@@ -112,11 +108,7 @@ class VisitorRuleTest {
 	fun `check calls nothing when unhandled content is passed to action visitor`(unhandled: String) {
 		val subject = spy(ActionRule())
 		val file: File = mock()
-		val className = Action::class.java.packageName + ".${unhandled}"
-
-		@Suppress("UNCHECKED_CAST")
-		val clazz = Class.forName(className) as Class<Content>
-		val content: Content = mock(clazz)
+		val content: Content = createContent(unhandled)
 		whenever(file.content).thenReturn(content)
 
 		val results = subject.check(file)
@@ -153,11 +145,7 @@ class VisitorRuleTest {
 	fun `check calls nothing when unhandled content is passed to invalid visitor`(unhandled: String) {
 		val subject = spy(InvalidContentRule())
 		val file: File = mock()
-		val className = InvalidContent::class.java.packageName + ".${unhandled}"
-
-		@Suppress("UNCHECKED_CAST")
-		val clazz = Class.forName(className) as Class<Content>
-		val content: Content = mock(clazz)
+		val content: Content = createContent(unhandled)
 		whenever(file.content).thenReturn(content)
 
 		val results = subject.check(file)
@@ -226,6 +214,16 @@ class VisitorRuleTest {
 		verify(file).content
 		verify(subject).visitInvalidContentFile(any(), eq(file))
 		verifyNoMoreInteractions(subject, file, content)
+	}
+
+	private fun createContent(unhandled: String): Content {
+		val className = Content::class.java.packageName + ".${unhandled}"
+
+		@Suppress("UNCHECKED_CAST")
+		val clazz = Class.forName(className) as? Class<Content>
+			?: error("Unknown content type: ${unhandled}")
+
+		return mock(clazz)
 	}
 
 	private class WorkflowRule : VisitorRule, WorkflowVisitor {
