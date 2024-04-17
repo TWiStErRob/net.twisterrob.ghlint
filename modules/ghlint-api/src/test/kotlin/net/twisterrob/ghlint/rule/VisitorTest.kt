@@ -22,12 +22,12 @@ class VisitorTest {
 		val file: File = mock()
 		val content: Workflow = mock()
 		whenever(file.content).thenReturn(content)
-		doNothing().whenever(subject).visitWorkflow(reporting, content)
+		doNothing().whenever(subject).visitWorkflowFile(reporting, file)
 
 		subject.visitFile(reporting, file)
 
 		verify(subject).visitFile(reporting, file)
-		verify(subject).visitWorkflow(reporting, content)
+		verify(subject).visitWorkflowFile(reporting, file)
 		verify(file, atLeastOnce()).content
 		verifyNoMoreInteractions(subject, reporting, file, content)
 	}
@@ -36,12 +36,12 @@ class VisitorTest {
 		val file: File = mock()
 		val content: Action = mock()
 		whenever(file.content).thenReturn(content)
-		doNothing().whenever(subject).visitAction(reporting, content)
+		doNothing().whenever(subject).visitActionFile(reporting, file)
 
 		subject.visitFile(reporting, file)
 
 		verify(subject).visitFile(reporting, file)
-		verify(subject).visitAction(reporting, content)
+		verify(subject).visitActionFile(reporting, file)
 		verify(file, atLeastOnce()).content
 		verifyNoMoreInteractions(subject, reporting, file, content)
 	}
@@ -50,22 +50,13 @@ class VisitorTest {
 		val file: File = mock()
 		val content: InvalidContent = mock()
 		whenever(file.content).thenReturn(content)
-		doNothing().whenever(subject).visitInvalidContent(reporting, content)
+		doNothing().whenever(subject).visitInvalidContentFile(reporting, file)
 
 		subject.visitFile(reporting, file)
 
 		verify(subject).visitFile(reporting, file)
-		verify(subject).visitInvalidContent(reporting, content)
+		verify(subject).visitInvalidContentFile(reporting, file)
 		verify(file, atLeastOnce()).content
 		verifyNoMoreInteractions(subject, reporting, file, content)
-	}
-
-	@Test fun `visitInvalidContent does nothing`() {
-		val target: InvalidContent = mock()
-
-		subject.visitInvalidContent(reporting, target)
-
-		verify(subject).visitInvalidContent(reporting, target)
-		verifyNoMoreInteractions(subject, reporting, target)
 	}
 }

@@ -6,19 +6,14 @@ import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
-public interface Visitor : WorkflowVisitor, ActionVisitor {
+public interface Visitor : WorkflowVisitor, ActionVisitor, InvalidContentVisitor {
 
 	@OverridingMethodsMustInvokeSuper
-	public override fun visitFile(reporting: Reporting, file: File) {
-		when (val content = file.content) {
-			is Workflow -> super<WorkflowVisitor>.visitFile(reporting, file)
-			is Action -> super<ActionVisitor>.visitFile(reporting, file)
-			is InvalidContent -> visitInvalidContent(reporting, content)
+	public fun visitFile(reporting: Reporting, file: File) {
+		when (file.content) {
+			is Workflow -> visitWorkflowFile(reporting, file)
+			is Action -> visitActionFile(reporting, file)
+			is InvalidContent -> visitInvalidContentFile(reporting, file)
 		}
-	}
-
-	@OverridingMethodsMustInvokeSuper
-	public fun visitInvalidContent(reporting: Reporting, content: InvalidContent) {
-		// No op, the system should already have reported this as an error.
 	}
 }

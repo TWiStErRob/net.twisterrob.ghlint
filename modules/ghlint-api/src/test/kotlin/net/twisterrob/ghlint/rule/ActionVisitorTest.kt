@@ -17,16 +17,16 @@ class ActionVisitorTest {
 	private val subject: ActionVisitor = spy(object : ActionVisitor {})
 	private val reporting: Reporting = mock()
 
-	@Test fun `visitFile delegates actions`() {
+	@Test fun `visitActionFile delegates actions`() {
 		val target: File = mock()
 		val child: Action = mock()
 		whenever(target.content).thenReturn(child)
 		doNothing().whenever(subject).visitAction(reporting, child)
 
-		subject.visitFile(reporting, target)
+		subject.visitActionFile(reporting, target)
 
 		verify(target).content
-		verify(subject).visitFile(reporting, target)
+		verify(subject).visitActionFile(reporting, target)
 		verify(subject).visitAction(reporting, child)
 		verifyNoMoreInteractions(subject, reporting, target, child)
 	}

@@ -9,7 +9,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper
 public interface ActionVisitor {
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitFile(reporting: Reporting, file: File) {
+	public fun visitActionFile(reporting: Reporting, file: File) {
 		visitAction(reporting, file.content as Action)
 	}
 

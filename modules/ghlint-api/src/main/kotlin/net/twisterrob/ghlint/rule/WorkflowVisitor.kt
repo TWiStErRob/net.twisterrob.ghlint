@@ -10,7 +10,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper
 public interface WorkflowVisitor {
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitFile(reporting: Reporting, file: File) {
+	public fun visitWorkflowFile(reporting: Reporting, file: File) {
 		visitWorkflow(reporting, file.content as Workflow)
 	}
 
