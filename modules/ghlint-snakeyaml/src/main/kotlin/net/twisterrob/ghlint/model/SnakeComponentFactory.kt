@@ -141,7 +141,7 @@ public class SnakeComponentFactory {
 		node as MappingNode
 		return when {
 			node.getOptionalText("uses") != null ->
-				SnakeWorkflowStep.SnakeWorkflowUses(
+				SnakeWorkflowStep.SnakeWorkflowStepUses(
 					factory = this,
 					parent = parent,
 					index = Step.Index(index),
@@ -150,7 +150,7 @@ public class SnakeComponentFactory {
 				)
 
 			node.getOptionalText("run") != null ->
-				SnakeWorkflowStep.SnakeWorkflowRun(
+				SnakeWorkflowStep.SnakeWorkflowStepRun(
 					parent = parent,
 					index = Step.Index(index),
 					node = node,
@@ -257,7 +257,7 @@ public class SnakeComponentFactory {
 		node as MappingNode
 		return when {
 			node.getOptionalText("uses") != null ->
-				SnakeActionStep.SnakeUses(
+				SnakeActionStep.SnakeActionStepUses(
 					factory = this,
 					parent = parent,
 					index = Step.Index(index),
@@ -266,7 +266,7 @@ public class SnakeComponentFactory {
 				)
 
 			node.getOptionalText("run") != null ->
-				SnakeActionStep.SnakeRun(
+				SnakeActionStep.SnakeActionStepRun(
 					parent = parent,
 					index = Step.Index(index),
 					node = node,

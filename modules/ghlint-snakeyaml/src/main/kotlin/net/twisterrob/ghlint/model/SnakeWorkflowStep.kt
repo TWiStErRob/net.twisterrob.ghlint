@@ -27,7 +27,7 @@ public sealed class SnakeWorkflowStep protected constructor(
 	override val env: Map<String, String>?
 		get() = node.getOptional("env")?.run { map.toTextMap() }
 
-	public class SnakeWorkflowRun internal constructor(
+	public class SnakeWorkflowStepRun internal constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
@@ -45,7 +45,7 @@ public sealed class SnakeWorkflowStep protected constructor(
 			get() = node.getOptionalText("working-directory")
 	}
 
-	public class SnakeWorkflowUses internal constructor(
+	public class SnakeWorkflowStepUses internal constructor(
 		private val factory: SnakeComponentFactory,
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,

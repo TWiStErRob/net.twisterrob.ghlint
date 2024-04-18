@@ -27,7 +27,7 @@ public sealed class SnakeActionStep protected constructor(
 	override val env: Map<String, String>?
 		get() = node.getOptional("env")?.run { map.toTextMap() }
 
-	public class SnakeRun internal constructor(
+	public class SnakeActionStepRun internal constructor(
 		override val parent: Action.Runs.CompositeRuns,
 		override val index: Step.Index,
 		override val node: MappingNode,
@@ -45,7 +45,7 @@ public sealed class SnakeActionStep protected constructor(
 			get() = node.getOptionalText("working-directory")
 	}
 
-	public class SnakeUses internal constructor(
+	public class SnakeActionStepUses internal constructor(
 		private val factory: SnakeComponentFactory,
 		override val parent: Action.Runs.CompositeRuns,
 		override val index: Step.Index,
