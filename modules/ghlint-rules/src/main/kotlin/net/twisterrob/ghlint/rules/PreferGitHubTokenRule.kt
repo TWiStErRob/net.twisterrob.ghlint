@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Workflow
@@ -8,11 +9,12 @@ import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
 @Suppress("detekt.StringLiteralDuplication") // Simpler to keep them duplicated.
-public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor {
+public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(PreferGitHubToken)
 
@@ -37,8 +39,18 @@ public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor {
 		step.env.check(reporting, "environment variable", step)
 	}
 
+	override fun visitActionStep(reporting: Reporting, step: ActionStep) {
+		super.visitActionStep(reporting, step)
+		step.env.check(reporting, "environment variable", step)
+	}
+
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
+		step.with.check(reporting, "input", step)
+	}
+
+	override fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
+		super.visitActionUsesStep(reporting, step)
 		step.with.check(reporting, "input", step)
 	}
 
