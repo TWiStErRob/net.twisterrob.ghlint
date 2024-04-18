@@ -12,8 +12,8 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(MissingGhToken)
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		if (usesGhCli(step.run)) {
 			val hasGhToken = step.env.hasTokenVar || step.parent.env.hasTokenVar || step.parent.parent.env.hasTokenVar
 			if (!hasGhToken) {
@@ -22,8 +22,8 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
 		}
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
-		super.visitUsesStep(reporting, step)
+	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
+		super.visitWorkflowUsesStep(reporting, step)
 		// TODO check if referenced composite action uses gh cli without GH_TOKEN
 	}
 

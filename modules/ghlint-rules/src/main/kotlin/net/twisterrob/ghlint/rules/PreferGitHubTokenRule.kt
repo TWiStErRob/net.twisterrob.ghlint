@@ -37,8 +37,8 @@ public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor {
 		step.env.check(reporting, "environment variable", step)
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
-		super.visitUsesStep(reporting, step)
+	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
+		super.visitWorkflowUsesStep(reporting, step)
 		step.with.check(reporting, "input", step)
 	}
 

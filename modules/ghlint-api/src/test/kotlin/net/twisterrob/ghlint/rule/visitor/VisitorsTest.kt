@@ -82,12 +82,12 @@ private class OverrideEverythingVisitorRule
 		super.visitWorkflowStep(reporting, step)
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
-		super.visitUsesStep(reporting, step)
+	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
+		super.visitWorkflowUsesStep(reporting, step)
 	}
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 	}
 
 	override fun visitActionFile(reporting: Reporting, file: File) {

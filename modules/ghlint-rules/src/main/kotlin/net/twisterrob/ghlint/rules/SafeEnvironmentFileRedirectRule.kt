@@ -12,8 +12,8 @@ public class SafeEnvironmentFileRedirectRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(SafeEnvironmentFileRedirect)
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		GITHUB_ENVIRONMENT_FILE_REGEX.findAll(step.run).forEach { match ->
 			val environmentFile = match.groups.getRequired("environmentFile")
 			val prefix = match.groups.getRequired("prefix")

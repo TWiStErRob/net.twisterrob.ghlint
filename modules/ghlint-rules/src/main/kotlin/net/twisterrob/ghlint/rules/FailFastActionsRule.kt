@@ -17,8 +17,8 @@ public class FailFastActionsRule : VisitorRule, WorkflowVisitor {
 		FailFastSoftpropsGhRelease,
 	)
 
-	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
-		super.visitUsesStep(reporting, step)
+	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
+		super.visitWorkflowUsesStep(reporting, step)
 		when (step.uses.action) {
 			"actions/upload-artifact" -> {
 				val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")

@@ -12,8 +12,8 @@ public class EnvironmentFileOverwriteRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(EnvironmentFileOverwritten)
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		GITHUB_ENVIRONMENT_FILE_OVERWRITE_REGEX.findAll(step.run).forEach { match ->
 			val environmentFile = match.groups["environmentFile"]?.value ?: error("Invalid regex match")
 			reporting.report(EnvironmentFileOverwritten, step) {

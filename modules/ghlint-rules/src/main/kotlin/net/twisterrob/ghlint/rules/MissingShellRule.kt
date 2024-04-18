@@ -13,8 +13,8 @@ public class MissingShellRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(MissingShell)
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		if (step.effectiveShell == null) {
 			reporting.report(MissingShell, step) {
 				"${it} is missing a shell, specify `bash` for better error handling."

@@ -12,15 +12,15 @@ public class ScriptInjectionRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(ShellScriptInjection, JSScriptInjection)
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		if (step.run.contains("\${{")) {
 			reporting.report(ShellScriptInjection, step) { "${it} shell script contains GitHub Expressions." }
 		}
 	}
 
-	override fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
-		super.visitUsesStep(reporting, step)
+	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
+		super.visitWorkflowUsesStep(reporting, step)
 		if (step.uses.action == "actions/github-script"
 			// Assuming script is required: https://github.com/actions/github-script/blob/v7.0.1/action.yml#L8-L10
 			&& step.with.orEmpty().getValue("script").contains("\${{")

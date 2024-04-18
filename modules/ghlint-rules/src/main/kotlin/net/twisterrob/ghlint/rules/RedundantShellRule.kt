@@ -27,8 +27,8 @@ public class RedundantShellRule : VisitorRule, WorkflowVisitor {
 		}
 	}
 
-	override fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		val myShell = step.shell
 		if (myShell != null) {
 			val (globalLocation, globalShell) = when {

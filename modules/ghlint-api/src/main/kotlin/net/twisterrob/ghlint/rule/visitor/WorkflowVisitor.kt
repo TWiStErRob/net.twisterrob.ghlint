@@ -46,19 +46,19 @@ public interface WorkflowVisitor {
 	@OverridingMethodsMustInvokeSuper
 	public fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		when (step) {
-			is WorkflowStep.Run -> visitRunStep(reporting, step)
-			is WorkflowStep.Uses -> visitUsesStep(reporting, step)
+			is WorkflowStep.Run -> visitWorkflowRunStep(reporting, step)
+			is WorkflowStep.Uses -> visitWorkflowUsesStep(reporting, step)
 			is WorkflowStep.BaseStep -> error("Unknown step type: ${step}")
 		}
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
+	public fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		// No children.
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+	public fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		// No children.
 	}
 }

@@ -120,43 +120,43 @@ class WorkflowVisitorTest {
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitRunStep does nothing`() {
+	@Test fun `visitWorkflowRunStep does nothing`() {
 		val target: WorkflowStep.Run = mock()
 
-		subject.visitRunStep(reporting, target)
+		subject.visitWorkflowRunStep(reporting, target)
 
-		verify(subject).visitRunStep(reporting, target)
+		verify(subject).visitWorkflowRunStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
 	@Test fun `visitWorkflowStep delegates for run steps`() {
 		val target: WorkflowStep.Run = mock()
-		doNothing().whenever(subject).visitRunStep(reporting, target)
+		doNothing().whenever(subject).visitWorkflowRunStep(reporting, target)
 
 		subject.visitWorkflowStep(reporting, target)
 
 		verify(subject).visitWorkflowStep(reporting, target)
-		verify(subject).visitRunStep(reporting, target)
+		verify(subject).visitWorkflowRunStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitUsesStep does nothing`() {
+	@Test fun `visitWorkflowUsesStep does nothing`() {
 		val target: WorkflowStep.Uses = mock()
 
-		subject.visitUsesStep(reporting, target)
+		subject.visitWorkflowUsesStep(reporting, target)
 
-		verify(subject).visitUsesStep(reporting, target)
+		verify(subject).visitWorkflowUsesStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
 	@Test fun `visitWorkflowStep delegates for uses steps`() {
 		val target: WorkflowStep.Uses = mock()
-		doNothing().whenever(subject).visitUsesStep(reporting, target)
+		doNothing().whenever(subject).visitWorkflowUsesStep(reporting, target)
 
 		subject.visitWorkflowStep(reporting, target)
 
 		verify(subject).visitWorkflowStep(reporting, target)
-		verify(subject).visitUsesStep(reporting, target)
+		verify(subject).visitWorkflowUsesStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 }
