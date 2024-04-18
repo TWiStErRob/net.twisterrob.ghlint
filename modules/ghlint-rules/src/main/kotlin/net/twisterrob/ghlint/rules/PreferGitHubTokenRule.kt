@@ -7,9 +7,9 @@ import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
+import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
-import net.twisterrob.ghlint.rule.report
 
 @Suppress("detekt.StringLiteralDuplication") // Simpler to keep them duplicated.
 public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor {
