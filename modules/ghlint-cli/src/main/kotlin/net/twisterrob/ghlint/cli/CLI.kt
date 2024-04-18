@@ -26,7 +26,7 @@ public class CLI : CliktCommand(
 	printHelpOnEmptyArgs = true,
 	help = """
 		GitHub Actions Linter (GH-Lint).
-		A tool to lint GitHub Actions workflows.  
+		A tool to lint GitHub Actions workflows and actions.  
 		See https://ghlint.twisterrob.net for more information.
 	""".trimIndent(),
 	epilog = """
