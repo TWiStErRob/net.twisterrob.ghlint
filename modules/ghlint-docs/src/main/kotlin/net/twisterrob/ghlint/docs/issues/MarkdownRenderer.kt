@@ -50,6 +50,7 @@ internal class MarkdownRenderer(
 			appendLine(
 				"""
 					# `${issue.id}`
+					
 					${issue.title}
 					
 					_Defined by `${rule.id}` in the "[${ruleSet.name}](${ruleSetRelativePath})" ruleset${related}._

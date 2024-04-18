@@ -187,6 +187,7 @@ class MarkdownRendererTest {
 			val expected = Regex(
 				"""
 					^\Q# `IssueNameWithCrash`
+					
 					Crashing test issue.
 					
 					_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -230,6 +231,7 @@ class MarkdownRendererTest {
 
 			markdown shouldBe """
 				# `IssueNameWithoutExamples`
+				
 				Issue without examples.
 				
 				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
@@ -253,6 +255,7 @@ class MarkdownRendererTest {
 
 			markdown shouldBe """
 				# `IssueNameWithoutExamples`
+				
 				Issue without examples.
 				
 				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](IssueNameWithOnlyCompliantExample.md), [`IssueNameWithOnlyNonCompliantExample`](IssueNameWithOnlyNonCompliantExample.md), [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
@@ -277,6 +280,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithoutExamples,
 					"""
 						# `IssueNameWithoutExamples`
+						
 						Issue without examples.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -290,6 +294,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOnlyCompliantExample,
 					"""
 						# `IssueNameWithOnlyCompliantExample`
+						
 						Issue with only compliant example.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -313,6 +318,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOnlyNonCompliantExample,
 					"""
 						# `IssueNameWithOnlyNonCompliantExample`
+						
 						Issue with only compliant example.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -338,6 +344,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOneExampleEach,
 					"""
 						# `IssueNameWithOneExampleEach`
+						
 						Issue with one example each.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -373,6 +380,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOneExampleEachForAction,
 					"""
 						# `IssueNameWithOneExampleEachForAction`
+						
 						Issue with one example each.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -404,6 +412,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithManyExamples,
 					"""
 						# `IssueNameWithManyExamples`
+						
 						Issue with many examples.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -475,6 +484,7 @@ class MarkdownRendererTest {
 					TestRule.IssueWithComplexFindingMessage,
 					"""
 						# `IssueWithComplexFindingMessage`
+						
 						Issue with complex finding message.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
