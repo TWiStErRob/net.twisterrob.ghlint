@@ -13,6 +13,9 @@ internal class FileLocator(
 	private fun ruleSetFolder(ruleSet: RuleSet): Path =
 		target.resolve(ruleSet.id).apply { createDirectories() }
 
+	fun docFile(path: String): Path =
+		target.resolve(path)
+
 	fun ruleSetFile(ruleSet: RuleSet): Path =
 		ruleSetFolder(ruleSet).resolve("index.md")
 

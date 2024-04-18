@@ -55,6 +55,20 @@ class FileLocatorTest {
 		result.parent.parent shouldBe temp
 	}
 
+	@Test fun testDoc(@TempDir temp: Path) {
+		val locator = FileLocator(temp)
+
+		val result = locator.docFile("foo/bar")
+
+		result.name shouldBe "bar"
+		result shouldNot exist()
+
+		result.parent shouldNot exist()
+		result.parent.name shouldBe "foo"
+
+		result.parent.parent shouldBe temp
+	}
+
 	@Test fun `markdown paths are escaped`(@TempDir temp: Path) {
 		val locator = FileLocator(temp)
 
