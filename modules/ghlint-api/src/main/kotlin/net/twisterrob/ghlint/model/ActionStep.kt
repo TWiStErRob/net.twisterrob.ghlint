@@ -1,7 +1,11 @@
 package net.twisterrob.ghlint.model
 
 /**
- * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
+ * Represents a step in a GitHub Actions Action.
+ *
+ * References:
+ *  * [General documentation](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions)
+ *  * [`runs.steps.*`](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runssteps)
  */
 public sealed interface ActionStep : Step, Component {
 

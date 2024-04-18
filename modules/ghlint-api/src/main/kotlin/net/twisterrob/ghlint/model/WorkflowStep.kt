@@ -1,7 +1,11 @@
 package net.twisterrob.ghlint.model
 
 /**
- * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
+ * Represents a step in a GitHub Actions Workflow.
+ *
+ * References:
+ *  * [General documentation](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#jobs)
+ *  * [`jobs.jobs_id.steps.*`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps)
  */
 public sealed interface WorkflowStep : Step, Component {
 
