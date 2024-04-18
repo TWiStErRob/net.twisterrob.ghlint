@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.docs.issues
 
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.ruleset.RuleSet
+import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 
@@ -12,6 +13,9 @@ internal class FileLocator(
 	private fun ruleSetFolder(ruleSet: RuleSet): Path =
 		target.resolve(ruleSet.id).apply { createDirectories() }
 
+	fun docFile(path: String): Path =
+		target.resolve(path)
+
 	fun ruleSetFile(ruleSet: RuleSet): Path =
 		ruleSetFolder(ruleSet).resolve("index.md")
 
@@ -21,3 +25,6 @@ internal class FileLocator(
 
 private val Issue.fileName: String
 	get() = this.id + ".md"
+
+internal fun Path.asMarkdownPath(): String =
+	this.toString().replace(File.separator, "/")

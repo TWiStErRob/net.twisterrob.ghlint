@@ -35,7 +35,7 @@ interface FileSystemOpsInjected {
 
 def generateIssues = tasks.register("generateIssues", JavaExec.class) {
 	group = "documentation"
-	description = "Generates the CLI help for the website"
+	description = "Generates the issue documentation for the website."
 	mainClass = "net.twisterrob.ghlint.docs.issues.MainKt"
 	def generatedIssues = layout.buildDirectory.dir("generated/issues")
 	classpath(sourceSets.main.runtimeClasspath)
@@ -47,7 +47,7 @@ def generateIssues = tasks.register("generateIssues", JavaExec.class) {
 
 def generateCliHelp = tasks.register("generateCliHelp", JavaExec.class) {
 	group = "documentation"
-	description = "Generates the CLI help for the website"
+	description = "Generates the CLI help for the website."
 	mainClass = "net.twisterrob.ghlint.docs.cli.MainKt"
 	def generatedCliHelp = layout.buildDirectory.dir("generated/cli-help")
 	classpath(sourceSets.main.runtimeClasspath)

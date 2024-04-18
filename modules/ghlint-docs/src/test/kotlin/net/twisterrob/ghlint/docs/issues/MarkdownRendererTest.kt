@@ -10,6 +10,10 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
+import net.twisterrob.ghlint.rule.visitor.InvalidContentVisitor
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
@@ -55,6 +59,24 @@ class MarkdownRendererTest {
 			override fun check(file: File): List<Finding> = error("Should never be called.")
 		}
 
+		private inner class WorkflowOnlyRule : VisitorRule, WorkflowVisitor {
+
+			override val issues: List<Issue> = listOf(
+				TestRule.IssueNameWithOneExampleEach,
+			)
+
+			override fun check(file: File): List<Finding> = error("Should never be called.")
+		}
+
+		private inner class AllSupportingRule : VisitorRule, WorkflowVisitor, ActionVisitor, InvalidContentVisitor {
+
+			override val issues: List<Issue> = listOf(
+				TestRule.IssueNameWithOneExampleEach,
+			)
+
+			override fun check(file: File): List<Finding> = error("Should never be called.")
+		}
+
 		@Test fun `rule set renders with no rules`(@TempDir temp: Path) {
 			val renderer = MarkdownRenderer(FileLocator(temp))
 
@@ -69,6 +91,46 @@ class MarkdownRendererTest {
 				# Rule set "Test RuleSet" (`test-ruleset`)
 				
 				No rules.
+				
+			""".trimIndent()
+		}
+
+		@Test fun `rule renders with workflow support`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+
+			whenever(ruleSet.createRules()).thenReturn(listOf(WorkflowOnlyRule()))
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				 - `WorkflowOnlyRule` ([workflows](../../rules/workflows.md))
+				    - [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md): Issue with one example each.
+				
+			""".trimIndent()
+		}
+
+		@Test fun `rule renders with all support`(@TempDir temp: Path) {
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val ruleSet: RuleSet = mock()
+			whenever(ruleSet.id).thenReturn("test-ruleset")
+			whenever(ruleSet.name).thenReturn("Test RuleSet")
+
+			whenever(ruleSet.createRules()).thenReturn(listOf(AllSupportingRule()))
+
+			val markdown = renderer.renderRuleSet(ruleSet)
+
+			markdown shouldBe """
+				# Rule set "Test RuleSet" (`test-ruleset`)
+				
+				 - `AllSupportingRule` ([workflows](../../rules/workflows.md), [actions](../../rules/actions.md), [invalid content](../../rules/invalid.md))
+				    - [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md): Issue with one example each.
 				
 			""".trimIndent()
 		}
@@ -187,6 +249,7 @@ class MarkdownRendererTest {
 			val expected = Regex(
 				"""
 					^\Q# `IssueNameWithCrash`
+					
 					Crashing test issue.
 					
 					_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -230,9 +293,35 @@ class MarkdownRendererTest {
 
 			markdown shouldBe """
 				# `IssueNameWithoutExamples`
+				
 				Issue without examples.
 				
 				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
+				
+				## Description
+				Description of issue without examples.
+				
+			""".trimIndent()
+		}
+
+		@Test fun `supported content types are listed`(@TempDir temp: Path) {
+			class AllSupportingRule : VisitorRule, WorkflowVisitor, ActionVisitor, InvalidContentVisitor {
+
+				override val issues: List<Issue> = listOf(TestRule.IssueNameWithOneExampleEach)
+				override fun check(file: File): List<Finding> = error("Should never be called.")
+			}
+
+			val renderer = MarkdownRenderer(FileLocator(temp))
+
+			val markdown =
+				renderer.renderIssue(TestRuleSet(), AllSupportingRule(), TestRule.IssueNameWithoutExamples, emptyList())
+
+			markdown shouldBe """
+				# `IssueNameWithoutExamples`
+				
+				Issue without examples.
+				
+				_Defined by `AllSupportingRule` which supports [workflows](../../rules/workflows.md), [actions](../../rules/actions.md), [invalid content](../../rules/invalid.md) in the "[Test RuleSet](index.md)" ruleset._
 				
 				## Description
 				Description of issue without examples.
@@ -253,6 +342,7 @@ class MarkdownRendererTest {
 
 			markdown shouldBe """
 				# `IssueNameWithoutExamples`
+				
 				Issue without examples.
 				
 				_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset along with [`IssueNameWithOnlyCompliantExample`](IssueNameWithOnlyCompliantExample.md), [`IssueNameWithOnlyNonCompliantExample`](IssueNameWithOnlyNonCompliantExample.md), [`IssueNameWithOneExampleEach`](IssueNameWithOneExampleEach.md)._
@@ -277,6 +367,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithoutExamples,
 					"""
 						# `IssueNameWithoutExamples`
+						
 						Issue without examples.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -290,6 +381,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOnlyCompliantExample,
 					"""
 						# `IssueNameWithOnlyCompliantExample`
+						
 						Issue with only compliant example.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -313,6 +405,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOnlyNonCompliantExample,
 					"""
 						# `IssueNameWithOnlyNonCompliantExample`
+						
 						Issue with only compliant example.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -338,6 +431,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOneExampleEach,
 					"""
 						# `IssueNameWithOneExampleEach`
+						
 						Issue with one example each.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -373,6 +467,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithOneExampleEachForAction,
 					"""
 						# `IssueNameWithOneExampleEachForAction`
+						
 						Issue with one example each.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -404,6 +499,7 @@ class MarkdownRendererTest {
 					TestRule.IssueNameWithManyExamples,
 					"""
 						# `IssueNameWithManyExamples`
+						
 						Issue with many examples.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._
@@ -475,6 +571,7 @@ class MarkdownRendererTest {
 					TestRule.IssueWithComplexFindingMessage,
 					"""
 						# `IssueWithComplexFindingMessage`
+						
 						Issue with complex finding message.
 						
 						_Defined by `TestRule` in the "[Test RuleSet](index.md)" ruleset._

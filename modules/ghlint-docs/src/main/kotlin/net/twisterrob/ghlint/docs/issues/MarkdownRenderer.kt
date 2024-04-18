@@ -29,11 +29,14 @@ internal class MarkdownRenderer(
 				appendLine("No rules.")
 			}
 			rules.sortedBy { it.id }.forEach { rule ->
-				appendLine(" - `${rule.id}`")
+				val visitors = VisitorSupport.of(rule, locator, locator.ruleSetFile(ruleSet))
+					?.let { " (${it})" }
+					.orEmpty()
+				appendLine(" - `${rule.id}`${visitors}")
 				rule.issues.sortedBy { it.id }.forEach { issue ->
 					val thisFolder = locator.ruleSetFile(ruleSet).parent
 					val issueRelativePath = locator.issueFile(ruleSet, issue).relativeTo(thisFolder)
-					appendLine("    - [`${issue.id}`](${issueRelativePath}): ${issue.title}")
+					appendLine("    - [`${issue.id}`](${issueRelativePath.asMarkdownPath()}): ${issue.title}")
 				}
 			}
 		}
@@ -43,16 +46,20 @@ internal class MarkdownRenderer(
 			val thisFolder = locator.issueFile(ruleSet, issue).parent
 			val relatedIssuesText = relatedIssues.joinToString(separator = ", ") { relatedIssue ->
 				val relatedIssueRelativePath = locator.issueFile(ruleSet, relatedIssue).relativeTo(thisFolder)
-				"[`${relatedIssue.id}`]($relatedIssueRelativePath)"
+				"[`${relatedIssue.id}`](${relatedIssueRelativePath.asMarkdownPath()})"
 			}
 			val related = if (relatedIssuesText.isNotEmpty()) " along with ${relatedIssuesText}" else ""
 			val ruleSetRelativePath = locator.ruleSetFile(ruleSet).relativeTo(thisFolder)
+			val visitors = VisitorSupport.of(rule, locator, locator.issueFile(ruleSet, issue))
+				?.let { " which supports ${it}" }
+				.orEmpty()
 			appendLine(
 				"""
 					# `${issue.id}`
+					
 					${issue.title}
 					
-					_Defined by `${rule.id}` in the "[${ruleSet.name}](${ruleSetRelativePath})" ruleset${related}._
+					_Defined by `${rule.id}`${visitors} in the "[${ruleSet.name}](${ruleSetRelativePath.asMarkdownPath()})" ruleset${related}._
 					
 					## Description
 				""".trimIndent()

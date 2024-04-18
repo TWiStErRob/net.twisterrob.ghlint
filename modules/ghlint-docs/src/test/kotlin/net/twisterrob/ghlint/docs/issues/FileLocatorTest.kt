@@ -13,6 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import java.nio.file.Path
 import kotlin.io.path.name
+import kotlin.io.path.relativeTo
 
 class FileLocatorTest {
 
@@ -52,5 +53,27 @@ class FileLocatorTest {
 		result.parent.name shouldBe "test-ruleset"
 
 		result.parent.parent shouldBe temp
+	}
+
+	@Test fun testDoc(@TempDir temp: Path) {
+		val locator = FileLocator(temp)
+
+		val result = locator.docFile("foo/bar")
+
+		result.name shouldBe "bar"
+		result shouldNot exist()
+
+		result.parent shouldNot exist()
+		result.parent.name shouldBe "foo"
+
+		result.parent.parent shouldBe temp
+	}
+
+	@Test fun `markdown paths are escaped`(@TempDir temp: Path) {
+		val locator = FileLocator(temp)
+
+		val result = locator.docFile("foo/bar")
+
+		result.relativeTo(temp).asMarkdownPath() shouldBe "foo/bar"
 	}
 }
