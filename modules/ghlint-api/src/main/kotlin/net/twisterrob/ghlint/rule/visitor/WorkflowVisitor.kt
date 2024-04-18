@@ -2,8 +2,8 @@ package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Reporting
 import javax.annotation.OverridingMethodsMustInvokeSuper
 
@@ -34,7 +34,7 @@ public interface WorkflowVisitor {
 	@OverridingMethodsMustInvokeSuper
 	public fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		job.steps.forEach { step ->
-			visitStep(reporting, step)
+			visitWorkflowStep(reporting, step)
 		}
 	}
 
@@ -44,21 +44,21 @@ public interface WorkflowVisitor {
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitStep(reporting: Reporting, step: Step) {
+	public fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		when (step) {
-			is Step.Run -> visitRunStep(reporting, step)
-			is Step.Uses -> visitUsesStep(reporting, step)
-			is Step.BaseStep -> error("Unknown step type: ${step}")
+			is WorkflowStep.Run -> visitWorkflowRunStep(reporting, step)
+			is WorkflowStep.Uses -> visitWorkflowUsesStep(reporting, step)
+			is WorkflowStep.BaseStep -> error("Unknown step type: ${step}")
 		}
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitUsesStep(reporting: Reporting, step: Step.Uses) {
+	public fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		// No children.
 	}
 
 	@OverridingMethodsMustInvokeSuper
-	public fun visitRunStep(reporting: Reporting, step: Step.Run) {
+	public fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		// No children.
 	}
 }

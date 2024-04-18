@@ -9,8 +9,8 @@ import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-public sealed class SnakeStep protected constructor(
-) : Step.BaseStep, HasSnakeNode<MappingNode> {
+public sealed class SnakeWorkflowStep protected constructor(
+) : WorkflowStep.BaseStep, HasSnakeNode<MappingNode> {
 
 	override val location: Location
 		get() = super.location
@@ -27,12 +27,12 @@ public sealed class SnakeStep protected constructor(
 	override val env: Map<String, String>?
 		get() = node.getOptional("env")?.run { map.toTextMap() }
 
-	public class SnakeRun internal constructor(
+	public class SnakeWorkflowStepRun internal constructor(
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Step.Run, SnakeStep() {
+	) : WorkflowStep.Run, SnakeWorkflowStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val run: String
@@ -45,13 +45,13 @@ public sealed class SnakeStep protected constructor(
 			get() = node.getOptionalText("working-directory")
 	}
 
-	public class SnakeUses internal constructor(
+	public class SnakeWorkflowStepUses internal constructor(
 		private val factory: SnakeComponentFactory,
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Step.Uses, SnakeStep() {
+	) : WorkflowStep.Uses, SnakeWorkflowStep() {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val uses: Step.UsesAction

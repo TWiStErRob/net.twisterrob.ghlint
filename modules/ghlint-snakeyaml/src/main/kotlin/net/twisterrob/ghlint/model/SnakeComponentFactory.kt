@@ -137,11 +137,11 @@ public class SnakeComponentFactory {
 		}
 	}
 
-	internal fun createStep(parent: Job.NormalJob, index: Int, node: Node): Step {
+	internal fun createStep(parent: Job.NormalJob, index: Int, node: Node): WorkflowStep {
 		node as MappingNode
 		return when {
 			node.getOptionalText("uses") != null ->
-				SnakeStep.SnakeUses(
+				SnakeWorkflowStep.SnakeWorkflowStepUses(
 					factory = this,
 					parent = parent,
 					index = Step.Index(index),
@@ -150,7 +150,7 @@ public class SnakeComponentFactory {
 				)
 
 			node.getOptionalText("run") != null ->
-				SnakeStep.SnakeRun(
+				SnakeWorkflowStep.SnakeWorkflowStepRun(
 					parent = parent,
 					index = Step.Index(index),
 					node = node,
@@ -257,18 +257,18 @@ public class SnakeComponentFactory {
 		node as MappingNode
 		return when {
 			node.getOptionalText("uses") != null ->
-				SnakeActionStep.SnakeUses(
+				SnakeActionStep.SnakeActionStepUses(
 					factory = this,
 					parent = parent,
-					index = ActionStep.Index(index),
+					index = Step.Index(index),
 					node = node,
 					target = node.getDash(),
 				)
 
 			node.getOptionalText("run") != null ->
-				SnakeActionStep.SnakeRun(
+				SnakeActionStep.SnakeActionStepRun(
 					parent = parent,
-					index = ActionStep.Index(index),
+					index = Step.Index(index),
 					node = node,
 					target = node.getDash(),
 				)

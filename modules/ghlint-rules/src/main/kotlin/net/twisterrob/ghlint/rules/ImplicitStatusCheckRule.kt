@@ -2,13 +2,13 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
+import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
-import net.twisterrob.ghlint.rule.report
 
 public class ImplicitStatusCheckRule : VisitorRule, WorkflowVisitor {
 
@@ -19,8 +19,8 @@ public class ImplicitStatusCheckRule : VisitorRule, WorkflowVisitor {
 		job.`if`?.let { validate(reporting, job, it) }
 	}
 
-	override fun visitStep(reporting: Reporting, step: Step) {
-		super.visitStep(reporting, step)
+	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
+		super.visitWorkflowStep(reporting, step)
 		step.`if`?.let { validate(reporting, step, it) }
 	}
 

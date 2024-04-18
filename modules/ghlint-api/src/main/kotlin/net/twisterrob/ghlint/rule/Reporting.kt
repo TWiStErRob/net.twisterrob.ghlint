@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.model.id
 import net.twisterrob.ghlint.results.Finding
 
@@ -30,7 +31,7 @@ public fun Component.toTarget(): String =
 	when (this) {
 		is Workflow -> "Workflow[${this.id}]"
 		is Job -> "Job[${this.id}]"
-		is Step -> "Step[${this.identifier}] in ${this.parent.toTarget()}"
+		is WorkflowStep -> "Step[${this.identifier}] in ${this.parent.toTarget()}"
 		is Action -> "Action[${this.id ?: "\"${this.name}\""}]"
 		is ActionStep -> "Step[${this.identifier}] in ${this.parent.parent.toTarget()}"
 	}

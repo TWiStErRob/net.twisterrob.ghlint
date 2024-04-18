@@ -21,7 +21,7 @@ public sealed interface Job : Component {
 
 	public interface NormalJob : BaseJob {
 
-		public val steps: List<Step>
+		public val steps: List<WorkflowStep>
 		public val defaults: Defaults?
 		public val timeoutMinutes: String?
 

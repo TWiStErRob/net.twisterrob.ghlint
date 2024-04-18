@@ -1,11 +1,14 @@
 package net.twisterrob.ghlint.model
 
 /**
- * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
+ * Represents a step in a GitHub Actions Workflow or Action.
+ *
+ * Common step properties for
+ *  * [Workflow `jobs.jobs_id.steps.*`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps)
+ *  * [Action `runs.steps.*`](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runssteps)
  */
-public sealed interface Step : Component {
+public sealed interface Step {
 
-	public val parent: Job.NormalJob
 	public val index: Index
 	public val name: String?
 	public val id: String?
@@ -20,7 +23,10 @@ public sealed interface Step : Component {
 	public value class Index(public val value: Int)
 
 	// TODO find a way to remove this from the API.
-	public interface BaseStep : Step
+	public interface BaseStep : Step {
+
+		public companion object
+	}
 
 	public interface Run : BaseStep {
 

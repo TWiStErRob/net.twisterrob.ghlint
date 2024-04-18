@@ -2,8 +2,8 @@ package net.twisterrob.ghlint.rule.visitor
 
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Reporting
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -74,18 +74,18 @@ class WorkflowVisitorTest {
 
 	@Test fun `visitNormalJob delegates steps`() {
 		val target: Job.NormalJob = mock()
-		val child1: Step = mock<Step.BaseStep>()
-		val child2: Step = mock<Step.BaseStep>()
+		val child1: WorkflowStep = mock<WorkflowStep.BaseStep>()
+		val child2: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(target.steps).thenReturn(listOf(child1, child2))
-		doNothing().whenever(subject).visitStep(reporting, child1)
-		doNothing().whenever(subject).visitStep(reporting, child2)
+		doNothing().whenever(subject).visitWorkflowStep(reporting, child1)
+		doNothing().whenever(subject).visitWorkflowStep(reporting, child2)
 
 		subject.visitNormalJob(reporting, target)
 
 		verify(target).steps
 		verify(subject).visitNormalJob(reporting, target)
-		verify(subject).visitStep(reporting, child1)
-		verify(subject).visitStep(reporting, child2)
+		verify(subject).visitWorkflowStep(reporting, child1)
+		verify(subject).visitWorkflowStep(reporting, child2)
 		verifyNoMoreInteractions(subject, reporting, target, child1, child2)
 	}
 
@@ -109,54 +109,54 @@ class WorkflowVisitorTest {
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitStep fails for base step`() {
-		val target: Step.BaseStep = mock()
+	@Test fun `visitWorkflowStep fails for base step`() {
+		val target: WorkflowStep.BaseStep = mock()
 
 		assertThrows<IllegalStateException> {
-			subject.visitStep(reporting, target)
+			subject.visitWorkflowStep(reporting, target)
 		}
 
-		verify(subject).visitStep(reporting, target)
+		verify(subject).visitWorkflowStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitRunStep does nothing`() {
-		val target: Step.Run = mock()
+	@Test fun `visitWorkflowRunStep does nothing`() {
+		val target: WorkflowStep.Run = mock()
 
-		subject.visitRunStep(reporting, target)
+		subject.visitWorkflowRunStep(reporting, target)
 
-		verify(subject).visitRunStep(reporting, target)
+		verify(subject).visitWorkflowRunStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitStep delegates for run steps`() {
-		val target: Step.Run = mock()
-		doNothing().whenever(subject).visitRunStep(reporting, target)
+	@Test fun `visitWorkflowStep delegates for run steps`() {
+		val target: WorkflowStep.Run = mock()
+		doNothing().whenever(subject).visitWorkflowRunStep(reporting, target)
 
-		subject.visitStep(reporting, target)
+		subject.visitWorkflowStep(reporting, target)
 
-		verify(subject).visitStep(reporting, target)
-		verify(subject).visitRunStep(reporting, target)
+		verify(subject).visitWorkflowStep(reporting, target)
+		verify(subject).visitWorkflowRunStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitUsesStep does nothing`() {
-		val target: Step.Uses = mock()
+	@Test fun `visitWorkflowUsesStep does nothing`() {
+		val target: WorkflowStep.Uses = mock()
 
-		subject.visitUsesStep(reporting, target)
+		subject.visitWorkflowUsesStep(reporting, target)
 
-		verify(subject).visitUsesStep(reporting, target)
+		verify(subject).visitWorkflowUsesStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 
-	@Test fun `visitStep delegates for uses steps`() {
-		val target: Step.Uses = mock()
-		doNothing().whenever(subject).visitUsesStep(reporting, target)
+	@Test fun `visitWorkflowStep delegates for uses steps`() {
+		val target: WorkflowStep.Uses = mock()
+		doNothing().whenever(subject).visitWorkflowUsesStep(reporting, target)
 
-		subject.visitStep(reporting, target)
+		subject.visitWorkflowStep(reporting, target)
 
-		verify(subject).visitStep(reporting, target)
-		verify(subject).visitUsesStep(reporting, target)
+		verify(subject).visitWorkflowStep(reporting, target)
+		verify(subject).visitWorkflowUsesStep(reporting, target)
 		verifyNoMoreInteractions(subject, reporting, target)
 	}
 }

@@ -1,15 +1,15 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Job
-import net.twisterrob.ghlint.model.Step
+import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.model.defaultShell
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
-import net.twisterrob.ghlint.rule.visitor.VisitorRule
-import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.toTarget
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
 public class RedundantShellRule : VisitorRule, WorkflowVisitor {
 
@@ -27,8 +27,8 @@ public class RedundantShellRule : VisitorRule, WorkflowVisitor {
 		}
 	}
 
-	override fun visitRunStep(reporting: Reporting, step: Step.Run) {
-		super.visitRunStep(reporting, step)
+	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
+		super.visitWorkflowRunStep(reporting, step)
 		val myShell = step.shell
 		if (myShell != null) {
 			val (globalLocation, globalShell) = when {
