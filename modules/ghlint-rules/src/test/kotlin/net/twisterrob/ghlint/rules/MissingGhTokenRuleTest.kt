@@ -31,6 +31,25 @@ class MissingGhTokenRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when token is defined on action step`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: gh pr view
+				      shell: bash
+				      env:
+				        GH_TOKEN: ${'$'}{{ github.token }}
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when token is defined on job`() {
 		val results = check<MissingGhTokenRule>(
 			"""
@@ -82,6 +101,26 @@ class MissingGhTokenRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when token is defined on action step as secret`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: gh pr view
+				      shell: bash
+				      env:
+				        GH_TOKEN: ${'$'}{{ secrets.GITHUB_TOKEN }}
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used in different shell contexts`(script: String) {
 		val results = check<MissingGhTokenRule>(
@@ -101,6 +140,28 @@ class MissingGhTokenRuleTest {
 		)
 	}
 
+	@MethodSource("getValidGhCommands")
+	@ParameterizedTest
+	fun `reports when gh is used in different shell contexts in actions`(script: String) {
+		val results = check<MissingGhTokenRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave singleFinding(
+			"MissingGhToken",
+			"""Step[#0] in Action["Test"] should see `GH_TOKEN` environment variable."""
+		)
+	}
+
 	@MethodSource("getInvalidGhCommands")
 	@ParameterizedTest
 	fun `passes when gh command is not in the right context`(script: String) {
@@ -113,6 +174,25 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@MethodSource("getInvalidGhCommands")
+	@ParameterizedTest
+	fun `passes when gh command is not in the right context in actions`(script: String) {
+		val results = check<MissingGhTokenRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
 		)
 
 		results shouldHave noFindings()
