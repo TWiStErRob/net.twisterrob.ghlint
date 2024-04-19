@@ -32,9 +32,9 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
-					      - run: echo "Example"
-					      - run: echo "Example"
+					      - run: echo "Test"
+					      - run: echo "Test"
+					      - run: echo "Test"
 				""".trimIndent()
 			)
 
@@ -49,16 +49,16 @@ class DuplicateStepIdRuleTest {
 					  test1:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: step-id
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: mystep1
 					  test2:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: step-id
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: mystep2
 				""".trimIndent()
 			)
@@ -74,11 +74,11 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test1
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: step
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test2
 				""".trimIndent()
 			)
@@ -116,11 +116,11 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test1
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test2
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test3
 				""".trimIndent()
 			)
@@ -149,9 +149,9 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test
 				""".trimIndent()
 			)
@@ -162,26 +162,63 @@ class DuplicateStepIdRuleTest {
 			)
 		}
 
-		@Timeout(
-			5,
-			unit = TimeUnit.SECONDS,
-			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
-		)
-		@Test fun `reports when myriad of ids are similar`() {
+		@Test fun `reports when multiple ids are the same`() {
 			val results = check<DuplicateStepIdRule>(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
-					    steps:${
-							"\n" + (0..100).joinToString(separator = "\n") {
-								"""
-									|      - run: echo "Example"
-									|        id: step-id-${it}
-								""".trimMargin()
-							}.prependIndent("\t\t\t\t\t")
-						}
+					    steps:
+					      - run: echo "Test"
+					        shell: bash
+					        id: hello
+					      - run: echo "Test"
+					        shell: bash
+					        id: world
+					      - run: echo "Test"
+					        shell: bash
+					        id: hello
+					      - run: echo "Test"
+					        shell: bash
+					        id: world
+					      - run: echo "Test"
+					        shell: bash
+					        id: hello
+				""".trimIndent(),
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"DuplicateStepId",
+					"""Job[test] has the `hello` step identifier multiple times.""",
+				),
+				aFinding(
+					"DuplicateStepId",
+					"""Job[test] has the `world` step identifier multiple times.""",
+				),
+			)
+		}
+
+		@Timeout(
+			5,
+			unit = TimeUnit.SECONDS,
+			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
+		)
+		@Test fun `reports when myriad of ids are similar`() {
+			val steps = (0..100).joinToString(separator = "\n") {
+				"""
+					|      - run: echo "Test"
+					|        id: step-id-${it}
+				""".trimMargin()
+			}
+			val results = check<DuplicateStepIdRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: test
+					    steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent()
 			)
 
@@ -199,28 +236,26 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are the same`() {
+			val steps = (0..100).joinToString(separator = "\n") {
+				"""
+					|      - run: echo "Test"
+					|        id: step-id
+				""".trimMargin()
+			}
 			val results = check<DuplicateStepIdRule>(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
-					    steps:${
-							"\n" + (0..100).joinToString(separator = "\n") {
-								"""
-									|      - run: echo "Example"
-									|        id: step-id
-								""".trimMargin()
-							}.prependIndent("\t\t\t\t\t")
-						}
+					    steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent()
 			)
 
-			results should haveSize(5050)
-			results.forEach { finding ->
-				finding.issue.id shouldBe "DuplicateStepId"
-				finding.message shouldBe "Job[test] has the `step-id` step identifier multiple times."
-			}
+			results shouldHave singleFinding(
+				"DuplicateStepId",
+				"""Job[test] has the `step-id` step identifier multiple times.""",
+			)
 		}
 	}
 
@@ -235,11 +270,11 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 				""".trimIndent(),
 				fileName = "action.yml",
@@ -256,13 +291,13 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test1
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: step
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test2
 				""".trimIndent(),
@@ -305,13 +340,13 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test1
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test2
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test3
 				""".trimIndent(),
@@ -342,10 +377,10 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test
 				""".trimIndent(),
@@ -358,33 +393,73 @@ class DuplicateStepIdRuleTest {
 			)
 		}
 
-		@Timeout(
-			10,
-			unit = TimeUnit.SECONDS,
-			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
-		)
-		@Test fun `reports when myriad of ids are similar`() {
+		@Test fun `reports when multiple ids are the same`() {
 			val results = check<DuplicateStepIdRule>(
 				"""
 					name: Test
 					description: Test
 					runs:
 					  using: composite
-					  steps:${
-						"\n" + (0..1000).joinToString(separator = "\n") {
-							"""
-								|    - run: echo "Example"
-								|      shell: bash
-								|      id: step-id-${it}
-							""".trimMargin()
-						}.prependIndent("\t\t\t\t\t")
-					}
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      id: hello
+					    - run: echo "Test"
+					      shell: bash
+					      id: world
+					    - run: echo "Test"
+					      shell: bash
+					      id: hello
+					    - run: echo "Test"
+					      shell: bash
+					      id: world
+					    - run: echo "Test"
+					      shell: bash
+					      id: hello
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"DuplicateStepId",
+					"""Action["Test"] has the `hello` step identifier multiple times.""",
+				),
+				aFinding(
+					"DuplicateStepId",
+					"""Action["Test"] has the `world` step identifier multiple times.""",
+				),
+			)
+		}
+
+		@Timeout(
+			10,
+			unit = TimeUnit.SECONDS,
+			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
+		)
+		@Test fun `reports when myriad of ids are similar`() {
+			val steps = (0..1000).joinToString(separator = "\n") {
+				"""
+					|    - run: echo "Test"
+					|      shell: bash
+					|      id: step-id-${it}
+				""".trimMargin()
+			}
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent(),
 				fileName = "action.yml",
 			)
 
 			results should haveSize(159_931)
-			val messageRegex = """Action\["Test"] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
+			val messageRegex = Regex(
+				"""Action\["Test"] has similar step identifiers: `step-id-\d+` and `step-id-\d+`."""
+			)
 			results.forEach { finding ->
 				finding.issue.id shouldBe "SimilarStepId"
 				finding.message shouldMatch messageRegex
@@ -397,30 +472,28 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are the same`() {
+			val steps = (0..100).joinToString(separator = "\n") {
+				"""
+					|    - run: echo "Test"
+					|      shell: bash
+					|      id: step-id
+				""".trimMargin()
+			}
 			val results = check<DuplicateStepIdRule>(
 				"""
 					name: Test
 					description: Test
 					runs:
 					  using: composite
-					  steps:${
-						"\n" + (0..100).joinToString(separator = "\n") {
-							"""
-								|    - run: echo "Example"
-								|      shell: bash
-								|      id: step-id
-							""".trimMargin()
-						}.prependIndent("\t\t\t\t\t")
-					}
+					  steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent(),
 				fileName = "action.yml",
 			)
 
-			results should haveSize(5050)
-			results.forEach { finding ->
-				finding.issue.id shouldBe "DuplicateStepId"
-				finding.message shouldBe """Action["Test"] has the `step-id` step identifier multiple times."""
-			}
+			results shouldHave singleFinding(
+				"DuplicateStepId",
+				"""Action["Test"] has the `step-id` step identifier multiple times.""",
+			)
 		}
 	}
 }

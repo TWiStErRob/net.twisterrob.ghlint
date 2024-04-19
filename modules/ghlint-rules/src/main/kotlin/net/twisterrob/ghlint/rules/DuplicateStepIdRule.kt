@@ -36,7 +36,7 @@ public class DuplicateStepIdRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 			.map { Triple(it.first, it.second, editDistance(it.first, it.second)) }
 			.filter { it.third <= MAX_EDIT_DISTANCE }
 
-		similar.forEach { (id1, id2, distance) ->
+		similar.distinct().forEach { (id1, id2, distance) ->
 			if (distance == 0) {
 				report(DuplicateStepId, target) { "${it} has the `${id1}` step identifier multiple times." }
 			} else {
