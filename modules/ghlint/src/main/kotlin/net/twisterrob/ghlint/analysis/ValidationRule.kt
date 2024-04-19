@@ -14,7 +14,11 @@ import net.twisterrob.ghlint.model.inferType
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
-import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.rule.Reporting
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
+import net.twisterrob.ghlint.rule.visitor.InvalidContentVisitor
+import net.twisterrob.ghlint.rule.visitor.VisitorRule
+import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.yaml.YamlValidation
 import net.twisterrob.ghlint.yaml.YamlValidationProblem
 import net.twisterrob.ghlint.yaml.YamlValidationType
@@ -22,49 +26,52 @@ import net.twisterrob.ghlint.yaml.resolve
 import net.twisterrob.ghlint.yaml.toLocation
 import org.snakeyaml.engine.v2.nodes.Node
 
-internal class ValidationRule : Rule {
+internal class ValidationRule : VisitorRule, ActionVisitor, WorkflowVisitor, InvalidContentVisitor {
 
 	override val issues: List<Issue> = listOf(YamlSyntaxError, YamlLoadError, JsonSchemaValidation)
 
-	override fun check(file: File): List<Finding> {
-		return when (val content = file.content) {
-			is Workflow -> {
-				content as SnakeWorkflow
-				YamlValidation.validate(content.node, YamlValidationType.WORKFLOW).toFindings(content.node, file)
-			}
+	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
+		workflow as SnakeWorkflow
+		YamlValidation.validate(workflow.node, YamlValidationType.WORKFLOW)
+			.toFindings(workflow.node, workflow.parent)
+			.forEach(reporting::report)
+	}
 
-			is Action -> {
-				content as SnakeAction
-				YamlValidation.validate(content.node, YamlValidationType.ACTION).toFindings(content.node, file)
-			}
+	override fun visitAction(reporting: Reporting, action: Action) {
+		action as SnakeAction
+		YamlValidation.validate(action.node, YamlValidationType.ACTION)
+			.toFindings(action.node, action.parent)
+			.forEach(reporting::report)
+	}
 
-			is InvalidContent -> {
-				@Suppress("detekt.ElseCaseInsteadOfExhaustiveWhen") // REPORT False positive: InvalidContent is not sealed.
-				when (content) {
-					is SnakeErrorContent -> {
-						val type = when (file.location.inferType()) {
-							FileType.WORKFLOW -> YamlValidationType.WORKFLOW
-							FileType.ACTION -> YamlValidationType.ACTION
-							FileType.UNKNOWN -> return emptyList()
-						}
-						YamlValidation.validate(content.node, type).toFindings(content.node, file) +
-								listOf(content.toFinding(YamlLoadError, file, "loaded"))
-					}
-
-					is SnakeSyntaxErrorContent -> {
-						listOf(content.toFinding(YamlSyntaxError, file, "parsed"))
-					}
-
-					is SnakeUnknownContent -> {
-						listOf(content.toFinding(YamlLoadError, file, "loaded"))
-					}
-
-					else -> {
-						error("Unknown content type: ${content}")
-					}
+	override fun visitInvalidContent(reporting: Reporting, content: InvalidContent) {
+		@Suppress("detekt.ElseCaseInsteadOfExhaustiveWhen") // REPORT False positive: InvalidContent is not sealed.
+		when (content) {
+			is SnakeErrorContent -> {
+				val file = content.parent
+				val type = when (file.location.inferType()) {
+					FileType.WORKFLOW -> YamlValidationType.WORKFLOW
+					FileType.ACTION -> YamlValidationType.ACTION
+					FileType.UNKNOWN -> null
 				}
+				if (type != null) {
+					YamlValidation.validate(content.node, type).toFindings(content.node, file)
+						.forEach(reporting::report)
+				}
+				reporting.report(content.toFinding(YamlLoadError, "loaded"))
 			}
 
+			is SnakeSyntaxErrorContent -> {
+				reporting.report(content.toFinding(YamlSyntaxError, "parsed"))
+			}
+
+			is SnakeUnknownContent -> {
+				reporting.report(content.toFinding(YamlLoadError, "loaded"))
+			}
+
+			else -> {
+				error("Unknown content type: ${content}")
+			}
 		}
 	}
 
@@ -81,14 +88,14 @@ internal class ValidationRule : Rule {
 			message = "$error ($instanceLocation)"
 		)
 
-	private fun InvalidContent.toFinding(issue: Issue, file: File, verb: String): Finding =
+	private fun InvalidContent.toFinding(issue: Issue, verb: String): Finding =
 		Finding(
 			rule = this@ValidationRule,
 			issue = issue,
 			location = this.location,
 			message = @Suppress("detekt.StringShouldBeRawString")
 			// Cannot be trimIndent'd, because we don't control the error message.
-			"File ${file.location.path} could not be ${verb}:\n```\n${this.error}\n```"
+			"File ${parent.location.path} could not be ${verb}:\n```\n${this.error}\n```"
 		)
 
 	companion object {
