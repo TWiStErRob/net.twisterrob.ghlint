@@ -18,28 +18,28 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	public override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
-		if (workflow.name == null) {
+		if (workflow.name.isNullOrBlank()) {
 			reporting.report(MissingWorkflowName, workflow, Message)
 		}
 	}
 
 	public override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
-		if (job.name == null) {
+		if (job.name.isNullOrBlank()) {
 			reporting.report(MissingJobName, job, Message)
 		}
 	}
 
 	public override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		super.visitWorkflowStep(reporting, step)
-		if (step.name == null) {
+		if (step.name.isNullOrBlank()) {
 			reporting.report(MissingStepName, step, Message)
 		}
 	}
 
 	public override fun visitActionStep(reporting: Reporting, step: ActionStep) {
 		super.visitActionStep(reporting, step)
-		if (step.name == null) {
+		if (step.name.isNullOrBlank()) {
 			reporting.report(MissingStepName, step, Message)
 		}
 	}
@@ -62,6 +62,8 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				   `[<org>/<repo>] Run failed: <workflow name> - <branch name> (<hash>)`.
 				 * It's also useful when opening the file for viewing or editing,
 				   to give some context of what's expected to happen in the workflow.
+				
+				Note: the `name: ...` might be present in YAML, but if it's empty or blank, it's considered missing.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
@@ -111,6 +113,8 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				 * It's also used in Email contents, listing each job as failed or succeeded.
 				 * It's also useful when opening the file for viewing or editing,
 				   to give some context of what's expected to happen in the job.
+				
+				Note: the `name: ...` might be present in YAML, but if it's empty or blank, it's considered missing.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
@@ -158,6 +162,8 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				 * Using a succinct, but descriptive name can help to understand the workflow run at a glance.
 				 * It's also useful when opening the file for viewing or editing,
 				   it gives the file very nice structure if each step starts with a name.
+				
+				Note: the `name: ...` might be present in YAML, but if it's empty or blank, it's considered missing.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
