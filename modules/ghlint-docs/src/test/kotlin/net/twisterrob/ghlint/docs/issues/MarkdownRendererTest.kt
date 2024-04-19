@@ -267,7 +267,7 @@ class MarkdownRendererTest {
 					> jobs: {}
 					> ```
 					>
-					> - **Line 3**: net.twisterrob.ghlint.docs.issues.TestRule@\E[0-9a-f]{8}\Q errored while checking example.yml:
+					> - **Line 3**: net.twisterrob.ghlint.docs.issues.TestRule@\E[0-9a-f]+\Q errored while checking example.yml:
 					>    ````
 					>    java.lang.NullPointerException: Crashing test issue.
 					>    	at net.twisterrob.ghlint.docs.issues.TestRule.check(TestRule.kt:0)
