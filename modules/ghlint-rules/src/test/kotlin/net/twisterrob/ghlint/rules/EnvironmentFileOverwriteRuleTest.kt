@@ -37,21 +37,24 @@ class EnvironmentFileOverwriteRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				syntaxes(environmentFile).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<EnvironmentFileOverwriteRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: echo ${syntax}
-							""".trimIndent()
-						)
+				syntaxes(environmentFile).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    steps:
+									    # Intentionally unconventionally indented, see redirects().
+									    - run: echo ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave noFindings()
-					}
+							results shouldHave noFindings()
+						},
+					)
 				}
 			)
 		}
@@ -61,22 +64,25 @@ class EnvironmentFileOverwriteRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				(redirects(">>") x syntaxes(environmentFile)).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<EnvironmentFileOverwriteRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: |
-								          echo "Test" ${syntax}
-							""".trimIndent()
-						)
+				(redirects(">>") x syntaxes(environmentFile)).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    steps:
+									    # Intentionally unconventionally indented, see redirects().
+									    - run: |
+									        echo "Test" ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave noFindings()
-					}
+							results shouldHave noFindings()
+						},
+					)
 				}
 			)
 		}
@@ -86,25 +92,28 @@ class EnvironmentFileOverwriteRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				(redirects(">") x syntaxes(environmentFile)).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<EnvironmentFileOverwriteRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: |
-								          echo "Test" ${syntax}
-							""".trimIndent()
-						)
+				(redirects(">") x syntaxes(environmentFile)).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    # Intentionally unconventionally indented, see redirects().
+									    steps:
+									    - run: |
+									        echo "Test" ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave singleFinding(
-							"EnvironmentFileOverwritten",
-							"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
-						)
-					}
+							results shouldHave singleFinding(
+								"EnvironmentFileOverwritten",
+								"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
+							)
+						},
+					)
 				}
 			)
 		}

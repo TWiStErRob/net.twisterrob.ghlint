@@ -51,21 +51,23 @@ class SafeEnvironmentFileRedirectRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				(acceptedSyntaxes(environmentFile) + rejectedSyntaxes(environmentFile)).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<SafeEnvironmentFileRedirectRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: echo ${syntax}
-							""".trimIndent()
-						)
+				(acceptedSyntaxes(environmentFile) + rejectedSyntaxes(environmentFile)).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<SafeEnvironmentFileRedirectRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    steps:
+									      - run: echo ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave noFindings()
-					}
+							results shouldHave noFindings()
+						},
+					)
 				}
 			)
 		}
@@ -75,25 +77,28 @@ class SafeEnvironmentFileRedirectRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				((redirects(">") x acceptedSyntaxes(environmentFile)) + (redirects(">>") x acceptedSyntaxes(
-					environmentFile
-				))).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<SafeEnvironmentFileRedirectRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: |
-								          echo ${syntax}
-							""".trimIndent()
-						)
+				((redirects(">") x acceptedSyntaxes(environmentFile)) +
+						(redirects(">>") x acceptedSyntaxes(environmentFile)))
+					.flatMap { (name, syntax) ->
+						listOf(
+							dynamicTest(name) {
+								val results = check<SafeEnvironmentFileRedirectRule>(
+									"""
+										on: push
+										jobs:
+										  test:
+										    runs-on: test
+										    steps:
+										    # Intentionally unconventionally indented, see redirects().
+										    - run: |
+										        echo ${syntax}
+									""".trimIndent()
+								)
 
-						results shouldHave noFindings()
+								results shouldHave noFindings()
+							},
+						)
 					}
-				}
 			)
 		}
 
@@ -102,28 +107,31 @@ class SafeEnvironmentFileRedirectRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				((redirects(">") x rejectedSyntaxes(environmentFile)) + (redirects(">>") x rejectedSyntaxes(
-					environmentFile
-				))).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<SafeEnvironmentFileRedirectRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: |
-								          echo ${syntax}
-							""".trimIndent()
-						)
+				((redirects(">") x rejectedSyntaxes(environmentFile)) +
+						(redirects(">>") x rejectedSyntaxes(environmentFile)))
+					.flatMap { (name, syntax) ->
+						listOf(
+							dynamicTest(name) {
+								val results = check<SafeEnvironmentFileRedirectRule>(
+									"""
+										on: push
+										jobs:
+										  test:
+										    runs-on: test
+										    steps:
+										    # Intentionally unconventionally indented, see redirects().
+										    - run: |
+										        echo ${syntax}
+									""".trimIndent()
+								)
 
-						results shouldHave singleFinding(
-							"SafeEnvironmentFileRedirect",
-							"Step[#0] in Job[test] should be formatted as `>> \"${'$'}{${environmentFile}}\"`."
+								results shouldHave singleFinding(
+									"SafeEnvironmentFileRedirect",
+									"""Step[#0] in Job[test] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
+								)
+							},
 						)
 					}
-				}
 			)
 		}
 
