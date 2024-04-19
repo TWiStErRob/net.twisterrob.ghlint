@@ -1,21 +1,34 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.Action
+import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 import net.twisterrob.ghlint.rules.utils.editDistance
 
-public class DuplicateStepIdRule : VisitorRule, WorkflowVisitor {
+public class DuplicateStepIdRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(DuplicateStepId, SimilarStepId)
 
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
 		val ids = job.steps.mapNotNull { it.id }
+		reporting.validate(ids, job)
+	}
+
+	override fun visitCompositeRuns(reporting: Reporting, runs: Action.Runs.CompositeRuns) {
+		super.visitCompositeRuns(reporting, runs)
+		val ids = runs.steps.mapNotNull { it.id }
+		reporting.validate(ids, runs.parent)
+	}
+
+	private fun Reporting.validate(ids: List<String>, target: Component) {
 		val similar: Sequence<Triple<String, String, Int>> = ids
 			.combinations()
 			// Sort to be consistent in reporting the similar pairs.
@@ -25,9 +38,9 @@ public class DuplicateStepIdRule : VisitorRule, WorkflowVisitor {
 
 		similar.forEach { (id1, id2, distance) ->
 			if (distance == 0) {
-				reporting.report(DuplicateStepId, job) { "${it} has the `${id1}` step identifier multiple times." }
+				report(DuplicateStepId, target) { "${it} has the `${id1}` step identifier multiple times." }
 			} else {
-				reporting.report(SimilarStepId, job) { "${it} has similar step identifiers: `${id1}` and `${id2}`." }
+				report(SimilarStepId, target) { "${it} has similar step identifiers: `${id1}` and `${id2}`." }
 			}
 		}
 	}

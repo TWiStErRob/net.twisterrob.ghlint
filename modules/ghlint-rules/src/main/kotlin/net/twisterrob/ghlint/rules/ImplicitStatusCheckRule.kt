@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.WorkflowStep
@@ -7,10 +8,11 @@ import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class ImplicitStatusCheckRule : VisitorRule, WorkflowVisitor {
+public class ImplicitStatusCheckRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(NeverUseAlways, NegativeStatusCheck)
 
@@ -21,6 +23,11 @@ public class ImplicitStatusCheckRule : VisitorRule, WorkflowVisitor {
 
 	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		super.visitWorkflowStep(reporting, step)
+		step.`if`?.let { validate(reporting, step, it) }
+	}
+
+	override fun visitActionStep(reporting: Reporting, step: ActionStep) {
+		super.visitActionStep(reporting, step)
 		step.`if`?.let { validate(reporting, step, it) }
 	}
 

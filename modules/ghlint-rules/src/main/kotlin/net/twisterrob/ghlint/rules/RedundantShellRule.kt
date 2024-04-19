@@ -12,6 +12,7 @@ import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
 public class RedundantShellRule : VisitorRule, WorkflowVisitor {
+	// Note: Not possible to implement for Actions, because there's no way to define a default shell for composite actions.
 
 	override val issues: List<Issue> = listOf(RedundantDefaultShell, RedundantShell)
 

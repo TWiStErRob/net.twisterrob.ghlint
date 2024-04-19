@@ -1,15 +1,17 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class ComponentCountRule : VisitorRule, WorkflowVisitor {
+public class ComponentCountRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(TooManyJobs, TooManySteps)
 
@@ -26,9 +28,19 @@ public class ComponentCountRule : VisitorRule, WorkflowVisitor {
 	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
 		super.visitNormalJob(reporting, job)
 		val stepCount = job.steps.size
-		if (stepCount > MAX_STEP_COUNT) {
+		if (stepCount > MAX_STEP_COUNT_JOB) {
 			reporting.report(TooManySteps, job) {
-				"${it} has ${stepCount} steps, maximum recommended is ${MAX_STEP_COUNT}."
+				"${it} has ${stepCount} steps, maximum recommended is ${MAX_STEP_COUNT_JOB}."
+			}
+		}
+	}
+
+	override fun visitCompositeRuns(reporting: Reporting, runs: Action.Runs.CompositeRuns) {
+		super.visitCompositeRuns(reporting, runs)
+		val stepCount = runs.steps.size
+		if (stepCount > MAX_STEP_COUNT_ACTION) {
+			reporting.report(TooManySteps, runs.parent) {
+				"${it} has ${stepCount} steps, maximum recommended is ${MAX_STEP_COUNT_ACTION}."
 			}
 		}
 	}
@@ -36,7 +48,8 @@ public class ComponentCountRule : VisitorRule, WorkflowVisitor {
 	private companion object {
 
 		private const val MAX_JOB_COUNT = 10
-		private const val MAX_STEP_COUNT = 20
+		private const val MAX_STEP_COUNT_JOB = 20
+		private const val MAX_STEP_COUNT_ACTION = 20
 
 		val TooManyJobs = Issue(
 			id = "TooManyJobs",
@@ -131,6 +144,24 @@ public class ComponentCountRule : VisitorRule, WorkflowVisitor {
 						      - run: echo "Example"
 						      - run: echo "Example"
 						      - run: echo "Example"
+					""".trimIndent(),
+				),
+				Example(
+					explanation = "Simple action with only a few steps.",
+					path = "action.yml",
+					content = """
+						name: Test
+						description: Test
+						runs:
+						  using: composite
+						  steps:
+						    - uses: actions/checkout@v4
+						    - run: echo "Example"
+						      shell: bash
+						    - run: echo "Example"
+						      shell: bash
+						    - run: echo "Example"
+						      shell: bash
 					""".trimIndent(),
 				),
 			),

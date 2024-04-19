@@ -1,22 +1,35 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class EnvironmentFileOverwriteRule : VisitorRule, WorkflowVisitor {
+public class EnvironmentFileOverwriteRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(EnvironmentFileOverwritten)
 
 	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitWorkflowRunStep(reporting, step)
+		validate(reporting, step, step)
+	}
+
+	override fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
+		super.visitActionRunStep(reporting, step)
+		validate(reporting, step, step)
+	}
+
+	private fun validate(reporting: Reporting, step: Step.Run, target: Component) {
 		GITHUB_ENVIRONMENT_FILE_OVERWRITE_REGEX.findAll(step.run).forEach { match ->
 			val environmentFile = match.groups["environmentFile"]?.value ?: error("Invalid regex match")
-			reporting.report(EnvironmentFileOverwritten, step) {
+			reporting.report(EnvironmentFileOverwritten, target) {
 				"${it} overwrites environment file `${environmentFile}`."
 			}
 		}

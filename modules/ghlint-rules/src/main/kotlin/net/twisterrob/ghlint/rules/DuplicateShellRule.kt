@@ -103,6 +103,21 @@ public class DuplicateShellRule : VisitorRule, WorkflowVisitor {
 						      - run: echo "Example"
 					""".trimIndent(),
 				),
+				Example(
+					explanation = "Shell is mandatory on every step in composite actions.",
+					path = "action.yml",
+					content = """
+						name: Test
+						description: Test
+						runs:
+						  using: composite
+						  steps:
+						    - run: echo "Example"
+						      shell: bash
+						    - run: echo "Example"
+						      shell: bash
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(

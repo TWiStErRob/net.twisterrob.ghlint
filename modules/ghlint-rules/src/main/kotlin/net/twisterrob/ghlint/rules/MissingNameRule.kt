@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.WorkflowStep
@@ -7,10 +8,11 @@ import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class MissingNameRule : VisitorRule, WorkflowVisitor {
+public class MissingNameRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(MissingWorkflowName, MissingJobName, MissingStepName)
 
@@ -30,6 +32,13 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor {
 
 	public override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		super.visitWorkflowStep(reporting, step)
+		if (step.name == null) {
+			reporting.report(MissingStepName, step, Message)
+		}
+	}
+
+	public override fun visitActionStep(reporting: Reporting, step: ActionStep) {
+		super.visitActionStep(reporting, step)
 		if (step.name == null) {
 			reporting.report(MissingStepName, step, Message)
 		}
@@ -152,7 +161,7 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor {
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
-					explanation = "The first step has a name.",
+					explanation = "The first job step has a name.",
 					content = """
 						name: "Example"
 						on: push
@@ -165,10 +174,24 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor {
 						        run: echo "Example"
 					""".trimIndent(),
 				),
+				Example(
+					explanation = "The first action step has a name.",
+					path = "action.yml",
+					content = """
+						name: "Test"
+						description: Test
+						runs:
+						  using: composite
+						  steps:
+						    - name: "My Step"
+						      run: echo "Example"
+						      shell: bash
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "The first step is missing a name.",
+					explanation = "The first job step is missing a name.",
 					content = """
 						name: "Example"
 						on: push
@@ -178,6 +201,19 @@ public class MissingNameRule : VisitorRule, WorkflowVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
+					""".trimIndent(),
+				),
+				Example(
+					explanation = "The first action step is missing a name.",
+					path = "action.yml",
+					content = """
+						name: "Test"
+						description: Test
+						runs:
+						  using: composite
+						  steps:
+						    - run: echo "Example"
+						      shell: bash
 					""".trimIndent(),
 				),
 			),

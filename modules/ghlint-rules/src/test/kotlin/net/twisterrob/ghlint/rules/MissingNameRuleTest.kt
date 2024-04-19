@@ -90,7 +90,7 @@ class MissingNameRuleTest {
 		results shouldHave noFindings()
 	}
 
-	@Test fun `reports when step is missing a name`() {
+	@Test fun `reports when step is missing a name in job`() {
 		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
@@ -111,7 +111,7 @@ class MissingNameRuleTest {
 		)
 	}
 
-	@Test fun `passes when step has a name`() {
+	@Test fun `passes when step has a name in job`() {
 		val results = check<MissingNameRule>(
 			"""
 				name: Irrelevant
@@ -124,6 +124,45 @@ class MissingNameRuleTest {
 				      - name: Test
 				        run: echo "Test"
 			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `reports when step is missing a name in action`() {
+		val results = check<MissingNameRule>(
+			"""
+				name: "Test"
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test"
+				      shell: bash
+				      #name: Missing
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave singleFinding(
+			"MissingStepName",
+			"""Step[#0] in Action["Test"] is missing a name, add one to improve developer experience."""
+		)
+	}
+
+	@Test fun `passes when step has a name in action`() {
+		val results = check<MissingNameRule>(
+			"""
+				name: "Test"
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - name: Test
+				      run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
 		)
 
 		results shouldHave noFindings()

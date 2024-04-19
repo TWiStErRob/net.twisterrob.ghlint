@@ -1,14 +1,16 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
+public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(MissingGhToken)
 
@@ -16,6 +18,16 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
 		super.visitWorkflowRunStep(reporting, step)
 		if (usesGhCli(step.run)) {
 			val hasGhToken = step.env.hasTokenVar || step.parent.env.hasTokenVar || step.parent.parent.env.hasTokenVar
+			if (!hasGhToken) {
+				reporting.report(MissingGhToken, step) { "${it} should see `${TOKEN_ENV_VAR}` environment variable." }
+			}
+		}
+	}
+
+	override fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
+		super.visitActionRunStep(reporting, step)
+		if (usesGhCli(step.run)) {
+			val hasGhToken = step.env.hasTokenVar
 			if (!hasGhToken) {
 				reporting.report(MissingGhToken, step) { "${it} should see `${TOKEN_ENV_VAR}` environment variable." }
 			}
@@ -88,6 +100,26 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor {
 						      - run: gh pr view
 						        env:
 						          GH_TOKEN: ${'$'}{{ github.token }}
+					""".trimIndent(),
+				),
+				Example(
+					explanation = "`GH_TOKEN` is defined.",
+					path = "action.yml",
+					content = """
+						name: Test
+						description: Test
+						inputs:
+						  token:
+						    description: 'GitHub token to authenticate to GitHub APIs.'
+						    default: ${'$'}{{ github.token }}
+						runs:
+						  using: composite
+						  steps:
+						    - uses: actions/checkout@v4
+						    - run: gh pr view
+						      shell: bash
+						      env:
+						        GH_TOKEN: ${'$'}{{ inputs.token }}
 					""".trimIndent(),
 				),
 			),

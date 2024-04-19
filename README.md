@@ -23,7 +23,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
        Hopefully via generated code based on the JSON-schema.
  * [ ] Custom third-party rules (plugins)
  * [x] action.yml validator via JSON-schema
- * [ ] action.yml semantic rules
+ * [x] action.yml semantic rules
  * [ ] support for other types (e.g. issue templates/forms)
 
 ## Usage
