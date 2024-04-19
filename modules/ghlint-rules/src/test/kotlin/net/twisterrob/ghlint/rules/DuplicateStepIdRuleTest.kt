@@ -162,6 +162,44 @@ class DuplicateStepIdRuleTest {
 			)
 		}
 
+		@Test fun `reports when multiple ids are the same`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: test
+					    steps:
+					      - run: echo "Example"
+					        shell: bash
+					        id: hello
+					      - run: echo "Example"
+					        shell: bash
+					        id: world
+					      - run: echo "Example"
+					        shell: bash
+					        id: hello
+					      - run: echo "Example"
+					        shell: bash
+					        id: world
+					      - run: echo "Example"
+					        shell: bash
+					        id: hello
+				""".trimIndent(),
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"DuplicateStepId",
+					"""Job[test] has the `hello` step identifier multiple times.""",
+				),
+				aFinding(
+					"DuplicateStepId",
+					"""Job[test] has the `world` step identifier multiple times.""",
+				),
+			)
+		}
+
 		@Timeout(
 			5,
 			unit = TimeUnit.SECONDS,
@@ -214,11 +252,10 @@ class DuplicateStepIdRuleTest {
 				""".trimIndent()
 			)
 
-			results should haveSize(5050)
-			results.forEach { finding ->
-				finding.issue.id shouldBe "DuplicateStepId"
-				finding.message shouldBe "Job[test] has the `step-id` step identifier multiple times."
-			}
+			results shouldHave singleFinding(
+				"DuplicateStepId",
+				"""Job[test] has the `step-id` step identifier multiple times.""",
+			)
 		}
 	}
 
@@ -356,6 +393,45 @@ class DuplicateStepIdRuleTest {
 			)
 		}
 
+		@Test fun `reports when multiple ids are the same`() {
+			val results = check<DuplicateStepIdRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Example"
+					      shell: bash
+					      id: hello
+					    - run: echo "Example"
+					      shell: bash
+					      id: world
+					    - run: echo "Example"
+					      shell: bash
+					      id: hello
+					    - run: echo "Example"
+					      shell: bash
+					      id: world
+					    - run: echo "Example"
+					      shell: bash
+					      id: hello
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"DuplicateStepId",
+					"""Action["Test"] has the `hello` step identifier multiple times.""",
+				),
+				aFinding(
+					"DuplicateStepId",
+					"""Action["Test"] has the `world` step identifier multiple times.""",
+				),
+			)
+		}
+
 		@Timeout(
 			10,
 			unit = TimeUnit.SECONDS,
@@ -414,11 +490,10 @@ class DuplicateStepIdRuleTest {
 				fileName = "action.yml",
 			)
 
-			results should haveSize(5050)
-			results.forEach { finding ->
-				finding.issue.id shouldBe "DuplicateStepId"
-				finding.message shouldBe """Action["Test"] has the `step-id` step identifier multiple times."""
-			}
+			results shouldHave singleFinding(
+				"DuplicateStepId",
+				"""Action["Test"] has the `step-id` step identifier multiple times.""",
+			)
 		}
 	}
 }
