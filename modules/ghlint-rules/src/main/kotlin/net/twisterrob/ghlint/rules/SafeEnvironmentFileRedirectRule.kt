@@ -1,25 +1,38 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class SafeEnvironmentFileRedirectRule : VisitorRule, WorkflowVisitor {
+public class SafeEnvironmentFileRedirectRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(SafeEnvironmentFileRedirect)
 
 	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitWorkflowRunStep(reporting, step)
+		validate(reporting, step, step)
+	}
+
+	override fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
+		super.visitActionRunStep(reporting, step)
+		validate(reporting, step, step)
+	}
+
+	private fun validate(reporting: Reporting, step: Step.Run, target: Component) {
 		GITHUB_ENVIRONMENT_FILE_REGEX.findAll(step.run).forEach { match ->
 			val environmentFile = match.groups.getRequired("environmentFile")
 			val prefix = match.groups.getRequired("prefix")
 			val suffix = match.groups.getRequired("suffix")
 			if (prefix != "\"\${" && suffix != "}\"") {
-				reporting.report(SafeEnvironmentFileRedirect, step) {
+				reporting.report(SafeEnvironmentFileRedirect, target) {
 					"""${it} should be formatted as `>> "${'$'}{${environmentFile}}"`."""
 				}
 			}

@@ -31,6 +31,23 @@ class SafeEnvironmentFileRedirectRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when no environment file is used in actions`() {
+		val results = check<SafeEnvironmentFileRedirectRule>(
+			"""
+				name: "Test"
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when non-environment file is used`() {
 		val results = check<SafeEnvironmentFileRedirectRule>(
 			"""
@@ -41,6 +58,23 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    steps:
 				      - run: echo "Test" >> ${'$'}OUTPUT
 			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when non-environment file is used in actions`() {
+		val results = check<SafeEnvironmentFileRedirectRule>(
+			"""
+				name: "Test"
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test" >> ${'$'}OUTPUT
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
 		)
 
 		results shouldHave noFindings()
@@ -97,6 +131,23 @@ class SafeEnvironmentFileRedirectRuleTest {
 
 								results shouldHave noFindings()
 							},
+							dynamicTest("${name} in actions") {
+								val results = check<SafeEnvironmentFileRedirectRule>(
+									"""
+										name: "Test"
+										description: Test
+										runs:
+										  using: composite
+										  steps:
+										    - run: |
+										        echo ${syntax}
+										      shell: bash
+									""".trimIndent(),
+									fileName = "action.yml",
+								)
+
+								results shouldHave noFindings()
+							},
 						)
 					}
 			)
@@ -128,6 +179,26 @@ class SafeEnvironmentFileRedirectRuleTest {
 								results shouldHave singleFinding(
 									"SafeEnvironmentFileRedirect",
 									"""Step[#0] in Job[test] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
+								)
+							},
+							dynamicTest("${name} in actions") {
+								val results = check<SafeEnvironmentFileRedirectRule>(
+									"""
+										name: "Test"
+										description: Test
+										runs:
+										  using: composite
+										  steps:
+										    - run: |
+										        echo ${syntax}
+										      shell: bash
+									""".trimIndent(),
+									fileName = "action.yml",
+								)
+
+								results shouldHave singleFinding(
+									"SafeEnvironmentFileRedirect",
+									"""Step[#0] in Action["Test"] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
 								)
 							},
 						)
