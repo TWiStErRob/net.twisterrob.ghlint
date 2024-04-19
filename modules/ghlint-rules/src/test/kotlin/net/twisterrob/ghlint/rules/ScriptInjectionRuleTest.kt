@@ -263,7 +263,6 @@ class ScriptInjectionRuleTest {
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
-				// TODO re-think identifier, there could be multiple like this, it's not unique
 				"""Step[actions/github-script@v7] in Job[test] JavaScript contains GitHub Expressions.""",
 			)
 		}
@@ -287,7 +286,6 @@ class ScriptInjectionRuleTest {
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
-				// TODO re-think identifier, there could be multiple like this, it's not unique
 				"""Step[actions/github-script@v7] in Action["Test"] JavaScript contains GitHub Expressions.""",
 			)
 		}
