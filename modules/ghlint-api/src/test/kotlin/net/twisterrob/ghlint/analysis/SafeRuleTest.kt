@@ -5,6 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.model.Content
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.InvalidContent
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
@@ -82,7 +83,7 @@ class SafeRuleTest {
 			issue = "RuleErrored",
 			message = @Suppress("detekt.StringShouldBeRawString")
 			// Cannot be, because we don't control stackTraceToString.
-			"toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+			"toString of AlwaysFailingRule: RuntimeException errored while checking test.yml:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
 					"````"
@@ -114,7 +115,7 @@ class SafeRuleTest {
 			issue = "RuleErrored",
 			message = @Suppress("detekt.StringShouldBeRawString")
 			// Cannot be, because we don't control stackTraceToString.
-			"toString of AlwaysFailingRule: RuntimeException errored while checking:\n" +
+			"toString of AlwaysFailingRule: RuntimeException errored while checking test.yml:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
 					"````"
@@ -136,7 +137,7 @@ class SafeRuleTest {
 			issue = "RuleErrored",
 			message = @Suppress("detekt.StringShouldBeRawString")
 			// Cannot be, because we don't control stackTraceToString.
-			"toString of AlwaysFailingRule: OutOfMemoryError errored while checking:\n" +
+			"toString of AlwaysFailingRule: OutOfMemoryError errored while checking test.yml:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
 					"````"
@@ -151,7 +152,10 @@ class SafeRuleTest {
 		whenever(content.location).thenReturn(mock())
 
 		val file: File = mock()
+		whenever(file.location).thenReturn(FileLocation("test.yml"))
+
 		whenever(file.content).thenReturn(content)
+		whenever(content.parent).thenReturn(file)
 
 		return file
 	}
