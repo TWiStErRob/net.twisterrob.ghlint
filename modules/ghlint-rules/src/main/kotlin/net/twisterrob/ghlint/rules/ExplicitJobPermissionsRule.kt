@@ -13,8 +13,8 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(MissingJobPermissions, ExplicitJobPermissions)
 
-	override fun visitNormalJob(reporting: Reporting, job: Job.NormalJob) {
-		super.visitNormalJob(reporting, job)
+	override fun visitJob(reporting: Reporting, job: Job) {
+		super.visitJob(reporting, job)
 		if (job.permissions == null && job.parent.permissions == null) {
 			reporting.report(MissingJobPermissions, job) { "${it} is missing permissions." }
 		}
