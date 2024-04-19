@@ -1,14 +1,18 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class FailFastActionsRule : VisitorRule, WorkflowVisitor {
+public class FailFastActionsRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(
 		FailFastUploadArtifact,
@@ -19,11 +23,20 @@ public class FailFastActionsRule : VisitorRule, WorkflowVisitor {
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
+		visitStep(reporting, step, step)
+	}
+
+	override fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
+		super.visitActionUsesStep(reporting, step)
+		visitStep(reporting, step, step)
+	}
+
+	private fun visitStep(reporting: Reporting, step: Step.Uses, target: Component) {
 		when (step.uses.action) {
 			"actions/upload-artifact" -> {
 				val isSpecified = step.with.orEmpty().containsKey("if-no-files-found")
 				if (!isSpecified) {
-					reporting.report(FailFastUploadArtifact, step) {
+					reporting.report(FailFastUploadArtifact, target) {
 						"${it} should have input `if-no-files-found: error`."
 					}
 				}
@@ -32,14 +45,14 @@ public class FailFastActionsRule : VisitorRule, WorkflowVisitor {
 			"EnricoMi/publish-unit-test-result-action" -> {
 				val isSpecified = step.with.orEmpty().containsKey("action_fail_on_inconclusive")
 				if (!isSpecified) {
-					reporting.report(FailFastPublishUnitTestResults, step) {
+					reporting.report(FailFastPublishUnitTestResults, target) {
 						"${it} should have input `action_fail_on_inconclusive: true`."
 					}
 				}
 			}
 
 			"peter-evans/create-pull-request" -> {
-				reporting.report(FailFastPeterEvansCreatePullRequest, step) {
+				reporting.report(FailFastPeterEvansCreatePullRequest, target) {
 					"Use `gh pr create` to open a PR instead of ${it}."
 				}
 			}
@@ -48,7 +61,7 @@ public class FailFastActionsRule : VisitorRule, WorkflowVisitor {
 				val isRelevant = step.with.orEmpty().containsKey("files")
 				val isSpecified = step.with.orEmpty().containsKey("fail_on_unmatched_files")
 				if (isRelevant && !isSpecified) {
-					reporting.report(FailFastSoftpropsGhRelease, step) {
+					reporting.report(FailFastSoftpropsGhRelease, target) {
 						"${it} should have input `fail_on_unmatched_files: true`."
 					}
 				}

@@ -57,7 +57,7 @@ class FailFastActionsRuleTest {
 
 			results shouldHave singleFinding(
 				"FailFastUploadArtifact",
-				"Step[actions/upload-artifact@v4] in Job[test] should have input `if-no-files-found: error`."
+				"""Step[actions/upload-artifact@v4] in Job[test] should have input `if-no-files-found: error`."""
 			)
 		}
 	}
@@ -104,7 +104,7 @@ class FailFastActionsRuleTest {
 			results shouldHave singleFinding(
 				"FailFastPublishUnitTestResults",
 				@Suppress("detekt.MaxLineLength")
-				"Step[EnricoMi/publish-unit-test-result-action@v2] in Job[test] should have input `action_fail_on_inconclusive: true`."
+				"""Step[EnricoMi/publish-unit-test-result-action@v2] in Job[test] should have input `action_fail_on_inconclusive: true`."""
 			)
 		}
 	}
@@ -126,7 +126,7 @@ class FailFastActionsRuleTest {
 
 			results shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
-				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@v6] in Job[test]."
+				"""Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@v6] in Job[test]."""
 			)
 		}
 
@@ -147,7 +147,7 @@ class FailFastActionsRuleTest {
 			results shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
 				@Suppress("detekt.MaxLineLength")
-				"Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test]."
+				"""Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test]."""
 			)
 		}
 	}
@@ -197,7 +197,7 @@ class FailFastActionsRuleTest {
 
 			results shouldHave singleFinding(
 				"FailFastSoftpropsGhRelease",
-				"Step[softprops/action-gh-release@v2] in Job[test] should have input `fail_on_unmatched_files: true`."
+				"""Step[softprops/action-gh-release@v2] in Job[test] should have input `fail_on_unmatched_files: true`."""
 			)
 		}
 
@@ -249,6 +249,72 @@ class FailFastActionsRuleTest {
 				        with:
 				          action_fail_on_inconclusive: false
 			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `reports problems in actions`() {
+		val results = check<FailFastActionsRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - uses: actions/upload-artifact@v4
+				      with:
+				        path: |
+				          build/some/report/
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave singleFinding(
+			"FailFastUploadArtifact",
+			"""Step[actions/upload-artifact@v4] in Action["Test"] should have input `if-no-files-found: error`."""
+		)
+	}
+
+	@Test fun `passes in actions`() {
+		val results = check<FailFastActionsRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - name: "Simple action usage."
+				      uses: actions/checkout@v4
+				
+				    - uses: actions/upload-artifact@v4
+				      with:
+				        if-no-files-found: error
+				        path: |
+				          build/some/report/
+				
+				    - name: "Action with unrelated inputs."
+				      uses: actions/setup-java@v3
+				      with:
+				        java-version: 17
+				
+				    - name: "Action with same input names."
+				      uses: other/action@v0
+				      with:
+				        if-no-files-found: ignore
+				        action_fail_on_inconclusive: false
+				
+				    - name: "Action with same name and input name."
+				      uses: other/upload-artifact@v0
+				      with:
+				        if-no-files-found: ignore
+				
+				    - name: "Action with same name and input name."
+				      uses: other/publish-unit-test-result-action@v0
+				      with:
+				        action_fail_on_inconclusive: false
+			""".trimIndent(),
+			fileName = "action.yml",
 		)
 
 		results shouldHave noFindings()
