@@ -168,20 +168,19 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are similar`() {
+			val steps = (0..100).joinToString(separator = "\n") {
+				"""
+					|      - run: echo "Example"
+					|        id: step-id-${it}
+				""".trimMargin()
+			}
 			val results = check<DuplicateStepIdRule>(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
-					    steps:${
-							"\n" + (0..100).joinToString(separator = "\n") {
-								"""
-									|      - run: echo "Example"
-									|        id: step-id-${it}
-								""".trimMargin()
-							}.prependIndent("\t\t\t\t\t")
-						}
+					    steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent()
 			)
 
@@ -199,20 +198,19 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are the same`() {
+			val steps = (0..100).joinToString(separator = "\n") {
+				"""
+					|      - run: echo "Example"
+					|        id: step-id
+				""".trimMargin()
+			}
 			val results = check<DuplicateStepIdRule>(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
-					    steps:${
-							"\n" + (0..100).joinToString(separator = "\n") {
-								"""
-									|      - run: echo "Example"
-									|        id: step-id
-								""".trimMargin()
-							}.prependIndent("\t\t\t\t\t")
-						}
+					    steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent()
 			)
 
@@ -364,27 +362,28 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are similar`() {
+			val steps = (0..1000).joinToString(separator = "\n") {
+				"""
+					|    - run: echo "Example"
+					|      shell: bash
+					|      id: step-id-${it}
+				""".trimMargin()
+			}
 			val results = check<DuplicateStepIdRule>(
 				"""
 					name: Test
 					description: Test
 					runs:
 					  using: composite
-					  steps:${
-						"\n" + (0..1000).joinToString(separator = "\n") {
-							"""
-								|    - run: echo "Example"
-								|      shell: bash
-								|      id: step-id-${it}
-							""".trimMargin()
-						}.prependIndent("\t\t\t\t\t")
-					}
+					  steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent(),
 				fileName = "action.yml",
 			)
 
 			results should haveSize(159_931)
-			val messageRegex = """Action\["Test"] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
+			val messageRegex = Regex(
+				"""Action\["Test"] has similar step identifiers: `step-id-\d+` and `step-id-\d+`."""
+			)
 			results.forEach { finding ->
 				finding.issue.id shouldBe "SimilarStepId"
 				finding.message shouldMatch messageRegex
@@ -397,21 +396,20 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are the same`() {
+			val steps = (0..100).joinToString(separator = "\n") {
+				"""
+					|    - run: echo "Example"
+					|      shell: bash
+					|      id: step-id
+				""".trimMargin()
+			}
 			val results = check<DuplicateStepIdRule>(
 				"""
 					name: Test
 					description: Test
 					runs:
 					  using: composite
-					  steps:${
-						"\n" + (0..100).joinToString(separator = "\n") {
-							"""
-								|    - run: echo "Example"
-								|      shell: bash
-								|      id: step-id
-							""".trimMargin()
-						}.prependIndent("\t\t\t\t\t")
-					}
+					  steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent(),
 				fileName = "action.yml",
 			)
