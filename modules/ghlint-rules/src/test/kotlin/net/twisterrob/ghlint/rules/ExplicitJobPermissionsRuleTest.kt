@@ -50,6 +50,22 @@ class ExplicitJobPermissionsRuleTest {
 			)
 		}
 
+		@Test fun `reports when there are no permissions declared on reusable call`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    uses: reusable/workflow.yml
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"MissingJobPermissions",
+				"Job[test] is missing permissions."
+			)
+		}
+
 		@Test fun `passes explicit permissions on the job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
@@ -61,6 +77,21 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - run: echo "Test"
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `passes explicit permissions on the reusable workflow call`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    uses: reusable/workflow.yml
+					    permissions:
+					      contents: read
 				""".trimIndent()
 			)
 
@@ -97,6 +128,34 @@ class ExplicitJobPermissionsRuleTest {
 			)
 		}
 
+		@Test fun `reports reusable workflow call that has no permissions declared`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  has-perms-1:
+					    runs-on: test
+					    permissions:
+					      contents: read
+					    steps:
+					      - run: echo "Test"
+					  test:
+					    uses: reusable/workflow.yml
+					  has-perms-2:
+					    runs-on: test
+					    permissions:
+					      contents: read
+					    steps:
+					      - run: echo "Test"
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"MissingJobPermissions",
+				"Job[test] is missing permissions."
+			)
+		}
+
 		@Test fun `passes explicit no permissions on the job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
@@ -112,12 +171,26 @@ class ExplicitJobPermissionsRuleTest {
 
 			results shouldHave noFindings()
 		}
+
+		@Test fun `passes explicit no permissions on reusable workflow call`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    uses: reusable/workflow.yml
+					    permissions: {}
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
 	}
 
 	@Nested
 	inner class ExplicitJobPermissionsTest {
 
-		@Test fun `reports when permissions are on the workflow level`() {
+		@Test fun `reports when permissions are on the workflow level for normal job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					on: push
@@ -137,7 +210,25 @@ class ExplicitJobPermissionsRuleTest {
 			)
 		}
 
-		@Test fun `passes when permissions are on the job level`() {
+		@Test fun `reports when permissions are on the workflow level for reusable job`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					permissions:
+					  contents: read
+					jobs:
+					  test:
+					    uses: reusable/workflow.yml
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"ExplicitJobPermissions",
+				"Job[test] should have explicit permissions."
+			)
+		}
+
+		@Test fun `passes when permissions are on the job level for normal job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					on: push
@@ -148,6 +239,21 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - run: echo "Test"
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `passes when permissions are on the job level for reusable job`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    uses: reusable/workflow.yml
+					    permissions:
+					      contents: read
 				""".trimIndent()
 			)
 
