@@ -15,12 +15,12 @@ public class JobDependenciesRule : VisitorRule, WorkflowVisitor {
 
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
-		val graph = buildJobGraph(workflow.jobs) { job, needed ->
+		val jobDependencies = buildJobGraph(workflow.jobs) { job, needed ->
 			reporting.report(MissingNeedsJob, job) {
 				"${it} references Job[${needed}], which does not exist."
 			}
 		}
-		val cycle = Traversal(graph).findACycle()
+		val cycle = Traversal(jobDependencies).findACycle()
 		if (cycle.isNotEmpty()) {
 			reporting.report(JobDependencyCycle, cycle.first()) { job ->
 				"${job} forms a dependency cycle: [${cycle.joinToString { it.id }}]."
@@ -155,14 +155,14 @@ private fun buildJobGraph(jobs: Map<String, Job>, missingNeeds: (Job, String) ->
 	return graph
 }
 
-private class Traversal(
-	private val graph: Map<Job, Set<Job>>,
+private class Traversal<T>(
+	private val graph: Map<T, Set<T>>,
 ) {
 
-	private val visiting = mutableSetOf<Job>()
-	private val visited = mutableSetOf<Job>()
+	private val visiting = mutableSetOf<T>()
+	private val visited = mutableSetOf<T>()
 
-	fun findACycle(): List<Job> {
+	fun findACycle(): List<T> {
 		graph.keys.forEach { job ->
 			if (dfs(job)) {
 				return visiting.toList()
@@ -172,21 +172,21 @@ private class Traversal(
 	}
 
 	@Suppress("detekt.ReturnCount") // Required to break the algorithm's flow.
-	private fun dfs(job: Job): Boolean {
-		if (job in visited) {
+	private fun dfs(node: T): Boolean {
+		if (node in visited) {
 			return false
 		}
-		if (job in visiting) {
+		if (node in visiting) {
 			return true
 		}
-		visiting += job
-		graph[job].orEmpty().forEach { nextJob ->
-			if (dfs(nextJob)) {
+		visiting += node
+		graph[node].orEmpty().forEach { neighbour ->
+			if (dfs(neighbour)) {
 				return true
 			}
 		}
-		visiting -= job
-		visited += job
+		visiting -= node
+		visited += node
 		return false
 	}
 }
