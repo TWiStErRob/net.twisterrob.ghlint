@@ -32,6 +32,23 @@ class EnvironmentFileOverwriteRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when no environment file is used in actions`() {
+		val results = check<EnvironmentFileOverwriteRule>(
+			"""
+				name: "Test"
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@TestFactory
 	fun `passes when environment file is mentioned`() =
 		environmentFiles().map { environmentFile ->
@@ -50,6 +67,22 @@ class EnvironmentFileOverwriteRuleTest {
 									    # Intentionally unconventionally indented, see redirects().
 									    - run: echo ${syntax}
 								""".trimIndent()
+							)
+
+							results shouldHave noFindings()
+						},
+						dynamicTest("${name} in actions") {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									name: "Test"
+									description: Test
+									runs:
+									  using: composite
+									  steps:
+									    - run: echo ${syntax}
+									      shell: bash
+								""".trimIndent(),
+								fileName = "action.yml",
 							)
 
 							results shouldHave noFindings()
@@ -78,6 +111,23 @@ class EnvironmentFileOverwriteRuleTest {
 									    - run: |
 									        echo "Test" ${syntax}
 								""".trimIndent()
+							)
+
+							results shouldHave noFindings()
+						},
+						dynamicTest("${name} in actions") {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									name: "Test"
+									description: Test
+									runs:
+									  using: composite
+									  steps:
+									    - run: |
+									        echo "Test" ${syntax}
+									      shell: bash
+								""".trimIndent(),
+								fileName = "action.yml",
 							)
 
 							results shouldHave noFindings()
@@ -111,6 +161,26 @@ class EnvironmentFileOverwriteRuleTest {
 							results shouldHave singleFinding(
 								"EnvironmentFileOverwritten",
 								"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
+							)
+						},
+						dynamicTest("${name} in actions") {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									name: "Test"
+									description: Test
+									runs:
+									  using: composite
+									  steps:
+									    - run: |
+									        echo "Test" ${syntax}
+									      shell: bash
+								""".trimIndent(),
+								fileName = "action.yml",
+							)
+
+							results shouldHave singleFinding(
+								"EnvironmentFileOverwritten",
+								"""Step[#0] in Action["Test"] overwrites environment file `${environmentFile}`."""
 							)
 						},
 					)
