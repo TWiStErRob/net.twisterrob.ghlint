@@ -171,6 +171,7 @@ private class Traversal(
 		return emptyList()
 	}
 
+	@Suppress("detekt.ReturnCount") // Required to break the algorithm's flow.
 	private fun dfs(job: Job): Boolean {
 		if (job in visited) {
 			return false

@@ -77,7 +77,7 @@ class JobDependenciesRuleTest {
 				  test3:
 				    needs: [test1, test2]
 				    uses: reusable/workflow.yml
-				""".trimIndent(),
+			""".trimIndent(),
 		)
 
 		results shouldHave exactFindings(
@@ -247,11 +247,12 @@ class JobDependenciesRuleTest {
 
 		private fun Random.generate(count: Int, needs: (Int) -> List<String>): String {
 			val others = (1..count).joinToString(separator = "\n") { n ->
-				val needsLine = needs(n)
-					.takeIf { it.isNotEmpty() }
-					?.joinToString(separator = ", ")
-					?.let { "needs: [$it]" }
-					?: "#needs: []"
+				val needsIds = needs(n)
+				val needsLine = if (needsIds.isEmpty()) {
+					"#needs: []"
+				} else {
+					"needs: [${needsIds.joinToString(separator = ", ")}]"
+				}
 				"""
 					test${n}:
 					  ${needsLine}
