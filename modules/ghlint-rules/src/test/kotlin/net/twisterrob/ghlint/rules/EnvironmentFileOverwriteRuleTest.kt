@@ -32,26 +32,62 @@ class EnvironmentFileOverwriteRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when no environment file is used in actions`() {
+		val results = check<EnvironmentFileOverwriteRule>(
+			"""
+				name: "Test"
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@TestFactory
 	fun `passes when environment file is mentioned`() =
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				syntaxes(environmentFile).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<EnvironmentFileOverwriteRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: echo ${syntax}
-							""".trimIndent()
-						)
+				syntaxes(environmentFile).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    steps:
+									    # Intentionally unconventionally indented, see redirects().
+									    - run: echo ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave noFindings()
-					}
+							results shouldHave noFindings()
+						},
+						dynamicTest("${name} in actions") {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									name: "Test"
+									description: Test
+									runs:
+									  using: composite
+									  steps:
+									    - run: echo ${syntax}
+									      shell: bash
+								""".trimIndent(),
+								fileName = "action.yml",
+							)
+
+							results shouldHave noFindings()
+						},
+					)
 				}
 			)
 		}
@@ -61,22 +97,42 @@ class EnvironmentFileOverwriteRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				(redirects(">>") x syntaxes(environmentFile)).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<EnvironmentFileOverwriteRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: |
-								          echo "Test" ${syntax}
-							""".trimIndent()
-						)
+				(redirects(">>") x syntaxes(environmentFile)).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    steps:
+									    # Intentionally unconventionally indented, see redirects().
+									    - run: |
+									        echo "Test" ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave noFindings()
-					}
+							results shouldHave noFindings()
+						},
+						dynamicTest("${name} in actions") {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									name: "Test"
+									description: Test
+									runs:
+									  using: composite
+									  steps:
+									    - run: |
+									        echo "Test" ${syntax}
+									      shell: bash
+								""".trimIndent(),
+								fileName = "action.yml",
+							)
+
+							results shouldHave noFindings()
+						},
+					)
 				}
 			)
 		}
@@ -86,25 +142,48 @@ class EnvironmentFileOverwriteRuleTest {
 		environmentFiles().map { environmentFile ->
 			dynamicContainer(
 				environmentFile,
-				(redirects(">") x syntaxes(environmentFile)).map { (name, syntax) ->
-					dynamicTest(name) {
-						val results = check<EnvironmentFileOverwriteRule>(
-							"""
-								on: push
-								jobs:
-								  test:
-								    runs-on: test
-								    steps:
-								      - run: |
-								          echo "Test" ${syntax}
-							""".trimIndent()
-						)
+				(redirects(">") x syntaxes(environmentFile)).flatMap { (name, syntax) ->
+					listOf(
+						dynamicTest(name) {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									on: push
+									jobs:
+									  test:
+									    runs-on: test
+									    # Intentionally unconventionally indented, see redirects().
+									    steps:
+									    - run: |
+									        echo "Test" ${syntax}
+								""".trimIndent()
+							)
 
-						results shouldHave singleFinding(
-							"EnvironmentFileOverwritten",
-							"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
-						)
-					}
+							results shouldHave singleFinding(
+								"EnvironmentFileOverwritten",
+								"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
+							)
+						},
+						dynamicTest("${name} in actions") {
+							val results = check<EnvironmentFileOverwriteRule>(
+								"""
+									name: "Test"
+									description: Test
+									runs:
+									  using: composite
+									  steps:
+									    - run: |
+									        echo "Test" ${syntax}
+									      shell: bash
+								""".trimIndent(),
+								fileName = "action.yml",
+							)
+
+							results shouldHave singleFinding(
+								"EnvironmentFileOverwritten",
+								"""Step[#0] in Action["Test"] overwrites environment file `${environmentFile}`."""
+							)
+						},
+					)
 				}
 			)
 		}

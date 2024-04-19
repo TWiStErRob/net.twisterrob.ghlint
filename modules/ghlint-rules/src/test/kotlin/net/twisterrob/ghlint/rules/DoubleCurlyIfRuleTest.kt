@@ -211,6 +211,115 @@ class DoubleCurlyIfRuleTest {
 		}
 	}
 
+	@Nested
+	inner class DoubleCurlyIfOnActionStepTest {
+
+		@Test
+		fun `passes even with lots of spacing`() {
+			val results = check<DoubleCurlyIfRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if:     ${'$'}{{     true     }}    
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@MethodSource(
+			"net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions",
+			"net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidButSyntaxErrorConditions"
+		)
+		@ParameterizedTest
+		fun `passes wrapped condition`(condition: String) {
+			val results = check<DoubleCurlyIfRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: ${'$'}{{ ${condition} }}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+
+			val resultsNoSpacing = check<DoubleCurlyIfRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					      - run: echo "Test"
+					        shell: bash
+					        if: ${'$'}{{${condition}}}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			resultsNoSpacing shouldHave noFindings()
+		}
+
+		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
+		@ParameterizedTest
+		fun `fails not fully wrapped condition`(condition: String) {
+			val results = check<DoubleCurlyIfRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: >
+					        ${condition}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"DoubleCurlyIf",
+				"""Step[#0] in Action["Test"] does not have double-curly-braces."""
+			)
+		}
+
+		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
+		@ParameterizedTest
+		fun `fails not strangely constructed condition`(condition: String) {
+			val results = check<DoubleCurlyIfRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: ${condition}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"DoubleCurlyIf",
+				"""Step[#0] in Action["Test"] has nested or invalid double-curly-braces."""
+			)
+		}
+	}
+
 	companion object {
 
 		@JvmStatic

@@ -1,31 +1,53 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class ScriptInjectionRule : VisitorRule, WorkflowVisitor {
+public class ScriptInjectionRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(ShellScriptInjection, JSScriptInjection)
 
 	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitWorkflowRunStep(reporting, step)
+		checkForShellInjection(reporting, step, step)
+	}
+
+	override fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
+		super.visitActionRunStep(reporting, step)
+		checkForShellInjection(reporting, step, step)
+	}
+
+	private fun checkForShellInjection(reporting: Reporting, step: Step.Run, target: Component) {
 		if (step.run.contains("\${{")) {
-			reporting.report(ShellScriptInjection, step) { "${it} shell script contains GitHub Expressions." }
+			reporting.report(ShellScriptInjection, target) { "${it} shell script contains GitHub Expressions." }
 		}
 	}
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
+		checkForJavascriptInjection(reporting, step, step)
+	}
+
+	override fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
+		super.visitActionUsesStep(reporting, step)
+		checkForJavascriptInjection(reporting, step, step)
+	}
+
+	private fun checkForJavascriptInjection(reporting: Reporting, step: Step.Uses, target: Component) {
 		if (step.uses.action == "actions/github-script"
 			// Assuming script is required: https://github.com/actions/github-script/blob/v7.0.1/action.yml#L8-L10
 			&& step.with.orEmpty().getValue("script").contains("\${{")
 		) {
-			reporting.report(JSScriptInjection, step) { "${it} JavaScript contains GitHub Expressions." }
+			reporting.report(JSScriptInjection, target) { "${it} JavaScript contains GitHub Expressions." }
 		}
 	}
 

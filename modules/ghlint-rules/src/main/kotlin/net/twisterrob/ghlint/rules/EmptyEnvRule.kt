@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Workflow
@@ -8,28 +9,35 @@ import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class EmptyEnvRule : VisitorRule, WorkflowVisitor {
+public class EmptyEnvRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override val issues: List<Issue> = listOf(EmptyWorkflowEnv, EmptyJobEnv, EmptyStepEnv)
 
-	@Suppress("detekt.NamedArguments")
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
+		@Suppress("detekt.NamedArguments")
 		checkEmptyEnv(workflow, workflow.env, reporting, EmptyWorkflowEnv)
 	}
 
-	@Suppress("detekt.NamedArguments")
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
+		@Suppress("detekt.NamedArguments")
 		checkEmptyEnv(job, job.env, reporting, EmptyJobEnv)
 	}
 
-	@Suppress("detekt.NamedArguments")
 	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		super.visitWorkflowStep(reporting, step)
+		@Suppress("detekt.NamedArguments")
+		checkEmptyEnv(step, step.env, reporting, EmptyStepEnv)
+	}
+
+	override fun visitActionStep(reporting: Reporting, step: ActionStep) {
+		super.visitActionStep(reporting, step)
+		@Suppress("detekt.NamedArguments")
 		checkEmptyEnv(step, step.env, reporting, EmptyStepEnv)
 	}
 
@@ -128,6 +136,20 @@ public class EmptyEnvRule : VisitorRule, WorkflowVisitor {
 						    steps:
 						      - run: echo "Example"
 						        env: {}
+					""".trimIndent(),
+				),
+				Example(
+					explanation = "Empty env on composite step.",
+					path = "action.yml",
+					content = """
+						name: ""
+						description: ""
+						runs:
+						  using: composite
+						  steps:
+						    - shell: bash
+						      run: echo "Example"
+						      env: {}
 					""".trimIndent(),
 				),
 			),

@@ -87,7 +87,7 @@ class ComponentCountRuleTest {
 	}
 
 	@Nested
-	inner class TooManyStepsTest {
+	inner class TooManyJobStepsTest {
 
 		@Test
 		fun `passes single step job`() {
@@ -172,6 +172,96 @@ class ComponentCountRuleTest {
 	}
 
 	@Nested
+	inner class TooManyActionStepsTest {
+
+		@Test
+		fun `passes single step action`() {
+			val results = check<ComponentCountRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${Random.generateActionSteps(1)}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test
+		fun `passes few step action`() {
+			val results = check<ComponentCountRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${Random.generateActionSteps(5)}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test
+		fun `passes max steps count`() {
+			val results = check<ComponentCountRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${Random.generateActionSteps(20)}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test
+		fun `fails max steps count + 1`() {
+			val results = check<ComponentCountRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${Random.generateActionSteps(21)}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"TooManySteps",
+				"""Action["Test"] has 21 steps, maximum recommended is 20."""
+			)
+		}
+
+		@Test
+		fun `fails double steps count`() {
+			val results = check<ComponentCountRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:${Random.generateActionSteps(40)}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"TooManySteps",
+				"""Action["Test"] has 40 steps, maximum recommended is 20."""
+			)
+		}
+	}
+
+	@Nested
 	@Suppress("detekt.TrimMultilineRawString") // Verifying exact indentations.
 	inner class GenerateTest {
 
@@ -186,6 +276,24 @@ class ComponentCountRuleTest {
 					    - uses: some/action@v1
 					    - run: echo "Test 2"
 					    - uses: some/action@v3
+			""".trimEnd()
+		}
+
+		@Test fun `generate single action step`() {
+			Random(0).generateActionSteps(1) shouldBe """
+					    - uses: some/action@v1
+			""".trimEnd()
+		}
+
+		@Test fun `generate multiple action steps`() {
+			Random(4).generateActionSteps(4) shouldBe """
+					    - run: echo "Test 1"
+					      shell: bash
+					    - run: echo "Test 2"
+					      shell: bash
+					    - uses: some/action@v3
+					    - run: echo "Test 4"
+					      shell: bash
 			""".trimEnd()
 		}
 
@@ -245,6 +353,16 @@ class ComponentCountRuleTest {
 		"\n" + (1..count).joinToString(separator = "\n") {
 			when (nextInt(1, 3)) {
 				1 -> "- run: echo \"Test $it\""
+				2 -> "- uses: some/action@v${it}"
+				else -> error("Not possible")
+			}
+		}.prependIndent("\t\t\t\t\t    ")
+
+	private fun Random.generateActionSteps(count: Int): String =
+		"\n" + (1..count).joinToString(separator = "\n") {
+			@Suppress("detekt.StringShouldBeRawString") // Complex string building, be explicit.
+			when (nextInt(1, 3)) {
+				1 -> "- run: echo \"Test $it\"\n  shell: bash"
 				2 -> "- uses: some/action@v${it}"
 				else -> error("Not possible")
 			}

@@ -65,7 +65,7 @@ class ImplicitStatusCheckRuleTest {
 
 			results shouldHave singleFinding(
 				"NeverUseAlways",
-				"Step[#0] in Job[test] uses the always() condition."
+				"""Step[#0] in Job[test] uses the always() condition."""
 			)
 		}
 
@@ -84,7 +84,89 @@ class ImplicitStatusCheckRuleTest {
 
 			results shouldHave singleFinding(
 				"NeverUseAlways",
-				"Step[#0] in Job[test] uses the always() condition."
+				"""Step[#0] in Job[test] uses the always() condition."""
+			)
+		}
+	}
+
+	@Nested
+	inner class NeverUseAlwaysActionStepTest {
+
+		@Test fun `passes when always is not in the condition`() {
+			val results = check<ImplicitStatusCheckRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: success() || failure()
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `passes when always is explicitly expressed`() {
+			val results = check<ImplicitStatusCheckRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: success() || failure() || cancelled()
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `fails when always is used`() {
+			val results = check<ImplicitStatusCheckRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: always()
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"NeverUseAlways",
+				"""Step[#0] in Action["Test"] uses the always() condition."""
+			)
+		}
+
+		@Test fun `fails when always is used as part of a condition`() {
+			val results = check<ImplicitStatusCheckRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: github.context.value && (always() || failure())
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results shouldHave singleFinding(
+				"NeverUseAlways",
+				"""Step[#0] in Action["Test"] uses the always() condition."""
 			)
 		}
 	}
@@ -95,7 +177,6 @@ class ImplicitStatusCheckRuleTest {
 		@Test fun `passes when always is not in the condition`() {
 			val results = check<ImplicitStatusCheckRule>(
 				"""
-					
 					on: push
 					jobs:
 					  test:
@@ -184,7 +265,30 @@ class ImplicitStatusCheckRuleTest {
 
 			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
 				"NegativeStatusCheck",
-				"Step[#0] in Job[test] uses a negative condition."
+				"""Step[#0] in Job[test] uses a negative condition."""
+			)
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = ["success", "failure", "cancelled", "always"])
+		fun `fails when negative status check condition is used in action step`(function: String) {
+			val results = check<ImplicitStatusCheckRule>(
+				"""
+					name: Test
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - run: echo "Test"
+					      shell: bash
+					      if: ${'$'}{{ ! ${function}() }}
+				""".trimIndent(),
+				fileName = "action.yml",
+			)
+
+			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
+				"NegativeStatusCheck",
+				"""Step[#0] in Action["Test"] uses a negative condition."""
 			)
 		}
 	}

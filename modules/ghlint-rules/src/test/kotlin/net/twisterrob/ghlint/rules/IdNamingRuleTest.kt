@@ -29,6 +29,23 @@ class IdNamingRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when no step id in action`() {
+		val results = check<IdNamingRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when workflow id is lower kebab`(id: String) {
@@ -84,6 +101,26 @@ class IdNamingRuleTest {
 	}
 
 	@ParameterizedTest
+	@MethodSource("getLowerKebabIds")
+	fun `passes when step id is lower kebab in action`(id: String) {
+		val results = check<IdNamingRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - id: ${id}
+				      run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when workflow id is not lower kebab`(id: String) {
 		val results = check<IdNamingRule>(
@@ -100,7 +137,7 @@ class IdNamingRuleTest {
 
 		results shouldHave singleFinding(
 			"WorkflowIdNaming",
-			"Workflow[${id}] should have a lower-case kebab ID."
+			"""Workflow[${id}] should have a lower-case kebab ID."""
 		)
 	}
 
@@ -120,7 +157,7 @@ class IdNamingRuleTest {
 
 		results shouldHave singleFinding(
 			"JobIdNaming",
-			"Job[${id}] should have a lower-case kebab ID."
+			"""Job[${id}] should have a lower-case kebab ID."""
 		)
 	}
 
@@ -141,7 +178,30 @@ class IdNamingRuleTest {
 
 		results shouldHave singleFinding(
 			"StepIdNaming",
-			"Step[${id}] in Job[test] should have a lower-case kebab ID."
+			"""Step[${id}] in Job[test] should have a lower-case kebab ID."""
+		)
+	}
+
+	@ParameterizedTest
+	@MethodSource("getNonLowerKebabIds")
+	fun `reports when step id is not lower kebab in action`(id: String) {
+		val results = check<IdNamingRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - id: ${id}
+				      run: echo "Test"
+				      shell: bash
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave singleFinding(
+			"StepIdNaming",
+			"""Step[${id}] in Action["Test"] should have a lower-case kebab ID."""
 		)
 	}
 
