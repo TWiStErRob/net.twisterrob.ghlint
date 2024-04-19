@@ -7,9 +7,13 @@ import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.text
+import net.twisterrob.ghlint.yaml.toTextArray
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
+import org.snakeyaml.engine.v2.nodes.SequenceNode
 
 public sealed class SnakeJob protected constructor(
 ) : Job.BaseJob, HasSnakeNode<MappingNode> {
@@ -25,6 +29,14 @@ public sealed class SnakeJob protected constructor(
 
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
+
+	override val needs: List<String>?
+		get() = when (val needs = node.getOptional("needs")) {
+			null -> null
+			is SequenceNode -> needs.array.toTextArray()
+			is ScalarNode -> listOf(needs.text)
+			else -> error("Unexpected node type: ${needs} in Job[${this.id}]")
+		}
 
 	override val `if`: String?
 		get() = node.getOptionalText("if")
