@@ -9,6 +9,7 @@ import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
 public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
+	// Note: Sadly, this is not possible for actions, because they don't declare permissions.
 
 	override val issues: List<Issue> = listOf(MissingJobPermissions, ExplicitJobPermissions)
 

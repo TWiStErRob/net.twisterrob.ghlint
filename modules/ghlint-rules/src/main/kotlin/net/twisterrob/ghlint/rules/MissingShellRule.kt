@@ -95,6 +95,17 @@ public class MissingShellRule : VisitorRule, WorkflowVisitor {
 						      - run: echo "Example" | grep "Missing" | sort
 					""".trimIndent(),
 				),
+				Example(
+					explanation = "Shell is mandatory for composite action steps.",
+					content = """
+						name: Test
+						description: Test
+						runs:
+						  using: composite
+						  steps:
+						    - run: echo "Example" | grep "Missing" | sort
+					""".trimIndent(),
+				),
 			),
 		)
 	}

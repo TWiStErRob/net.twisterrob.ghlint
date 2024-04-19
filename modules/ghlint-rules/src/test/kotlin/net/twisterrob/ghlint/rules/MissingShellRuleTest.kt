@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -10,6 +11,27 @@ import org.junit.jupiter.api.TestFactory
 
 class MissingShellRuleTest {
 
+	@AcceptFailingDynamicTest(
+		displayName = "Issue MissingShell non-compliant example #2 has findings",
+		reason = "Shell is mandatory for Actions, JSON-schema validation catches it.",
+		acceptableFailure = "^\\QCould not find exclusively `MissingShell`s among findings:\n"
+				+ "Finding(\n"
+				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
+				+ "\tissue=JsonSchemaValidation,\n"
+				+ "\tlocation=non-compliant/example.yml/1:1-6:50,\n"
+				+ "\tmessage=Object does not have some of the required properties [[jobs, on]] ()\n"
+				+ ")\n"
+				+ "Finding(\n"
+				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
+				+ "\tissue=YamlLoadError,\n"
+				+ "\tlocation=non-compliant/example.yml/1:1-6:50,\n"
+				+ "\tmessage=File non-compliant/example.yml could not be loaded:\n"
+				+ "```\n"
+				+ "java.lang.IllegalStateException: Missing required key: jobs in [name, description, runs]\n"
+				+ "```\n"
+				+ ")\\E$"
+	)
+	@Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
 	@TestFactory fun metadata() = test(MissingShellRule::class)
 
 	@Test fun `reports when step is missing a shell`() {
