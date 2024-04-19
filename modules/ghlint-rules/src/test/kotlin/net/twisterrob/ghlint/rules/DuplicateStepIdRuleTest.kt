@@ -32,9 +32,9 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
-					      - run: echo "Example"
-					      - run: echo "Example"
+					      - run: echo "Test"
+					      - run: echo "Test"
+					      - run: echo "Test"
 				""".trimIndent()
 			)
 
@@ -49,16 +49,16 @@ class DuplicateStepIdRuleTest {
 					  test1:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: step-id
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: mystep1
 					  test2:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: step-id
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: mystep2
 				""".trimIndent()
 			)
@@ -74,11 +74,11 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test1
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: step
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test2
 				""".trimIndent()
 			)
@@ -116,11 +116,11 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test1
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test2
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test3
 				""".trimIndent()
 			)
@@ -149,9 +149,9 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        id: test
 				""".trimIndent()
 			)
@@ -170,19 +170,19 @@ class DuplicateStepIdRuleTest {
 					  test:
 					    runs-on: test
 					    steps:
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        shell: bash
 					        id: hello
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        shell: bash
 					        id: world
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        shell: bash
 					        id: hello
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        shell: bash
 					        id: world
-					      - run: echo "Example"
+					      - run: echo "Test"
 					        shell: bash
 					        id: hello
 				""".trimIndent(),
@@ -208,7 +208,7 @@ class DuplicateStepIdRuleTest {
 		@Test fun `reports when myriad of ids are similar`() {
 			val steps = (0..100).joinToString(separator = "\n") {
 				"""
-					|      - run: echo "Example"
+					|      - run: echo "Test"
 					|        id: step-id-${it}
 				""".trimMargin()
 			}
@@ -238,7 +238,7 @@ class DuplicateStepIdRuleTest {
 		@Test fun `reports when myriad of ids are the same`() {
 			val steps = (0..100).joinToString(separator = "\n") {
 				"""
-					|      - run: echo "Example"
+					|      - run: echo "Test"
 					|        id: step-id
 				""".trimMargin()
 			}
@@ -270,11 +270,11 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 				""".trimIndent(),
 				fileName = "action.yml",
@@ -291,13 +291,13 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test1
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: step
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test2
 				""".trimIndent(),
@@ -340,13 +340,13 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test1
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test2
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test3
 				""".trimIndent(),
@@ -377,10 +377,10 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: test
 				""".trimIndent(),
@@ -401,19 +401,19 @@ class DuplicateStepIdRuleTest {
 					runs:
 					  using: composite
 					  steps:
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: hello
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: world
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: hello
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: world
-					    - run: echo "Example"
+					    - run: echo "Test"
 					      shell: bash
 					      id: hello
 				""".trimIndent(),
@@ -440,7 +440,7 @@ class DuplicateStepIdRuleTest {
 		@Test fun `reports when myriad of ids are similar`() {
 			val steps = (0..1000).joinToString(separator = "\n") {
 				"""
-					|    - run: echo "Example"
+					|    - run: echo "Test"
 					|      shell: bash
 					|      id: step-id-${it}
 				""".trimMargin()
@@ -474,7 +474,7 @@ class DuplicateStepIdRuleTest {
 		@Test fun `reports when myriad of ids are the same`() {
 			val steps = (0..100).joinToString(separator = "\n") {
 				"""
-					|    - run: echo "Example"
+					|    - run: echo "Test"
 					|      shell: bash
 					|      id: step-id
 				""".trimMargin()
