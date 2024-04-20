@@ -10,6 +10,13 @@ import org.junit.jupiter.api.Test
 
 class TextReporterTest {
 
+	private fun report(findings: List<Finding>): String {
+		val output = StringBuilder()
+		val subject = TextReporter(output)
+		subject.report(findings)
+		return output.toString()
+	}
+
 	@Test fun `single finding`() {
 		val findings = listOf(
 			testFinding(TestRule(), TestRule.TestIssue),
@@ -20,17 +27,15 @@ class TextReporterTest {
 		""".trimIndent()
 	}
 
-
-	@Test fun `only file name is output`() {
+	@Test fun `full path is output`() {
 		val findings = listOf(
 			testFinding(TestRule(), TestRule.TestIssue, file = "nested/test/path/to/file.name"),
 		)
 		report(findings) shouldBe """
-			TestIssue at file.name:1:2-3:4: message
+			TestIssue at nested/test/path/to/file.name:1:2-3:4: message
 			
 		""".trimIndent()
 	}
-
 
 	@Test fun `multiple findings`() {
 		val findings = listOf(
@@ -60,13 +65,6 @@ class TextReporterTest {
 			TestIssue at test.file:1:2-3:4: message
 			
 		""".trimIndent()
-	}
-
-	private fun report(findings: List<Finding>): String {
-		val output = StringBuilder()
-		val subject = TextReporter(output)
-		subject.report(findings)
-		return output.toString()
 	}
 
 	private class TestRule : Rule {

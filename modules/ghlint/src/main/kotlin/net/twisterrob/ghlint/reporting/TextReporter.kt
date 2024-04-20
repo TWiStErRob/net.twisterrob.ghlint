@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.reporting
 
-import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 
 public class TextReporter(
@@ -22,5 +21,5 @@ private fun Finding.render(): String {
 			else -> "${start.line.number}:${start.column.number}-${end.line.number}:${end.column.number}"
 		}
 	}
-	return "${issue.id} at ${location.file.name}:${loc}: ${message}"
+	return "${issue.id} at ${location.file.path}:${loc}: ${message}"
 }
