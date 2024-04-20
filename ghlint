@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# https://stackoverflow.com/a/246128/253468
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+echo "Run \`gradlew cliJar\` before using this."
+java -jar "$script_dir/modules/ghlint-cli/build/cli/ghlint.jar" $*
