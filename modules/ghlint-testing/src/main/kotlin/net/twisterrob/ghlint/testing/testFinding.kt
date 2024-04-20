@@ -24,7 +24,7 @@ import net.twisterrob.ghlint.rule.Rule
  *
  * 	override val issues: List<Issue> = listOf(TestIssue)
  *
- * 	override fun check(workflow: Workflow): List<Finding> =
+ * 	override fun check(file: File): List<Finding> =
  * 		error("Should never be called.")
  *
  * 	companion object {
