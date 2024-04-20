@@ -31,8 +31,8 @@ inputs:
     default: |
       ${{ github.workspace }}/.github/workflows/*.yml
       ${{ github.workspace }}/.github/workflows/*.yaml
-    #  ${{ github.workspace }}/**/action.yml
-    #  ${{ github.workspace }}/**/action.yaml
+      ${{ github.workspace }}/**/action.yml
+      ${{ github.workspace }}/**/action.yaml
 
 outputs:
 
