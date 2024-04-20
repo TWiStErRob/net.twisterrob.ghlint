@@ -13,7 +13,7 @@ inputs:
       The version of ghlint to use.
       Use 'latest' to always use the latest version, may break over time.
       Prefer using a fixed version and use Renovate to update it, see .github/renovate.json for an example.
-      First supported version: 0.2.0.
+      First supported version: 0.2.0 for workflow files, 0.5.0 for action files.
     default: "0.5.0" # RELEASE: Updated during release by workflow.
 
   location:
