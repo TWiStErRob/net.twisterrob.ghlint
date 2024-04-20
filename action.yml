@@ -85,4 +85,4 @@ runs:
         # Hackaround for https://github.com/orgs/community/discussions/73309
         PATH="${JAVA_HOME_17_X64}/bin:${PATH}"
         # Known issue: file names with new lines in them will be split into multiple files.
-        echo "${FILES}" | tr '\n' '\0' | xargs -0 "${{ runner.temp }}/ghlint.jar" --verbose --sarif=ghlint.sarif.json
+        echo "${FILES}" | tr '\n' '\0' | xargs -0 "${RUNNER_TEMP}/ghlint.jar" --verbose --sarif=ghlint.sarif.json
