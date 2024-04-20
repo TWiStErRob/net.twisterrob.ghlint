@@ -1,8 +1,8 @@
 [versions]
 
-java-source = "17"
-java-target = "17"
-java-toolchain = "17"
+java-source = "11"
+java-target = "11"
+java-toolchain = "11"
 java-toolchainTest = "17"
 kotlin-build = "1.9.23"
 kotlin-target = { strictly = "1.9.23" }
