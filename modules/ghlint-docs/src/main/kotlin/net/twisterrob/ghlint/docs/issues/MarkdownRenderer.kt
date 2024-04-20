@@ -108,7 +108,7 @@ private fun Rule.calculateFindings(issue: Issue, example: Example): List<Finding
 	}
 	val findings =
 		try {
-			Analyzer().analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet))
+			Analyzer().analyze(listOf(exampleFile), listOf<RuleSet>(exampleRuleSet), false)
 		} catch (@Suppress("detekt.TooGenericExceptionCaught") e: Exception) {
 			// TooGenericExceptionCaught: Catch all exceptions to prevent the whole process from failing.
 			listOf(

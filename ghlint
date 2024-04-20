@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# https://stackoverflow.com/a/246128/253468
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+jar="$script_dir/modules/ghlint-cli/build/cli/ghlint.jar"
+echo "Run \`gradlew cliJar\` before using \"${jar}\"."
+
+#jar=$(ls $script_dir/modules/ghlint-cli/build/libs/ghlint-cli-*-fat.jar)
+#echo "Run \`gradlew fatJar\` before using \"${jar}\"."
+
+java -jar "${jar}" $*

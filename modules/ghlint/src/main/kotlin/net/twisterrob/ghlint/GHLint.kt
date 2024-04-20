@@ -15,18 +15,23 @@ import kotlin.io.path.readText
 
 public class GHLint {
 
-	// TODO feels like an abstraction is missing in this long method, but it's not clear what it is.
-	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
+	@Suppress(
+		"detekt.ForbiddenMethodCall", // TODO logging.
+		// TODO feels like an abstraction is missing in this long method, but it's not clear what it is.
+		"detekt.CognitiveComplexMethod",
+	)
 	public fun run(config: Configuration): Int {
 		if (config.isVerbose) {
-			config.files.forEach {
-				println("Received ${it} for analysis against JSON-schema and rules.")
+			println("Received the following files for analysis against JSON-schema and rules:")
+			config.files.forEach { println(" * ${it}") }
+			if (config.files.isEmpty()) {
+				println("No files.")
 			}
 		}
 
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
 		val ruleSets = listOf(BuiltInRuleSet(), DefaultRuleSet())
-		val findings = analyze(files, ruleSets)
+		val findings = analyze(files, ruleSets, config.isVerbose)
 
 		if (config.isVerbose) {
 			println("There are ${findings.size} findings.")
@@ -66,8 +71,8 @@ public class GHLint {
 	}
 
 	@TestOnly
-	internal fun analyze(files: List<RawFile>, ruleSets: List<RuleSet>): List<Finding> {
+	internal fun analyze(files: List<RawFile>, ruleSets: List<RuleSet>, verbose: Boolean): List<Finding> {
 		val loadedFiles = files.map(SnakeYaml::load)
-		return Analyzer().analyze(loadedFiles, ruleSets)
+		return Analyzer().analyze(loadedFiles, ruleSets, verbose)
 	}
 }

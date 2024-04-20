@@ -91,7 +91,7 @@ class GHLintTest {
 	inner class AnalyzeTest {
 
 		private fun analyze(vararg files: RawFile): List<Finding> =
-			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()))
+			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()), false)
 
 		@Test fun `no files validates`() {
 			val results = analyze(/* nothing */)
