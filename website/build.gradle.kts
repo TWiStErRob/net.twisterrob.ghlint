@@ -13,7 +13,7 @@ val generatedIssues = consumeGeneratedFolder(
 val generatedCliHelp = consumeGeneratedFolder(
 	fromProject = projects.ghlintDocs,
 	fromConfiguration = "generatedCliHelp",
-	intoFolder = "docs",
+	intoFolder = "docs/usage",
 )
 
 tasks.register("build") {
