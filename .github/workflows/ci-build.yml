@@ -183,7 +183,10 @@ jobs:
           distribution: temurin
 
       - name: "Run validator help."
-        run: test/ghlint.jar
+        run: java -jar test/ghlint.jar
+
+      - name: "Set it to executable."
+        run: chmod +x test/ghlint.jar
 
       - name: "Run validator."
         id: validate
