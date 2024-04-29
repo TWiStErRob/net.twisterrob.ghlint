@@ -1,8 +1,8 @@
 # Usage
 
-GH-Lint can be used in multiple ways.
+GH-Lint can be used in many ways.
 
-## CLI
+## [CLI](cli.md)
 
 The CLI is the main way to use GH-Lint.
 
@@ -24,7 +24,7 @@ $ ghlint my-workflow.yml
 
 See [CLI documentation](cli.md) for more details.
 
-## GitHub Actions
+## [GitHub Actions](gha.md)
 
 GH-Lint can be used as a GitHub Action which downloads and runs the CLI.
 
