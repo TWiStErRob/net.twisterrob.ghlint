@@ -186,14 +186,17 @@ jobs:
           distribution: temurin
 
       - name: "Run validator help."
-        run: java -jar "${RUNNER_TEMP}/ghlint.jar"
+        run: >
+          java -jar "${RUNNER_TEMP}/ghlint.jar"
 
       - name: "Set it to executable."
-        run: chmod +x "${RUNNER_TEMP}/ghlint.jar"
+        run: >
+          chmod +x "${RUNNER_TEMP}/ghlint.jar"
 
       - name: "Run validator."
         id: validate
-        run: test/ghlint.jar --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
+        run: >
+          "${RUNNER_TEMP}/ghlint.jar" --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
 
       - name: "Upload 'GH-Lint Snapshot Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
