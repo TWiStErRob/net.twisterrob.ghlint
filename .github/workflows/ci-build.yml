@@ -7,21 +7,16 @@ jobs:
 
   build:
     name: "Build"
-    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     permissions:
       # read: actions/checkout, write: gradle/actions/setup-gradle
       contents: write
-      # EnricoMi/publish-unit-test-result-action
-      checks: write
-      # github/codeql-action/upload-sarif
-      security-events: write
 
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
@@ -47,8 +42,58 @@ jobs:
           --continue
           --stacktrace
           --scan
-          build
           cliJar
+
+      - name: "Upload 'CLI Application' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'CLI Application'
+          if-no-files-found: error
+          path: |
+            modules/ghlint-cli/build/cli/ghlint.jar
+
+
+  test:
+    name: "Test"
+    timeout-minutes: 5
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # EnricoMi/publish-unit-test-result-action
+      checks: write
+      # github/codeql-action/upload-sarif
+      security-events: write
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: "Build & Verify project."
+        run: >
+          ./gradlew
+          --no-daemon
+          --continue
+          --stacktrace
+          --scan
+          build
 
       - name: "Upload 'Unit Test Results' artifact."
         if: ${{ success() || failure() }}
@@ -96,34 +141,73 @@ jobs:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
 
-      - name: "Upload 'CLI Application' artifact."
-        if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+
+  execute:
+    name: "Execute on Java ${{ matrix.java-version }}"
+    needs:
+      - build
+    timeout-minutes: 1
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # github/codeql-action/upload-sarif
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version:
+          - 11
+          - 17
+          - 21
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Download 'CLI Application' artifact."
+        uses: actions/download-artifact@v4
         with:
           name: 'CLI Application'
-          if-no-files-found: error
-          path: |
-            modules/ghlint-cli/build/cli/ghlint.jar
+          path: ${{ runner.temp }}
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: temurin
 
       - name: "Run validator help."
-        run: modules/ghlint-cli/build/cli/ghlint.jar
+        run: >
+          java -jar "${RUNNER_TEMP}/ghlint.jar"
+
+      - name: "Set it to executable."
+        run: >
+          chmod +x "${RUNNER_TEMP}/ghlint.jar"
 
       - name: "Run validator."
         id: validate
-        run: modules/ghlint-cli/build/cli/ghlint.jar --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
+        run: >
+          "${RUNNER_TEMP}/ghlint.jar" --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
 
-      - name: "Upload 'GH-Lint Snapshot Results' artifact."
+      - name: "Upload 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'GH-Lint Snapshot Results'
+          name: 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})'
           if-no-files-found: error
           path: |
             ghlint.sarif.json
 
       - name: "Publish 'GH-Lint Snapshot' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
+        if: ${{ matrix.java-version == '21' && steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:
           category: 'GH-Lint Snapshot'
           checkout_path: ${{ github.workspace }}
