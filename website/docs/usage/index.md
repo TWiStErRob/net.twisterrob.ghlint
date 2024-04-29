@@ -41,3 +41,14 @@ steps:
 ```
 
 See [GitHub Actions documentation](gha.md) for more details.
+
+## Homebrew
+
+I wish I could say GH-Lint can be installed via Homebrew, but it's not there yet.
+The [requirements for getting into the Homebrew core repository][homebrew-reqs] are quite high:
+
+> (e.g. GitHub repositories should have >=30 forks, >=30 watchers or >=75 stars)
+
+If you want to `brew`, you know what to do: [https://github.com/TWiStErRob/net.twisterrob.ghlint](https://github.com/TWiStErRob/net.twisterrob.ghlint).
+
+[homebrew-reqs]: https://docs.brew.sh/Acceptable-Formulae#niche-or-self-submitted-stuff
