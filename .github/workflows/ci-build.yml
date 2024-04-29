@@ -13,10 +13,6 @@ jobs:
     permissions:
       # read: actions/checkout, write: gradle/actions/setup-gradle
       contents: write
-      # EnricoMi/publish-unit-test-result-action
-      checks: write
-      # github/codeql-action/upload-sarif
-      security-events: write
 
     defaults:
       run:
@@ -47,8 +43,59 @@ jobs:
           --continue
           --stacktrace
           --scan
-          build
           cliJar
+
+      - name: "Upload 'CLI Application' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'CLI Application'
+          if-no-files-found: error
+          path: |
+            modules/ghlint-cli/build/cli/ghlint.jar
+
+
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      # actions/checkout
+      contents: read
+      # EnricoMi/publish-unit-test-result-action
+      checks: write
+      # github/codeql-action/upload-sarif
+      security-events: write
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version-file: .java-version
+          distribution: temurin
+
+      - name: "Set up Gradle."
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: "Build & Verify project."
+        run: >
+          ./gradlew
+          --no-daemon
+          --continue
+          --stacktrace
+          --scan
+          build
 
       - name: "Upload 'Unit Test Results' artifact."
         if: ${{ success() || failure() }}
@@ -96,22 +143,16 @@ jobs:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ github.workspace }}/build/reports/detekt/merge.sarif
 
-      - name: "Upload 'CLI Application' artifact."
-        if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'CLI Application'
-          if-no-files-found: error
-          path: |
-            modules/ghlint-cli/build/cli/ghlint.jar
 
-  test:
+  execute:
     name: "Execute on Java ${{ matrix.java-version }}"
     needs:
       - build
     timeout-minutes: 1
 
     permissions:
+      # actions/checkout
+      contents: read
       # github/codeql-action/upload-sarif
       security-events: write
 
