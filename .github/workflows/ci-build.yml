@@ -196,7 +196,7 @@ jobs:
         run: >
           "${RUNNER_TEMP}/ghlint.jar" --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
 
-      - name: "Upload 'GH-Lint Snapshot Results' artifact."
+      - name: "Upload 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
