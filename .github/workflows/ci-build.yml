@@ -105,25 +105,61 @@ jobs:
           path: |
             modules/ghlint-cli/build/cli/ghlint.jar
 
+  test:
+    name: "Execute on Java ${{ matrix.java-version }}"
+    needs:
+      - build
+    timeout-minutes: 1
+
+    permissions:
+      # github/codeql-action/upload-sarif
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version:
+          - 11
+          - 17
+          - 21
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+      - name: "Download 'CLI Application' artifact."
+        uses: actions/download-artifact@v4
+        with:
+          name: 'CLI Application'
+          path: test
+
+      - name: "Set up Java."
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: temurin
+
       - name: "Run validator help."
-        run: modules/ghlint-cli/build/cli/ghlint.jar
+        run: test/ghlint.jar
 
       - name: "Run validator."
         id: validate
-        run: modules/ghlint-cli/build/cli/ghlint.jar --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
+        run: test/ghlint.jar --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
 
       - name: "Upload 'GH-Lint Snapshot Results' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'GH-Lint Snapshot Results'
+          name: 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})'
           if-no-files-found: error
           path: |
             ghlint.sarif.json
 
       - name: "Publish 'GH-Lint Snapshot' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
-        if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
+        if: ${{ matrix.java-version == '21' && steps.validate.outcome != 'skipped' && (success() || failure()) }}
         with:
           category: 'GH-Lint Snapshot'
           checkout_path: ${{ github.workspace }}
