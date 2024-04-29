@@ -31,7 +31,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 ### Quick start (CLI)
 See [CLI documentation][cli].
 
-[cli]: https://ghlint.twisterrob.net/cli/
+[cli]: https://ghlint.twisterrob.net/usage/cli/
 
 ### Quick start (GitHub Actions workflow)
 
