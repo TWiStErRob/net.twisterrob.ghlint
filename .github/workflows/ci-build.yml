@@ -170,11 +170,14 @@ jobs:
         shell: bash
     steps:
 
+      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
       - name: "Download 'CLI Application' artifact."
         uses: actions/download-artifact@v4
         with:
           name: 'CLI Application'
-          path: test
+          path: ${{ runner.temp }}
 
       - name: "Set up Java."
         uses: actions/setup-java@v4
@@ -183,10 +186,10 @@ jobs:
           distribution: temurin
 
       - name: "Run validator help."
-        run: java -jar test/ghlint.jar
+        run: java -jar "${RUNNER_TEMP}/ghlint.jar"
 
       - name: "Set it to executable."
-        run: chmod +x test/ghlint.jar
+        run: chmod +x "${RUNNER_TEMP}/ghlint.jar"
 
       - name: "Run validator."
         id: validate
