@@ -7,17 +7,16 @@ jobs:
 
   build:
     name: "Build"
-    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     permissions:
       # read: actions/checkout, write: gradle/actions/setup-gradle
       contents: write
 
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
@@ -57,7 +56,6 @@ jobs:
 
   test:
     name: "Test"
-    runs-on: ubuntu-latest
     timeout-minutes: 5
 
     permissions:
@@ -68,10 +66,10 @@ jobs:
       # github/codeql-action/upload-sarif
       security-events: write
 
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
