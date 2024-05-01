@@ -54,6 +54,7 @@ runs:
       working-directory: ${{ runner.temp }}
       env:
         GHLINT_VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ github.token }}
       shell: bash
       run: |
         gh release download --repo TWiStErRob/net.twisterrob.ghlint "v${GHLINT_VERSION}" --pattern "ghlint.jar"
