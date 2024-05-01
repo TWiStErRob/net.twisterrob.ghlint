@@ -54,10 +54,10 @@ runs:
       working-directory: ${{ runner.temp }}
       env:
         GHLINT_VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ github.token }}
       shell: bash
       run: |
-        curl --silent --show-error --location --remote-name \
-            https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
+        gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
         chmod +x ghlint.jar
 
     - name: "Calculate files to check"
