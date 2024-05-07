@@ -4,7 +4,7 @@ java-source = "11"
 java-target = "11"
 java-toolchain = "11"
 java-toolchainTest = "21"
-kotlin-build = "1.9.23"
+kotlin-build = "1.9.24"
 kotlin-target = { strictly = "1.9.24" }
 kotlin-language = "1.9"
 kotlin-serialization = "1.6.3"
