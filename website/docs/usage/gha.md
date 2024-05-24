@@ -72,10 +72,9 @@ You can still use the GH-Lint Action, but you won't be able to publish the SARIF
     working-directory: ${{ runner.temp }}
     env:
       GHLINT_VERSION: '0.5.0'
+      GH_TOKEN: ${{ github.token }}
     shell: bash
-    run: >
-      curl --silent --show-error --location --remote-name
-      https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
+    run: gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
 
   - name: "Run GH-Lint validator."
     run: java -jar ${RUNNER_TEMP}/ghlint.jar --exit --ghcommands .github/workflows/*.yml
