@@ -128,7 +128,7 @@ If you want to independently set the version of the GH-Lint CLI in your action u
 
 ### Explicit download
 
-If you want to set the version of the GH-Lint CLI (JAR to download) in your workflows.
+If you want to set the version of the GH-Lint CLI (`.jar` to download) in your workflows.
 
 ```yaml
     env:
