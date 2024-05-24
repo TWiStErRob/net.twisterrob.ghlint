@@ -25,7 +25,10 @@ The minimal usage looks like this:
 
 ```yaml
 steps:
-  - name: "Run GH-Lint validator."
+  - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
+    uses: actions/checkout@v4
+
+  - name: "Run GH-Lint validation."
     id: ghlint
     uses: TWiStErRob/net.twisterrob.ghlint@v0
 
@@ -68,16 +71,17 @@ for more details.
 You can still use the GH-Lint Action, but you won't be able to publish the SARIF report to GitHub.
 
 ```yaml
-  - name: "Download validator."
+  - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
+    uses: actions/checkout@v4
+
+  - name: "Download GH-Lint."
     working-directory: ${{ runner.temp }}
     env:
       GHLINT_VERSION: '0.5.0'
-    shell: bash
-    run: >
-      curl --silent --show-error --location --remote-name
-      https://github.com/TWiStErRob/net.twisterrob.ghlint/releases/download/v${GHLINT_VERSION}/ghlint.jar
+      GH_TOKEN: ${{ github.token }}
+    run: gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
 
-  - name: "Run GH-Lint validator."
+  - name: "Run GH-Lint validation."
     run: java -jar ${RUNNER_TEMP}/ghlint.jar --exit --ghcommands .github/workflows/*.yml
 ```
 
@@ -97,7 +101,7 @@ In `renovate.json` configuration file add a custom regex manager as shown below.
 If you want to independently set the version of the GH-Lint CLI in your action usage.
 
 ```yaml
-  - name: "Run GH-Lint validator."
+  - name: "Run GH-Lint validation."
     uses: TWiStErRob/net.twisterrob.ghlint@v0
     with:
       version: '0.5.0' # ghlint
@@ -124,7 +128,7 @@ If you want to independently set the version of the GH-Lint CLI in your action u
 
 ### Explicit download
 
-If you want to set the version of the GH-Lint CLI (JAR to download) in your workflows.
+If you want to set the version of the GH-Lint CLI (`.jar` to download) in your workflows.
 
 ```yaml
     env:

@@ -1,6 +1,6 @@
 # Command Line Interface
 
-GH-Lint comes as an executable JAR file that can be run from the command line.
+GH-Lint comes as an executable `.jar` file that can be run from the command line.
 
 ## Installation
 
@@ -21,15 +21,19 @@ It's possible to download the same artifacts for individual PR commits as well.
 
 ## Execution
 
-Regardless of where you downloaded the JAR file, you can run it from the command line.
+Regardless of where you downloaded the `.jar` file, you can run it from the command line.
 
-The JAR file can be run with Java on all operating systems:
+### Cross-platform
+
+The `.jar` file can be run with Java on all operating systems:
 
 ```shell
 java -jar ghlint.jar
 ```
 
-On Unix systems (Linux, Mac), you can make the JAR executable and run it directly:
+### Mac, Linux, Unix
+
+On Unix systems (Linux, Mac), you can make the `.jar` executable and run it directly:
 
 ```shell
 mv ghlint.jar ghlint
@@ -37,14 +41,18 @@ chmod +x ghlint
 ./ghlint --version
 ```
 
-On Windows, you can simulate the same behavior with a batch file (`ghlint.bat` in the same folder as the JAR file):
+### Windows
+
+On Windows, you can simulate the same behavior with a batch file (`ghlint.bat` in the same folder as the `.jar` file):
 
 ```batch
 @echo off
 java -jar "%~dp0\ghlint.jar" %*
 ```
 
-If you put the executable JAR (or BAT) on the `PATH`, you can run it from anywhere:
+### Productivity tip (all platforms)
+
+If you put the executable `.jar` (or `.bat`) file's folder on the `PATH`, you can run it from anywhere:
 
 ```shell
 ghlint my-workflow.yml
