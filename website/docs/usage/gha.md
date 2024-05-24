@@ -28,7 +28,7 @@ steps:
   - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
     uses: actions/checkout@v4
 
-  - name: "Run GH-Lint validator."
+  - name: "Run GH-Lint validation."
     id: ghlint
     uses: TWiStErRob/net.twisterrob.ghlint@v0
 
@@ -74,7 +74,7 @@ You can still use the GH-Lint Action, but you won't be able to publish the SARIF
   - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
     uses: actions/checkout@v4
 
-  - name: "Download validator."
+  - name: "Download GH-Lint."
     working-directory: ${{ runner.temp }}
     env:
       GHLINT_VERSION: '0.5.0'
@@ -82,7 +82,7 @@ You can still use the GH-Lint Action, but you won't be able to publish the SARIF
     shell: bash
     run: gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
 
-  - name: "Run GH-Lint validator."
+  - name: "Run GH-Lint validation."
     run: java -jar ${RUNNER_TEMP}/ghlint.jar --exit --ghcommands .github/workflows/*.yml
 ```
 
@@ -102,7 +102,7 @@ In `renovate.json` configuration file add a custom regex manager as shown below.
 If you want to independently set the version of the GH-Lint CLI in your action usage.
 
 ```yaml
-  - name: "Run GH-Lint validator."
+  - name: "Run GH-Lint validation."
     uses: TWiStErRob/net.twisterrob.ghlint@v0
     with:
       version: '0.5.0' # ghlint

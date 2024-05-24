@@ -30,7 +30,7 @@ GH-Lint can be used as a GitHub Action which downloads and runs the CLI.
 
 ```yaml
 steps:
-  - name: "Run GH-Lint validator."
+  - name: "Run GH-Lint validation."
     id: ghlint
     uses: TWiStErRob/net.twisterrob.ghlint@v0
 

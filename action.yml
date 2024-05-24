@@ -50,7 +50,7 @@ runs:
     # Do not set up Java, because we can't do it without changing the runner environment.
     # See https://github.com/actions/setup-java/issues/552
 
-    - name: "Download validator."
+    - name: "Download GH-Lint."
       working-directory: ${{ runner.temp }}
       env:
         GHLINT_VERSION: ${{ inputs.version }}
