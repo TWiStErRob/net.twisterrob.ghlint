@@ -79,7 +79,6 @@ You can still use the GH-Lint Action, but you won't be able to publish the SARIF
     env:
       GHLINT_VERSION: '0.5.0'
       GH_TOKEN: ${{ github.token }}
-    shell: bash
     run: gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
 
   - name: "Run GH-Lint validation."
