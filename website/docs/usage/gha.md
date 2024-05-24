@@ -25,6 +25,9 @@ The minimal usage looks like this:
 
 ```yaml
 steps:
+  - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
+    uses: actions/checkout@v4
+
   - name: "Run GH-Lint validator."
     id: ghlint
     uses: TWiStErRob/net.twisterrob.ghlint@v0
@@ -68,6 +71,9 @@ for more details.
 You can still use the GH-Lint Action, but you won't be able to publish the SARIF report to GitHub.
 
 ```yaml
+  - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
+    uses: actions/checkout@v4
+
   - name: "Download validator."
     working-directory: ${{ runner.temp }}
     env:
