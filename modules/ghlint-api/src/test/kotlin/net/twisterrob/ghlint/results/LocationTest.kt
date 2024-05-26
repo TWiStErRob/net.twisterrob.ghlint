@@ -73,7 +73,7 @@ class LocationTest {
 		startColumn: Int,
 		endLine: Int,
 		endColumn: Int,
-		testCase: String
+		testCase: String,
 	) {
 		shouldThrowMessage(
 			"Start column must be before or equal to end column on the same line (${startLine}): ${startColumn} <= ${endColumn}"

@@ -86,7 +86,7 @@ public sealed class SnakeJob protected constructor(
 	public class SnakeSecretsExplicit internal constructor(
 		override val node: MappingNode,
 		override val target: Node,
-		private val map: Map<String, String>
+		private val map: Map<String, String>,
 	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode<MappingNode>
 
 	public class SnakeSecretsInherit internal constructor(

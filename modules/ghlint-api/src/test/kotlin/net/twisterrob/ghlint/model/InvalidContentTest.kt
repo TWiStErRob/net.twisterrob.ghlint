@@ -85,5 +85,5 @@ class InvalidContentTest {
 
 private class TestInvalidContent(
 	override val parent: File,
-	override val error: Throwable
+	override val error: Throwable,
 ) : InvalidContent

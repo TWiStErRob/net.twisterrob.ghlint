@@ -17,7 +17,7 @@ internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 		@Suppress("detekt.ForbiddenVoid") // REPORT false positive: overridden method cannot be Unit.
 		invocation: InvocationInterceptor.Invocation<Void>,
 		invocationContext: DynamicTestInvocationContext,
-		extensionContext: ExtensionContext
+		extensionContext: ExtensionContext,
 	) {
 		val method = extensionContext.firstElement
 			?: error("No method context found for ${extensionContext.displayName}")
@@ -32,7 +32,7 @@ internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 
 	private fun InvocationInterceptor.Invocation<*>.invokeDisabled(
 		disabled: AcceptFailingDynamicTest,
-		method: AnnotatedElement
+		method: AnnotatedElement,
 	) {
 		try {
 			this.proceed()

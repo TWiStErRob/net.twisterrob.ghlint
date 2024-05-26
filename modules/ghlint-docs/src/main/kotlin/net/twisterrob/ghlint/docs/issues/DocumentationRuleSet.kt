@@ -9,7 +9,7 @@ import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.RuleSet
 
 internal class DocumentationRuleSet(
-	private val builtIn: BuiltInRuleSet = BuiltInRuleSet()
+	private val builtIn: BuiltInRuleSet = BuiltInRuleSet(),
 ) : RuleSet by builtIn {
 
 	override fun createRules(): List<Rule> =
