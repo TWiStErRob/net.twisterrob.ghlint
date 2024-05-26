@@ -49,6 +49,8 @@ The [requirements for getting into the Homebrew core repository][homebrew-reqs] 
 
 > (e.g. GitHub repositories should have >=30 forks, >=30 watchers or >=75 stars)
 
-If you want to `brew`, you know what to do: [https://github.com/TWiStErRob/net.twisterrob.ghlint](https://github.com/TWiStErRob/net.twisterrob.ghlint).
+If you want to `brew`, you know what to do: [github.com/TWiStErRob/net.twisterrob.ghlint][repo].
 
 [homebrew-reqs]: https://docs.brew.sh/Acceptable-Formulae#niche-or-self-submitted-stuff
+
+[repo]: https://github.com/TWiStErRob/net.twisterrob.ghlint
