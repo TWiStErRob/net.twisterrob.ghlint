@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.model
 
 /**
- * Represents a step in a GitHub Actions Action.
+ * Represents a step in a GitHub Actions [Action].
  *
  * References:
  *  * [General documentation](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions)

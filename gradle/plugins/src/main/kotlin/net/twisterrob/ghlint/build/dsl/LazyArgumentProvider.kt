@@ -7,7 +7,7 @@ import org.gradle.process.CommandLineArgumentProvider
 
 class LazyArgumentProvider(
 	@OutputDirectory
-	val outputDir: Provider<Directory>
+	val outputDir: Provider<Directory>,
 ) : CommandLineArgumentProvider {
 
 	override fun asArguments(): Iterable<String> =

@@ -235,7 +235,7 @@ class MarkdownRendererTest {
 			@Suppress("detekt.UnusedParameter", "UNUSED_PARAMETER") issueId: String,
 			issue: Issue,
 			expected: String,
-			@TempDir temp: Path
+			@TempDir temp: Path,
 		) {
 			val renderer = MarkdownRenderer(FileLocator(temp))
 
