@@ -37,7 +37,7 @@ public class MissingShellRule : VisitorRule, WorkflowVisitor {
 				 * [`jobs.<job_id>.defaults.run.shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun)
 				 * [`jobs.<job_id>.steps[*].shell`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell)
 				
-				For Linux / MacOS runners it's recommended to specify `bash` explicitly, because it adds additional arguments:
+				For Linux / macOS runners it's recommended to specify `bash` explicitly, because it adds additional arguments:
 				
 				 * `-e`: to stop on first error (used for both)
 				 * `-o pipefail`: propagate exit code from error inside a pipe

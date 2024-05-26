@@ -6,7 +6,7 @@ Each approach gives you more and more control over the validation process.
 ## Workflow
 
 There's a pre-made example workflow in this repository that you can use as a starting point, this uses
-the [Action](#action-public-repositories-and-github-cloud-with-ghas).
+the [Action](#public-repositories--github-cloud-with-ghas).
 
 1. Copy [usage.yml][usage.yml] to your repository to `.github/workflows/ghlint.yml`.
 2. Change the `on:` trigger to your liking (usually `on: pull_request` or `on: push`).
