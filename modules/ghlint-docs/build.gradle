@@ -30,7 +30,8 @@ configurations {
 }
 
 interface FileSystemOpsInjected {
-	@Inject FileSystemOperations getFs()
+	@Inject
+	FileSystemOperations getFs()
 }
 
 def generateIssues = tasks.register("generateIssues", JavaExec.class) {

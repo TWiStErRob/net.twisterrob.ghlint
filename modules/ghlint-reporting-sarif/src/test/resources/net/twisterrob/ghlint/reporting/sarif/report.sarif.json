@@ -1,63 +1,63 @@
 {
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-  "version": "2.1.0",
-  "runs": [
-    {
-      "originalUriBaseIds": {
-        "%SRCROOT%": {
-          "uri": "<root>"
-        }
-      },
-      "results": [
-        {
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test.yml",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "endColumn": 7,
-                  "endLine": 3,
-                  "startColumn": 3,
-                  "startLine": 3
-                }
-              }
-            }
-          ],
-          "message": {
-            "text": "Test Finding message"
-          },
-          "ruleId": "TestIssueId"
-        }
-      ],
-      "tool": {
-        "driver": {
-          "fullName": "GH-Lint <version>",
-          "name": "GH-Lint",
-          "rules": [
-            {
-              "fullDescription": {
-                "markdown": "Test issue description.\n\nLong explanation of the issue.\nThis rule actually finds a job named test and flags it.",
-                "text": "See fullDescription markdown."
-              },
-              "help": {
-                "markdown": "Test issue description.\n\nLong explanation of the issue.\nThis rule actually finds a job named test and flags it.\n\n## Compliant examples\n\n### Compliant example #1\n_`example.yml`_\n```yaml\non:\njobs:\n  job:\n    steps: []\n```\nCompliant example explanation for `job`.\n\n### Compliant example #2\n_`example.yml`_\n```yaml\non:\njobs:\n  example:\n    steps: []\n```\nCompliant example explanation for `example`.\n\n## Non-compliant example\n_`example.yml`_\n```yaml\non:\njobs:\n  test:\n    steps: []\n```\nNon-compliant example explanation.\n\n---\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/TestIssueId/).",
-                "text": "See help markdown."
-              },
-              "helpUri": "https://ghlint.twisterrob.net/issues/default/TestIssueId/",
-              "id": "TestIssueId",
-              "name": "Test Issue Title",
-              "shortDescription": {
-                "text": "Test Issue Title"
-              }
-            }
-          ],
-          "semanticVersion": "<version>",
-          "version": "<version>"
-        }
-      }
-    }
-  ]
+	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+	"version": "2.1.0",
+	"runs": [
+		{
+			"originalUriBaseIds": {
+				"%SRCROOT%": {
+					"uri": "<root>"
+				}
+			},
+			"results": [
+				{
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "test.yml",
+									"uriBaseId": "%SRCROOT%"
+								},
+								"region": {
+									"endColumn": 7,
+									"endLine": 3,
+									"startColumn": 3,
+									"startLine": 3
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "Test Finding message"
+					},
+					"ruleId": "TestIssueId"
+				}
+			],
+			"tool": {
+				"driver": {
+					"fullName": "GH-Lint <version>",
+					"name": "GH-Lint",
+					"rules": [
+						{
+							"fullDescription": {
+								"markdown": "Test issue description.\n\nLong explanation of the issue.\nThis rule actually finds a job named test and flags it.",
+								"text": "See fullDescription markdown."
+							},
+							"help": {
+								"markdown": "Test issue description.\n\nLong explanation of the issue.\nThis rule actually finds a job named test and flags it.\n\n## Compliant examples\n\n### Compliant example #1\n_`example.yml`_\n```yaml\non:\njobs:\n  job:\n    steps: []\n```\nCompliant example explanation for `job`.\n\n### Compliant example #2\n_`example.yml`_\n```yaml\non:\njobs:\n  example:\n    steps: []\n```\nCompliant example explanation for `example`.\n\n## Non-compliant example\n_`example.yml`_\n```yaml\non:\njobs:\n  test:\n    steps: []\n```\nNon-compliant example explanation.\n\n---\nSee also the [online documentation](https://ghlint.twisterrob.net/issues/default/TestIssueId/).",
+								"text": "See help markdown."
+							},
+							"helpUri": "https://ghlint.twisterrob.net/issues/default/TestIssueId/",
+							"id": "TestIssueId",
+							"name": "Test Issue Title",
+							"shortDescription": {
+								"text": "Test Issue Title"
+							}
+						}
+					],
+					"semanticVersion": "<version>",
+					"version": "<version>"
+				}
+			}
+		}
+	]
 }
