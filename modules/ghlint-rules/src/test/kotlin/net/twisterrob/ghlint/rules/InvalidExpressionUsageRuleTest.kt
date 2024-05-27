@@ -48,13 +48,13 @@ class InvalidExpressionUsageRuleTest {
 		val uses = "./github/actions/build-\${{ github.sha }}"
 		val results = check<InvalidExpressionUsageRule>(
 				"""
-             on: push
-             jobs:
-               test:
-                 runs-on: test
-                 steps:
-                 - uses: ${uses}
-            """.trimIndent(),
+					on: push
+					jobs:
+						test:
+							runs-on: test
+							steps:
+							- uses: ${uses}
+				""".trimIndent(),
 		)
 
 		results shouldHave singleFinding(
