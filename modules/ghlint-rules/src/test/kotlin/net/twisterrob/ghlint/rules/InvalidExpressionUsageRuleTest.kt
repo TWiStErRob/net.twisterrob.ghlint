@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-class InvalidExpressionUsageRuleKtTest {
+class InvalidExpressionUsageRuleTest {
 
 	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
 	@Test fun `passes when no expression in uses field`() {
