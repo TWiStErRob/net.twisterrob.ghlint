@@ -89,6 +89,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				 * [GitHub CLI Manual](https://cli.github.com/manual/#configuration)
 				 * [Using GitHub CLI in workflows](https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows)
 				 * [gh help environment](https://cli.github.com/manual/gh_help_environment)
+				
 				---
 				
 				Note: it's possible to set both `GH_TOKEN` and `GITHUB_TOKEN` as environment variables,
@@ -98,6 +99,8 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				 * `GITHUB_TOKEN` secret automatically defined by GitHub Actions
 				
 				it's recommended to always use `GH_TOKEN` and `${'$'}{{ github.token }}`, see [`PreferGitHubToken`](PreferGitHubToken.md).
+				
+				Using the `GH_` prefix also helps to understand that the variable is for the `gh` CLI.
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
