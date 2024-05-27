@@ -28,7 +28,6 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `reports when expression in uses field`() {
-		val uses = "actions/checkout@\${{ github.sha }}"
 		val results = check<InvalidExpressionUsageRule>(
 			"""
 				on: push
@@ -36,13 +35,13 @@ class InvalidExpressionUsageRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: actions/checkout@${uses}
+				    - uses: actions/checkout@${'$'}{{ github.sha }}
 			""".trimIndent(),
 		)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",
-			"Step[actions/checkout@$uses] in Job[test] contains a GitHub expression in the `uses` field."
+			"Step[actions/checkout@${'$'}{{ github.sha }}] in Job[test] contains a GitHub expression in the `uses` field."
 		)
 	}
 
@@ -67,7 +66,6 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `reports when expression in uses field for local action`() {
-		val uses = "actions/checkout@\${{ github.sha }}"
 		val results = check<InvalidExpressionUsageRule>(
 			"""
 				name: "Test"
@@ -79,7 +77,7 @@ class InvalidExpressionUsageRuleTest {
 				  using: composite
 				  steps:
 				    - name: "Test"
-				      uses: ${uses}
+				      uses: actions/checkout@${'$'}{{ github.sha }}
 			""".trimIndent(),
 			fileName = "action.yml"
 		)
