@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.check
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ class InvalidExpressionUsageRuleTest {
 
 	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
 	@Test fun `passes when no expression in uses field`() {
-		val results = net.twisterrob.ghlint.testing.check<InvalidExpressionUsageRule>(
+		val results = check<InvalidExpressionUsageRule>(
             """
              on: push
              jobs:
@@ -29,7 +30,7 @@ class InvalidExpressionUsageRuleTest {
 
 	@Test fun `reports when expression in uses field`() {
 		val uses = "actions/checkout@\${{ github.sha }}"
-		val results = net.twisterrob.ghlint.testing.check<InvalidExpressionUsageRule>(
+		val results = check<InvalidExpressionUsageRule>(
             """
              on: push
              jobs:
