@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
@@ -18,28 +19,24 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
-		if (step.uses.uses.containsGitHubExpression()) {
-			reporting.report(InvalidExpressionUsage, step) {
-				"${it} contains a GitHub expression in the `uses` field."
-			}
-		}
+		checkForGitHubExpression(reporting, step, step.uses.uses)
 	}
 
 	override fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
 		super.visitActionUsesStep(reporting, step)
 
-		if (step.uses.uses.containsGitHubExpression()) {
-			reporting.report(InvalidExpressionUsage, step) {
-				"${it} contains a GitHub expression in the `uses` field."
-			}
-		}
+		checkForGitHubExpression(reporting, step, step.uses.uses)
 	}
 
 	override fun visitReusableWorkflowCallJob(reporting: Reporting, job: Job.ReusableWorkflowCallJob) {
 		super.visitReusableWorkflowCallJob(reporting, job)
 
-		if (job.uses.containsGitHubExpression()) {
-			reporting.report(InvalidExpressionUsage, job) {
+		checkForGitHubExpression(reporting, job, job.uses)
+	}
+
+	private fun checkForGitHubExpression(reporting: Reporting, component: Component, uses: String) {
+		if (uses.containsGitHubExpression()) {
+			reporting.report(InvalidExpressionUsage, component) {
 				"${it} contains a GitHub expression in the `uses` field."
 			}
 		}
