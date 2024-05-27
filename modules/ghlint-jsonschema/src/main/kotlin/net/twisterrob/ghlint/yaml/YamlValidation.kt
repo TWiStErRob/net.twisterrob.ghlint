@@ -11,10 +11,15 @@ import java.net.URL
 
 public object YamlValidation {
 
-	private const val WORKFLOW_SCHEMA_URL =
-		"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json"
-	private const val ACTION_SCHEMA_URL =
-		"https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-action.json"
+	/**
+	 * See [source code](https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/github-workflow.json).
+	 */
+	private const val WORKFLOW_SCHEMA_URL = "https://json.schemastore.org/github-workflow.json"
+
+	/**
+	 * See [source code](https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/github-action.json).
+	 */
+	private const val ACTION_SCHEMA_URL = "https://json.schemastore.org/github-action.json"
 
 	private val resolver = object : SchemaResolver {
 		private val cache: MutableMap<String, SchemaResolver.Result> = mutableMapOf()
