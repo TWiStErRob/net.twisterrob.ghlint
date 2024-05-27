@@ -1,8 +1,6 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
-import net.twisterrob.ghlint.model.Component
-import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue

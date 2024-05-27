@@ -11,16 +11,17 @@ import org.junit.jupiter.api.TestFactory
 class InvalidExpressionUsageRuleTest {
 
 	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
+
 	@Test fun `passes when no expression in uses field`() {
 		val results = check<InvalidExpressionUsageRule>(
-            """
-             on: push
-             jobs:
-               test:
-                 runs-on: test
-                 steps:
-                 - uses: actions/checkout@v4
-            """.trimIndent(),
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				    - uses: actions/checkout@v4
+			""".trimIndent(),
 		)
 
 		results shouldHave noFindings()
@@ -29,33 +30,34 @@ class InvalidExpressionUsageRuleTest {
 	@Test fun `reports when expression in uses field`() {
 		val uses = "actions/checkout@\${{ github.sha }}"
 		val results = check<InvalidExpressionUsageRule>(
-            """
-             on: push
-             jobs:
-               test:
-                 runs-on: test
-                 steps:
-                 - uses: actions/checkout@${uses}
-            """.trimIndent(),
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				    - uses: actions/checkout@${uses}
+			""".trimIndent(),
 		)
 
 		results shouldHave singleFinding(
-            "InvalidExpressionUsage",
-            "Step[actions/checkout@$uses] in Job[test] contains a GitHub expression in the `uses` field."
-        )
+			"InvalidExpressionUsage",
+			"Step[actions/checkout@$uses] in Job[test] contains a GitHub expression in the `uses` field."
+		)
 	}
+
 	@Test fun `passes when expression not in uses field for local action`() {
 		val results = check<InvalidExpressionUsageRule>(
-            """
-              name: "Test"
-              inputs:
-                test:
-              runs:
-                using: composite
-                steps:
-                  - name: "Test"
-                    uses: actions/checkout@v4
-            """.trimIndent(),
+			"""
+				name: "Test"
+				inputs:
+				  test:
+				runs:
+				  using: composite
+				  steps:
+				    - name: "Test"
+				      uses: actions/checkout@v4
+			""".trimIndent(),
 			fileName = "action.yml"
 		)
 
@@ -65,15 +67,15 @@ class InvalidExpressionUsageRuleTest {
 	@Test fun `reports when expression in uses field for local action`() {
 		val uses = "actions/checkout@\${{ github.sha }}"
 		val results = check<InvalidExpressionUsageRule>(
-		    """
-              name: "Test"
-              inputs:
-                test:
-              runs:
-                using: composite
-                steps:
-                  - name: "Test"
-                    uses: ${uses}
+			"""
+				name: "Test"
+				inputs:
+				  test:
+				runs:
+				  using: composite
+				  steps:
+				    - name: "Test"
+				      uses: ${uses}
 			""".trimIndent(),
 			fileName = "action.yml"
 		)
