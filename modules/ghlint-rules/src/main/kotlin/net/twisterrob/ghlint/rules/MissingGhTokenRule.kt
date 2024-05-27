@@ -56,9 +56,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 	}
 
 	private fun String.usesGhCli(): Boolean =
-		this.contains(GH_CLI_START_OF_LINE)
-				|| this.contains(GH_CLI_EMBEDDED)
-				|| this.contains(GH_CLI_PIPE_CONDITIONAL)
+		GH_CLI_START_OF_LINE in this || GH_CLI_EMBEDDED in this || GH_CLI_PIPE_CONDITIONAL in this
 
 	private fun Step.Run.hasEnvVar(s: String): Boolean =
 		when (this) {
