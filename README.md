@@ -48,4 +48,4 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
   is a syntax and formatting checker for YAML files.
 * _If you know any others, feel free to PR._
 
-[schemastore-workflow]: https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/github-workflow.json
+[schemastore-workflow]: https://json.schemastore.org/github-workflow.json
