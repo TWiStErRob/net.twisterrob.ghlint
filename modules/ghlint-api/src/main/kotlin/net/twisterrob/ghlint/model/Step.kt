@@ -28,7 +28,7 @@ public sealed interface Step {
 		public companion object
 	}
 
-	public interface Run : BaseStep {
+	public sealed interface Run : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val run: String
@@ -38,7 +38,7 @@ public sealed interface Step {
 		public companion object
 	}
 
-	public interface Uses : BaseStep {
+	public sealed interface Uses : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val uses: UsesAction
