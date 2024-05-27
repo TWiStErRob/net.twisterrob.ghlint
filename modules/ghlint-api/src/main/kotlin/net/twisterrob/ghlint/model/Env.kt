@@ -2,15 +2,17 @@ package net.twisterrob.ghlint.model
 
 public sealed interface Env {
 
-	public fun asMap(): Map<String, String> =
-		if (this is Explicit) this else emptyMap()
+	public fun asMap(): Map<String, String>
+	public fun asText(): String?
 
-	public fun asText(): String? =
-		if (this is Dynamic) value else null
-
-	public interface Explicit : Env, Map<String, String>
+	public interface Explicit : Env, Map<String, String> {
+		override fun asMap(): Map<String, String> = this
+		override fun asText(): String? = null
+	}
 
 	public interface Dynamic : Env {
 		public val value: String
+		override fun asMap(): Map<String, String> = emptyMap()
+		override fun asText(): String? = value
 	}
 }
