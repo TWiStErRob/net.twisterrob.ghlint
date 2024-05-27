@@ -84,9 +84,13 @@ class InvalidExpressionUsageRuleTest {
 			fileName = "action.yml"
 		)
 
+		val message = """
+			Step["Test"] in Action["Test"] contains a GitHub expression in the `uses` field.
+		""".trimIndent()
+
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",
-			"Step[\"Test\"] in Action[\"Test\"] contains a GitHub expression in the `uses` field."
+			message
 		)
 	}
 }
