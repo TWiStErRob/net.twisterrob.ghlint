@@ -2,8 +2,10 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Env
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
+import net.twisterrob.ghlint.model.map
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -69,8 +71,8 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				this.env.hasVariable(s)
 		}
 
-	private fun Map<String, String>?.hasVariable(varName: String): Boolean =
-		this.orEmpty().containsKey(varName)
+	private fun Env?.hasVariable(varName: String): Boolean =
+		this.map.containsKey(varName)
 
 	private companion object {
 

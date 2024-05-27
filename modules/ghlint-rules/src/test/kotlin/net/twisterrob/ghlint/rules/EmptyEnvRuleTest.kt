@@ -27,6 +27,22 @@ class EmptyEnvRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when workflow has dynamic env`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				on: push
+				env: ${'$'}{{ {} }}
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `reports when workflow has empty env`() {
 		val results = check<EmptyEnvRule>(
 			"""
@@ -46,6 +62,22 @@ class EmptyEnvRuleTest {
 		)
 	}
 
+	@Test fun `passes when job has dynamic env`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    env: ${'$'}{{ {} }}
+				    steps:
+				      - run: echo "Test"
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `reports when job has empty env`() {
 		val results = check<EmptyEnvRule>(
 			"""
@@ -63,6 +95,22 @@ class EmptyEnvRuleTest {
 			"EmptyJobEnv",
 			"Job[test] should not have empty env."
 		)
+	}
+
+	@Test fun `passes when step has dynamic env`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: echo "Test"
+				        env: ${'$'}{{ {} }}
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step has empty env`() {
@@ -101,6 +149,23 @@ class EmptyEnvRuleTest {
 			"EmptyStepEnv",
 			"Step[#0] in Job[test] should not have empty env."
 		)
+	}
+
+	@Test fun `passes when step has dynamic env in action`() {
+		val results = check<EmptyEnvRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - uses: some/action@v1
+				      env: ${'$'}{{ {} }}
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step has empty env in action`() {

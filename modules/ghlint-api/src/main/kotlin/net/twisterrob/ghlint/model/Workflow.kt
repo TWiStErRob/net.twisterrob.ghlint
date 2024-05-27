@@ -6,7 +6,7 @@ package net.twisterrob.ghlint.model
 public interface Workflow : Component, Content {
 
 	public val name: String?
-	public val env: Map<String, String>?
+	public val env: Env?
 	public val jobs: Map<String, Job>
 	public val permissions: Map<String, String>?
 	public val defaults: Defaults?
