@@ -31,6 +31,24 @@ class MissingGhTokenRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when token and host are defined on step`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: gh pr view
+				        env:
+				          GH_HOST: github.example.com
+				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when token is defined on action step`() {
 		val results = check<MissingGhTokenRule>(
 			"""
@@ -43,6 +61,26 @@ class MissingGhTokenRuleTest {
 				      shell: bash
 				      env:
 				        GH_TOKEN: ${'$'}{{ github.token }}
+			""".trimIndent(),
+			fileName = "action.yml",
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when token and host are defined on action step`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				name: Test
+				description: Test
+				runs:
+				  using: composite
+				  steps:
+				    - run: gh pr view
+				      shell: bash
+				      env:
+				          GH_HOST: github.example.com
+				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent(),
 			fileName = "action.yml",
 		)
@@ -67,6 +105,24 @@ class MissingGhTokenRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when token and host are defined on job`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    env:
+				      GH_HOST: github.example.com
+				      GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
+				    steps:
+				      - run: gh pr view
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when token is defined on workflow`() {
 		val results = check<MissingGhTokenRule>(
 			"""
@@ -75,6 +131,43 @@ class MissingGhTokenRuleTest {
 				  GH_TOKEN: ${'$'}{{ github.token }}
 				jobs:
 				  test:
+				    runs-on: test
+				    steps:
+				      - run: gh pr view
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when token and host are defined on workflow`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				env:
+				  GH_HOST: github.example.com
+				  GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: gh pr view
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `passes when token and host are defined at different levels`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				env:
+				  GH_HOST: github.example.com
+				jobs:
+				  test:
+				    env:
+				      GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 				    runs-on: test
 				    steps:
 				      - run: gh pr view
@@ -137,6 +230,50 @@ class MissingGhTokenRuleTest {
 		results shouldHave singleFinding(
 			"MissingGhToken",
 			"Step[#0] in Job[test] should see `GH_TOKEN` environment variable."
+		)
+	}
+
+	@MethodSource("getValidGhCommands")
+	@ParameterizedTest
+	fun `reports missing host when gh is used in different shell contexts`(script: String) {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
+				        env:
+				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"MissingGhHost",
+			"Step[#0] in Job[test] should see `GH_HOST` environment variable when using `GH_ENTERPRISE_TOKEN`."
+		)
+	}
+
+	@MethodSource("getValidGhCommands")
+	@ParameterizedTest
+	fun `reports missing enterprise token when gh is used in different shell contexts`(script: String) {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
+				        env:
+				          GH_HOST: github.example.com
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"MissingGhToken",
+			"Step[#0] in Job[test] should see `GH_ENTERPRISE_TOKEN` environment variable when using `GH_HOST`."
 		)
 	}
 
