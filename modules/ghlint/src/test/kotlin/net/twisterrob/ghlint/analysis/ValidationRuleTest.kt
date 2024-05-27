@@ -142,6 +142,29 @@ class ValidationRuleTest {
 		findings shouldHave noFindings()
 	}
 
+	@Test fun `duplicate key is reported`() {
+		@Suppress("YAMLDuplicatedKeys")
+		val findings = checkUnsafe<ValidationRule>(
+			"""
+				on: push
+				jobs:
+				  a-job:
+				    uses: reusable/workflow.yml
+				
+				  a-job:
+				    name: "Job"
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent(),
+		)
+
+		findings shouldHave singleFinding(
+			issue = "JsonSchemaValidation",
+			message = "Duplicate key: a-job (/jobs/a-job)",
+		)
+	}
+
 	@Test fun `valid action contents`() {
 		val findings = check<ValidationRule>(
 			"""
