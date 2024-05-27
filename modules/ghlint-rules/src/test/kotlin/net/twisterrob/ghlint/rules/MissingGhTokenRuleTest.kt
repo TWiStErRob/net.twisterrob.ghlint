@@ -335,6 +335,25 @@ class MissingGhTokenRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `reports dynamic env, even though it's inconclusive`() {
+		val results = check<MissingGhTokenRule>(
+			"""
+				on: push
+				env: ${'$'}{{ {} }}
+				jobs:
+				  test:
+				    runs-on: test
+				    steps:
+				      - run: gh pr view
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+			"MissingGhToken",
+			"Step[#0] in Job[test] should see `GH_TOKEN` environment variable."
+		)
+	}
+
 	companion object {
 
 		@JvmStatic

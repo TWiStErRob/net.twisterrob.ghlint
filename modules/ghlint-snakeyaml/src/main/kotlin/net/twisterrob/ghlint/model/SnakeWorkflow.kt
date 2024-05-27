@@ -22,8 +22,8 @@ public class SnakeWorkflow internal constructor(
 	override val name: String?
 		get() = node.getOptionalText("name")
 
-	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run { map.toTextMap() }
+	override val env: Env?
+		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	override val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map

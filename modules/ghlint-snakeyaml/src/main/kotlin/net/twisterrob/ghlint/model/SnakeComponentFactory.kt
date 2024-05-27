@@ -151,6 +151,7 @@ public class SnakeComponentFactory {
 
 			node.getOptionalText("run") != null ->
 				SnakeWorkflowStep.SnakeWorkflowStepRun(
+					factory = this,
 					parent = parent,
 					index = Step.Index(index),
 					node = node,
@@ -208,6 +209,29 @@ public class SnakeComponentFactory {
 			uses = uses,
 			versionComment = versionComment,
 		)
+
+	internal fun createEnv(node: Node): Env =
+		when (node) {
+			is MappingNode -> {
+				SnakeEnvExplicit(
+					node = node,
+					target = node,
+					map = node.map.toTextMap()
+				)
+			}
+
+			is ScalarNode -> {
+				SnakeEnvDynamic(
+					node = node,
+					target = node,
+					text = node.text
+				)
+			}
+
+			else -> {
+				error("Unsupported env: ${node}")
+			}
+		}
 
 	internal fun createSecrets(node: Node): Job.Secrets =
 		if (node is MappingNode) {
@@ -267,6 +291,7 @@ public class SnakeComponentFactory {
 
 			node.getOptionalText("run") != null ->
 				SnakeActionStep.SnakeActionStepRun(
+					factory = this,
 					parent = parent,
 					index = Step.Index(index),
 					node = node,

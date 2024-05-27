@@ -10,6 +10,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeActionStep protected constructor(
+	private val factory: SnakeComponentFactory,
 ) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
 
 	override val location: Location
@@ -24,15 +25,16 @@ public sealed class SnakeActionStep protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
-	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run { map.toTextMap() }
+	override val env: Env?
+		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	public class SnakeActionStepRun internal constructor(
+		factory: SnakeComponentFactory,
 		override val parent: Action.Runs.CompositeRuns,
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : ActionStep.Run, SnakeActionStep() {
+	) : ActionStep.Run, SnakeActionStep(factory) {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val run: String
@@ -51,7 +53,7 @@ public sealed class SnakeActionStep protected constructor(
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : ActionStep.Uses, SnakeActionStep() {
+	) : ActionStep.Uses, SnakeActionStep(factory) {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val uses: Step.UsesAction
