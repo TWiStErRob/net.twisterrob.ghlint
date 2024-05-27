@@ -1,6 +1,8 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -16,18 +18,17 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitWorkflowRunStep(reporting, step)
-		if (usesGhCli(step.run)) {
-			val hasGhToken = step.env.hasTokenVar || step.parent.env.hasTokenVar || step.parent.parent.env.hasTokenVar
-			if (!hasGhToken) {
-				reporting.report(MissingGhToken, step) { "${it} should see `${TOKEN_ENV_VAR}` environment variable." }
-			}
-		}
+		visitRunStep(reporting, step)
 	}
 
 	override fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
 		super.visitActionRunStep(reporting, step)
-		if (usesGhCli(step.run)) {
-			val hasGhToken = step.env.hasTokenVar
+		visitRunStep(reporting, step)
+	}
+
+	private fun <T> visitRunStep(reporting: Reporting, step: T) where T : Step.Run, T : Component {
+		if (step.run.usesGhCli()) {
+			val hasGhToken = step.hasEnvVar(TOKEN_ENV_VAR)
 			if (!hasGhToken) {
 				reporting.report(MissingGhToken, step) { "${it} should see `${TOKEN_ENV_VAR}` environment variable." }
 			}
@@ -39,10 +40,24 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 		// TODO check if referenced composite action uses gh cli without GH_TOKEN
 	}
 
-	private fun usesGhCli(script: String): Boolean =
-		script.contains(GH_CLI_START_OF_LINE)
-				|| script.contains(GH_CLI_EMBEDDED)
-				|| script.contains(GH_CLI_PIPE_CONDITIONAL)
+	private fun String.usesGhCli(): Boolean =
+		this.contains(GH_CLI_START_OF_LINE)
+				|| this.contains(GH_CLI_EMBEDDED)
+				|| this.contains(GH_CLI_PIPE_CONDITIONAL)
+
+	private fun Step.Run.hasEnvVar(s: String): Boolean =
+		when (this) {
+			is WorkflowStep.Run ->
+				this.env.hasVariable(s)
+						|| this.parent.env.hasVariable(s)
+						|| this.parent.parent.env.hasVariable(s)
+
+			is ActionStep.Run ->
+				this.env.hasVariable(s)
+		}
+
+	private fun Map<String, String>?.hasVariable(varName: String): Boolean =
+		this.orEmpty().containsKey(varName)
 
 	private companion object {
 
@@ -50,9 +65,6 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 		private val GH_CLI_START_OF_LINE = Regex("""^\s*gh\s+""", RegexOption.MULTILINE)
 		private val GH_CLI_PIPE_CONDITIONAL = Regex("""(&&|\|\||\|)\s*gh\s+""")
 		private val GH_CLI_EMBEDDED = Regex("""\$\(\s*gh\s+""")
-
-		private val Map<String, String>?.hasTokenVar: Boolean
-			get() = this.orEmpty().containsKey(TOKEN_ENV_VAR)
 
 		val MissingGhToken = Issue(
 			id = "MissingGhToken",
