@@ -18,24 +18,21 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
-
 		checkForGitHubExpression(reporting, step, step.uses.uses)
 	}
 
 	override fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
 		super.visitActionUsesStep(reporting, step)
-
 		checkForGitHubExpression(reporting, step, step.uses.uses)
 	}
 
 	override fun visitReusableWorkflowCallJob(reporting: Reporting, job: Job.ReusableWorkflowCallJob) {
 		super.visitReusableWorkflowCallJob(reporting, job)
-
 		checkForGitHubExpression(reporting, job, job.uses)
 	}
 
 	private fun checkForGitHubExpression(reporting: Reporting, component: Component, uses: String) {
-		if (uses.containsGitHubExpression()) {
+		if (uses.contains("\${{")) {
 			reporting.report(InvalidExpressionUsage, component) {
 				"${it} contains a GitHub expression in the `uses` field."
 			}
@@ -43,7 +40,6 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 	}
 
 	private companion object {
-		const val uses = "actions/checkout@\${{ github.sha }}"
 
 		val InvalidExpressionUsage = Issue(
 			id = "InvalidExpressionUsage",
@@ -59,7 +55,7 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
-					explanation = "GitHub Expression not used within `steps[*].uses`.",
+					explanation = "GitHub Expression not used within `uses`.",
 					content = """
 						on: push
 						jobs:
@@ -68,23 +64,21 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 						    steps:
 						      - uses: actions/checkout@v4
 					""".trimIndent(),
-					),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "GitHub Expression used within `steps[*].uses`.",
+					explanation = "GitHub Expression used within `uses`.",
 					content = """
 						on: push
 						jobs:
 						  example:
 						    runs-on: ubuntu-latest
 						    steps:
-						      - uses: $uses
+						      - uses: actions/checkout@${'$'}{{ github.ref }}
 					""".trimIndent(),
 				),
 			)
 		)
 	}
 }
-
-private fun String.containsGitHubExpression(): Boolean = this.contains("\${{")
