@@ -41,7 +41,7 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 			id = "InvalidExpressionUsage",
 			title = "Expressions should not be used in uses field.",
 			description = """
-				> GGitHub Action Expressions can be used to programmatically access context variables in workflow files.
+				> GitHub Action Expressions can be used to programmatically access context variables in workflow files.
 				> -- [About expressions](https://docs.github.com/en/actions/learn-github-actions/expressions)
 				
 				However, they cannot be used within the uses field. 
