@@ -41,10 +41,13 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 			id = "InvalidExpressionUsage",
 			title = "Expressions should not be used in uses field.",
 			description = """
-				> GitHub Action Expressions can be used to programmatically set environment variables in workflow files.
+				> GGitHub Action Expressions can be used to programmatically access context variables in workflow files.
 				> -- [About expressions](https://docs.github.com/en/actions/learn-github-actions/expressions)
 				
-				However, they cannot be used within the uses field. GitHub will report an error - "The workflow is not valid: A template expression is not allowed in this context"
+				However, they cannot be used within the uses field. 
+				GitHub will report an error: 
+				> The workflow is not valid. `.github/workflows/???.yml` (Line: ?, Col: ?):
+				> A template expression is not allowed in this context
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
