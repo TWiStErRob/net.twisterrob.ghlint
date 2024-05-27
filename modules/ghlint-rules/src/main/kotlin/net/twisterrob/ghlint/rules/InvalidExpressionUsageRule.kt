@@ -12,13 +12,13 @@ import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
 public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVisitor {
 
-	override val issues: List<Issue> = listOf(InvalidExpression)
+	override val issues: List<Issue> = listOf(InvalidExpressionUsage)
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		if (step.uses.uses.containsGitHubExpression()) {
-			reporting.report(InvalidExpression, step) {
+			reporting.report(InvalidExpressionUsage, step) {
 				"${it} contains a GitHub expression in the `uses` field."
 			}
 		}
@@ -28,7 +28,7 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 		super.visitActionUsesStep(reporting, step)
 
 		if (step.uses.uses.containsGitHubExpression()) {
-			reporting.report(InvalidExpression, step) {
+			reporting.report(InvalidExpressionUsage, step) {
 				"${it} contains a GitHub expression in the `uses` field."
 			}
 		}
@@ -37,7 +37,7 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 	private companion object {
 		const val uses = "actions/checkout@\${{ github.sha }}"
 
-		val InvalidExpression = Issue(
+		val InvalidExpressionUsage = Issue(
 			id = "InvalidExpressionUsage",
 			title = "Expressions should not be used in uses field.",
 			description = """
