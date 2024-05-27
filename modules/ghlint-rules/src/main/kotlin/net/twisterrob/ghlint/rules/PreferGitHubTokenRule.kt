@@ -2,7 +2,6 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
-import net.twisterrob.ghlint.model.Env
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.WorkflowStep
@@ -21,12 +20,12 @@ public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor
 
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		super.visitWorkflow(reporting, workflow)
-		(workflow.env as? Env.Explicit).check(reporting, "environment variable", workflow)
+		workflow.env?.asMap().check(reporting, "environment variable", workflow)
 	}
 
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
-		(job.env as? Env.Explicit).check(reporting, "environment variable", job)
+		job.env?.asMap().check(reporting, "environment variable", job)
 	}
 
 	override fun visitReusableWorkflowCallJob(reporting: Reporting, job: Job.ReusableWorkflowCallJob) {
@@ -37,12 +36,12 @@ public class PreferGitHubTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor
 
 	override fun visitWorkflowStep(reporting: Reporting, step: WorkflowStep) {
 		super.visitWorkflowStep(reporting, step)
-		(step.env as? Env.Explicit).check(reporting, "environment variable", step)
+		step.env?.asMap().check(reporting, "environment variable", step)
 	}
 
 	override fun visitActionStep(reporting: Reporting, step: ActionStep) {
 		super.visitActionStep(reporting, step)
-		(step.env as? Env.Explicit).check(reporting, "environment variable", step)
+		step.env?.asMap().check(reporting, "environment variable", step)
 	}
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {

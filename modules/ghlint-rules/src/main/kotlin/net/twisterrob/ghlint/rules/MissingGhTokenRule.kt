@@ -71,7 +71,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 		}
 
 	private fun Env?.hasVariable(varName: String): Boolean =
-		(this as? Env.Explicit).orEmpty().containsKey(varName)
+		this?.asMap().orEmpty().containsKey(varName)
 
 	private companion object {
 
