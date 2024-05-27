@@ -46,16 +46,17 @@ class InvalidExpressionUsageRuleTest {
 	}
 	@Test fun `passes when expression not in uses field for local action`() {
 		val results = check<InvalidExpressionUsageRule>(
-		"""
+            """
               name: "Test"
               inputs:
-			    test:
+                test:
               runs:
                 using: composite
                 steps:
-                - name: "Test"
-                uses: actions/checkout@v4
-			"""
+                  - name: "Test"
+                    uses: actions/checkout@v4
+            """.trimIndent(),
+			fileName = "action.yml"
 		)
 
 		results shouldHave noFindings()
@@ -64,16 +65,17 @@ class InvalidExpressionUsageRuleTest {
 	@Test fun `reports when expression in uses field for local action`() {
 		val uses = "actions/checkout@\${{ github.sha }}"
 		val results = check<InvalidExpressionUsageRule>(
-		"""
+		    """
               name: "Test"
               inputs:
-			    test:
+                test:
               runs:
                 using: composite
                 steps:
-                - name: "Test"
-                uses: ${uses}
-			"""
+                  - name: "Test"
+                    uses: ${uses}
+			""".trimIndent(),
+			fileName = "action.yml"
 		)
 
 		results shouldHave singleFinding(
