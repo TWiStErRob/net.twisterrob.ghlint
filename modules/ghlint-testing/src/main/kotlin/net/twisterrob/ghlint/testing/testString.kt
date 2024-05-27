@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.testing
 
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Issue
 
 public fun List<Finding>.testString(): String =
 	if (this.isEmpty()) {
@@ -18,3 +19,6 @@ public fun Finding.testString(): String =
 		|	message=${message}
 		|)
 	""".trimMargin()
+
+public fun Issue.testString(): String =
+	"""Issue(id=${this.id}, title=${this.title})"""

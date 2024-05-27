@@ -75,8 +75,10 @@ public fun Rule.check(
 
 public fun assertFindingsProducibleByRule(findings: List<Finding>, rule: Rule) {
 	findings.forEach { finding ->
-		withClue(finding.testString()) {
-			finding.issue shouldBeIn rule.issues
+		withClue("Rule declares issue to be produced by it.") {
+			withClue(finding.testString()) {
+				finding.issue shouldBeIn rule.issues
+			}
 		}
 	}
 }
