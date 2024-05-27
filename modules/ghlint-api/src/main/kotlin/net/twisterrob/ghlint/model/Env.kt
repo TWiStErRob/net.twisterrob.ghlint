@@ -16,3 +16,6 @@ public sealed interface Env {
 		override fun asText(): String? = value
 	}
 }
+
+public fun Env?.asMap(): Map<String, String> =
+	this?.asMap().orEmpty()
