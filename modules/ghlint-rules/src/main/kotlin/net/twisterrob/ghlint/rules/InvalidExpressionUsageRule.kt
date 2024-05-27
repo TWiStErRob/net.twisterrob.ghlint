@@ -1,19 +1,33 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
+import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class InvalidExpressionUsageRule : VisitorRule, WorkflowVisitor {
+public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVisitor {
 
 	override val issues: List<Issue> = listOf(InvalidExpression)
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
+
+		if (step.uses.uses.containsGitHubExpression()) {
+			reporting.report(InvalidExpression, step) {
+				"${it} contains a GitHub expression in the `uses` field."
+			}
+		}
+	}
+
+	override fun visitActionUsesStep(reporting: Reporting, step: ActionStep.Uses) {
+		super.visitActionUsesStep(reporting, step)
 
 		if (step.uses.uses.containsGitHubExpression()) {
 			reporting.report(InvalidExpression, step) {
