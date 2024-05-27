@@ -224,7 +224,7 @@ public class SnakeComponentFactory {
 				SnakeEnvDynamic(
 					node = node,
 					target = node,
-					value = node.text
+					text = node.text
 				)
 			}
 

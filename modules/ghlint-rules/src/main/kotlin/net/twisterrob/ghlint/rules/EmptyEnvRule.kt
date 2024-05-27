@@ -44,7 +44,7 @@ public class EmptyEnvRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	@Suppress("detekt.CanBeNonNullable") // All usages pass in nullable, to reduce duplicated logic.
 	private fun checkEmptyEnv(component: Component, env: Env?, reporting: Reporting, issue: Issue) {
-		if (env is Env.Explicit && env.isEmpty()) {
+		if (env is Env.Explicit && env.map.isEmpty()) {
 			reporting.report(issue, component) { "${it} should not have empty env." }
 		}
 	}
