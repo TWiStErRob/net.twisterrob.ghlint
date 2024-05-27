@@ -79,6 +79,4 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 	}
 }
 
-private fun String.containsGitHubExpression(): Boolean {
-	return this.contains("\${{")
-}
+private fun String.containsGitHubExpression(): Boolean = this.contains("\${{")
