@@ -64,8 +64,7 @@ public class InvalidExpressionUsageRule : VisitorRule, WorkflowVisitor {
 	}
 }
 
-internal fun String.containsGitHubExpression(): Boolean {
-	@Suppress("StringShouldBeRawString")
-	val regex = Regex(".*\\$\\{\\{.*}}.*")
+private fun String.containsGitHubExpression(): Boolean {
+	val regex = Regex("""\$\{\{.*?}}""")
 	return regex.containsMatchIn(this)
 }
