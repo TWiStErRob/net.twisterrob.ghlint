@@ -15,8 +15,7 @@ public sealed interface Step {
 
 	@Suppress("detekt.VariableNaming")
 	public val `if`: String?
-	public val envString: String?
-	public val env: Map<String, String>?
+	public val env: Env?
 
 	public companion object;
 

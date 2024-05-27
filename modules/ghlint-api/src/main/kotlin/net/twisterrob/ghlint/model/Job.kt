@@ -8,8 +8,7 @@ public sealed interface Job : Component {
 	public val parent: Workflow
 	public val id: String
 	public val name: String?
-	public val envString: String?
-	public val env: Map<String, String>?
+	public val env: Env?
 	public val permissions: Map<String, String>?
 	public val needs: List<String>?
 

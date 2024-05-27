@@ -5,13 +5,12 @@ import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
-import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
-import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 public sealed class SnakeActionStep protected constructor(
+	private val factory: SnakeComponentFactory,
 ) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
 
 	override val location: Location
@@ -26,22 +25,16 @@ public sealed class SnakeActionStep protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
-	override val envString: String?
-		get() = node.getOptional("env")?.run {
-			if (this is ScalarNode) this.text else null
-		}
-
-	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run {
-			if (this is MappingNode) map.toTextMap() else null
-		}
+	override val env: Env?
+		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	public class SnakeActionStepRun internal constructor(
+		factory: SnakeComponentFactory,
 		override val parent: Action.Runs.CompositeRuns,
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : ActionStep.Run, SnakeActionStep() {
+	) : ActionStep.Run, SnakeActionStep(factory) {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val run: String
@@ -60,7 +53,7 @@ public sealed class SnakeActionStep protected constructor(
 		override val index: Step.Index,
 		override val node: MappingNode,
 		override val target: Node,
-	) : ActionStep.Uses, SnakeActionStep() {
+	) : ActionStep.Uses, SnakeActionStep(factory) {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		override val uses: Step.UsesAction

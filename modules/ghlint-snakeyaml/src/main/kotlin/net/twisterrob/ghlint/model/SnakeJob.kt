@@ -16,6 +16,7 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
 public sealed class SnakeJob protected constructor(
+	private val factory: SnakeComponentFactory,
 ) : Job.BaseJob, HasSnakeNode<MappingNode> {
 
 	override val location: Location
@@ -24,15 +25,8 @@ public sealed class SnakeJob protected constructor(
 	override val name: String?
 		get() = node.getOptionalText("name")
 
-	override val envString: String?
-		get() = node.getOptional("env")?.run {
-			if (this is ScalarNode) this.text else null
-		}
-
-	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run {
-			if (this is MappingNode) map.toTextMap() else null
-		}
+	override val env: Env?
+		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
@@ -54,7 +48,7 @@ public sealed class SnakeJob protected constructor(
 		override val id: String,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Job.NormalJob, SnakeJob() {
+	) : Job.NormalJob, SnakeJob(factory) {
 
 		override val steps: List<WorkflowStep>
 			get() = node.getRequired("steps").array.mapIndexed { index, node ->
@@ -78,7 +72,7 @@ public sealed class SnakeJob protected constructor(
 		override val id: String,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Job.ReusableWorkflowCallJob, SnakeJob() {
+	) : Job.ReusableWorkflowCallJob, SnakeJob(factory) {
 
 		override val uses: String
 			get() = node.getRequiredText("uses")
