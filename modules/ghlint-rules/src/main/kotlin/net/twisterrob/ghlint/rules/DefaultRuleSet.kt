@@ -21,7 +21,7 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	MissingJobTimeoutRule::class,
 	MissingNameRule::class,
 	MissingShellRule::class,
-	NeverExpressionRule::class,
+	InvalidExpressionUsageRule::class,
 	PreferGitHubTokenRule::class,
 	RedundantShellRule::class,
 	SafeEnvironmentFileRedirectRule::class,

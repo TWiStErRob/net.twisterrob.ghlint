@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-class NeverExpressionRuleKtTest {
+class InvalidExpressionUsageRuleKtTest {
 
-	@TestFactory fun metadata() = test(NeverExpressionRule::class)
+	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
 	@Test fun `passes when no expression in uses field`() {
-		val results = net.twisterrob.ghlint.testing.check<NeverExpressionRule>(
+		val results = net.twisterrob.ghlint.testing.check<InvalidExpressionUsageRule>(
             """
              on: push
              jobs:
@@ -29,7 +29,7 @@ class NeverExpressionRuleKtTest {
 
 	@Test fun `reports when expression in uses field`() {
 		val uses = "actions/checkout@\${{ github.sha }}"
-		val results = net.twisterrob.ghlint.testing.check<NeverExpressionRule>(
+		val results = net.twisterrob.ghlint.testing.check<InvalidExpressionUsageRule>(
             """
              on: push
              jobs:
@@ -41,7 +41,7 @@ class NeverExpressionRuleKtTest {
 		)
 
 		results shouldHave singleFinding(
-            "NeverExpression",
+            "InvalidExpressionUsage",
             "Step[actions/checkout@\$uses] in Job[test] uses a GitHub expression in the uses field."
         )
 	}

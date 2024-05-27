@@ -8,15 +8,15 @@ import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class NeverExpressionRule : VisitorRule, WorkflowVisitor {
+public class InvalidExpressionUsageRule : VisitorRule, WorkflowVisitor {
 
-	override val issues: List<Issue> = listOf(NeverExpression)
+	override val issues: List<Issue> = listOf(InvalidExpression)
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		if (step.uses.uses.containsGitHubExpression()) {
-			reporting.report(NeverExpression, step) {
+			reporting.report(InvalidExpression, step) {
 				"$it uses a GitHub expression in the uses field."
 			}
 		}
@@ -25,8 +25,8 @@ public class NeverExpressionRule : VisitorRule, WorkflowVisitor {
 	private companion object {
 		const val uses = "actions/checkout@\${{ github.sha }}"
 
-		val NeverExpression = Issue(
-			id = "NeverExpression",
+		val InvalidExpression = Issue(
+			id = "InvalidExpressionUsage",
 			title = "Expressions should not be used in uses field.",
 			description = """
 				> GitHub Action Expressions can be used to programmatically set environment variables in workflow files.
