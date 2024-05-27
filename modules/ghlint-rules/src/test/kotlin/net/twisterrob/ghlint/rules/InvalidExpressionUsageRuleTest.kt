@@ -91,4 +91,25 @@ class InvalidExpressionUsageRuleTest {
 			message
 		)
 	}
+
+	@Test fun `reports when expression in uses field for workflow call job`() {
+		val results = check<InvalidExpressionUsageRule>(
+				"""
+				on: push
+				jobs:
+				  test:
+				    uses: org/repo/.github/workflows/reusable.yml@${'$'}{{ github.ref_name }}
+			""".trimIndent(),
+				fileName = "workflow.yml"
+		)
+
+		val message = """
+			Job[test] contains a GitHub expression in the `uses` field.
+		""".trimIndent()
+
+		results shouldHave singleFinding(
+			"InvalidExpressionUsage",
+			message
+		)
+	}
 }
