@@ -50,8 +50,10 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(
 			"""
 				name: "Test"
+				description: "Test"
 				inputs:
 				  test:
+				    description: "Test"
 				runs:
 				  using: composite
 				  steps:
@@ -69,8 +71,10 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(
 			"""
 				name: "Test"
+				description: "Test"
 				inputs:
 				  test:
+				    description: "Test"
 				runs:
 				  using: composite
 				  steps:
@@ -82,7 +86,7 @@ class InvalidExpressionUsageRuleTest {
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",
-			"Step[actions/checkout@\$uses] in Job[test] uses a GitHub expression in the uses field."
+			"Step[\"Test\"] in Action[\"Test\"] contains a GitHub expression in the `uses` field."
 		)
 	}
 }
