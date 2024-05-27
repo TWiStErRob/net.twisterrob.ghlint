@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
+import net.twisterrob.ghlint.model.Env
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.model.WorkflowStep
@@ -42,8 +43,8 @@ public class EmptyEnvRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 	}
 
 	@Suppress("detekt.CanBeNonNullable") // All usages pass in nullable, to reduce duplicated logic.
-	private fun checkEmptyEnv(component: Component, env: Map<String, String>?, reporting: Reporting, issue: Issue) {
-		if (env != null && env.isEmpty()) {
+	private fun checkEmptyEnv(component: Component, env: Env?, reporting: Reporting, issue: Issue) {
+		if (env is Env.Explicit && env.isEmpty()) {
 			reporting.report(issue, component) { "${it} should not have empty env." }
 		}
 	}
