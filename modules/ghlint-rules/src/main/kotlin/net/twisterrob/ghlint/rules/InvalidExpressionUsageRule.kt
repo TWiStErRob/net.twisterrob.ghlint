@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
+import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -29,6 +30,16 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 
 		if (step.uses.uses.containsGitHubExpression()) {
 			reporting.report(InvalidExpressionUsage, step) {
+				"${it} contains a GitHub expression in the `uses` field."
+			}
+		}
+	}
+
+	override fun visitReusableWorkflowCallJob(reporting: Reporting, job: Job.ReusableWorkflowCallJob) {
+		super.visitReusableWorkflowCallJob(reporting, job)
+
+		if (job.uses.containsGitHubExpression()) {
+			reporting.report(InvalidExpressionUsage, job) {
 				"${it} contains a GitHub expression in the `uses` field."
 			}
 		}
