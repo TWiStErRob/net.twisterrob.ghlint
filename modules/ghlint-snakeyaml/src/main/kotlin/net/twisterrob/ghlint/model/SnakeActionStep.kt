@@ -5,9 +5,11 @@ import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 public sealed class SnakeActionStep protected constructor(
 ) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
@@ -24,8 +26,15 @@ public sealed class SnakeActionStep protected constructor(
 	override val `if`: String?
 		get() = node.getOptionalText("if")
 
+	override val envString: String?
+		get() = node.getOptional("env")?.run {
+			if (this is ScalarNode) this.text else null
+		}
+
 	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run { map.toTextMap() }
+		get() = node.getOptional("env")?.run {
+			if (this is MappingNode) map.toTextMap() else null
+		}
 
 	public class SnakeActionStepRun internal constructor(
 		override val parent: Action.Runs.CompositeRuns,

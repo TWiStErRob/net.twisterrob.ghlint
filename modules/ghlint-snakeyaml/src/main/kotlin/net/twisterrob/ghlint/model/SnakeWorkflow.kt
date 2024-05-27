@@ -5,9 +5,11 @@ import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.text
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
+import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 public class SnakeWorkflow internal constructor(
 	private val factory: SnakeComponentFactory,
@@ -22,8 +24,15 @@ public class SnakeWorkflow internal constructor(
 	override val name: String?
 		get() = node.getOptionalText("name")
 
+	override val envString: String?
+		get() = node.getOptional("env")?.run {
+			if (this is ScalarNode) this.text else null
+		}
+
 	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run { map.toTextMap() }
+		get() = node.getOptional("env")?.run {
+			if (this is MappingNode) map.toTextMap() else null
+		}
 
 	override val jobs: Map<String, Job>
 		get() = node.getRequired("jobs").map

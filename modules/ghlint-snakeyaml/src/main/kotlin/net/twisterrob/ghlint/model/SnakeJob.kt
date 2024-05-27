@@ -24,8 +24,15 @@ public sealed class SnakeJob protected constructor(
 	override val name: String?
 		get() = node.getOptionalText("name")
 
+	override val envString: String?
+		get() = node.getOptional("env")?.run {
+			if (this is ScalarNode) this.text else null
+		}
+
 	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run { map.toTextMap() }
+		get() = node.getOptional("env")?.run {
+			if (this is MappingNode) map.toTextMap() else null
+		}
 
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
