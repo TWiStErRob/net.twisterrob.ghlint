@@ -27,25 +27,23 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 	}
 
 	private fun <T> visitRunStep(reporting: Reporting, step: T) where T : Step.Run, T : Component {
-		if (step.run.usesGhCli()) {
-			if (!step.hasEnvVar(TOKEN_VAR)) {
-				when (step.hasEnvVar(ENTERPRISE_TOKEN_VAR) to step.hasEnvVar(ENTERPRISE_HOST_VAR)) {
-					false to false -> {
-						reporting.report(MissingGhToken, step) {
-							"${it} should see `${TOKEN_VAR}` environment variable."
-						}
+		if (step.run.usesGhCli() && !step.hasEnvVar(TOKEN_VAR)) {
+			when (step.hasEnvVar(ENTERPRISE_TOKEN_VAR) to step.hasEnvVar(ENTERPRISE_HOST_VAR)) {
+				false to false -> {
+					reporting.report(MissingGhToken, step) {
+						"${it} should see `${TOKEN_VAR}` environment variable."
 					}
+				}
 
-					true to false -> {
-						reporting.report(MissingGhHost, step) {
-							"${it} should see `${ENTERPRISE_HOST_VAR}` environment variable when using `${ENTERPRISE_TOKEN_VAR}`."
-						}
+				true to false -> {
+					reporting.report(MissingGhHost, step) {
+						"${it} should see `${ENTERPRISE_HOST_VAR}` environment variable when using `${ENTERPRISE_TOKEN_VAR}`."
 					}
+				}
 
-					false to true -> {
-						reporting.report(MissingGhToken, step) {
-							"${it} should see `${ENTERPRISE_TOKEN_VAR}` environment variable when using `${ENTERPRISE_HOST_VAR}`."
-						}
+				false to true -> {
+					reporting.report(MissingGhToken, step) {
+						"${it} should see `${ENTERPRISE_TOKEN_VAR}` environment variable when using `${ENTERPRISE_HOST_VAR}`."
 					}
 				}
 			}
