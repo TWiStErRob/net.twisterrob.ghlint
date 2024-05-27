@@ -39,19 +39,19 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 
 		val InvalidExpressionUsage = Issue(
 			id = "InvalidExpressionUsage",
-			title = "Expressions should not be used in uses field.",
+			title = "Step `uses` must not contain expressions.",
 			description = """
 				> GitHub Action Expressions can be used to programmatically access context variables in workflow files.
 				> -- [About expressions](https://docs.github.com/en/actions/learn-github-actions/expressions)
 				
-				However, they cannot be used within the uses field. 
+				However, they cannot be used within `steps[*].uses`.
 				GitHub will report an error: 
 				> The workflow is not valid. `.github/workflows/???.yml` (Line: ?, Col: ?):
 				> A template expression is not allowed in this context
 			""".trimIndent(),
 			compliant = listOf(
 				Example(
-					explanation = "GitHub Expression not used within the uses field.",
+					explanation = "GitHub Expression not used within `steps[*].uses`.",
 					content = """
 						on: push
 						jobs:
@@ -64,7 +64,7 @@ public class InvalidExpressionUsageRule : VisitorRule, ActionVisitor, WorkflowVi
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "GitHub Expression used within the uses field.",
+					explanation = "GitHub Expression used within `steps[*].uses`.",
 					content = """
 						on: push
 						jobs:
