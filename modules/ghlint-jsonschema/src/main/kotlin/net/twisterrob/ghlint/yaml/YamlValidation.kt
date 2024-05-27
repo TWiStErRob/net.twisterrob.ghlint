@@ -39,10 +39,12 @@ public object YamlValidation {
 				YamlValidationType.ACTION -> ACTION_SCHEMA_URL
 			}
 		)!!
-		return validator
+		val validationProblems = validator
 			.validate(uri, node)
 			.errors
 			.map { YamlValidationProblem(it.error, it.instanceLocation) }
+		val duplicationProblems = detectDuplicateKeys(node)
+		return validationProblems + duplicationProblems
 	}
 }
 
