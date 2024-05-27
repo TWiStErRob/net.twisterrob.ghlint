@@ -17,7 +17,7 @@ public class InvalidExpressionUsageRule : VisitorRule, WorkflowVisitor {
 
 		if (step.uses.uses.containsGitHubExpression()) {
 			reporting.report(InvalidExpression, step) {
-				"$it uses a GitHub expression in the uses field."
+				"${it} contains a GitHub expression in the `uses` field."
 			}
 		}
 	}
