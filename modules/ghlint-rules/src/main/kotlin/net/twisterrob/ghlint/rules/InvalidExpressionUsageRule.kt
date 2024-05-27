@@ -37,7 +37,6 @@ public class InvalidExpressionUsageRule : VisitorRule, WorkflowVisitor {
 			compliant = listOf(
 				Example(
 					explanation = "GitHub Expression not used within the uses field.",
-					path = "ci-build.yml",
 					content = """
 						on: push
 						jobs:
@@ -51,7 +50,6 @@ public class InvalidExpressionUsageRule : VisitorRule, WorkflowVisitor {
 			nonCompliant = listOf(
 				Example(
 					explanation = "GitHub Expression used within the uses field.",
-					path = "ci-build.yml",
 					content = """
 						on: push
 						jobs:
