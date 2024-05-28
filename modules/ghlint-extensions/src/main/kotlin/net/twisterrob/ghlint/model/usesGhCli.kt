@@ -7,6 +7,7 @@ private val GH_CLI_EMBEDDED = Regex("""\$\(\s*gh\s+""")
 public fun Step.usesGhCli(): Boolean =
 	this is Step.Run && this.usesGhCli()
 
+// TODO Properly parse shell scripts: https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/279
 public fun Step.Run.usesGhCli(): Boolean =
 	GH_CLI_START_OF_LINE in this.run
 			|| GH_CLI_EMBEDDED in this.run
