@@ -40,14 +40,15 @@ public sealed class SnakeRuns : HasSnakeNode<MappingNode> {
 		override val target: Node,
 	) : Action.Runs.CompositeRuns, SnakeRuns() {
 
-		override val steps: List<ActionStep>
-			get() = node.getRequired("steps").array.mapIndexed { index, node ->
+		override val steps: List<ActionStep> by lazy {
+			node.getRequired("steps").array.mapIndexed { index, node ->
 				factory.createActionStep(
 					parent = this,
 					index = index,
 					node = node,
 				)
 			}
+		}
 	}
 
 	public class SnakeDockerRuns(
