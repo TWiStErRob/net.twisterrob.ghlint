@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 
-internal fun load(
+public fun load(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
 ): File =
