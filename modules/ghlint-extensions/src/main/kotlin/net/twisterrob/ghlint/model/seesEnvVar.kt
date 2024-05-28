@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.model
 
+@Suppress("detekt.MaxChainedCallsOnSameLine") // Keep it simple.
 public fun Step.Run.seesEnvVar(name: String): Boolean =
 	when (this) {
 		is WorkflowStep.Run ->
