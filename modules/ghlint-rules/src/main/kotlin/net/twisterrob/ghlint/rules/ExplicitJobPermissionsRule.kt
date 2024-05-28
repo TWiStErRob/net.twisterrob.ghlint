@@ -11,7 +11,9 @@ import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 	// Note: Sadly, this is not possible for actions, because they don't declare permissions.
 
-	override val issues: List<Issue> = listOf(MissingJobPermissions, ExplicitJobPermissions)
+	override val issues: List<Issue> = listOf(
+			MissingJobPermissions, ExplicitJobPermissions, RedundantWorkflowPermissions
+	)
 
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
@@ -21,6 +23,21 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 		if (job.permissions == null && job.parent.permissions != null) {
 			reporting.report(ExplicitJobPermissions, job) { "${it} should have explicit permissions." }
 		}
+		if (job.permissions != null &&
+				job.parent.permissions != null &&
+				containsDuplicatePermissions(job.parent.permissions.orEmpty(), job.permissions.orEmpty())
+		) {
+			reporting.report(RedundantWorkflowPermissions, job) { "$it should have explicit permissions." }
+		}
+	}
+
+	private fun containsDuplicatePermissions(parent: Map<String, String>, job: Map<String, String>): Boolean {
+		for (entry in job.asIterable()) {
+			if (parent.containsKey(entry.key) && parent[entry.key] == entry.value) {
+				return true
+			}
+		}
+		return false
 	}
 
 	private companion object {
@@ -205,6 +222,61 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 					""".trimIndent(),
 				),
 			),
+		)
+
+		val RedundantWorkflowPermissions = Issue(
+			id = "RedundantWorkflowPermissions",
+			title = "Workflow has redundant permissions.",
+			description = """
+				There are redundant workflow-level permissions that have already been defined at the job-level.
+	            
+				Declaring permissions on the workflow level leads to elevated permissions for all jobs.
+				Even if the workflow has only one job, it is better to declare the permissions on the job-level,
+				this improves consistency, copy-paste-ability, and forms habits.
+	            
+				Move the permissions declaration from the workflow level to the job-level.
+	            
+				References:
+	            
+				* [Best practice in documentation](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token:~:text=The%20two,permissions%27%20scope.)
+					> The two workflow[s ...] show the permissions key being used at the job-level,
+					> as it is best practice to limit the permissions' scope.
+				* [Explanation of the above](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow)
+					> As a good security practice, you should always make sure that actions
+					> only have the minimum access they require by limiting the permissions granted to the GITHUB_TOKEN.
+			""".trimIndent(),
+				compliant = listOf(
+					Example(
+						explanation = "Permissions are explicitly declared on the job-level.",
+						content = """
+							on: push
+							jobs:
+							  example:
+		                        runs-on: ubuntu-latest
+		                        permissions:
+		                          contents: read
+		                        steps:
+		                          - run: echo "Example"
+						""".trimIndent(),
+						),
+				),
+				nonCompliant = listOf(
+					Example(
+						explanation = """Permissions are duplicated across workflow and job-level.""",
+						content = """
+							on: push
+							permissions:
+		                      contents: read
+							jobs:
+		                      example:
+		                        runs-on: ubuntu-latest
+		                        permissions:
+		                          contents: read
+		                        steps:
+		                          - run: echo "Example"
+						""".trimIndent()
+					)
+				)
 		)
 	}
 }
