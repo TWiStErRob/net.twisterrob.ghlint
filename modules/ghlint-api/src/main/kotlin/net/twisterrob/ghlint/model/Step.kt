@@ -25,6 +25,7 @@ public sealed interface Step {
 
 	public interface Parent {
 
+		public val parent: Component
 		public val steps: List<Step>
 	}
 
