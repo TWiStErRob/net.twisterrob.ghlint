@@ -9,7 +9,7 @@ package net.twisterrob.ghlint.model
  */
 public sealed interface ActionStep : Step, Component {
 
-	public val parent: Action.Runs.CompositeRuns
+	public override val parent: Action.Runs.CompositeRuns
 
 	public companion object;
 

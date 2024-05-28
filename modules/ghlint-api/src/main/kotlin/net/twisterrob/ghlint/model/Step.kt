@@ -9,6 +9,7 @@ package net.twisterrob.ghlint.model
  */
 public sealed interface Step {
 
+	public val parent: Parent
 	public val index: Index
 	public val name: String?
 	public val id: String?
@@ -21,6 +22,11 @@ public sealed interface Step {
 
 	@JvmInline
 	public value class Index(public val value: Int)
+
+	public interface Parent {
+
+		public val steps: List<Step>
+	}
 
 	// TODO find a way to remove this from the API.
 	public interface BaseStep : Step {
@@ -65,3 +71,9 @@ public sealed interface Step {
 		public val ref: String
 	}
 }
+
+public val Step.stepsBefore: List<Step>
+	get() = parent.steps.subList(0, index.value)
+
+public val Step.stepsAfter: List<Step>
+	get() = parent.steps.subList(index.value + 1, parent.steps.size)
