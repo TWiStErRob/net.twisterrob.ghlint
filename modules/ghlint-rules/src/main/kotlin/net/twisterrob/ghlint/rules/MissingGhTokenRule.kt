@@ -2,10 +2,10 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.ActionStep
 import net.twisterrob.ghlint.model.Component
-import net.twisterrob.ghlint.model.Env
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.WorkflowStep
-import net.twisterrob.ghlint.model.map
+import net.twisterrob.ghlint.model.seesEnvVar
+import net.twisterrob.ghlint.model.usesGhCli
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
@@ -20,31 +20,31 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 	override fun visitWorkflowRunStep(reporting: Reporting, step: WorkflowStep.Run) {
 		super.visitWorkflowRunStep(reporting, step)
-		visitRunStep(reporting, step)
+		visitRunStep(reporting, step, step)
 	}
 
 	override fun visitActionRunStep(reporting: Reporting, step: ActionStep.Run) {
 		super.visitActionRunStep(reporting, step)
-		visitRunStep(reporting, step)
+		visitRunStep(reporting, step, step)
 	}
 
-	private fun <T> visitRunStep(reporting: Reporting, step: T) where T : Step.Run, T : Component {
-		if (step.run.usesGhCli() && !step.hasEnvVar(TOKEN_VAR)) {
-			when (step.hasEnvVar(ENTERPRISE_TOKEN_VAR) to step.hasEnvVar(ENTERPRISE_HOST_VAR)) {
+	private fun visitRunStep(reporting: Reporting, step: Step.Run, target: Component) {
+		if (step.usesGhCli() && !step.seesEnvVar(TOKEN_VAR)) {
+			when (step.seesEnvVar(ENTERPRISE_TOKEN_VAR) to step.seesEnvVar(ENTERPRISE_HOST_VAR)) {
 				false to false -> {
-					reporting.report(MissingGhToken, step) {
+					reporting.report(MissingGhToken, target) {
 						"${it} should see `${TOKEN_VAR}` environment variable."
 					}
 				}
 
 				true to false -> {
-					reporting.report(MissingGhHost, step) {
+					reporting.report(MissingGhHost, target) {
 						"${it} should see `${ENTERPRISE_HOST_VAR}` environment variable when using `${ENTERPRISE_TOKEN_VAR}`."
 					}
 				}
 
 				false to true -> {
-					reporting.report(MissingGhToken, step) {
+					reporting.report(MissingGhToken, target) {
 						"${it} should see `${ENTERPRISE_TOKEN_VAR}` environment variable when using `${ENTERPRISE_HOST_VAR}`."
 					}
 				}
@@ -57,32 +57,11 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 		// TODO check if referenced composite action uses gh cli without GH_TOKEN
 	}
 
-	private fun String.usesGhCli(): Boolean =
-		GH_CLI_START_OF_LINE in this || GH_CLI_EMBEDDED in this || GH_CLI_PIPE_CONDITIONAL in this
-
-	private fun Step.Run.hasEnvVar(s: String): Boolean =
-		when (this) {
-			is WorkflowStep.Run ->
-				this.env.hasVariable(s)
-						|| this.parent.env.hasVariable(s)
-						|| this.parent.parent.env.hasVariable(s)
-
-			is ActionStep.Run ->
-				this.env.hasVariable(s)
-		}
-
-	private fun Env?.hasVariable(varName: String): Boolean =
-		this.map.containsKey(varName)
-
 	private companion object {
 
 		private const val TOKEN_VAR = "GH_TOKEN"
 		private const val ENTERPRISE_TOKEN_VAR = "GH_ENTERPRISE_TOKEN"
 		private const val ENTERPRISE_HOST_VAR = "GH_HOST"
-
-		private val GH_CLI_START_OF_LINE = Regex("""^\s*gh\s+""", RegexOption.MULTILINE)
-		private val GH_CLI_PIPE_CONDITIONAL = Regex("""(&&|\|\||\|)\s*gh\s+""")
-		private val GH_CLI_EMBEDDED = Regex("""\$\(\s*gh\s+""")
 
 		val MissingGhToken = Issue(
 			id = "MissingGhToken",
@@ -133,7 +112,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_TOKEN: ${'$'}{{ github.token }}
 					""".trimIndent(),
@@ -147,7 +126,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 						          GH_HOST: github.example.com
@@ -166,8 +145,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						runs:
 						  using: composite
 						  steps:
-						    - uses: actions/checkout@v4
-						    - run: gh pr view
+						    - run: gh pr list
 						      shell: bash
 						      env:
 						        GH_TOKEN: ${'$'}{{ inputs.token }}
@@ -191,7 +169,8 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						  example:
 						    runs-on: ubuntu-latest
 						    steps:
-						      - run: gh pr view
+						      - uses: actions/checkout@v4
+						      - run: gh pr list
 					""".trimIndent(),
 				),
 			),
@@ -229,7 +208,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 						          GH_HOST: github.example.com
@@ -246,7 +225,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 					""".trimIndent(),

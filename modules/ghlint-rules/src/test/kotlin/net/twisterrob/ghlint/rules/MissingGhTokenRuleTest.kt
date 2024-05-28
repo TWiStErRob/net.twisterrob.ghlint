@@ -22,7 +22,8 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 				        env:
 				          GH_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent()
@@ -39,7 +40,8 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 				        env:
 				          GH_HOST: github.example.com
 				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
@@ -57,7 +59,8 @@ class MissingGhTokenRuleTest {
 				runs:
 				  using: composite
 				  steps:
-				    - run: gh pr view
+				    - uses: actions/checkout@v4
+				    - run: gh pr list
 				      shell: bash
 				      env:
 				        GH_TOKEN: ${'$'}{{ github.token }}
@@ -76,11 +79,12 @@ class MissingGhTokenRuleTest {
 				runs:
 				  using: composite
 				  steps:
-				    - run: gh pr view
+				    - uses: actions/checkout@v4
+				    - run: gh pr list
 				      shell: bash
 				      env:
-				          GH_HOST: github.example.com
-				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
+				        GH_HOST: github.example.com
+				        GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent(),
 			fileName = "action.yml",
 		)
@@ -98,7 +102,8 @@ class MissingGhTokenRuleTest {
 				    env:
 				      GH_TOKEN: ${'$'}{{ github.token }}
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 			""".trimIndent()
 		)
 
@@ -116,7 +121,8 @@ class MissingGhTokenRuleTest {
 				      GH_HOST: github.example.com
 				      GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 			""".trimIndent()
 		)
 
@@ -133,7 +139,8 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 			""".trimIndent()
 		)
 
@@ -151,7 +158,8 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 			""".trimIndent()
 		)
 
@@ -170,7 +178,8 @@ class MissingGhTokenRuleTest {
 				      GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 				    runs-on: test
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 			""".trimIndent()
 		)
 
@@ -185,7 +194,8 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				      - run: gh pr view
+				      - uses: actions/checkout@v4
+				      - run: gh pr list
 				        env:
 				          GH_TOKEN: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent()
@@ -202,7 +212,8 @@ class MissingGhTokenRuleTest {
 				runs:
 				  using: composite
 				  steps:
-				    - run: gh pr view
+				    - uses: actions/checkout@v4
+				    - run: gh pr list
 				      shell: bash
 				      env:
 				        GH_TOKEN: ${'$'}{{ secrets.GITHUB_TOKEN }}
@@ -223,13 +234,14 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
+				      - uses: actions/checkout@v4
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 			""".trimIndent()
 		)
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
-			"Step[#0] in Job[test] should see `GH_TOKEN` environment variable."
+			"Step[#1] in Job[test] should see `GH_TOKEN` environment variable."
 		)
 	}
 
@@ -243,6 +255,7 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
+				      - uses: actions/checkout@v4
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 				        env:
 				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
@@ -251,7 +264,7 @@ class MissingGhTokenRuleTest {
 
 		results shouldHave singleFinding(
 			"MissingGhHost",
-			"Step[#0] in Job[test] should see `GH_HOST` environment variable when using `GH_ENTERPRISE_TOKEN`."
+			"Step[#1] in Job[test] should see `GH_HOST` environment variable when using `GH_ENTERPRISE_TOKEN`."
 		)
 	}
 
@@ -265,6 +278,7 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
+				      - uses: actions/checkout@v4
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 				        env:
 				          GH_HOST: github.example.com
@@ -273,7 +287,7 @@ class MissingGhTokenRuleTest {
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
-			"Step[#0] in Job[test] should see `GH_ENTERPRISE_TOKEN` environment variable when using `GH_HOST`."
+			"Step[#1] in Job[test] should see `GH_ENTERPRISE_TOKEN` environment variable when using `GH_HOST`."
 		)
 	}
 
@@ -287,6 +301,7 @@ class MissingGhTokenRuleTest {
 				runs:
 				  using: composite
 				  steps:
+				    - uses: actions/checkout@v4
 				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
 				      shell: bash
 			""".trimIndent(),
@@ -295,7 +310,7 @@ class MissingGhTokenRuleTest {
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
-			"""Step[#0] in Action["Test"] should see `GH_TOKEN` environment variable."""
+			"""Step[#1] in Action["Test"] should see `GH_TOKEN` environment variable."""
 		)
 	}
 
@@ -309,6 +324,7 @@ class MissingGhTokenRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
+				      - uses: actions/checkout@v4
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 			""".trimIndent()
 		)
@@ -326,6 +342,7 @@ class MissingGhTokenRuleTest {
 				runs:
 				  using: composite
 				  steps:
+				    - uses: actions/checkout@v4
 				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
 				      shell: bash
 			""".trimIndent(),
@@ -359,17 +376,17 @@ class MissingGhTokenRuleTest {
 		@JvmStatic
 		val invalidGhCommands = listOf(
 			"""
-				# gh pr view
+				# gh pr list
 			""".trimIndent(),
 		)
 
 		@JvmStatic
 		val validGhCommands = listOf(
 			"""
-				gh pr view
+				gh pr list
 			""".trimIndent(),
 			"""
-				result = $(gh pr view)
+				result = $(gh pr list)
 			""".trimIndent(),
 			"""
 				echo "foo" | gh pr view
@@ -381,11 +398,11 @@ class MissingGhTokenRuleTest {
 				git status || gh pr create
 			""".trimIndent(),
 			"""
-				result = $( gh pr view )
+				result = $( gh pr list )
 			""".trimIndent(),
 			"""
 				result = $(
-				    gh pr view
+				    gh pr list
 				)
 			""".trimIndent(),
 			"""

@@ -17,6 +17,7 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	IdNamingRule::class,
 	ImplicitStatusCheckRule::class,
 	JobDependenciesRule::class,
+	MissingGhRepoRule::class,
 	MissingGhTokenRule::class,
 	MissingJobTimeoutRule::class,
 	MissingNameRule::class,
