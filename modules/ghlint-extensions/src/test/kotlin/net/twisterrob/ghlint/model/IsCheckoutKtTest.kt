@@ -58,7 +58,7 @@ class IsCheckoutKtTest {
 				  test:
 				    runs-on: test
 				    steps:
-				    - run: git checkout
+				      - run: git checkout
 			""".trimIndent(),
 		)
 
