@@ -133,7 +133,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_TOKEN: ${'$'}{{ github.token }}
 					""".trimIndent(),
@@ -147,7 +147,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 						          GH_HOST: github.example.com
@@ -166,8 +166,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						runs:
 						  using: composite
 						  steps:
-						    - uses: actions/checkout@v4
-						    - run: gh pr view
+						    - run: gh pr list
 						      shell: bash
 						      env:
 						        GH_TOKEN: ${'$'}{{ inputs.token }}
@@ -191,7 +190,8 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						  example:
 						    runs-on: ubuntu-latest
 						    steps:
-						      - run: gh pr view
+						      - uses: actions/checkout@v4
+						      - run: gh pr list
 					""".trimIndent(),
 				),
 			),
@@ -229,7 +229,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 						          GH_HOST: github.example.com
@@ -246,7 +246,7 @@ public class MissingGhTokenRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    runs-on: ubuntu-latest
 						    steps:
 						      - uses: actions/checkout@v4
-						      - run: gh pr view
+						      - run: gh pr list
 						        env:
 						          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 					""".trimIndent(),
