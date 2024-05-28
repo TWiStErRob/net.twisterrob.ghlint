@@ -228,7 +228,7 @@ class ExplicitJobPermissionsRuleTest {
 			)
 		}
 
-		@Test fun `passes when permissions are on the job level for normal job`() {
+		@Test fun `passes when permissions are on the job-level for normal job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					on: push
@@ -245,7 +245,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave noFindings()
 		}
 
-		@Test fun `passes when permissions are on the job level for reusable job`() {
+		@Test fun `passes when permissions are on the job-level for reusable job`() {
 			val results = check<ExplicitJobPermissionsRule>(
 				"""
 					on: push
@@ -258,6 +258,30 @@ class ExplicitJobPermissionsRuleTest {
 			)
 
 			results shouldHave noFindings()
+		}
+
+		@Test fun `should report when redundant workflow level permissions and job-level permissions`() {
+			val results = check<ExplicitJobPermissionsRule>(
+				"""
+					on: push
+					permissions:
+					  pull-requests: write
+					  contents: write
+					jobs:
+					  test:
+					    runs-on: ubuntu-latest
+					    permissions:
+					      pull-requests: write
+					      contents: write
+					    steps:
+					      - uses: actions/checkout@v4
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"ExplicitJobPermissions",
+				"Job[test] has redundant permissions on the workflow."
+			)
 		}
 	}
 }
