@@ -1,7 +1,7 @@
 package net.twisterrob.ghlint.model
 
 public val Step.stepsBefore: List<Step>
-	get() = parent.steps.subList(0, index.value)
+	get() = this.parent.steps.subList(0, index.value)
 
 public val Step.stepsAfter: List<Step>
-	get() = parent.steps.subList(index.value + 1, parent.steps.size)
+	get() = this.parent.steps.let { it.subList(index.value + 1, it.size) }
