@@ -1,64 +1,73 @@
 package net.twisterrob.ghlint.model
 
+import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.testing.load
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 class IsCheckoutKtTest {
 
+	private fun loadFirstStep(@Language("yaml") yaml: String, fileName: String = "test.yml"): Step {
+		val file = load(yaml, fileName)
+		return when (val content = file.content) {
+			is Workflow -> (content.jobs.values.single() as Job.NormalJob).steps.single()
+			is Action -> (content.runs as Action.Runs.CompositeRuns).steps.single()
+			is InvalidContent -> error("Invalid content: ${content.error}")
+		}
+	}
+
 	@MethodSource("getCheckoutActions")
 	@ParameterizedTest fun `standard checkout actions in workflow`(action: String) {
-		val file = load(
+		val step = loadFirstStep(
 			"""
 				on: push
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    steps:
 				      - uses: ${action}
 			""".trimIndent(),
 		)
 
-		assertTrue(file.firstStep.isCheckout)
+		step.isCheckout shouldBe true
 	}
 
 	@MethodSource("getNonCheckoutActions")
 	@ParameterizedTest fun `non-checkout actions in workflow`(action: String) {
-		val file = load(
+		val step = loadFirstStep(
 			"""
 				on: push
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    steps:
 				      - uses: ${action}
 			""".trimIndent(),
 		)
 
-		assertFalse(file.firstStep.isCheckout)
+		step.isCheckout shouldBe false
 	}
 
 	@Test fun `runs step in workflow`() {
-		val file = load(
+		val step = loadFirstStep(
 			"""
 				on: push
 				jobs:
 				  test:
-				    runs-on: ubuntu-latest
+				    runs-on: test
 				    steps:
 				    - run: git checkout
 			""".trimIndent(),
 		)
 
-		assertFalse(file.firstStep.isCheckout)
+		step.isCheckout shouldBe false
 	}
 
 	@MethodSource("getCheckoutActions")
 	@ParameterizedTest fun `standard checkout actions in action`(action: String) {
-		val file = load(
+		val step = loadFirstStep(
 			"""
 				name: Test
 				description: Test
@@ -70,12 +79,12 @@ class IsCheckoutKtTest {
 			fileName = "action.yml",
 		)
 
-		assertTrue(file.firstStep.isCheckout)
+		step.isCheckout shouldBe true
 	}
 
 	@MethodSource("getNonCheckoutActions")
 	@ParameterizedTest fun `non-checkout actions in action`(action: String) {
-		val file = load(
+		val step = loadFirstStep(
 			"""
 				name: Test
 				description: Test
@@ -87,11 +96,11 @@ class IsCheckoutKtTest {
 			fileName = "action.yml",
 		)
 
-		assertFalse(file.firstStep.isCheckout)
+		step.isCheckout shouldBe false
 	}
 
 	@Test fun `runs step in action`() {
-		val file = load(
+		val step = loadFirstStep(
 			"""
 				name: Test
 				description: Test
@@ -104,7 +113,7 @@ class IsCheckoutKtTest {
 			fileName = "action.yml",
 		)
 
-		assertFalse(file.firstStep.isCheckout)
+		step.isCheckout shouldBe false
 	}
 
 	companion object {
