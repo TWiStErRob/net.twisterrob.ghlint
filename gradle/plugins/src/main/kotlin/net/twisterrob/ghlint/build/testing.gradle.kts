@@ -28,6 +28,9 @@ testing.suites.withType<JvmTestSuite>().configureEach {
 					.use { Properties().apply { load(it) } }
 					.mapKeys { (k, _) -> k.toString() }
 			)
+			if (javaVersion.isCompatibleWith(JavaVersion.VERSION_21)) {
+				jvmArgs("-XX:+EnableDynamicAgentLoading")
+			}
 		}
 	}
 }
