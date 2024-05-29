@@ -13,7 +13,7 @@ Recommended plugins:
 
 ## Local development
 
-It is recommended to run `gradlew build` before `git push`, as CI will do the same.
+It is recommended to run `gradlew build` before `git push`, as CI will do the same (and a bit more).
 
 ## Code style
 
