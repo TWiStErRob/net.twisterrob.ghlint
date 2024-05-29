@@ -112,27 +112,12 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 						      - run: echo "Example"
 					""".trimIndent(),
 				),
-				Example(
-						explanation = "Redundant permissions declared on workflow-level as well as job-level.",
-						content = """
-							on: push
-							permissions:
-							  contents: read
-							jobs:
-							  example:
-							    permissions:
-							      contents: read
-							    runs-on: ubuntu-latest
-							    steps:
-							      - run: echo "Example"
-						""".trimIndent(),
-				),
 			),
 		)
 
 		val ExplicitJobPermissions = Issue(
 			id = "ExplicitJobPermissions",
-			title = "Permissions should be declared on the job level.",
+			title = "Permissions should be declared on the job level only.",
 			description = """
 				Declaring permissions on the workflow level leads to elevated permissions for all jobs.
 				Even if the workflow has only one job, it is better to declare the permissions on the job level,
@@ -217,6 +202,32 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 						  contents: read
 						jobs:
 						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - run: echo "Example"
+					""".trimIndent(),
+				),
+				Example(
+					explanation = """
+						Redundant permissions declared on workflow-level.
+						
+						When declaring permissions on the workflow-level as well as the job-level,
+						the job-level restricts the workflow-level permissions.
+						
+						However, it is not necessary to declare permissions on the workflow-level,
+						this can help reduce duplication and maintenance overhead.
+						
+						See [`MissingJobPermissions`](MissingJobPermissions.md),
+						which help prevent accidental missing permissions.
+					""".trimIndent(),
+					content = """
+						on: push
+						permissions:
+						  contents: read
+						jobs:
+						  example:
+						    permissions:
+						      contents: read
 						    runs-on: ubuntu-latest
 						    steps:
 						      - run: echo "Example"
