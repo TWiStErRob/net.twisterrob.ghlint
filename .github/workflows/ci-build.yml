@@ -191,6 +191,22 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: temurin
 
+      - name: "Install shellcheck."
+        env:
+          # Use https://github.com/koalaman/shellcheck
+          SHELLCHECK_VERSION: '0.10.0'
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl --silent --show-error --location --remote-name \
+              "https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION?}/shellcheck-v${SHELLCHECK_VERSION?}.linux.x86_64.tar.xz"
+          tar --extract --xz --verbose --file="shellcheck-v${SHELLCHECK_VERSION?}.linux.x86_64.tar.xz"
+          "./shellcheck-v${SHELLCHECK_VERSION}/shellcheck" --version
+          
+          echo "${RUNNER_TEMP}/shellcheck-v${SHELLCHECK_VERSION}" >> "${GITHUB_PATH}"
+
+      - name: "Sanity check shellcheck."
+        run: shellcheck --version
+
       - name: "Run validator help."
         run: >
           java -jar "${RUNNER_TEMP}/ghlint.jar"
