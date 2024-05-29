@@ -21,6 +21,9 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 		if (job.permissions == null && job.parent.permissions != null) {
 			reporting.report(ExplicitJobPermissions, job) { "${it} should have explicit permissions." }
 		}
+		if (job.permissions != null && job.parent.permissions != null) {
+			reporting.report(ExplicitJobPermissions, job.parent) { "${it} has redundant permissions." }
+		}
 	}
 
 	private companion object {
@@ -108,6 +111,21 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 						    steps:
 						      - run: echo "Example"
 					""".trimIndent(),
+				),
+				Example(
+						explanation = "Redundant permissions declared on workflow-level as well as job-level.",
+						content = """
+							on: push
+							permissions:
+							  contents: read
+							jobs:
+							  example:
+							    permissions:
+							      contents: read
+							    runs-on: ubuntu-latest
+							    steps:
+							      - run: echo "Example"
+						""".trimIndent(),
 				),
 			),
 		)
