@@ -28,6 +28,10 @@ testing.suites.withType<JvmTestSuite>().configureEach {
 					.use { Properties().apply { load(it) } }
 					.mapKeys { (k, _) -> k.toString() }
 			)
+			if (javaVersion.isCompatibleWith(JavaVersion.VERSION_21)) {
+				// https://github.com/mockito/mockito/issues/3037#issuecomment-1588199599
+				jvmArgs("-XX:+EnableDynamicAgentLoading")
+			}
 		}
 	}
 }

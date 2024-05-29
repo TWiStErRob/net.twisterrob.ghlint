@@ -9,7 +9,7 @@ package net.twisterrob.ghlint.model
  */
 public sealed interface WorkflowStep : Step, Component {
 
-	public val parent: Job.NormalJob
+	public override val parent: Job.NormalJob
 
 	public companion object;
 

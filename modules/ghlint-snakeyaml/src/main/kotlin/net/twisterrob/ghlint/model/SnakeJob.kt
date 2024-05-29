@@ -50,14 +50,15 @@ public sealed class SnakeJob protected constructor(
 		override val target: Node,
 	) : Job.NormalJob, SnakeJob(factory) {
 
-		override val steps: List<WorkflowStep>
-			get() = node.getRequired("steps").array.mapIndexed { index, node ->
+		override val steps: List<WorkflowStep> by lazy {
+			node.getRequired("steps").array.mapIndexed { index, node ->
 				factory.createStep(
 					parent = this,
 					index = index,
 					node = node,
 				)
 			}
+		}
 
 		override val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { factory.createDefaults(it) }

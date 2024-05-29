@@ -20,9 +20,9 @@ public sealed interface Job : Component {
 	// TODO find a way to remove this from the API.
 	public interface BaseJob : Job
 
-	public interface NormalJob : BaseJob {
+	public interface NormalJob : BaseJob, Step.Parent {
 
-		public val steps: List<WorkflowStep>
+		public override val steps: List<WorkflowStep>
 		public val defaults: Defaults?
 		public val timeoutMinutes: String?
 

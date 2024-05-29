@@ -37,9 +37,9 @@ public interface Action : Component, Content {
 
 		public val parent: Action
 
-		public interface CompositeRuns : Runs {
+		public interface CompositeRuns : Runs, Step.Parent {
 
-			public val steps: List<ActionStep>
+			public override val steps: List<ActionStep>
 		}
 
 		public interface JavascriptRuns : Runs {
