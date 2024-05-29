@@ -105,6 +105,7 @@ class GHLintTest {
 			Received the following files for analysis against JSON-schema and rules:
 			 * ${test.absolute()}
 			Analyzing ${test.absolute()}... found 0 findings in ${timing}.
+			Total: 0 findings in ${timing}.
 			There are 0 findings.
 			Exiting with code 0.
 			
@@ -145,6 +146,7 @@ class GHLintTest {
 			Analyzing ${test2.absolute()}... found 2 findings in ${timing}.
 			Analyzing ${test3.absolute()}... found 0 findings in ${timing}.
 			Analyzing ${test4.absolute()}... found 2 findings in ${timing}.
+			Total: 4 findings in ${timing}.
 			There are 4 findings.
 			Exiting with code 1.
 			

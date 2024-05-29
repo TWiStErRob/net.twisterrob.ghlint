@@ -4,6 +4,7 @@ import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.ruleset.RuleSet
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlin.time.measureTimedValue
 import kotlin.time.toDuration
@@ -12,7 +13,7 @@ public class Analyzer {
 
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	public fun analyze(files: List<File>, ruleSets: List<RuleSet>, verbose: Boolean): List<Finding> {
-		val findings = files.flatMap { file ->
+		val timedFindings = files.map { file ->
 			if (verbose) {
 				print("Analyzing ${file.location.path}...")
 			}
@@ -26,9 +27,14 @@ public class Analyzer {
 			}
 			if (verbose) {
 				val timing = fileFindings.duration.roundToMilliseconds()
-				println(" found ${fileFindings.value.size} findings in $timing.")
+				println(" found ${fileFindings.value.size} findings in ${timing}.")
 			}
-			fileFindings.value
+			fileFindings
+		}
+		val findings = timedFindings.flatMap { it.value }
+		if (verbose) {
+			val totalTiming = timedFindings.sumOf { it.duration.inWholeMilliseconds }.milliseconds
+			println("Total: ${findings.size} findings in ${totalTiming}.")
 		}
 		return findings
 	}
