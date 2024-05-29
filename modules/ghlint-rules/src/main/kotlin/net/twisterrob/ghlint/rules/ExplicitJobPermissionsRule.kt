@@ -21,8 +21,7 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 		if (job.permissions == null && job.parent.permissions != null) {
 			reporting.report(ExplicitJobPermissions, job) { "${it} should have explicit permissions." }
 		}
-		if (job.permissions != null && job.parent.permissions != null
-		) {
+		if (job.permissions != null && job.parent.permissions != null) {
 			reporting.report(ExplicitJobPermissions, job.parent) { "${it} has redundant permissions." }
 		}
 	}
