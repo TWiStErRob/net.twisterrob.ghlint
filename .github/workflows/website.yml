@@ -54,6 +54,7 @@ jobs:
           VERBOSE: ${{ env.ACTIONS_STEP_DEBUG && ' --verbose' || '' }}
         working-directory: website
         run: |
+          # shellcheck disable=SC2086 # We are using word splitting intentionally.
           mkdocs build${VERBOSE} --clean --strict
 
       - name: "Upload 'github-pages' artifact."
