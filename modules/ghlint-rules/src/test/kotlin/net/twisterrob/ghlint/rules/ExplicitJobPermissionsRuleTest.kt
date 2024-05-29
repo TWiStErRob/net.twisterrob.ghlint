@@ -279,8 +279,8 @@ class ExplicitJobPermissionsRuleTest {
 			)
 
 			results shouldHave singleFinding(
-				"RedundantWorkflowPermissions",
-				"Job[test] should have explicit permissions."
+				"ExplicitJobPermissions",
+				"Workflow[test] has redundant permissions."
 			)
 		}
 	}
