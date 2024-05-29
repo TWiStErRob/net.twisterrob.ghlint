@@ -6,9 +6,9 @@ IntelliJ IDEA Community / Ultimate. (Please report any issues with Community as 
 
 Recommended plugins:
 
-* detekt (config file: [config/detekt/detekt.yml](../config/detekt/detekt.yml))
+* [detekt](https://plugins.jetbrains.com/plugin/10761-detekt) (config file: [config/detekt/detekt.yml](../config/detekt/detekt.yml))
   For a faster feedback loop.
-* Markdown
+* [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown)
   Syntax highlight of .md files, and rule descriptions.
 
 ## Local development
@@ -26,4 +26,4 @@ Notable things:
   * Inspection profile specific to the project
 
   With these, it is recommended to write code without any warnings.
-  Use _menu > Code > Reformat Code_ when editing files, or turn on _Commit Checks > Reformat Code_ in the commit dialog.
+  Use menu _Code > Reformat Code_ when editing files, or turn on _Commit Checks > Reformat Code_ in the commit dialog.
