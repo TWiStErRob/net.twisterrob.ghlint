@@ -1,5 +1,7 @@
 # GitHub Actions validator
 
+Test
+
 This is a CLI utility to **semantically** validate GitHub Actions workflows files.
 
 ## Why?
