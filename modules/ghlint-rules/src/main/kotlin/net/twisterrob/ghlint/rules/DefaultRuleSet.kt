@@ -27,4 +27,5 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	RedundantShellRule::class,
 	SafeEnvironmentFileRedirectRule::class,
 	ScriptInjectionRule::class,
+	ShellCheckRule::class,
 )
