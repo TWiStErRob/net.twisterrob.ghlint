@@ -283,5 +283,25 @@ class ExplicitJobPermissionsRuleTest {
 				"Workflow[test] has redundant permissions."
 			)
 		}
+
+		@Test fun `should report when missing a known required permission for checkout action`() {
+			val results = check<ExplicitJobPermissionsRule>(
+					"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: ubuntu-latest
+					    permissions:
+					      pull-requests: write
+					    steps:
+					      - uses: actions/checkout@v4
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/checkout@v4] in Job[test] requires READ permission for actions/checkout to work."
+			)
+		}
 	}
 }
