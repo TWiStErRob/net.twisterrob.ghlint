@@ -15,7 +15,7 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 	// Note: Sadly, this is not possible for actions, because they don't declare permissions.
 
 	override val issues: List<Issue> = listOf(
-			MissingJobPermissions, ExplicitJobPermissions, MissingRequiredActionPermissions
+		MissingJobPermissions, ExplicitJobPermissions, MissingRequiredActionPermissions
 	)
 
 	override fun visitJob(reporting: Reporting, job: Job) {
@@ -34,7 +34,10 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
-		KnownActionPermissions[step.uses.action]?.toSet()?.let { expectedPermissions ->
+		val knownPermissions = KnownActionPermissions[step.uses.action]
+
+		knownPermissions?.let {
+			val expectedPermissions = it.toSet()
 			val definedPermissions = step.parent.permissions?.toSet() ?: emptySet()
 
 			val remaining = expectedPermissions.minus(definedPermissions)
