@@ -8,7 +8,6 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeIn
-import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
 import org.intellij.lang.annotations.Language
@@ -34,14 +33,13 @@ public inline fun <reified T : Rule> checkUnsafe(
 	fileName: String = "test.yml",
 ): List<Finding> {
 	val rule = createRule<T>()
-	return rule.check(yaml, fileName, validate = false)
+	return rule.checkUnsafe(yaml, fileName)
 }
 
 /**
  * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
  * Additional validation is performed to ensure correct syntax and internal consistency.
  *
- * Some of the internal validation can be turned off via the [validate] flag.
  * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
  *
  * WARNING: This method is not recommended to be used directly,
@@ -53,17 +51,34 @@ public inline fun <reified T : Rule> checkUnsafe(
 public fun Rule.check(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
-	validate: Boolean = true,
+): List<Finding> = check(yaml, fileName, validate = true)
+
+/**
+ * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
+ * It's unsafe because it performs no validation to ensure correct syntax and internal consistency.
+ *
+ * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
+ *
+ * WARNING: This method is not recommended to be used directly,
+ * use [check]`<Rule>()` or [checkUnsafe]`<Rule>()` wherever possible.
+ *
+ * @see check
+ * @see checkUnsafe
+ */
+public fun Rule.checkUnsafe(
+	@Language("yaml") yaml: String,
+	fileName: String = "test.yml",
+): List<Finding> = check(yaml, fileName, validate = false)
+
+private fun Rule.check(
+	yaml: String,
+	fileName: String,
+	validate: Boolean,
 ): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	if (validate) {
-		val validation = validate(yaml, fileName)
-		@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-		if (isDebugEnabled) validation.forEach { println(it.testString()) }
-		validation shouldHave noFindings()
-	}
-	val findings = this.check(load(yaml, fileName))
+	val file = if (validate) load(yaml, fileName) else loadUnsafe(yaml, fileName)
+	val findings = this.check(file)
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)
