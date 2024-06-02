@@ -8,7 +8,6 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeIn
-import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
 import org.intellij.lang.annotations.Language
@@ -57,13 +56,7 @@ public fun Rule.check(
 ): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	if (validate) {
-		val validation = validate(yaml, fileName)
-		@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-		if (isDebugEnabled) validation.forEach { println(it.testString()) }
-		validation shouldHave noFindings()
-	}
-	val findings = this.check(load(yaml, fileName))
+	val findings = this.check(load(yaml, fileName, validate))
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)

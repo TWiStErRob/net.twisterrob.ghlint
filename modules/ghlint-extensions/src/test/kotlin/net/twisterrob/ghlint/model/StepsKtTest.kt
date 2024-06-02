@@ -126,6 +126,7 @@ class StepsKtTest {
 				    - uses: actions/checkout@v4
 				    - uses: gradle/actions/setup-gradle@v3
 				    - run: gradlew build
+				      shell: bash
 				    - uses: actions/upload-artifact@v4
 			""".trimIndent(),
 			fileName = "action.yml",
