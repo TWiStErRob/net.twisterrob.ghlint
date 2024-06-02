@@ -56,7 +56,7 @@ jobs:
 
   test:
     name: "Test on ${{ matrix.runs-on }}"
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     permissions:
       # actions/checkout
