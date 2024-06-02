@@ -20,4 +20,24 @@ public interface Permissions {
 	public val statuses: Access
 
 	public fun asMap(): Map<String, String>
+
+	@Suppress("detekt.CyclomaticComplexMethod")
+	public fun accessOf(permission: Permission) : Access {
+		return when (permission) {
+			Permission.ACTIONS -> actions
+			Permission.ATTESTATIONS -> attestations
+			Permission.CHECKS -> checks
+			Permission.CONTENTS -> contents
+			Permission.DEPLOYMENTS -> deployments
+			Permission.ID_TOKEN -> idToken
+			Permission.ISSUES -> issues
+			Permission.METADATA -> metadata
+			Permission.PACKAGES -> packages
+			Permission.PAGES -> pages
+			Permission.PULL_REQUESTS -> pullRequests
+			Permission.REPOSITORY_PROJECTS -> repositoryProjects
+			Permission.SECURITY_EVENTS -> securityEvents
+			Permission.STATUSES -> statuses
+		}
+	}
 }
