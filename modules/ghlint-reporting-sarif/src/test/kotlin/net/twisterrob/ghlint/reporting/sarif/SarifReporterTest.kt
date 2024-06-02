@@ -13,11 +13,32 @@ import net.twisterrob.ghlint.testing.check
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.StringWriter
+import java.nio.file.Files
+import java.nio.file.LinkOption
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
 
+/**
+ * @see SarifReporter
+ */
 class SarifReporterTest {
 
-	@Test fun test(@TempDir temp: Path) {
+	@Test fun `test normal path`(@TempDir temp: Path) {
+		val resolvedTemp = temp.toRealPath(LinkOption.NOFOLLOW_LINKS)
+		test(resolvedTemp)
+	}
+
+	@Test fun `test symlinked path`(@TempDir temp: Path) {
+		val resolvedTemp = temp.toRealPath(LinkOption.NOFOLLOW_LINKS)
+		val real = resolvedTemp.resolve("real")
+		val link = resolvedTemp.resolve("symlink")
+		Files.createSymbolicLink(link, real.createDirectories())
+
+		test(link)
+	}
+
+	private fun test(root: Path) {
 		val writer = StringWriter()
 
 		val testRuleSet = ReflectiveRuleSet(
@@ -25,6 +46,7 @@ class SarifReporterTest {
 			name = "Test RuleSet",
 			IntegrationTestRule::class
 		)
+		val file = root.resolve("test.yml").createFile()
 		val findings = check<IntegrationTestRule>(
 			"""
 				on: push
@@ -34,11 +56,11 @@ class SarifReporterTest {
 				    steps:
 				      - run: echo "Test"
 			""".trimIndent(),
-			fileName = temp.resolve("test.yml").toString(),
+			fileName = file.toString(),
 		)
-		SarifReporter(writer, temp, listOf(testRuleSet)).report(findings)
+		SarifReporter(writer, root, listOf(testRuleSet)).report(findings)
 
-		writer.toString() shouldBe sarifReport(temp, "report.sarif.json")
+		writer.toString() shouldBe sarifReport(root, "report.sarif.json")
 	}
 }
 
