@@ -9,7 +9,7 @@ public sealed interface Job : Component {
 	public val id: String
 	public val name: String?
 	public val env: Env?
-	public val permissions: List<Permission>?
+	public val permissions: Set<Permission>?
 	public val needs: List<String>?
 
 	@Suppress("detekt.VariableNaming")

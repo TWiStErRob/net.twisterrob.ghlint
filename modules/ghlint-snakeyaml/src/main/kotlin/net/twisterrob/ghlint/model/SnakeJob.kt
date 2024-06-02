@@ -29,7 +29,7 @@ public sealed class SnakeJob protected constructor(
 	override val env: Env?
 		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
-	override val permissions: List<Permission>?
+	override val permissions: Set<Permission>?
 		get() = node.getOptional("permissions")?.run { map.toPermissions() }
 
 	override val needs: List<String>?

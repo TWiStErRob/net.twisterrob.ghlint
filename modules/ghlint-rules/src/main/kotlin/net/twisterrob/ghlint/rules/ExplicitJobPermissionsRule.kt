@@ -36,9 +36,8 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 
 		val knownPermissions = KnownActionPermissions[step.uses.action]
 
-		knownPermissions?.let {
-			val expectedPermissions = it.toSet()
-			val definedPermissions = step.parent.permissions?.toSet() ?: emptySet()
+		knownPermissions?.let { expectedPermissions ->
+			val definedPermissions = step.parent.permissions ?: emptySet()
 
 			val remaining = expectedPermissions.minus(definedPermissions)
 
@@ -61,8 +60,8 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 
 	private companion object {
 
-		val KnownActionPermissions: Map<String, List<Permission>> = mapOf(
-			"actions/checkout" to listOf(Permission.Contents(Access.READ)),
+		val KnownActionPermissions: Map<String, Set<Permission>> = mapOf(
+			"actions/checkout" to setOf(Permission.Contents(Access.READ)),
 		)
 
 		val MissingRequiredActionPermissions = Issue(
