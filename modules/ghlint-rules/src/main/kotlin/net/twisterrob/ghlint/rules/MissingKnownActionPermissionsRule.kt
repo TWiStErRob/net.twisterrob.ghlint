@@ -16,7 +16,8 @@ public class MissingKnownActionPermissionsRule : VisitorRule, WorkflowVisitor {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		val expectedPermissions = KnownActionPermissions[step.uses.action] ?: return
-		val definedPermissions = step.parent.permissions ?: emptySet()
+		val definedPermissions = step.parent.permissions.orEmpty()
+				.plus(step.parent.parent.permissions.orEmpty())
 
 		val remaining = expectedPermissions.minus(definedPermissions)
 
