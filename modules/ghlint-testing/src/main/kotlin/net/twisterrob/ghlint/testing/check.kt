@@ -33,7 +33,7 @@ public inline fun <reified T : Rule> checkUnsafe(
 	fileName: String = "test.yml",
 ): List<Finding> {
 	val rule = createRule<T>()
-	return rule.check(yaml, fileName, validate = false)
+	return rule.checkUnsafe(yaml, fileName)
 }
 
 /**
@@ -52,11 +52,24 @@ public inline fun <reified T : Rule> checkUnsafe(
 public fun Rule.check(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
-	validate: Boolean = true,
 ): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	val file = if (validate) load(yaml, fileName) else loadUnsafe(yaml, fileName)
+	val file = if (true) load(yaml, fileName) else loadUnsafe(yaml, fileName)
+	val findings = this.check(file)
+	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
+	if (isDebugEnabled) findings.forEach { println(it.testString()) }
+	assertFindingsProducibleByRule(findings, this)
+	return findings
+}
+
+public fun Rule.checkUnsafe(
+	@Language("yaml") yaml: String,
+	fileName: String = "test.yml",
+): List<Finding> {
+	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
+	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
+	val file = if (false) load(yaml, fileName) else loadUnsafe(yaml, fileName)
 	val findings = this.check(file)
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
