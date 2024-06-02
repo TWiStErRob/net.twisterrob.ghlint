@@ -11,6 +11,6 @@ and use one of the visitors to traverse the model.
 
 ## Types of rules
 
- * [Workflow](workflows.md): checks the workflow files.
- * [Action](actions.md): checks the action files.
- * [Invalid](invalid.md): checks for invalid files.
+* [Workflow](workflows.md): checks the workflow files.
+* [Action](actions.md): checks the action files.
+* [Invalid](invalid.md): checks for invalid files.

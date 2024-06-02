@@ -2,7 +2,7 @@ name: "GH-Lint"
 description: "Run ghlint on GitHub Actions files."
 
 author: "TWiStErRob"
-branding: 
+branding:
   icon: alert-triangle
   color: yellow
 

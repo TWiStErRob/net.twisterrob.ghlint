@@ -9,18 +9,25 @@ package net.twisterrob.ghlint.model
  */
 public sealed interface Step {
 
+	public val parent: Parent
 	public val index: Index
 	public val name: String?
 	public val id: String?
 
 	@Suppress("detekt.VariableNaming")
 	public val `if`: String?
-	public val env: Map<String, String>?
+	public val env: Env?
 
 	public companion object;
 
 	@JvmInline
 	public value class Index(public val value: Int)
+
+	public interface Parent {
+
+		public val parent: Component
+		public val steps: List<Step>
+	}
 
 	// TODO find a way to remove this from the API.
 	public interface BaseStep : Step {
@@ -28,7 +35,7 @@ public sealed interface Step {
 		public companion object
 	}
 
-	public interface Run : BaseStep {
+	public sealed interface Run : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val run: String
@@ -38,7 +45,7 @@ public sealed interface Step {
 		public companion object
 	}
 
-	public interface Uses : BaseStep {
+	public sealed interface Uses : BaseStep {
 
 		@Suppress("detekt.MemberNameEqualsClassName")
 		public val uses: UsesAction

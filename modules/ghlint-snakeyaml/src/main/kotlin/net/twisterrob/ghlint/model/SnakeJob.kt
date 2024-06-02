@@ -16,6 +16,7 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
 public sealed class SnakeJob protected constructor(
+	private val factory: SnakeComponentFactory,
 ) : Job.BaseJob, HasSnakeNode<MappingNode> {
 
 	override val location: Location
@@ -24,8 +25,8 @@ public sealed class SnakeJob protected constructor(
 	override val name: String?
 		get() = node.getOptionalText("name")
 
-	override val env: Map<String, String>?
-		get() = node.getOptional("env")?.run { map.toTextMap() }
+	override val env: Env?
+		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	override val permissions: Map<String, String>?
 		get() = node.getOptional("permissions")?.run { map.toTextMap() }
@@ -47,16 +48,17 @@ public sealed class SnakeJob protected constructor(
 		override val id: String,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Job.NormalJob, SnakeJob() {
+	) : Job.NormalJob, SnakeJob(factory) {
 
-		override val steps: List<WorkflowStep>
-			get() = node.getRequired("steps").array.mapIndexed { index, node ->
+		override val steps: List<WorkflowStep> by lazy {
+			node.getRequired("steps").array.mapIndexed { index, node ->
 				factory.createStep(
 					parent = this,
 					index = index,
 					node = node,
 				)
 			}
+		}
 
 		override val defaults: Defaults?
 			get() = node.getOptional("defaults")?.let { factory.createDefaults(it) }
@@ -71,7 +73,7 @@ public sealed class SnakeJob protected constructor(
 		override val id: String,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Job.ReusableWorkflowCallJob, SnakeJob() {
+	) : Job.ReusableWorkflowCallJob, SnakeJob(factory) {
 
 		override val uses: String
 			get() = node.getRequiredText("uses")
@@ -86,7 +88,7 @@ public sealed class SnakeJob protected constructor(
 	public class SnakeSecretsExplicit internal constructor(
 		override val node: MappingNode,
 		override val target: Node,
-		private val map: Map<String, String>
+		private val map: Map<String, String>,
 	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode<MappingNode>
 
 	public class SnakeSecretsInherit internal constructor(

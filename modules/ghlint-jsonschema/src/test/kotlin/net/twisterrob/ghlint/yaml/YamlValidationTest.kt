@@ -59,4 +59,19 @@ class YamlValidationTest {
 		""".trimIndent()
 		validate(yaml, false)
 	}
+
+	@Test
+	fun `duplicate job fails validation`() {
+		@Suppress("YAMLDuplicatedKeys")
+		val yaml = """
+			on:
+			  workflow_dispatch:
+			jobs:
+			  job:
+			    uses: reusable/workflow.yml
+			  job:
+			    uses: reusable/workflow.yml
+		""".trimIndent()
+		validate(yaml, false)
+	}
 }

@@ -10,6 +10,7 @@ import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.rule.Issue
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
 private val init = run {
@@ -18,6 +19,13 @@ private val init = run {
 
 		@Suppress("OVERRIDE_DEPRECATION")
 		override fun print(a: Finding): Printed = error("Unused")
+	})
+
+	Printers.add(Issue::class, object : Print<Issue> {
+		override fun print(a: Issue, level: Int): Printed = Printed(a.testString())
+
+		@Suppress("OVERRIDE_DEPRECATION")
+		override fun print(a: Issue): Printed = error("Unused")
 	})
 }
 

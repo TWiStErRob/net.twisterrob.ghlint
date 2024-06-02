@@ -6,8 +6,6 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
-import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -171,9 +169,6 @@ class Issue_helpMarkdownTest {
 		}
 	}
 }
-
-internal class MarkdownTestRuleSet
-	: RuleSet by ReflectiveRuleSet("test-ruleset", "Test RuleSet", MarkdownTestRule::class)
 
 internal class MarkdownTestRule : Rule {
 

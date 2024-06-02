@@ -5,3 +5,4 @@
 .idea/
 /temp/
 /report.sarif
+.DS_Store

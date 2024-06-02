@@ -157,6 +157,7 @@ public class DuplicateStepIdRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 
 private fun List<String>.combinations(): Sequence<Pair<String, String>> =
 	sequence {
+		@Suppress("ReplaceManualRangeWithIndicesCalls") // Keep for consistency
 		for (index1 in 0 until this@combinations.size) {
 			for (index2 in index1 + 1 until this@combinations.size) {
 				yield(this@combinations[index1] to this@combinations[index2])

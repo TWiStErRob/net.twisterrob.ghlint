@@ -12,6 +12,22 @@ class PreferGitHubTokenRuleTest {
 
 	@TestFactory fun metadata() = test(PreferGitHubTokenRule::class)
 
+	@Test fun `passes when env is dynamic`() {
+		val results = check<PreferGitHubTokenRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: test
+				    env: ${'$'}{{ format('{0}', env.GITHUB_TOKEN) }}
+				    steps:
+				      - run: echo "Test"
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when token is used in workflow env`() {
 		val results = check<PreferGitHubTokenRule>(
 			"""

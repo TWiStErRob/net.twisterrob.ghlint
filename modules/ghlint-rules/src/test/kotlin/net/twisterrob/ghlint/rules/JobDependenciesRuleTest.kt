@@ -245,6 +245,7 @@ class JobDependenciesRuleTest {
 
 	companion object {
 
+		@Suppress("UnusedReceiverParameter") // Keep for future.
 		private fun Random.generate(count: Int, needs: (Int) -> List<String>): String {
 			val others = (1..count).joinToString(separator = "\n") { n ->
 				val needsIds = needs(n)

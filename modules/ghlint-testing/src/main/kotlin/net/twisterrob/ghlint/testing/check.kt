@@ -9,11 +9,8 @@ package net.twisterrob.ghlint.testing
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.shouldHave
-import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.intellij.lang.annotations.Language
 
 /**
@@ -66,7 +63,7 @@ public fun Rule.check(
 		if (isDebugEnabled) validation.forEach { println(it.testString()) }
 		validation shouldHave noFindings()
 	}
-	val findings = this.check(SnakeYaml.load(RawFile(FileLocation(fileName), yaml)))
+	val findings = this.check(load(yaml, fileName))
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)
@@ -75,8 +72,10 @@ public fun Rule.check(
 
 public fun assertFindingsProducibleByRule(findings: List<Finding>, rule: Rule) {
 	findings.forEach { finding ->
-		withClue(finding.testString()) {
-			finding.issue shouldBeIn rule.issues
+		withClue("Rule declares issue to be produced by it.") {
+			withClue(finding.testString()) {
+				finding.issue shouldBeIn rule.issues
+			}
 		}
 	}
 }
