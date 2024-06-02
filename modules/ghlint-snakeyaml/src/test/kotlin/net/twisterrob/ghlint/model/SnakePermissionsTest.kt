@@ -9,7 +9,7 @@ class SnakePermissionsTest {
 
 	@Test fun `job has permissions with correct values`() {
 		val job = loadJob(
-				"""
+			"""
 				jobs:
 				  test:
 				    permissions:
@@ -27,7 +27,7 @@ class SnakePermissionsTest {
 
 	@Test fun `workflow has permissions with correct values`() {
 		val workflow = loadWorkflow(
-				"""
+			"""
 				on:
 				  push:
 				permissions:
@@ -47,7 +47,7 @@ class SnakePermissionsTest {
 
 	@Test fun `job with no permissions is null`() {
 		val job = loadJob(
-				"""
+			"""
 				jobs:
 				  test:
 				    runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ class SnakePermissionsTest {
 
 	@Test fun `job with one permission set, remaining are access NONE`() {
 		val job = loadJob(
-				"""
+			"""
 				jobs:
 				  test:
 				    permissions:
@@ -74,16 +74,16 @@ class SnakePermissionsTest {
 
 		job.permissions?.repositoryProjects shouldBe Access.READ
 
-		Permission.entries.forEach {
-			if (it != Permission.REPOSITORY_PROJECTS) {
-				job.permissions?.accessOf(it) shouldBe Access.NONE
+		Permission.entries.forEach { permission ->
+			if (permission != Permission.REPOSITORY_PROJECTS) {
+				job.permissions?.accessOf(permission) shouldBe Access.NONE
 			}
 		}
 	}
 
 	@Test fun `asMap produces map representing exactly what is in the yaml`() {
 		val permissions = loadJob(
-				"""
+			"""
 				jobs:
 				  test:
 				    permissions:
@@ -103,7 +103,7 @@ class SnakePermissionsTest {
 
 	@Test fun `job has a new permission not modelled by GHLint`() {
 		val job = loadJob(
-				"""
+			"""
 				jobs:
 				  test:
 				    permissions:
@@ -127,6 +127,6 @@ class SnakePermissionsTest {
 
 	private fun loadWorkflow(@Language("yaml") yaml: String): Workflow {
 		val yamlFile = RawFile(FileLocation("test.yml"), yaml)
-		return (SnakeComponentFactory().createFile(yamlFile).content as SnakeWorkflow)
+		return SnakeComponentFactory().createFile(yamlFile).content as SnakeWorkflow
 	}
 }
