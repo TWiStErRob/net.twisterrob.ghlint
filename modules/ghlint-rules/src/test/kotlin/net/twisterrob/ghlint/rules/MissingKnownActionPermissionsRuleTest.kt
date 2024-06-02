@@ -48,6 +48,23 @@ class MissingKnownActionPermissionsRuleTest {
 		results shouldHave noFindings()
 	}
 
+	@Test fun `passes when a known required permission for checkout action is specified at workflow level`() {
+		val results = net.twisterrob.ghlint.testing.check<MissingKnownActionPermissionsRule>(
+				"""
+					on: push
+					permissions:
+					  contents: read
+					jobs:
+					  test:
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/checkout@v4
+				""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
 	@Test fun `passes when a known required permission for checkout action is specified at higher access level`() {
 		val results = net.twisterrob.ghlint.testing.check<MissingKnownActionPermissionsRule>(
 				"""
