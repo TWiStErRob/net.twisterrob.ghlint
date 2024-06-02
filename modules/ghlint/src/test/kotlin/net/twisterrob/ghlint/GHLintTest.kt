@@ -20,19 +20,14 @@ import net.twisterrob.ghlint.testing.singleFinding
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.whenever
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
 class GHLintTest {
 
 	@Test
-	fun `no files`() {
-		val configuration: Configuration = mock()
-		whenever(configuration.files).thenReturn(emptyList())
-
-		val result = GHLint().run(configuration)
+	fun `no files`(@TempDir tempDir: Path) {
+		val result = GHLint().run(FakeConfiguration(tempDir, emptyList(), isReportExitCode = true))
 
 		result shouldBe 0
 	}
@@ -56,12 +51,8 @@ class GHLintTest {
 				        run: echo "Test"
 			""".trimIndent()
 		)
-		val configuration: Configuration = mock()
-		whenever(configuration.root).thenReturn(tempDir)
-		whenever(configuration.files).thenReturn(listOf(test))
-		whenever(configuration.isReportExitCode).thenReturn(true)
 
-		val result = GHLint().run(configuration)
+		val result = GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
 
 		result shouldBe 0
 		tempDir shouldContainFile "test.yml"
@@ -75,12 +66,8 @@ class GHLintTest {
 			"""
 			""".trimIndent()
 		)
-		val configuration: Configuration = mock()
-		whenever(configuration.root).thenReturn(tempDir)
-		whenever(configuration.files).thenReturn(listOf(test))
-		whenever(configuration.isReportExitCode).thenReturn(true)
 
-		val result = GHLint().run(configuration)
+		val result = GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
 
 		result shouldBe 1
 		tempDir shouldContainFile "test.yml"
