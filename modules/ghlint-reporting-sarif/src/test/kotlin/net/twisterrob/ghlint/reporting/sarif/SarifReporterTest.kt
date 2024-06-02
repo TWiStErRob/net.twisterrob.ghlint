@@ -16,7 +16,6 @@ import java.io.StringWriter
 import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.nio.file.Path
-import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 
@@ -27,17 +26,10 @@ class SarifReporterTest {
 	}
 
 	@Test fun `test symlinked path`(@TempDir temp: Path) {
-		println("temp: ${temp}")
-		val real = temp.resolve("real")
-		println("real: ${real}")
-		val link = temp.resolve("symlink")
-		println("link: ${link}")
+		val resolvedTemp = temp.toRealPath(LinkOption.NOFOLLOW_LINKS)
+		val real = resolvedTemp.resolve("real")
+		val link = resolvedTemp.resolve("symlink")
 		Files.createSymbolicLink(link, real.createDirectories())
-		println("${link.absolute()} (link.absolute())")
-		println("${link.absolute().toRealPath()} (link.absolute().toRealPath())")
-		println("${link.absolute().toRealPath(LinkOption.NOFOLLOW_LINKS)} (link.absolute().toRealPath(LinkOption.NOFOLLOW_LINKS))")
-		println("${link.toRealPath()} (link.toRealPath())")
-		println("${link.toRealPath(LinkOption.NOFOLLOW_LINKS)} (link.toRealPath(LinkOption.NOFOLLOW_LINKS))")
 
 		test(link)
 	}
