@@ -47,6 +47,8 @@ public class SnakePermissions(public val node: MappingNode) : Permissions {
 		get() = node.getOptionalText("statuses")?.let { Access.fromString(it) } ?: Access.NONE
 
 	override fun asMap(): Map<String, String> {
-		TODO("Not yet implemented")
+		return Permission.entries.mapNotNull {
+			node.getOptionalText(it.value)?.let { value -> it.value to value }
+		}.toMap()
 	}
 }
