@@ -19,6 +19,9 @@ import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 
+/**
+ * @see SarifReporter
+ */
 class SarifReporterTest {
 
 	@Test fun `test normal path`(@TempDir temp: Path) {
