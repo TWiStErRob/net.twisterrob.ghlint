@@ -12,8 +12,10 @@ import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile2
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile2
+import net.twisterrob.ghlint.GHLintTest.Fixtures.writeTo
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
+import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.test.captureSystemStreams
 import net.twisterrob.ghlint.testing.aFinding
@@ -27,6 +29,7 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.junit.jupiter.api.parallel.Resources
 import java.nio.file.Path
+import kotlin.io.path.absolute
 import kotlin.io.path.writeText
 
 class GHLintTest {
@@ -39,41 +42,25 @@ class GHLintTest {
 			GHLint().run(FakeConfiguration(tempDir, emptyList(), isReportExitCode = true))
 		}
 
-		result.result shouldBe 0
 		result.out should beEmpty()
 		result.err should beEmpty()
+		result.result shouldBe 0
 	}
 
 	@Test
 	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `single valid file`(@TempDir tempDir: Path) {
-		val test = tempDir.resolve("test.yml")
-		test.writeText(
-			"""
-				name: "Test"
-				on: push
-				jobs:
-				  test:
-				    name: "Test"
-				    runs-on: ubuntu-latest
-				    timeout-minutes: 1
-				    permissions: {}
-				    steps:
-				      - name: "Test"
-				        shell: bash
-				        run: echo "Test"
-			""".trimIndent()
-		)
+		val test = validFile1.writeTo(tempDir)
 
 		val result = captureSystemStreams {
 			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
 		}
 
-		result.result shouldBe 0
 		result.out should beEmpty()
 		result.err should beEmpty()
-		tempDir shouldContainFile "test.yml"
+		result.result shouldBe 0
+		tempDir shouldContainFile validFile1.location.name
 		tempDir shouldContainNFiles 1
 	}
 
@@ -81,20 +68,16 @@ class GHLintTest {
 	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `single invalid file`(@TempDir tempDir: Path) {
-		val test = tempDir.resolve("test.yml")
-		test.writeText(
-			"""
-			""".trimIndent()
-		)
+		val test = invalidFile1.writeTo(tempDir)
 
 		val result = captureSystemStreams {
 			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
 		}
 
-		result.result shouldBe 1
 		result.out should beEmpty()
 		result.err should beEmpty()
-		tempDir shouldContainFile "test.yml"
+		result.result shouldBe 1
+		tempDir shouldContainFile invalidFile1.location.name
 		tempDir shouldContainNFiles 1
 	}
 
@@ -289,23 +272,35 @@ class GHLintTest {
 
 	object Fixtures {
 
+		fun RawFile.writeTo(tempDir: Path): Path {
+			val file = tempDir.resolve(location.path)
+			file.writeText(content)
+			return file
+		}
+
 		val validFile1 = RawFile(
 			location = FileLocation("test-valid1.yml"),
 			content = """
+				name: "Valid workflow #1"
 				on: push
 				jobs:
-				  job:
+				  test:
+				    name: "Test"
 				    uses: reusable/workflow.yml
+				    permissions: {}
 			""".trimIndent()
 		)
 
 		val validFile2 = RawFile(
 			location = FileLocation("test-valid2.yml"),
 			content = """
+				name: "Valid workflow #2"
 				on: push
 				jobs:
-				  job:
+				  test:
+				    name: "Test"
 				    runs-on: ubuntu-latest
+				    permissions: {}
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
