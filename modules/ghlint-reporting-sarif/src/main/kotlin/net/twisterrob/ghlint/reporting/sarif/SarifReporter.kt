@@ -20,8 +20,8 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.ruleset.RuleSet
 import java.io.Writer
+import java.nio.file.LinkOption
 import java.nio.file.Path
-import kotlin.io.path.absolute
 import kotlin.io.path.bufferedWriter
 import kotlin.io.path.relativeTo
 
@@ -32,7 +32,7 @@ public class SarifReporter(
 ) : Reporter {
 
 	override fun report(findings: List<Finding>) {
-		val base = rootDir.absolute().toRealPath()
+		val base = rootDir.toRealPath(LinkOption.NOFOLLOW_LINKS)
 		val sarif = SarifSchema210(
 			version = Version.The210,
 			schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
@@ -100,7 +100,7 @@ private fun reportingDescriptor(issue: Issue): ReportingDescriptor =
 	)
 
 private fun result(finding: Finding, base: Path): Result {
-	val file = Path.of(finding.location.file.path).absolute()
+	val file = Path.of(finding.location.file.path).toRealPath(LinkOption.NOFOLLOW_LINKS)
 	return Result(
 		message = Message(
 			text = finding.message,
