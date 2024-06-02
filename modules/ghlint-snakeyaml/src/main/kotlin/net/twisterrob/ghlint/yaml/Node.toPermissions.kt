@@ -6,8 +6,8 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 public fun Map<Node, Node>.toPermissions(): Set<Permission> {
 	return this.map { (key, value) ->
-		Access.fromString(value.text)?.let {
+		Access.fromString(value.text).let {
 			Permission.fromString(key.text, it)
-		} ?: throw IllegalArgumentException("Invalid access: ${value.text}")
+		}
 	}.toSet()
 }
