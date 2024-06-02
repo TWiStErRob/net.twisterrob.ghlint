@@ -25,7 +25,8 @@ import kotlin.io.path.createFile
 class SarifReporterTest {
 
 	@Test fun `test normal path`(@TempDir temp: Path) {
-		test(temp)
+		val resolvedTemp = temp.toRealPath(LinkOption.NOFOLLOW_LINKS)
+		test(resolvedTemp)
 	}
 
 	@Test fun `test symlinked path`(@TempDir temp: Path) {
