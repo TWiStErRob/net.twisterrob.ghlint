@@ -118,7 +118,6 @@ jobs:
           comment_mode: off
           # Not here, it's going to be uploaded by ci-publish.yml after this workflow completes.
           check_run: false
-          check_run_annotations: none
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
