@@ -10,7 +10,8 @@ on:
 jobs:
   test-results:
     name: "Publish Test Results"
-    if: ${{ github.event.workflow_run.conclusion != 'skipped' }}
+    # Only run when there's relevant result with some hope (in decreasing order) of having the artifacts necessary.
+    if: ${{ contains(fromJSON('["success","failure","timed_out","cancelled"]'), github.event.workflow_run.conclusion) }}
     runs-on: ubuntu-latest
     timeout-minutes: 3
 
@@ -39,7 +40,6 @@ jobs:
           path: results
 
       - name: "Publish 'Unit Results' check suite."
-        if: ${{ success() || failure() }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           commit: ${{ github.event.workflow_run.head_sha }}
