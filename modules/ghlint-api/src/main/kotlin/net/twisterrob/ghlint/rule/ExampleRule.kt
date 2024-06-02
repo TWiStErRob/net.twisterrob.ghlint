@@ -12,7 +12,7 @@ private class ExampleRule : Rule {
 		TODO("Implement, or extend VisitorRule and override a function.")
 	}
 
-	companion object {
+	private companion object {
 
 		val IssueName = Issue(
 			id = "TODO IssueName",
