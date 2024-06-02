@@ -40,7 +40,6 @@ public inline fun <reified T : Rule> checkUnsafe(
  * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
  * Additional validation is performed to ensure correct syntax and internal consistency.
  *
- * Some of the internal validation can be turned off via the [validate] flag.
  * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
  *
  * WARNING: This method is not recommended to be used directly,
@@ -52,24 +51,33 @@ public inline fun <reified T : Rule> checkUnsafe(
 public fun Rule.check(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
-): List<Finding> {
-	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	val file = if (true) load(yaml, fileName) else loadUnsafe(yaml, fileName)
-	val findings = this.check(file)
-	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-	if (isDebugEnabled) findings.forEach { println(it.testString()) }
-	assertFindingsProducibleByRule(findings, this)
-	return findings
-}
+): List<Finding> = check(yaml, fileName, validate = true)
 
+/**
+ * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
+ * It's unsafe because it performs no validation to ensure correct syntax and internal consistency.
+ *
+ * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
+ *
+ * WARNING: This method is not recommended to be used directly,
+ * use [check]`<Rule>()` or [checkUnsafe]`<Rule>()` wherever possible.
+ *
+ * @see check
+ * @see checkUnsafe
+ */
 public fun Rule.checkUnsafe(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
+): List<Finding> = check(yaml, fileName, validate = false)
+
+private fun Rule.check(
+	yaml: String,
+	fileName: String,
+	validate: Boolean,
 ): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	val file = if (false) load(yaml, fileName) else loadUnsafe(yaml, fileName)
+	val file = if (validate) load(yaml, fileName) else loadUnsafe(yaml, fileName)
 	val findings = this.check(file)
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
