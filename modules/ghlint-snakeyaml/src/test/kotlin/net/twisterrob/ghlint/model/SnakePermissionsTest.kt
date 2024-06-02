@@ -2,14 +2,18 @@ package net.twisterrob.ghlint.model
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import org.intellij.lang.annotations.Language
+import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.loadUnsafe
 import org.junit.jupiter.api.Test
 
 class SnakePermissionsTest {
 
+	private fun File.asJob(): Job.NormalJob = (content as Workflow).jobs.values.single() as Job.NormalJob
+
 	@Test fun `job has permissions with correct values`() {
-		val job = loadJob(
+		val job = load(
 			"""
+				on: push
 				jobs:
 				  test:
 				    permissions:
@@ -19,17 +23,16 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		)
+		).asJob()
 
 		job.permissions?.contents shouldBe Access.READ
 		job.permissions?.issues shouldBe Access.WRITE
 	}
 
 	@Test fun `workflow has permissions with correct values`() {
-		val workflow = loadWorkflow(
+		val workflow = load(
 			"""
-				on:
-				  push:
+				on: push
 				permissions:
 				  pull-requests: write
 				  id-token: read
@@ -39,29 +42,31 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		)
+		).content as Workflow
 
 		workflow.permissions?.pullRequests shouldBe Access.WRITE
 		workflow.permissions?.idToken shouldBe Access.READ
 	}
 
 	@Test fun `job with no permissions is null`() {
-		val job = loadJob(
+		val job = load(
 			"""
+				on: push
 				jobs:
 				  test:
 				    runs-on: ubuntu-latest
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		)
+		).asJob()
 
 		job.permissions shouldBe null
 	}
 
 	@Test fun `job with one permission set, remaining are access NONE`() {
-		val job = loadJob(
+		val job = load(
 			"""
+				on: push
 				jobs:
 				  test:
 				    permissions:
@@ -70,7 +75,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		)
+		).asJob()
 
 		job.permissions?.repositoryProjects shouldBe Access.READ
 
@@ -82,8 +87,9 @@ class SnakePermissionsTest {
 	}
 
 	@Test fun `asMap produces map representing exactly what is in the yaml`() {
-		val permissions = loadJob(
+		val job = load(
 			"""
+				on: push
 				jobs:
 				  test:
 				    permissions:
@@ -93,17 +99,18 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).permissions
+		).asJob()
 
-		val map = permissions?.asMap()
+		val map = job.permissions?.asMap()
 		map?.size shouldBe 2
 		map?.get("contents") shouldBe "read"
 		map?.get("issues") shouldBe "write"
 	}
 
 	@Test fun `job has a new permission not modelled by GHLint`() {
-		val job = loadJob(
+		val job = loadUnsafe(
 			"""
+				on: push
 				jobs:
 				  test:
 				    permissions:
@@ -112,21 +119,11 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		)
+		).asJob()
 
 		job.permissions shouldNotBe null
 
 		val map = job.permissions?.asMap()
 		map?.size shouldBe 0
-	}
-
-	private fun loadJob(@Language("yaml") yaml: String): Job {
-		val yamlFile = RawFile(FileLocation("test.yml"), yaml)
-		return (SnakeComponentFactory().createFile(yamlFile).content as SnakeWorkflow).jobs.values.single()
-	}
-
-	private fun loadWorkflow(@Language("yaml") yaml: String): Workflow {
-		val yamlFile = RawFile(FileLocation("test.yml"), yaml)
-		return SnakeComponentFactory().createFile(yamlFile).content as SnakeWorkflow
 	}
 }
