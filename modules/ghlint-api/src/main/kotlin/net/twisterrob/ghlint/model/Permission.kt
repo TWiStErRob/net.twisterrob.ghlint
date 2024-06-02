@@ -22,26 +22,26 @@ public interface Permissions {
 	public fun asMap(): Map<String, String>
 }
 
-public enum class Permission {
-	ACTIONS,
-	ATTESTATIONS,
-	CHECKS,
-	CONTENTS,
-	DEPLOYMENTS,
-	ID_TOKEN,
-	ISSUES,
-	METADATA,
-	PACKAGES,
-	PAGES,
-	PULL_REQUESTS,
-	REPOSITORY_PROJECTS,
-	SECURITY_EVENTS,
-	STATUSES
+public enum class Permission(public val value: String) {
+	ACTIONS("actions"),
+	ATTESTATIONS("attestations"),
+	CHECKS("checks"),
+	CONTENTS("contents"),
+	DEPLOYMENTS("deployments"),
+	ID_TOKEN("id-token"),
+	ISSUES("issues"),
+	METADATA("metadata"),
+	PACKAGES("packages"),
+	PAGES("pages"),
+	PULL_REQUESTS("pull-requests"),
+	REPOSITORY_PROJECTS("repository-projects"),
+	SECURITY_EVENTS("security-events"),
+	STATUSES("statuses")
 }
 
-public enum class Access : Comparable<Access> {
+public enum class Access(public val value: String) : Comparable<Access> {
 	// Order determines restrictiveness of permission
-	NONE, READ, WRITE;
+	NONE("none"), READ("read"), WRITE("write");
 
 	public companion object {
 		public fun fromString(value: String): Access = when (value) {
@@ -54,26 +54,27 @@ public enum class Access : Comparable<Access> {
 
 public data class Scope(val permission: Permission, val access: Access) {
 	override fun toString(): String {
-		return "`${permission.name.lowercase(Locale.getDefault())}: ${access.name.lowercase(Locale.getDefault())}`"
+		return "`${permission.value}: ${access.value}`"
 	}
 }
 
 public fun Permissions.asEffectivePermissionsSet(): Set<Scope> {
-	val scopes = mutableSetOf<Scope>()
-	scopes += Scope(Permission.ACTIONS, actions)
-	scopes += Scope(Permission.ATTESTATIONS, attestations)
-	scopes += Scope(Permission.CHECKS, checks)
-	scopes += Scope(Permission.CONTENTS, contents)
-	scopes += Scope(Permission.DEPLOYMENTS, deployments)
-	scopes += Scope(Permission.ID_TOKEN, idToken)
-	scopes += Scope(Permission.ISSUES, issues)
-	scopes += Scope(Permission.METADATA, metadata)
-	scopes += Scope(Permission.PACKAGES, packages)
-	scopes += Scope(Permission.PAGES, pages)
-	scopes += Scope(Permission.PULL_REQUESTS, pullRequests)
-	scopes += Scope(Permission.REPOSITORY_PROJECTS, repositoryProjects)
-	scopes += Scope(Permission.SECURITY_EVENTS, securityEvents)
-	scopes += Scope(Permission.STATUSES, statuses)
+	val scopes = mutableSetOf(
+		Scope(Permission.ACTIONS, actions),
+		Scope(Permission.ATTESTATIONS, attestations),
+		Scope(Permission.CHECKS, checks),
+		Scope(Permission.CONTENTS, contents),
+		Scope(Permission.DEPLOYMENTS, deployments),
+		Scope(Permission.ID_TOKEN, idToken),
+		Scope(Permission.ISSUES, issues),
+		Scope(Permission.METADATA, metadata),
+		Scope(Permission.PACKAGES, packages),
+		Scope(Permission.PAGES, pages),
+		Scope(Permission.PULL_REQUESTS, pullRequests),
+		Scope(Permission.REPOSITORY_PROJECTS, repositoryProjects),
+		Scope(Permission.SECURITY_EVENTS, securityEvents),
+		Scope(Permission.STATUSES, statuses)
+	)
 
 	val effectiveScopes = mutableSetOf<Scope>()
 
