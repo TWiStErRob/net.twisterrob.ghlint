@@ -10,14 +10,17 @@ import org.intellij.lang.annotations.Language
 public fun load(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
-	validate: Boolean = true,
 ): File {
-	val file = SnakeYaml.load(RawFile(FileLocation(fileName), yaml))
-	if (validate) {
-		val validation = validate(file)
-		@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-		if (isDebugEnabled) validation.forEach { println(it.testString()) }
-		validation shouldHave noFindings()
-	}
+	val file = loadUnsafe(yaml, fileName)
+	val validation = validate(file)
+	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
+	if (isDebugEnabled) validation.forEach { println(it.testString()) }
+	validation shouldHave noFindings()
 	return file
 }
+
+public fun loadUnsafe(
+	@Language("yaml") yaml: String,
+	fileName: String = "test.yml",
+): File =
+	SnakeYaml.load(RawFile(FileLocation(fileName), yaml))

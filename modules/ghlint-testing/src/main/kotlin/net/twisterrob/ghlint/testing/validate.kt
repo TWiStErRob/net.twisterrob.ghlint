@@ -9,7 +9,7 @@ internal fun validate(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",
 ): List<Finding> =
-	validate(load(yaml, fileName, validate = false))
+	validate(loadUnsafe(yaml, fileName))
 
 internal fun validate(file: File): List<Finding> =
 	BuiltInRuleSet().createRules().flatMap { it.check(file) }

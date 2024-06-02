@@ -56,7 +56,8 @@ public fun Rule.check(
 ): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	val findings = this.check(load(yaml, fileName, validate))
+	val file = if (validate) load(yaml, fileName) else loadUnsafe(yaml, fileName)
+	val findings = this.check(file)
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)
