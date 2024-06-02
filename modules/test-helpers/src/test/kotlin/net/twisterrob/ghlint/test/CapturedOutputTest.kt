@@ -9,6 +9,7 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.junit.jupiter.api.parallel.Resources
 
+@Suppress("detekt.ForbiddenMethodCall") // Testing console output.
 class CapturedOutputTest {
 
 	/**
