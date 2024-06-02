@@ -61,8 +61,6 @@ jobs:
     permissions:
       # actions/checkout
       contents: read
-      # EnricoMi/publish-unit-test-result-action
-      checks: write
       # github/codeql-action/upload-sarif
       security-events: write
 
@@ -102,14 +100,24 @@ jobs:
           name: 'Unit Test Results'
           if-no-files-found: error
           path: |
+            **/build/test-results/*/
+
+      - name: "Upload 'Unit Test Reports' artifact."
+        if: ${{ success() || failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Unit Test Reports'
+          if-no-files-found: error
+          path: |
             **/build/reports/tests/*/
 
-      - name: "Publish 'Unit Results' check suite."
+      - name: "Publish 'Unit Results' job summary."
         if: ${{ success() || failure() }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: '🔔 Test: Unit Results'
           comment_mode: off
+          # Not here, it's going to be uploaded by ci-publish.yml after this workflow completes.
+          check_run: false
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
