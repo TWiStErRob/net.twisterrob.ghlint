@@ -32,6 +32,17 @@ public enum class Access(public val value: String) : Comparable<Access> {
 	}
 }
 
-public data class Scope(val permission: Permission, val access: Access) {
+public class Scope(public val permission: Permission, public val access: Access) {
 	override fun toString(): String = "`${permission.value}: ${access.value}`"
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as Scope
+
+		if (permission != other.permission) return false
+		return access == other.access
+	}
+
+	override fun hashCode(): Int = 31 * permission.hashCode() + access.hashCode()
 }
