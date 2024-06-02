@@ -13,6 +13,19 @@ concurrency:
 
 jobs:
 
+  event-file:
+    name: "Event File"
+    timeout-minutes: 1
+    permissions: { }
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Upload 'Event File' artifact."
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'Event File'
+          if-no-files-found: error
+          path: ${{ github.event_path }}
+
   validate:
     name: "🦺 Validation"
     uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@1e06403c5d561d70e40109c2701ea3092ca6ded7 # v3
