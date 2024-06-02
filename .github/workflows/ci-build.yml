@@ -55,7 +55,7 @@ jobs:
 
 
   test:
-    name: "Test"
+    name: "Test on ${{ matrix.runs-on }}"
     timeout-minutes: 5
 
     permissions:
@@ -66,7 +66,15 @@ jobs:
       # github/codeql-action/upload-sarif
       security-events: write
 
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    runs-on: ${{ matrix.runs-on }}
     defaults:
       run:
         shell: bash
@@ -99,7 +107,7 @@ jobs:
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Unit Test Results'
+          name: 'Unit Test Results (${{ matrix.runs-on }})'
           if-no-files-found: error
           path: |
             **/build/reports/tests/*/
@@ -120,7 +128,7 @@ jobs:
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Detekt Results'
+          name: 'Detekt Results (${{ matrix.runs-on }})'
           if-no-files-found: error
           path: |
             **/build/reports/detekt/
@@ -129,7 +137,7 @@ jobs:
         if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'Detekt Merged Results'
+          name: 'Detekt Merged Results (${{ matrix.runs-on }})'
           if-no-files-found: error
           path: |
             build/reports/detekt/merge.*
