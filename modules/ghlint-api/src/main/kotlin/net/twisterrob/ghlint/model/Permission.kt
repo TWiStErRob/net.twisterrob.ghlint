@@ -27,7 +27,8 @@ public enum class Access(public val value: String) : Comparable<Access> {
 		public fun fromString(value: String): Access = when (value) {
 			"read" -> READ
 			"write" -> WRITE
-			else -> NONE
+			"none" -> NONE
+			else -> error("Unknown access value: $value")
 		}
 	}
 }

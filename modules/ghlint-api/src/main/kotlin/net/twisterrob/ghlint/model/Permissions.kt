@@ -19,7 +19,7 @@ public interface Permissions {
 	public val securityEvents: Access
 	public val statuses: Access
 
-	public fun asMap(): Map<String, String>
+	public val map: Map<String, String>
 
 	@Suppress("detekt.CyclomaticComplexMethod")
 	public fun accessOf(permission: Permission) : Access {

@@ -101,7 +101,7 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		).asJob()
 
-		val map = job.permissions?.asMap()
+		val map = job.permissions?.map
 		map?.size shouldBe 2
 		map?.get("contents") shouldBe "read"
 		map?.get("issues") shouldBe "write"
@@ -123,7 +123,29 @@ class SnakePermissionsTest {
 
 		job.permissions shouldNotBe null
 
-		val map = job.permissions?.asMap()
-		map?.size shouldBe 0
+		val map = job.permissions?.map
+		map?.size shouldBe 1
+		map?.get("some-new-permission") shouldBe "read"
+	}
+
+	@Test fun `job has a new access level not modelled by GHLint`() {
+		val job = loadUnsafe(
+			"""
+				on: push
+				jobs:
+				  test:
+				    permissions:
+				      contents: admin
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asJob()
+
+		job.permissions shouldNotBe null
+
+		val map = job.permissions?.map
+		map?.size shouldBe 1
+		map?.get("contents") shouldBe "admin"
 	}
 }

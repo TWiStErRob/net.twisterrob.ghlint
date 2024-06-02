@@ -315,7 +315,8 @@ public class SnakeComponentFactory {
 	internal fun createPermissions(node: Node): Permissions {
 		node as MappingNode
 		return SnakePermissions(
-			node = node
+			node = node,
+			map = node.map.toTextMap(),
 		)
 	}
 }
