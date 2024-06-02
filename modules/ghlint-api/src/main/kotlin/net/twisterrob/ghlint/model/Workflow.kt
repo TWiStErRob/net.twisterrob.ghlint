@@ -8,7 +8,7 @@ public interface Workflow : Component, Content {
 	public val name: String?
 	public val env: Env?
 	public val jobs: Map<String, Job>
-	public val permissions: Set<Permission>?
+	public val permissions: Permissions?
 	public val defaults: Defaults?
 
 	public companion object

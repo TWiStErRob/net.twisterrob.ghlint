@@ -27,7 +27,7 @@ class MissingKnownActionPermissionsRuleTest {
 
 		results shouldHave singleFinding(
 				"MissingRequiredActionPermissions",
-				"Step[actions/checkout@v4] in Job[test] requires READ permission for actions/checkout to work."
+				"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for actions/checkout to work."
 		)
 	}
 

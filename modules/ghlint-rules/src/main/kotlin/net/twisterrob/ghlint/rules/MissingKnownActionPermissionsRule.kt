@@ -2,7 +2,9 @@ package net.twisterrob.ghlint.rules
 
 import net.twisterrob.ghlint.model.Access
 import net.twisterrob.ghlint.model.Permission
+import net.twisterrob.ghlint.model.Scope
 import net.twisterrob.ghlint.model.WorkflowStep
+import net.twisterrob.ghlint.model.asEffectivePermissionsSet
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
@@ -16,30 +18,22 @@ public class MissingKnownActionPermissionsRule : VisitorRule, WorkflowVisitor {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		val expectedPermissions = KnownActionPermissions[step.uses.action] ?: return
-		val definedPermissions = step.parent.permissions.orEmpty()
-				.plus(step.parent.parent.permissions.orEmpty())
+		val definedPermissions = step.parent.permissions?.asEffectivePermissionsSet()
+				?: step.parent.parent.permissions?.asEffectivePermissionsSet()
+				?: return
 
 		val remaining = expectedPermissions.minus(definedPermissions)
 
-		if (remaining.isEmpty()) {
-			// All permissions are satisified
-			return
-		}
-
-		// Need to check for permissions with higher access levels, e.g. `write` is more permissive than `read`.
 		remaining.forEach { expected ->
-			val defined = definedPermissions.find { it.name == expected.name }
-			if (defined == null || defined.access < expected.access) {
-				reporting.report(MissingRequiredActionPermissions, step) {
-					"${it} requires ${expected.access} permission for ${step.uses.action} to work."
-				}
+			reporting.report(MissingRequiredActionPermissions, step) {
+				"${it} requires ${expected} permission for ${step.uses.action} to work."
 			}
 		}
 	}
 
 	private companion object {
-		val KnownActionPermissions: Map<String, Set<Permission>> = mapOf(
-				"actions/checkout" to setOf(Permission.Contents(Access.READ)),
+		val KnownActionPermissions: Map<String, Set<Scope>> = mapOf(
+				"actions/checkout" to setOf(Scope(Permission.CONTENTS, Access.READ)),
 		)
 
 		val MissingRequiredActionPermissions = Issue(

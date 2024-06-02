@@ -8,7 +8,6 @@ import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.getRequiredText
 import net.twisterrob.ghlint.yaml.map
 import net.twisterrob.ghlint.yaml.text
-import net.twisterrob.ghlint.yaml.toPermissions
 import net.twisterrob.ghlint.yaml.toTextArray
 import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
@@ -29,8 +28,8 @@ public sealed class SnakeJob protected constructor(
 	override val env: Env?
 		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
-	override val permissions: Set<Permission>?
-		get() = node.getOptional("permissions")?.run { map.toPermissions() }
+	override val permissions: Permissions?
+		get() = node.getOptional("permissions")?.let { factory.createPermissions(it) }
 
 	override val needs: List<String>?
 		get() = when (val needs = node.getOptional("needs")) {

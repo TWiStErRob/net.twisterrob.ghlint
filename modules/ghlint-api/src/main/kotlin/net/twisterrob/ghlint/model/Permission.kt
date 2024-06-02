@@ -1,11 +1,46 @@
 package net.twisterrob.ghlint.model
 
-public sealed interface Scope {
-	public val name: String
-	public val access: Access
+import java.util.Locale
+
+// https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+public interface Permissions {
+	public val actions: Access
+	public val attestations: Access
+	public val checks: Access
+	public val contents: Access
+	public val deployments: Access
+	public val idToken: Access
+	public val issues: Access
+	public val metadata: Access
+	public val packages: Access
+	public val pages: Access
+	public val pullRequests: Access
+	public val repositoryProjects: Access
+	public val securityEvents: Access
+	public val statuses: Access
+
+	public fun asMap(): Map<String, String>
 }
 
-public enum class Access: Comparable<Access> {
+public enum class Permission {
+	ACTIONS,
+	ATTESTATIONS,
+	CHECKS,
+	CONTENTS,
+	DEPLOYMENTS,
+	ID_TOKEN,
+	ISSUES,
+	METADATA,
+	PACKAGES,
+	PAGES,
+	PULL_REQUESTS,
+	REPOSITORY_PROJECTS,
+	SECURITY_EVENTS,
+	STATUSES
+}
+
+public enum class Access : Comparable<Access> {
+	// Order determines restrictiveness of permission
 	NONE, READ, WRITE;
 
 	public companion object {
@@ -17,147 +52,36 @@ public enum class Access: Comparable<Access> {
 	}
 }
 
-// https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-public sealed class Permission(public override val access: Access) : Scope {
-	public companion object {
-		@Suppress("detekt.CyclomaticComplexMethod")
-		public fun fromString(value: String, access: Access) : Permission {
-			return when (value) {
-				Actions.Name -> Actions(access)
-				Attestations.Name -> Attestations(access)
-				Checks.Name -> Checks(access)
-				Contents.Name -> Contents(access)
-				Deployments.Name -> Deployments(access)
-				IdToken.Name -> IdToken(access)
-				Issues.Name -> Issues(access)
-				Metadata.Name -> Metadata(access)
-				Packages.Name -> Packages(access)
-				Pages.Name -> Pages(access)
-				PullRequests.Name -> PullRequests(access)
-				RepositoryProjects.Name -> RepositoryProjects(access)
-				SecurityEvents.Name -> SecurityEvents(access)
-				Statuses.Name -> Statuses(access)
-				else -> Undefined(access)
-			}
+public data class Scope(val permission: Permission, val access: Access) {
+	override fun toString(): String {
+		return "`${permission.name.lowercase(Locale.getDefault())}: ${access.name.lowercase(Locale.getDefault())}`"
+	}
+}
+
+public fun Permissions.asEffectivePermissionsSet(): Set<Scope> {
+	val scopes = mutableSetOf<Scope>()
+	scopes += Scope(Permission.ACTIONS, actions)
+	scopes += Scope(Permission.ATTESTATIONS, attestations)
+	scopes += Scope(Permission.CHECKS, checks)
+	scopes += Scope(Permission.CONTENTS, contents)
+	scopes += Scope(Permission.DEPLOYMENTS, deployments)
+	scopes += Scope(Permission.ID_TOKEN, idToken)
+	scopes += Scope(Permission.ISSUES, issues)
+	scopes += Scope(Permission.METADATA, metadata)
+	scopes += Scope(Permission.PACKAGES, packages)
+	scopes += Scope(Permission.PAGES, pages)
+	scopes += Scope(Permission.PULL_REQUESTS, pullRequests)
+	scopes += Scope(Permission.REPOSITORY_PROJECTS, repositoryProjects)
+	scopes += Scope(Permission.SECURITY_EVENTS, securityEvents)
+	scopes += Scope(Permission.STATUSES, statuses)
+
+	val effectiveScopes = mutableSetOf<Scope>()
+
+	for (scope in scopes) {
+		if (scope.access == Access.WRITE) {
+			effectiveScopes.add(Scope(scope.permission, Access.READ))
 		}
 	}
-	public data class Actions(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "actions"
-		}
 
-		public override val name: String = Name
-	}
-
-	public data class Attestations(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "attestations"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Checks(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "checks"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Contents(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "contents"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Deployments(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "deployments"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class IdToken(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "id-token"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Issues(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "issues"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Metadata(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "metadata"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Packages(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "packages"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Pages(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "pages"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class PullRequests(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "pull-requests"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class RepositoryProjects(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "repository-projects"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class SecurityEvents(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "security-events"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Statuses(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "statuses"
-		}
-
-		public override val name: String = Name
-	}
-
-	public data class Undefined(override val access: Access) : Permission(access) {
-		public companion object {
-			public const val Name: String = "undefined"
-		}
-
-		public override val name: String = Name
-	}
+	return scopes.plus(effectiveScopes)
 }
