@@ -33,7 +33,5 @@ public enum class Access(public val value: String) : Comparable<Access> {
 }
 
 public data class Scope(val permission: Permission, val access: Access) {
-	override fun toString(): String {
-		return "`${permission.value}: ${access.value}`"
-	}
+	override fun toString(): String = "`${permission.value}: ${access.value}`"
 }

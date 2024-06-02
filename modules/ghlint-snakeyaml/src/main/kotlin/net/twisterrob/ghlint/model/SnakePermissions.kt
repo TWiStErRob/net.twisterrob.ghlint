@@ -4,10 +4,6 @@ import net.twisterrob.ghlint.yaml.getOptionalText
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public class SnakePermissions(public val node: MappingNode) : Permissions {
-	override fun asMap(): Map<String, String> {
-		TODO("Not yet implemented")
-	}
-
 	override val actions: Access
 		get() = node.getOptionalText("actions")?.let { Access.fromString(it) } ?: Access.NONE
 
@@ -49,4 +45,8 @@ public class SnakePermissions(public val node: MappingNode) : Permissions {
 
 	override val statuses: Access
 		get() = node.getOptionalText("statuses")?.let { Access.fromString(it) } ?: Access.NONE
+
+	override fun asMap(): Map<String, String> {
+		TODO("Not yet implemented")
+	}
 }

@@ -40,8 +40,8 @@ public class MissingKnownActionPermissionsRule : VisitorRule, WorkflowVisitor {
 				id = "MissingRequiredActionPermissions",
 				title = "Required permissions are not declared for action.",
 				description = """
-				to be written
-			""".trimIndent(),
+					to be written
+				""".trimIndent(),
 				compliant = emptyList(),
 				nonCompliant = emptyList(),
 		)
