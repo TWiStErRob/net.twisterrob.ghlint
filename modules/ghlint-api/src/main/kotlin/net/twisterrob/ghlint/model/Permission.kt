@@ -41,7 +41,9 @@ public enum class Permission(public val value: String) {
 
 public enum class Access(public val value: String) : Comparable<Access> {
 	// Order determines restrictiveness of permission
-	NONE("none"), READ("read"), WRITE("write");
+	NONE("none"),
+	READ("read"),
+	WRITE("write");
 
 	public companion object {
 		public fun fromString(value: String): Access = when (value) {
@@ -56,33 +58,4 @@ public data class Scope(val permission: Permission, val access: Access) {
 	override fun toString(): String {
 		return "`${permission.value}: ${access.value}`"
 	}
-}
-
-public fun Permissions.asEffectivePermissionsSet(): Set<Scope> {
-	val scopes = mutableSetOf(
-		Scope(Permission.ACTIONS, actions),
-		Scope(Permission.ATTESTATIONS, attestations),
-		Scope(Permission.CHECKS, checks),
-		Scope(Permission.CONTENTS, contents),
-		Scope(Permission.DEPLOYMENTS, deployments),
-		Scope(Permission.ID_TOKEN, idToken),
-		Scope(Permission.ISSUES, issues),
-		Scope(Permission.METADATA, metadata),
-		Scope(Permission.PACKAGES, packages),
-		Scope(Permission.PAGES, pages),
-		Scope(Permission.PULL_REQUESTS, pullRequests),
-		Scope(Permission.REPOSITORY_PROJECTS, repositoryProjects),
-		Scope(Permission.SECURITY_EVENTS, securityEvents),
-		Scope(Permission.STATUSES, statuses)
-	)
-
-	val effectiveScopes = mutableSetOf<Scope>()
-
-	for (scope in scopes) {
-		if (scope.access == Access.WRITE) {
-			effectiveScopes.add(Scope(scope.permission, Access.READ))
-		}
-	}
-
-	return scopes.plus(effectiveScopes)
 }
