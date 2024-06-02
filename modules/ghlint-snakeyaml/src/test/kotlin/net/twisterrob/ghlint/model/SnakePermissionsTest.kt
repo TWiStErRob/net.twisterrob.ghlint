@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.model
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
@@ -98,6 +99,25 @@ class SnakePermissionsTest {
 		map?.size shouldBe 2
 		map?.get("contents") shouldBe "read"
 		map?.get("issues") shouldBe "write"
+	}
+
+	@Test fun `job has a new permission not modelled by GHLint`() {
+		val job = loadJob(
+				"""
+				jobs:
+				  test:
+				    permissions:
+				      some-new-permission: read
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		)
+
+		job.permissions shouldNotBe null
+
+		val map = job.permissions?.asMap()
+		map?.size shouldBe 0
 	}
 
 	private fun loadJob(@Language("yaml") yaml: String): Job {
