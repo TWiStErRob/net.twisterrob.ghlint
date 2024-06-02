@@ -2,8 +2,10 @@ package net.twisterrob.ghlint
 
 import io.kotest.matchers.paths.shouldContainFile
 import io.kotest.matchers.paths.shouldContainNFiles
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
+import io.kotest.matchers.string.beEmpty
 import net.twisterrob.ghlint.GHLintTest.Fixtures.errorFile
 import net.twisterrob.ghlint.GHLintTest.Fixtures.errorFileMessage
 import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile1
@@ -13,6 +15,7 @@ import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile2
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.test.captureSystemStreams
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
@@ -20,19 +23,30 @@ import net.twisterrob.ghlint.testing.singleFinding
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import org.junit.jupiter.api.parallel.Resources
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
 class GHLintTest {
 
 	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `no files`(@TempDir tempDir: Path) {
-		val result = GHLint().run(FakeConfiguration(tempDir, emptyList(), isReportExitCode = true))
+		val result = captureSystemStreams {
+			GHLint().run(FakeConfiguration(tempDir, emptyList(), isReportExitCode = true))
+		}
 
-		result shouldBe 0
+		result.result shouldBe 0
+		result.out should beEmpty()
+		result.err should beEmpty()
 	}
 
 	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `single valid file`(@TempDir tempDir: Path) {
 		val test = tempDir.resolve("test.yml")
 		test.writeText(
@@ -52,14 +66,20 @@ class GHLintTest {
 			""".trimIndent()
 		)
 
-		val result = GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
+		val result = captureSystemStreams {
+			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
+		}
 
-		result shouldBe 0
+		result.result shouldBe 0
+		result.out should beEmpty()
+		result.err should beEmpty()
 		tempDir shouldContainFile "test.yml"
 		tempDir shouldContainNFiles 1
 	}
 
 	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `single invalid file`(@TempDir tempDir: Path) {
 		val test = tempDir.resolve("test.yml")
 		test.writeText(
@@ -67,9 +87,13 @@ class GHLintTest {
 			""".trimIndent()
 		)
 
-		val result = GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
+		val result = captureSystemStreams {
+			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
+		}
 
-		result shouldBe 1
+		result.result shouldBe 1
+		result.out should beEmpty()
+		result.err should beEmpty()
 		tempDir shouldContainFile "test.yml"
 		tempDir shouldContainNFiles 1
 	}
