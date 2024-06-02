@@ -15,25 +15,22 @@ public class MissingKnownActionPermissionsRule : VisitorRule, WorkflowVisitor {
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
-		val knownPermissions = KnownActionPermissions[step.uses.action]
+		val expectedPermissions = KnownActionPermissions[step.uses.action] ?: return
+		val definedPermissions = step.parent.permissions ?: emptySet()
 
-		knownPermissions?.let { expectedPermissions ->
-			val definedPermissions = step.parent.permissions ?: emptySet()
+		val remaining = expectedPermissions.minus(definedPermissions)
 
-			val remaining = expectedPermissions.minus(definedPermissions)
+		if (remaining.isEmpty()) {
+			// All permissions are satisified
+			return
+		}
 
-			if (remaining.isEmpty()) {
-				// All permissions are satisified
-				return
-			}
-
-			// Need to check for permissions with higher access levels, e.g. `write` is more permissive than `read`.
-			remaining.forEach { expected ->
-				val defined = definedPermissions.find { it.name == expected.name }
-				if (defined == null || defined.access < expected.access) {
-					reporting.report(MissingRequiredActionPermissions, step) {
-						"${it} requires ${expected.access} permission for ${step.uses.action} to work."
-					}
+		// Need to check for permissions with higher access levels, e.g. `write` is more permissive than `read`.
+		remaining.forEach { expected ->
+			val defined = definedPermissions.find { it.name == expected.name }
+			if (defined == null || defined.access < expected.access) {
+				reporting.report(MissingRequiredActionPermissions, step) {
+					"${it} requires ${expected.access} permission for ${step.uses.action} to work."
 				}
 			}
 		}
