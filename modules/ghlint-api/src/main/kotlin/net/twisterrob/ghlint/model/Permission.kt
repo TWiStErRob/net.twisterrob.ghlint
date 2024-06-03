@@ -37,7 +37,7 @@ public class Scope(
 		public val permission: Permission,
 		public val access: Access
 ) {
-	override fun toString(): String = "`${permission.value}: ${access.value}`"
+	override fun toString(): String = "${permission.value}: ${access.value}"
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
