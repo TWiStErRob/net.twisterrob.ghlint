@@ -1,7 +1,10 @@
 package net.twisterrob.ghlint.model
 
-// https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-
+/**
+ * See [list of permissions](
+https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+).
+ */
 @Suppress("detekt.ComplexInterface")
 public interface Permissions {
 	public val actions: Access
