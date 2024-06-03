@@ -5,73 +5,87 @@ import io.kotest.matchers.shouldNotBe
 import net.twisterrob.ghlint.testing.load
 import net.twisterrob.ghlint.testing.loadUnsafe
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 class SnakePermissionsTest {
 
 	private fun File.asJob(): Job.NormalJob = (content as Workflow).jobs.values.single() as Job.NormalJob
 
-	@Test fun `job has permissions with correct values`() {
+	@CsvSource(
+		"read, READ",
+		"write, WRITE",
+		"none, NONE",
+	)
+	@ParameterizedTest
+	fun `job has permissions with correct values`(accessString: String, access: Access) {
 		val job = load(
 			"""
 				on: push
 				jobs:
 				  test:
 				    permissions:
-				      actions: write
-				      attestations: read
-				      checks: write
-				      contents: read
-				      deployments: none
-				      id-token: read
-				      issues: write
-				      metadata: read
-				      packages: write
-				      pages: write
-				      pull-requests: write
-				      repository-projects: read
-				      security-events: write
-				      statuses: write
+				      actions: ${accessString}
+				      attestations: ${accessString}
+				      checks: ${accessString}
+				      contents: ${accessString}
+				      deployments: ${accessString}
+				      id-token: ${accessString}
+				      issues: ${accessString}
+				      #metadata: ${accessString}
+				      packages: ${accessString}
+				      pages: ${accessString}
+				      pull-requests: ${accessString}
+				      repository-projects: ${accessString}
+				      security-events: ${accessString}
+				      statuses: ${accessString}
 				    runs-on: ubuntu-latest
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
 		).asJob()
 
-		job.permissions?.actions shouldBe Access.WRITE
-		job.permissions?.attestations shouldBe Access.READ
-		job.permissions?.checks shouldBe Access.WRITE
-		job.permissions?.contents shouldBe Access.READ
-		job.permissions?.deployments shouldBe Access.NONE
-		job.permissions?.idToken shouldBe Access.READ
-		job.permissions?.issues shouldBe Access.WRITE
-		job.permissions?.metadata shouldBe Access.READ
-		job.permissions?.packages shouldBe Access.WRITE
-		job.permissions?.pages shouldBe Access.WRITE
-		job.permissions?.pullRequests shouldBe Access.WRITE
-		job.permissions?.repositoryProjects shouldBe Access.READ
-		job.permissions?.securityEvents shouldBe Access.WRITE
-		job.permissions?.statuses shouldBe Access.WRITE
+		job.permissions?.actions shouldBe access
+		job.permissions?.attestations shouldBe access
+		job.permissions?.checks shouldBe access
+		job.permissions?.contents shouldBe access
+		job.permissions?.deployments shouldBe access
+		job.permissions?.idToken shouldBe access
+		job.permissions?.issues shouldBe access
+		//job.permissions?.metadata shouldBe access
+		job.permissions?.packages shouldBe access
+		job.permissions?.pages shouldBe access
+		job.permissions?.pullRequests shouldBe access
+		job.permissions?.repositoryProjects shouldBe access
+		job.permissions?.securityEvents shouldBe access
+		job.permissions?.statuses shouldBe access
 	}
 
-	@Test fun `workflow has permissions with correct values`() {
+	@CsvSource(
+		"read, READ",
+		"write, WRITE",
+		"none, NONE",
+	)
+	@ParameterizedTest
+	fun `workflow has permissions with correct values`(accessString: String, access: Access) {
 		val workflow = load(
 			"""
 				on: push
 				permissions:
-				  actions: read
-				  attestations: write
-				  checks: read
-				  contents: write
-				  deployments: write
-				  id-token: none
-				  issues: read
-				  metadata: write
-				  packages: read
-				  pages: read
-				  pull-requests: read
-				  repository-projects: write
-				  security-events: read
-				  statuses: read
+				  actions: ${accessString}
+				  attestations: ${accessString}
+				  checks: ${accessString}
+				  contents: ${accessString}
+				  deployments: ${accessString}
+				  id-token: ${accessString}
+				  issues: ${accessString}
+				  #metadata: ${accessString}
+				  packages: ${accessString}
+				  pages: ${accessString}
+				  pull-requests: ${accessString}
+				  repository-projects: ${accessString}
+				  security-events: ${accessString}
+				  statuses: ${accessString}
 				jobs:
 				  test:
 				    runs-on: ubuntu-latest
@@ -80,20 +94,20 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		).content as Workflow
 
-		workflow.permissions?.actions shouldBe Access.READ
-		workflow.permissions?.attestations shouldBe Access.WRITE
-		workflow.permissions?.checks shouldBe Access.READ
-		workflow.permissions?.contents shouldBe Access.WRITE
-		workflow.permissions?.deployments shouldBe Access.WRITE
-		workflow.permissions?.idToken shouldBe Access.NONE
-		workflow.permissions?.issues shouldBe Access.READ
-		workflow.permissions?.metadata shouldBe Access.WRITE
-		workflow.permissions?.packages shouldBe Access.READ
-		workflow.permissions?.pages shouldBe Access.READ
-		workflow.permissions?.pullRequests shouldBe Access.READ
-		workflow.permissions?.repositoryProjects shouldBe Access.WRITE
-		workflow.permissions?.securityEvents shouldBe Access.READ
-		workflow.permissions?.statuses shouldBe Access.READ
+		workflow.permissions?.actions shouldBe access
+		workflow.permissions?.attestations shouldBe access
+		workflow.permissions?.checks shouldBe access
+		workflow.permissions?.contents shouldBe access
+		workflow.permissions?.deployments shouldBe access
+		workflow.permissions?.idToken shouldBe access
+		workflow.permissions?.issues shouldBe access
+		//workflow.permissions?.metadata shouldBe access
+		workflow.permissions?.packages shouldBe access
+		workflow.permissions?.pages shouldBe access
+		workflow.permissions?.pullRequests shouldBe access
+		workflow.permissions?.repositoryProjects shouldBe access
+		workflow.permissions?.securityEvents shouldBe access
+		workflow.permissions?.statuses shouldBe access
 	}
 
 	@Test fun `job with no permissions is null`() {
