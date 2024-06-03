@@ -316,7 +316,6 @@ public class SnakeComponentFactory {
 		node as MappingNode
 		return SnakePermissions(
 			node = node,
-			map = node.map.toTextMap(),
 		)
 	}
 }

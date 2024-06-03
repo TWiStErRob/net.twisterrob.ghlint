@@ -1,11 +1,12 @@
 package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.yaml.getOptionalText
+import net.twisterrob.ghlint.yaml.map
+import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 
 public class SnakePermissions internal constructor(
 		internal val node: MappingNode,
-		override val map: Map<String, String>
 ) : Permissions {
 	override val actions: Access
 		get() = node.getOptionalText("actions")?.let { Access.fromString(it) } ?: Access.NONE
@@ -48,4 +49,7 @@ public class SnakePermissions internal constructor(
 
 	override val statuses: Access
 		get() = node.getOptionalText("statuses")?.let { Access.fromString(it) } ?: Access.NONE
+
+	override val map: Map<String, String>
+		get() = node.map.toTextMap()
 }
