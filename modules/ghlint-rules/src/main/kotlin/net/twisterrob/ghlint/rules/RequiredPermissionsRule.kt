@@ -4,6 +4,7 @@ import net.twisterrob.ghlint.model.Access
 import net.twisterrob.ghlint.model.Permission
 import net.twisterrob.ghlint.model.Scope
 import net.twisterrob.ghlint.model.WorkflowStep
+import net.twisterrob.ghlint.model.effectivePermissions
 import net.twisterrob.ghlint.model.effectiveScopes
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -19,11 +20,10 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		val expectedPermissions = REQUIRED_PERMISSIONS[step.uses.action] ?: return
-		val definedPermissions = step.parent.effectiveScopes
-			?: step.parent.parent.effectiveScopes
-			?: return
+		val effectivePermissions = step.parent.effectivePermissions ?: return
+		val definedPermissions = effectivePermissions.effectiveScopes
 
-		val remaining = expectedPermissions.minus(definedPermissions)
+		val remaining = expectedPermissions - definedPermissions
 
 		remaining.forEach { expected ->
 			reporting.report(MissingRequiredActionPermissions, step) {
