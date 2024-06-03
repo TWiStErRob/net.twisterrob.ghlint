@@ -81,7 +81,7 @@ class SnakePermissionsTest {
 
 		Permission.entries.forEach { permission ->
 			if (permission != Permission.REPOSITORY_PROJECTS) {
-				job.permissions?.accessOf(permission) shouldBe Access.NONE
+				job.permissions?.get(permission) shouldBe Access.NONE
 			}
 		}
 	}

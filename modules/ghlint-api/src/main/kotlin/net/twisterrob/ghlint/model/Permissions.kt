@@ -25,7 +25,7 @@ public interface Permissions {
 	public val map: Map<String, String>
 
 	@Suppress("detekt.CyclomaticComplexMethod")
-	public fun accessOf(permission: Permission) : Access {
+	public operator fun get(permission: Permission) : Access {
 		return when (permission) {
 			Permission.ACTIONS -> actions
 			Permission.ATTESTATIONS -> attestations
