@@ -4,7 +4,6 @@ import net.twisterrob.ghlint.model.Access
 import net.twisterrob.ghlint.model.Permission
 import net.twisterrob.ghlint.model.Scope
 import net.twisterrob.ghlint.model.WorkflowStep
-import net.twisterrob.ghlint.model.asEffectiveScopes
 import net.twisterrob.ghlint.model.effectiveScopes
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
