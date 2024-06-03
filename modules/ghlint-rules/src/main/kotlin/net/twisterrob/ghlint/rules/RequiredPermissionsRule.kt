@@ -12,13 +12,13 @@ import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-public class MissingKnownActionPermissionsRule : VisitorRule, WorkflowVisitor {
+public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	override val issues: List<Issue> = listOf(MissingRequiredActionPermissions)
 
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
-		val expectedPermissions = KnownActionPermissions[step.uses.action] ?: return
+		val expectedPermissions = REQUIRED_PERMISSIONS[step.uses.action] ?: return
 		val definedPermissions = step.parent.effectiveScopes
 				?: step.parent.parent.effectiveScopes
 				?: return
@@ -33,7 +33,7 @@ public class MissingKnownActionPermissionsRule : VisitorRule, WorkflowVisitor {
 	}
 
 	private companion object {
-		val KnownActionPermissions: Map<String, Set<Scope>> = mapOf(
+		private val REQUIRED_PERMISSIONS: Map<String, Set<Scope>> = mapOf(
 				"actions/checkout" to setOf(Scope(Permission.CONTENTS, Access.READ)),
 		)
 

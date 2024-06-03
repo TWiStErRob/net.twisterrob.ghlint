@@ -8,12 +8,12 @@ import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-class MissingKnownActionPermissionsRuleTest {
+class RequiredPermissionsRuleTest {
 
-	@TestFactory fun metadata() = test(MissingKnownActionPermissionsRule::class)
+	@TestFactory fun metadata() = test(RequiredPermissionsRule::class)
 
 	@Test fun `should report when missing a known required permission for checkout action`() {
-		val results = check<MissingKnownActionPermissionsRule>(
+		val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
 					jobs:
@@ -33,7 +33,7 @@ class MissingKnownActionPermissionsRuleTest {
 	}
 
 	@Test fun `passes when a known required permission for checkout action is specified`() {
-		val results = check<MissingKnownActionPermissionsRule>(
+		val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
 					jobs:
@@ -50,7 +50,7 @@ class MissingKnownActionPermissionsRuleTest {
 	}
 
 	@Test fun `passes when a known required permission for checkout action is specified at workflow level`() {
-		val results = check<MissingKnownActionPermissionsRule>(
+		val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
 					permissions:
@@ -67,7 +67,7 @@ class MissingKnownActionPermissionsRuleTest {
 	}
 
 	@Test fun `passes when a known required permission for checkout action is specified at higher access level`() {
-		val results = check<MissingKnownActionPermissionsRule>(
+		val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
 					jobs:

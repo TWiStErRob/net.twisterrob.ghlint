@@ -21,11 +21,11 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	MissingGhRepoRule::class,
 	MissingGhTokenRule::class,
 	MissingJobTimeoutRule::class,
-	MissingKnownActionPermissionsRule::class,
 	MissingNameRule::class,
 	MissingShellRule::class,
 	PreferGitHubTokenRule::class,
 	RedundantShellRule::class,
+	RequiredPermissionsRule::class,
 	SafeEnvironmentFileRedirectRule::class,
 	ScriptInjectionRule::class,
 )
