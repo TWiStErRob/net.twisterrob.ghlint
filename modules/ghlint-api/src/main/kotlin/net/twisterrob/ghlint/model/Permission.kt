@@ -34,7 +34,7 @@ public enum class Access(
 				"read" -> READ
 				"write" -> WRITE
 				"none" -> NONE
-				else -> error("Unknown access value: $value")
+				else -> throw IllegalArgumentException("Unknown access value: $value")
 			}
 	}
 }
