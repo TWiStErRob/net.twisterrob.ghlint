@@ -316,6 +316,7 @@ public class SnakeComponentFactory {
 		node as MappingNode
 		return SnakePermissions(
 			node = node,
+			target = node,
 		)
 	}
 }
