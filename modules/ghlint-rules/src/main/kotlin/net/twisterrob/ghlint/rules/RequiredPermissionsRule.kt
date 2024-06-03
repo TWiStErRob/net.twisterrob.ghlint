@@ -27,7 +27,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 		remaining.forEach { expected ->
 			reporting.report(MissingRequiredActionPermissions, step) {
-				"${it} requires ${expected} permission for ${step.uses.action} to work."
+				"${it} requires `${expected}` permission for `${step.uses.action}` to work."
 			}
 		}
 	}
