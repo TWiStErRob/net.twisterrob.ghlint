@@ -65,6 +65,19 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 						      - uses: actions/checkout@v4
 					""".trimIndent(),
 				),
+				Example(
+					explanation = "Required permissions are explicitly declared on the workflow.",
+					content = """
+						on: push
+						permissions:
+						  contents: read
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - uses: actions/checkout@v4
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
