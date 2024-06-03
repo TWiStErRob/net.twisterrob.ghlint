@@ -28,4 +28,20 @@ class AccessTest {
 		}
 		exception shouldHaveMessage "Unknown access value: admin"
 	}
+
+	@Test
+	fun `fromString throws for wrong cased value`() {
+		val exception = shouldThrow<IllegalArgumentException> {
+			Access.fromString("Read")
+		}
+		exception shouldHaveMessage "Unknown access value: Read"
+	}
+
+	@Test
+	fun `fromString throws for enum name`() {
+		val exception = shouldThrow<IllegalArgumentException> {
+			Access.fromString(Access.WRITE.name)
+		}
+		exception shouldHaveMessage "Unknown access value: WRITE"
+	}
 }
