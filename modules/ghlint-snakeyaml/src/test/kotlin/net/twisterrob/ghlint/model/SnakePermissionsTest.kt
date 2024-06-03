@@ -125,6 +125,24 @@ class SnakePermissionsTest {
 		job.permissions shouldBe null
 	}
 
+	@Test fun `job with no permissions set`() {
+		val job = load(
+			"""
+				on: push
+				jobs:
+				  test:
+				    permissions: { }
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asJob()
+
+		Permission.entries.forEach { permission ->
+			job.permissions?.get(permission) shouldBe Access.NONE
+		}
+	}
+
 	@Test fun `job with one permission set, remaining are access NONE`() {
 		val job = load(
 			"""
