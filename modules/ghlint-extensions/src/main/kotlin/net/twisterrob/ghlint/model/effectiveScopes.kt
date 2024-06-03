@@ -23,3 +23,9 @@ public val Permissions.asEffectiveScopes: Set<Scope>
 					.map { Scope(it.permission, Access.READ) }
 		}
 	}
+
+public val Job.effectiveScopes: Set<Scope>?
+	get() = permissions?.asEffectiveScopes
+
+public val Workflow.effectiveScopes: Set<Scope>?
+	get() = permissions?.asEffectiveScopes
