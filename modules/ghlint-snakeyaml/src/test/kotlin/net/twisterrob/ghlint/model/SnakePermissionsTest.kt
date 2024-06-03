@@ -12,8 +12,11 @@ import org.junit.jupiter.params.provider.CsvSource
 
 class SnakePermissionsTest {
 
-	private fun File.asWorkflow(): Workflow = content as Workflow
-	private fun File.asJob(): Job.NormalJob = (content as Workflow).jobs.values.single() as Job.NormalJob
+	private val File.workflow: Workflow
+		get() = content as Workflow
+
+	private val File.job: Job.NormalJob
+		get() = (content as Workflow).jobs.values.single() as Job.NormalJob
 
 	@CsvSource(
 		"read, READ",
@@ -48,8 +51,8 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		)
 
-		file.asJob().permissions should beNull()
-		val workflow = file.asWorkflow()
+		file.job.permissions should beNull()
+		val workflow = file.workflow
 		workflow.permissions?.actions shouldBe access
 		workflow.permissions?.attestations shouldBe access
 		workflow.permissions?.checks shouldBe access
@@ -99,8 +102,8 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		)
 
-		file.asWorkflow().permissions should beNull()
-		val job = file.asJob()
+		file.workflow.permissions should beNull()
+		val job = file.job
 		job.permissions?.actions shouldBe access
 		job.permissions?.attestations shouldBe access
 		job.permissions?.checks shouldBe access
@@ -127,7 +130,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		workflow.permissions should beNull()
 	}
@@ -142,7 +145,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		workflow.permissions should beNull()
 	}
@@ -158,7 +161,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		workflow.permissions.verifyTheRestOf()
 	}
@@ -174,7 +177,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		).job
 
 		job.permissions.verifyTheRestOf()
 	}
@@ -191,7 +194,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		workflow.permissions?.repositoryProjects shouldBe Access.READ
 		workflow.permissions.verifyTheRestOf(Permission.REPOSITORY_PROJECTS)
@@ -209,7 +212,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		).job
 
 		job.permissions?.repositoryProjects shouldBe Access.READ
 		job.permissions.verifyTheRestOf(Permission.REPOSITORY_PROJECTS)
@@ -228,7 +231,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		val map = workflow.permissions?.map
 		map shouldBe mapOf(
@@ -250,7 +253,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		).job
 
 		job.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"contents" to "read",
@@ -270,7 +273,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		workflow.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"some-new-permission" to "read",
@@ -289,7 +292,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		).job
 
 		job.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"some-new-permission" to "read",
@@ -308,7 +311,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		).workflow
 
 		workflow.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"contents" to "admin",
@@ -327,7 +330,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		).job
 
 		job.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"contents" to "admin",
