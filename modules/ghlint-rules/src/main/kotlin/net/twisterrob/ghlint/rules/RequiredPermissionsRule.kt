@@ -20,8 +20,8 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 		val expectedPermissions = REQUIRED_PERMISSIONS[step.uses.action] ?: return
 		val definedPermissions = step.parent.effectiveScopes
-				?: step.parent.parent.effectiveScopes
-				?: return
+			?: step.parent.parent.effectiveScopes
+			?: return
 
 		val remaining = expectedPermissions.minus(definedPermissions)
 
@@ -34,51 +34,51 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 	private companion object {
 		private val REQUIRED_PERMISSIONS: Map<String, Set<Scope>> = mapOf(
-				"actions/checkout" to setOf(Scope(Permission.CONTENTS, Access.READ)),
+			"actions/checkout" to setOf(Scope(Permission.CONTENTS, Access.READ)),
 		)
 
 		val MissingRequiredActionPermissions = Issue(
-				id = "MissingRequiredActionPermissions",
-				title = "Required permissions are not declared for action.",
-				description = """
-					Certain GitHub Actions require specific permissions to be specified for the GITHUB_TOKEN to work correctly.
-					
-					For example, the `actions/checkout` action requires `contents: read` permission to be able to
-					check out the repository.
-					
-					References:
-					
-				 	* [Documentation of `GITHUB_TOKEN` permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token)
-				 	* [List of Available permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
-				""".trimIndent(),
-				compliant = listOf(
-					Example(
-						explanation = "Required permissions are explicitly declared on the job.",
-						content = """
-							on: push
-							jobs:
-							  example:
-							    runs-on: ubuntu-latest
-							    permissions:
-							      contents: read
-							    steps:
-							      - uses: actions/checkout@v4
-						""".trimIndent(),
-					),
+			id = "MissingRequiredActionPermissions",
+			title = "Required permissions are not declared for action.",
+			description = """
+				Certain GitHub Actions require specific permissions to be specified for the GITHUB_TOKEN to work correctly.
+				
+				For example, the `actions/checkout` action requires `contents: read` permission to be able to
+				check out the repository.
+				
+				References:
+				
+			    * [Documentation of `GITHUB_TOKEN` permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token)
+			    * [List of Available permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
+			""".trimIndent(),
+			compliant = listOf(
+				Example(
+					explanation = "Required permissions are explicitly declared on the job.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    permissions:
+						      contents: read
+						    steps:
+						      - uses: actions/checkout@v4
+					""".trimIndent(),
 				),
-				nonCompliant = listOf(
-					Example(
-						explanation = "Required permissions are not declared on the job or workflow.",
-						content = """
-							on: push
-							jobs:
-							  example:
-							    runs-on: ubuntu-latest
-							    permissions:
-							      pull-requests: write
-							    steps:
-							      - uses: actions/checkout@v4
-						""".trimIndent(),
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Required permissions are not declared on the job or workflow.",
+					content = """
+						on: push
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    permissions:
+						      pull-requests: write
+						    steps:
+						      - uses: actions/checkout@v4
+					""".trimIndent(),
 				),
 			),
 		)
