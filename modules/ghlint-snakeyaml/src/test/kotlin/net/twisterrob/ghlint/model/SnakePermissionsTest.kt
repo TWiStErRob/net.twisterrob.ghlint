@@ -1,7 +1,9 @@
 package net.twisterrob.ghlint.model
 
+import io.kotest.matchers.nulls.beNull
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import net.twisterrob.ghlint.testing.load
 import net.twisterrob.ghlint.testing.loadUnsafe
 import org.junit.jupiter.api.Test
@@ -10,6 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource
 
 class SnakePermissionsTest {
 
+	private fun File.asWorkflow(): Workflow = content as Workflow
 	private fun File.asJob(): Job.NormalJob = (content as Workflow).jobs.values.single() as Job.NormalJob
 
 	@CsvSource(
@@ -92,7 +95,7 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).content as Workflow
+		).asWorkflow()
 
 		workflow.permissions?.actions shouldBe access
 		workflow.permissions?.attestations shouldBe access
@@ -110,8 +113,8 @@ class SnakePermissionsTest {
 		workflow.permissions?.statuses shouldBe access
 	}
 
-	@Test fun `job with no permissions is null`() {
-		val job = load(
+	@Test fun `workflow with no permissions is null`() {
+		val workflow = load(
 			"""
 				on: push
 				jobs:
@@ -120,9 +123,40 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		).asWorkflow()
 
-		job.permissions shouldBe null
+		workflow.permissions should beNull()
+	}
+
+	@Test fun `job with no permissions is null`() {
+		val workflow = load(
+			"""
+				on: push
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asWorkflow()
+
+		workflow.permissions should beNull()
+	}
+
+	@Test fun `workflow with no permissions set`() {
+		val workflow = load(
+			"""
+				on: push
+				permissions: { }
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asWorkflow()
+
+		workflow.permissions.verifyTheRestOf()
 	}
 
 	@Test fun `job with no permissions set`() {
@@ -138,9 +172,25 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		).asJob()
 
-		Permission.entries.forEach { permission ->
-			job.permissions?.get(permission) shouldBe Access.NONE
-		}
+		job.permissions.verifyTheRestOf()
+	}
+
+	@Test fun `workflow with one permission set, remaining are access NONE`() {
+		val workflow = load(
+			"""
+				on: push
+				permissions:
+				  repository-projects: read
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asWorkflow()
+
+		workflow.permissions?.repositoryProjects shouldBe Access.READ
+		workflow.permissions.verifyTheRestOf(Permission.REPOSITORY_PROJECTS)
 	}
 
 	@Test fun `job with one permission set, remaining are access NONE`() {
@@ -158,15 +208,32 @@ class SnakePermissionsTest {
 		).asJob()
 
 		job.permissions?.repositoryProjects shouldBe Access.READ
-
-		Permission.entries.forEach { permission ->
-			if (permission != Permission.REPOSITORY_PROJECTS) {
-				job.permissions?.get(permission) shouldBe Access.NONE
-			}
-		}
+		job.permissions.verifyTheRestOf(Permission.REPOSITORY_PROJECTS)
 	}
 
-	@Test fun `asMap produces map representing exactly what is in the yaml`() {
+	@Test fun `workflow asMap produces map representing exactly what is in the yaml`() {
+		val workflow = load(
+			"""
+				on: push
+				permissions:
+				  contents: read
+				  issues: write
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asWorkflow()
+
+		val map = workflow.permissions?.map
+		map shouldBe mapOf(
+			"contents" to "read",
+			"issues" to "write",
+		)
+	}
+
+	@Test fun `job asMap produces map representing exactly what is in the yaml`() {
 		val job = load(
 			"""
 				on: push
@@ -181,10 +248,28 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		).asJob()
 
-		val map = job.permissions?.map
-		map shouldBe mapOf(
+		job.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"contents" to "read",
 			"issues" to "write",
+		)
+	}
+
+	@Test fun `workflow has a new permission not modelled by GHLint`() {
+		val workflow = loadUnsafe(
+			"""
+				on: push
+				permissions:
+				  some-new-permission: read
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asWorkflow()
+
+		workflow.permissions.shouldNotBeNull().map shouldBe mapOf(
+			"some-new-permission" to "read",
 		)
 	}
 
@@ -202,11 +287,27 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		).asJob()
 
-		job.permissions shouldNotBe null
-
-		val map = job.permissions?.map
-		map shouldBe mapOf(
+		job.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"some-new-permission" to "read",
+		)
+	}
+
+	@Test fun `workflow has a new access level not modelled by GHLint`() {
+		val workflow = loadUnsafe(
+			"""
+				on: push
+				permissions:
+				  contents: admin
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asWorkflow()
+
+		workflow.permissions.shouldNotBeNull().map shouldBe mapOf(
+			"contents" to "admin",
 		)
 	}
 
@@ -224,11 +325,17 @@ class SnakePermissionsTest {
 			""".trimIndent()
 		).asJob()
 
-		job.permissions shouldNotBe null
-
-		val map = job.permissions?.map
-		map shouldBe mapOf(
+		job.permissions.shouldNotBeNull().map shouldBe mapOf(
 			"contents" to "admin",
 		)
+	}
+
+	companion object {
+
+		private fun Permissions?.verifyTheRestOf(vararg explicitlyTestedPermissions: Permission) {
+			(Permission.entries - setOf(*explicitlyTestedPermissions)).forEach {
+				this?.get(it) shouldBe Access.NONE
+			}
+		}
 	}
 }
