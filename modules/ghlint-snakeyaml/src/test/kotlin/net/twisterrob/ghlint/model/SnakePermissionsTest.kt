@@ -21,55 +21,6 @@ class SnakePermissionsTest {
 		"none, NONE",
 	)
 	@ParameterizedTest
-	fun `job has permissions with correct values`(accessString: String, access: Access) {
-		val job = load(
-			"""
-				on: push
-				jobs:
-				  test:
-				    permissions:
-				      actions: ${accessString}
-				      attestations: ${accessString}
-				      checks: ${accessString}
-				      contents: ${accessString}
-				      deployments: ${accessString}
-				      id-token: ${accessString}
-				      issues: ${accessString}
-				      #metadata: ${accessString}
-				      packages: ${accessString}
-				      pages: ${accessString}
-				      pull-requests: ${accessString}
-				      repository-projects: ${accessString}
-				      security-events: ${accessString}
-				      statuses: ${accessString}
-				    runs-on: ubuntu-latest
-				    steps:
-				      - uses: actions/checkout@v4
-			""".trimIndent()
-		).asJob()
-
-		job.permissions?.actions shouldBe access
-		job.permissions?.attestations shouldBe access
-		job.permissions?.checks shouldBe access
-		job.permissions?.contents shouldBe access
-		job.permissions?.deployments shouldBe access
-		job.permissions?.idToken shouldBe access
-		job.permissions?.issues shouldBe access
-		//job.permissions?.metadata shouldBe access
-		job.permissions?.packages shouldBe access
-		job.permissions?.pages shouldBe access
-		job.permissions?.pullRequests shouldBe access
-		job.permissions?.repositoryProjects shouldBe access
-		job.permissions?.securityEvents shouldBe access
-		job.permissions?.statuses shouldBe access
-	}
-
-	@CsvSource(
-		"read, READ",
-		"write, WRITE",
-		"none, NONE",
-	)
-	@ParameterizedTest
 	fun `workflow has permissions with correct values`(accessString: String, access: Access) {
 		val workflow = load(
 			"""
@@ -111,6 +62,55 @@ class SnakePermissionsTest {
 		workflow.permissions?.repositoryProjects shouldBe access
 		workflow.permissions?.securityEvents shouldBe access
 		workflow.permissions?.statuses shouldBe access
+	}
+
+	@CsvSource(
+		"read, READ",
+		"write, WRITE",
+		"none, NONE",
+	)
+	@ParameterizedTest
+	fun `job has permissions with correct values`(accessString: String, access: Access) {
+		val job = load(
+			"""
+				on: push
+				jobs:
+				  test:
+				    permissions:
+				      actions: ${accessString}
+				      attestations: ${accessString}
+				      checks: ${accessString}
+				      contents: ${accessString}
+				      deployments: ${accessString}
+				      id-token: ${accessString}
+				      issues: ${accessString}
+				      #metadata: ${accessString}
+				      packages: ${accessString}
+				      pages: ${accessString}
+				      pull-requests: ${accessString}
+				      repository-projects: ${accessString}
+				      security-events: ${accessString}
+				      statuses: ${accessString}
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+			""".trimIndent()
+		).asJob()
+
+		job.permissions?.actions shouldBe access
+		job.permissions?.attestations shouldBe access
+		job.permissions?.checks shouldBe access
+		job.permissions?.contents shouldBe access
+		job.permissions?.deployments shouldBe access
+		job.permissions?.idToken shouldBe access
+		job.permissions?.issues shouldBe access
+		//job.permissions?.metadata shouldBe access
+		job.permissions?.packages shouldBe access
+		job.permissions?.pages shouldBe access
+		job.permissions?.pullRequests shouldBe access
+		job.permissions?.repositoryProjects shouldBe access
+		job.permissions?.securityEvents shouldBe access
+		job.permissions?.statuses shouldBe access
 	}
 
 	@Test fun `workflow with no permissions is null`() {
