@@ -1,7 +1,8 @@
 package net.twisterrob.ghlint.model
 
-public fun Permissions.asEffectivePermissionsSet(): Set<Scope> {
-	val scopes = mutableSetOf(
+public val Permissions.asEffectiveScopes: Set<Scope>
+	get() {
+		val scopes = mutableSetOf(
 			Scope(Permission.ACTIONS, actions),
 			Scope(Permission.ATTESTATIONS, attestations),
 			Scope(Permission.CHECKS, checks),
@@ -16,15 +17,15 @@ public fun Permissions.asEffectivePermissionsSet(): Set<Scope> {
 			Scope(Permission.REPOSITORY_PROJECTS, repositoryProjects),
 			Scope(Permission.SECURITY_EVENTS, securityEvents),
 			Scope(Permission.STATUSES, statuses)
-	)
+		)
 
-	val effectiveScopes = mutableSetOf<Scope>()
+		val effectiveScopes = mutableSetOf<Scope>()
 
-	for (scope in scopes) {
-		if (scope.access == Access.WRITE) {
-			effectiveScopes.add(Scope(scope.permission, Access.READ))
+		for (scope in scopes) {
+			if (scope.access == Access.WRITE) {
+				effectiveScopes.add(Scope(scope.permission, Access.READ))
+			}
 		}
-	}
 
-	return scopes.plus(effectiveScopes)
-}
+		return scopes.plus(effectiveScopes)
+	}
