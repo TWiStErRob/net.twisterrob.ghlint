@@ -22,7 +22,7 @@ class SnakePermissionsTest {
 	)
 	@ParameterizedTest
 	fun `workflow has permissions with correct values`(accessString: String, access: Access) {
-		val workflow = load(
+		val file = load(
 			"""
 				on: push
 				permissions:
@@ -46,8 +46,10 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asWorkflow()
+		)
 
+		file.asJob().permissions should beNull()
+		val workflow = file.asWorkflow()
 		workflow.permissions?.actions shouldBe access
 		workflow.permissions?.attestations shouldBe access
 		workflow.permissions?.checks shouldBe access
@@ -71,7 +73,7 @@ class SnakePermissionsTest {
 	)
 	@ParameterizedTest
 	fun `job has permissions with correct values`(accessString: String, access: Access) {
-		val job = load(
+		val file = load(
 			"""
 				on: push
 				jobs:
@@ -95,8 +97,10 @@ class SnakePermissionsTest {
 				    steps:
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).asJob()
+		)
 
+		file.asWorkflow().permissions should beNull()
+		val job = file.asJob()
 		job.permissions?.actions shouldBe access
 		job.permissions?.attestations shouldBe access
 		job.permissions?.checks shouldBe access
