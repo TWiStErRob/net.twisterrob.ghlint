@@ -102,9 +102,10 @@ class SnakePermissionsTest {
 		).asJob()
 
 		val map = job.permissions?.map
-		map?.size shouldBe 2
-		map?.get("contents") shouldBe "read"
-		map?.get("issues") shouldBe "write"
+		map shouldBe mapOf(
+			"contents" to "read",
+			"issues" to "write",
+		)
 	}
 
 	@Test fun `job has a new permission not modelled by GHLint`() {
@@ -124,8 +125,9 @@ class SnakePermissionsTest {
 		job.permissions shouldNotBe null
 
 		val map = job.permissions?.map
-		map?.size shouldBe 1
-		map?.get("some-new-permission") shouldBe "read"
+		map shouldBe mapOf(
+			"some-new-permission" to "read",
+		)
 	}
 
 	@Test fun `job has a new access level not modelled by GHLint`() {
@@ -145,7 +147,8 @@ class SnakePermissionsTest {
 		job.permissions shouldNotBe null
 
 		val map = job.permissions?.map
-		map?.size shouldBe 1
-		map?.get("contents") shouldBe "admin"
+		map shouldBe mapOf(
+			"contents" to "admin",
+		)
 	}
 }
