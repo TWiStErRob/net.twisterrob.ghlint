@@ -33,7 +33,10 @@ public enum class Access(public val value: String) : Comparable<Access> {
 	}
 }
 
-public class Scope(public val permission: Permission, public val access: Access) {
+public class Scope(
+		public val permission: Permission,
+		public val access: Access
+) {
 	override fun toString(): String = "`${permission.value}: ${access.value}`"
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
