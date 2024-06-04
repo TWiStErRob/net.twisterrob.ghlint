@@ -24,7 +24,11 @@ import org.snakeyaml.engine.v2.schema.JsonSchema
 import kotlin.jvm.optionals.getOrElse
 
 @Suppress("detekt.TooManyFunctions")
-public class SnakeComponentFactory {
+public class SnakeComponentFactory(
+	file: RawFile,
+) {
+
+	public val file: File = createFile(file)
 
 	public fun loadYaml(file: RawFile): Node {
 		val settings = LoadSettings.builder()

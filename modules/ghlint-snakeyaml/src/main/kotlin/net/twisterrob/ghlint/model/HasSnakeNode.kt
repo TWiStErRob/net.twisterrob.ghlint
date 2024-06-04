@@ -15,6 +15,9 @@ internal interface HasSnakeNode<N : Node> : Element {
 	 */
 	val node: N
 
+	val file: File
+		get() = factory.file
+
 	/**
 	 * The node that represents the location of this object in reporting.
 	 *
@@ -30,5 +33,5 @@ internal interface HasSnakeNode<N : Node> : Element {
 	 * @see Element.location
 	 */
 	override val location: Location
-		get() = target.toLocation((this as Component).file)
+		get() = target.toLocation(file)
 }
