@@ -82,4 +82,49 @@ class RequiredPermissionsRuleTest {
 
 		results shouldHave noFindings()
 	}
+
+	@Test fun `passes when a known required permission for checkout action is satisified via a token`() {
+		val uses = "$" + "{{ secrets.some_token }}"
+
+		val results = check<RequiredPermissionsRule>(
+				"""
+				on: push
+				jobs:
+				  test:
+				    permissions:
+				      packages: read
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+				        with:
+				          token: ${uses}
+			""".trimIndent()
+		)
+
+		results shouldHave noFindings()
+	}
+
+	@Test fun `reports when a known required permission for checkout action is not specified via a with token`() {
+		val uses = "$" + "{{ github.token }}"
+
+		val results = check<RequiredPermissionsRule>(
+				"""
+				on: push
+				jobs:
+				  test:
+				    permissions:
+				      packages: read
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/checkout@v4
+				        with:
+				          token: ${uses}
+			""".trimIndent()
+		)
+
+		results shouldHave singleFinding(
+				"MissingRequiredActionPermissions",
+				"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work."
+		)
+	}
 }
