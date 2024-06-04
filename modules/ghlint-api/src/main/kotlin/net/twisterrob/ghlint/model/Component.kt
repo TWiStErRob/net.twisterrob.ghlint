@@ -3,7 +3,7 @@ package net.twisterrob.ghlint.model
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#the-components-of-github-actions
  */
-public sealed interface Component {
+public sealed interface Component : Element {
 
 	public companion object
 }
