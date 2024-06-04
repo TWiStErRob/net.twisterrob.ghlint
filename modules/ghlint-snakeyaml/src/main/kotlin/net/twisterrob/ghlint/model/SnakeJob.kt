@@ -15,7 +15,7 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
 public sealed class SnakeJob protected constructor(
-	private val factory: SnakeComponentFactory,
+	override val factory: SnakeComponentFactory,
 ) : Job.BaseJob, HasSnakeNode<MappingNode> {
 
 	override val name: String?
@@ -39,7 +39,7 @@ public sealed class SnakeJob protected constructor(
 		get() = node.getOptionalText("if")
 
 	public class SnakeNormalJob internal constructor(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -64,7 +64,7 @@ public sealed class SnakeJob protected constructor(
 	}
 
 	public class SnakeReusableWorkflowCallJob internal constructor(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -82,12 +82,14 @@ public sealed class SnakeJob protected constructor(
 	}
 
 	public class SnakeSecretsExplicit internal constructor(
+		override val factory: SnakeComponentFactory,
 		override val node: MappingNode,
 		override val target: Node,
 		private val map: Map<String, String>,
 	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode<MappingNode>
 
 	public class SnakeSecretsInherit internal constructor(
+		override val factory: SnakeComponentFactory,
 		override val node: Node,
 		override val target: Node,
 	) : Job.Secrets.Inherit, HasSnakeNode<Node>

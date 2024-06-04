@@ -11,13 +11,16 @@ import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-public sealed class SnakeRuns : HasSnakeNode<MappingNode> {
+public sealed class SnakeRuns(
+	override val factory: SnakeComponentFactory,
+) : HasSnakeNode<MappingNode> {
 
 	public class SnakeJavascriptRuns(
+		override val factory: SnakeComponentFactory,
 		override val parent: Action,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Action.Runs.JavascriptRuns, SnakeRuns() {
+	) : Action.Runs.JavascriptRuns, SnakeRuns(factory) {
 
 		override val using: String
 			get() = node.getRequiredText("using")
@@ -34,11 +37,11 @@ public sealed class SnakeRuns : HasSnakeNode<MappingNode> {
 	}
 
 	public class SnakeCompositeRuns(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Action,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Action.Runs.CompositeRuns, SnakeRuns() {
+	) : Action.Runs.CompositeRuns, SnakeRuns(factory) {
 
 		override val steps: List<ActionStep> by lazy {
 			node.getRequired("steps").array.mapIndexed { index, node ->
@@ -52,10 +55,11 @@ public sealed class SnakeRuns : HasSnakeNode<MappingNode> {
 	}
 
 	public class SnakeDockerRuns(
+		override val factory: SnakeComponentFactory,
 		override val parent: Action,
 		override val node: MappingNode,
 		override val target: Node,
-	) : Action.Runs.DockerRuns, SnakeRuns() {
+	) : Action.Runs.DockerRuns, SnakeRuns(factory) {
 
 		override val using: String
 			get() = node.getRequiredText("using")

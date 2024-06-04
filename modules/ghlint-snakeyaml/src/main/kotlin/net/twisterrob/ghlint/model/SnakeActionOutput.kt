@@ -6,6 +6,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeActionOutput internal constructor(
+	override val factory: SnakeComponentFactory,
 	override val parent: Action,
 	override val id: String,
 	override val node: MappingNode,

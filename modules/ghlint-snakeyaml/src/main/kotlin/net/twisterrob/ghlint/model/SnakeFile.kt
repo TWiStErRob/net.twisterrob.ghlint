@@ -1,8 +1,8 @@
 package net.twisterrob.ghlint.model
 
 public class SnakeFile internal constructor(
+	private val factory: SnakeComponentFactory,
 	override val origin: RawFile,
-	factory: SnakeComponentFactory,
 ) : File {
 
 	@Suppress("detekt.LabeledExpression")

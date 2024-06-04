@@ -6,6 +6,8 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 internal interface HasSnakeNode<N : Node> : Element {
 
+	val factory: SnakeComponentFactory
+
 	/**
 	 * The node that represents this object in the YAML document.
 	 *

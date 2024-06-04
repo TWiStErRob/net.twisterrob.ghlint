@@ -43,7 +43,10 @@ public class SnakeComponentFactory {
 	}
 
 	public fun createFile(file: RawFile): File =
-		SnakeFile(file, this)
+		SnakeFile(
+			factory = this,
+			origin = file,
+		)
 
 	internal fun createContent(file: File, node: Node): Content =
 		when (file.location.inferType()) {
@@ -167,6 +170,7 @@ public class SnakeComponentFactory {
 		SnakeDefaults(
 			factory = this,
 			node = node as MappingNode,
+			target = node,
 		)
 
 	internal fun createDefaultsRun(node: Node): Defaults.Run =
@@ -187,6 +191,7 @@ public class SnakeComponentFactory {
 	internal fun createActionInput(action: Action, key: Node, node: Node): Action.ActionInput {
 		node as MappingNode
 		return SnakeActionInput(
+			factory = this,
 			parent = action,
 			id = key.text,
 			node = node,
@@ -197,6 +202,7 @@ public class SnakeComponentFactory {
 	internal fun createActionOutput(action: Action, key: Node, node: Node): Action.ActionOutput {
 		node as MappingNode
 		return SnakeActionOutput(
+			factory = this,
 			parent = action,
 			id = key.text,
 			node = node,
@@ -214,6 +220,7 @@ public class SnakeComponentFactory {
 		when (node) {
 			is MappingNode -> {
 				SnakeEnvExplicit(
+					factory = this,
 					node = node,
 					target = node,
 					map = node.map.toTextMap()
@@ -222,6 +229,7 @@ public class SnakeComponentFactory {
 
 			is ScalarNode -> {
 				SnakeEnvDynamic(
+					factory = this,
 					node = node,
 					target = node,
 					text = node.text
@@ -236,12 +244,14 @@ public class SnakeComponentFactory {
 	internal fun createSecrets(node: Node): Job.Secrets =
 		if (node is MappingNode) {
 			SnakeJob.SnakeSecretsExplicit(
+				factory = this,
 				node = node,
 				target = node,
 				map = node.map.toTextMap()
 			)
 		} else if (node is ScalarNode && node.text == "inherit") {
 			SnakeJob.SnakeSecretsInherit(
+				factory = this,
 				node = node,
 				target = node,
 			)
@@ -255,6 +265,7 @@ public class SnakeComponentFactory {
 		return when (using) {
 			"docker" ->
 				SnakeRuns.SnakeDockerRuns(
+					factory = this,
 					parent = action,
 					node = node,
 					target = node,
@@ -270,6 +281,7 @@ public class SnakeComponentFactory {
 
 			else ->
 				SnakeRuns.SnakeJavascriptRuns(
+					factory = this,
 					parent = action,
 					node = node,
 					target = node,
@@ -306,6 +318,7 @@ public class SnakeComponentFactory {
 	internal fun createBranding(action: Action, node: Node): Action.Branding {
 		node as MappingNode
 		return SnakeBranding(
+			factory = this,
 			parent = action,
 			node = node,
 			target = node,

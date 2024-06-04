@@ -9,7 +9,7 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeActionStep protected constructor(
-	private val factory: SnakeComponentFactory,
+	override val factory: SnakeComponentFactory,
 ) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
 
 	override val name: String?
@@ -25,7 +25,7 @@ public sealed class SnakeActionStep protected constructor(
 		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	public class SnakeActionStepRun internal constructor(
-		factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Action.Runs.CompositeRuns,
 		override val index: Step.Index,
 		override val node: MappingNode,
@@ -44,7 +44,7 @@ public sealed class SnakeActionStep protected constructor(
 	}
 
 	public class SnakeActionStepUses internal constructor(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Action.Runs.CompositeRuns,
 		override val index: Step.Index,
 		override val node: MappingNode,
