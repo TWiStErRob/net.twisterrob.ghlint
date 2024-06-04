@@ -110,7 +110,6 @@ class EffectiveScopesKtTest {
 			Scope(Permission.DEPLOYMENTS, Access.READ),
 			Scope(Permission.ID_TOKEN, Access.READ),
 			Scope(Permission.ISSUES, Access.READ),
-			//Scope(Permission.METADATA, Access.READ),
 			Scope(Permission.PACKAGES, Access.READ),
 			Scope(Permission.PAGES, Access.READ),
 			Scope(Permission.PULL_REQUESTS, Access.READ),
@@ -132,7 +131,6 @@ class EffectiveScopesKtTest {
 				  deployments: write
 				  id-token: write
 				  issues: write
-				  #metadata: write
 				  packages: write
 				  pages: write
 				  pull-requests: write
@@ -160,8 +158,6 @@ class EffectiveScopesKtTest {
 			Scope(Permission.ID_TOKEN, Access.WRITE),
 			Scope(Permission.ISSUES, Access.READ),
 			Scope(Permission.ISSUES, Access.WRITE),
-			//Scope(Permission.METADATA, Access.READ),
-			//Scope(Permission.METADATA, Access.WRITE),
 			Scope(Permission.PACKAGES, Access.READ),
 			Scope(Permission.PACKAGES, Access.WRITE),
 			Scope(Permission.PAGES, Access.READ),

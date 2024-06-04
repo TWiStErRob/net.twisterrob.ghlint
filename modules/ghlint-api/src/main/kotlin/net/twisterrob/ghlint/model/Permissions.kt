@@ -12,9 +12,9 @@ public interface Permissions {
 	public val checks: Access
 	public val contents: Access
 	public val deployments: Access
+	public val discussions: Access
 	public val idToken: Access
 	public val issues: Access
-	public val metadata: Access
 	public val packages: Access
 	public val pages: Access
 	public val pullRequests: Access
@@ -32,9 +32,9 @@ public interface Permissions {
 			Permission.CHECKS -> checks
 			Permission.CONTENTS -> contents
 			Permission.DEPLOYMENTS -> deployments
+			Permission.DISCUSSIONS -> discussions
 			Permission.ID_TOKEN -> idToken
 			Permission.ISSUES -> issues
-			Permission.METADATA -> metadata
 			Permission.PACKAGES -> packages
 			Permission.PAGES -> pages
 			Permission.PULL_REQUESTS -> pullRequests
