@@ -2,7 +2,7 @@ package net.twisterrob.ghlint.rule
 
 import net.twisterrob.ghlint.model.Action
 import net.twisterrob.ghlint.model.ActionStep
-import net.twisterrob.ghlint.model.Element
+import net.twisterrob.ghlint.model.Component
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.model.Step
 import net.twisterrob.ghlint.model.Workflow
@@ -16,7 +16,7 @@ public interface Reporting {
 }
 
 context(Rule)
-public fun Reporting.report(issue: Issue, target: Element, message: (String) -> String) {
+public fun Reporting.report(issue: Issue, target: Component, message: (String) -> String) {
 	report(
 		Finding(
 			rule = this@Rule,
@@ -27,14 +27,13 @@ public fun Reporting.report(issue: Issue, target: Element, message: (String) -> 
 	)
 }
 
-public fun Element.toTarget(): String =
+public fun Component.toTarget(): String =
 	when (this) {
 		is Workflow -> "Workflow[${this.id}]"
 		is Job -> "Job[${this.id}]"
 		is WorkflowStep -> "Step[${this.identifier}] in ${this.parent.toTarget()}"
 		is Action -> "Action[${this.id ?: "\"${this.name}\""}]"
 		is ActionStep -> "Step[${this.identifier}] in ${this.parent.parent.toTarget()}"
-		else -> error("Unsupported element: ${this}")
 	}
 
 private val Step.identifier: String
