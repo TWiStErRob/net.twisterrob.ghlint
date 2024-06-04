@@ -1,7 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.testing.load
 import org.intellij.lang.annotations.Language
@@ -13,6 +11,12 @@ class EffectiveScopesKtTest {
 		val file = load(yaml)
 		return (file.content as Workflow).permissions!!
 	}
+
+	private fun implicitPermissionsExcluding(vararg excluded: Permission): Set<Scope> =
+		Permission.entries
+			.filter { it !in excluded }
+			.map { Scope(it, Access.NONE) }
+			.toSet()
 
 	@Test fun `single read permission`() {
 		val permissions = loadPermissions(
@@ -28,7 +32,7 @@ class EffectiveScopesKtTest {
 
 		permissions.effectiveScopes shouldBe setOf(
 			Scope(Permission.CONTENTS, Access.READ),
-		)
+		) + implicitPermissionsExcluding(Permission.CONTENTS)
 	}
 
 	@Test fun `single write permission includes read`() {
@@ -46,7 +50,7 @@ class EffectiveScopesKtTest {
 		permissions.effectiveScopes shouldBe setOf(
 			Scope(Permission.PULL_REQUESTS, Access.READ),
 			Scope(Permission.PULL_REQUESTS, Access.WRITE),
-		)
+		) + implicitPermissionsExcluding(Permission.PULL_REQUESTS)
 	}
 
 	@Test fun `all none includes nothing`() {
@@ -58,10 +62,10 @@ class EffectiveScopesKtTest {
 				  attestations: none
 				  checks: none
 				  contents: none
+				  discussions: none
 				  deployments: none
 				  id-token: none
 				  issues: none
-				  #metadata: none
 				  packages: none
 				  pages: none
 				  pull-requests: none
@@ -74,7 +78,7 @@ class EffectiveScopesKtTest {
 			""".trimIndent(),
 		)
 
-		permissions.effectiveScopes should beEmpty()
+		permissions.effectiveScopes shouldBe implicitPermissionsExcluding()
 	}
 
 	@Test fun `all read includes reads`() {
@@ -87,9 +91,9 @@ class EffectiveScopesKtTest {
 				  checks: read
 				  contents: read
 				  deployments: read
+				  discussions: read
 				  id-token: read
 				  issues: read
-				  #metadata: read
 				  packages: read
 				  pages: read
 				  pull-requests: read
@@ -102,21 +106,9 @@ class EffectiveScopesKtTest {
 			""".trimIndent(),
 		)
 
-		permissions.effectiveScopes shouldBe setOf(
-			Scope(Permission.ACTIONS, Access.READ),
-			Scope(Permission.ATTESTATIONS, Access.READ),
-			Scope(Permission.CHECKS, Access.READ),
-			Scope(Permission.CONTENTS, Access.READ),
-			Scope(Permission.DEPLOYMENTS, Access.READ),
-			Scope(Permission.ID_TOKEN, Access.READ),
-			Scope(Permission.ISSUES, Access.READ),
-			Scope(Permission.PACKAGES, Access.READ),
-			Scope(Permission.PAGES, Access.READ),
-			Scope(Permission.PULL_REQUESTS, Access.READ),
-			Scope(Permission.REPOSITORY_PROJECTS, Access.READ),
-			Scope(Permission.SECURITY_EVENTS, Access.READ),
-			Scope(Permission.STATUSES, Access.READ),
-		)
+		permissions.effectiveScopes shouldBe Permission.entries
+				.map { Scope(it, Access.READ) }
+				.toSet()
 	}
 
 	@Test fun `all write includes reads and writes`() {
@@ -129,6 +121,7 @@ class EffectiveScopesKtTest {
 				  checks: write
 				  contents: write
 				  deployments: write
+				  discussions: write
 				  id-token: write
 				  issues: write
 				  packages: write
@@ -143,34 +136,9 @@ class EffectiveScopesKtTest {
 			""".trimIndent(),
 		)
 
-		permissions.effectiveScopes shouldBe setOf(
-			Scope(Permission.ACTIONS, Access.READ),
-			Scope(Permission.ACTIONS, Access.WRITE),
-			Scope(Permission.ATTESTATIONS, Access.READ),
-			Scope(Permission.ATTESTATIONS, Access.WRITE),
-			Scope(Permission.CHECKS, Access.READ),
-			Scope(Permission.CHECKS, Access.WRITE),
-			Scope(Permission.CONTENTS, Access.READ),
-			Scope(Permission.CONTENTS, Access.WRITE),
-			Scope(Permission.DEPLOYMENTS, Access.READ),
-			Scope(Permission.DEPLOYMENTS, Access.WRITE),
-			Scope(Permission.ID_TOKEN, Access.READ),
-			Scope(Permission.ID_TOKEN, Access.WRITE),
-			Scope(Permission.ISSUES, Access.READ),
-			Scope(Permission.ISSUES, Access.WRITE),
-			Scope(Permission.PACKAGES, Access.READ),
-			Scope(Permission.PACKAGES, Access.WRITE),
-			Scope(Permission.PAGES, Access.READ),
-			Scope(Permission.PAGES, Access.WRITE),
-			Scope(Permission.PULL_REQUESTS, Access.READ),
-			Scope(Permission.PULL_REQUESTS, Access.WRITE),
-			Scope(Permission.REPOSITORY_PROJECTS, Access.READ),
-			Scope(Permission.REPOSITORY_PROJECTS, Access.WRITE),
-			Scope(Permission.SECURITY_EVENTS, Access.READ),
-			Scope(Permission.SECURITY_EVENTS, Access.WRITE),
-			Scope(Permission.STATUSES, Access.READ),
-			Scope(Permission.STATUSES, Access.WRITE),
-		)
+		permissions.effectiveScopes shouldBe Permission.entries
+				.flatMap { listOf(Scope(it, Access.READ), Scope(it, Access.WRITE)) }
+				.toSet()
 	}
 
 	@Test fun `mixed permissions include extra reads for writes`() {
@@ -192,15 +160,23 @@ class EffectiveScopesKtTest {
 		)
 
 		permissions.effectiveScopes shouldBe setOf(
-			Scope(Permission.ACTIONS, Access.READ),
+			Scope(Permission.ACTIONS, Access.NONE),
 			Scope(Permission.CHECKS, Access.WRITE),
 			Scope(Permission.CHECKS, Access.READ),
-			Scope(Permission.CONTENTS, Access.READ),
+			Scope(Permission.CONTENTS, Access.NONE),
 			Scope(Permission.ISSUES, Access.READ),
 			Scope(Permission.PAGES, Access.WRITE),
 			Scope(Permission.PAGES, Access.READ),
 			Scope(Permission.PULL_REQUESTS, Access.READ),
-			Scope(Permission.STATUSES, Access.READ),
+			Scope(Permission.STATUSES, Access.NONE),
+		) + implicitPermissionsExcluding(
+			Permission.ACTIONS,
+			Permission.CHECKS,
+			Permission.CONTENTS,
+			Permission.ISSUES,
+			Permission.PAGES,
+			Permission.PULL_REQUESTS,
+			Permission.STATUSES,
 		)
 	}
 }
