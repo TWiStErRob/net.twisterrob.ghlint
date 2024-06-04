@@ -9,7 +9,7 @@ public class SnakeDefaults internal constructor(
 	override val factory: SnakeComponentFactory,
 	override val node: MappingNode,
 	override val target: Node,
-) : Defaults, HasSnakeNode<MappingNode> {
+) : Defaults, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val run: Defaults.Run?
 		get() = node.getOptional("run")?.let { factory.createDefaultsRun(it) }

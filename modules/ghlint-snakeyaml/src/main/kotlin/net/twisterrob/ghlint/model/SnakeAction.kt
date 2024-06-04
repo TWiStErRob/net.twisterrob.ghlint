@@ -13,7 +13,7 @@ public class SnakeAction internal constructor(
 	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
-) : Action, HasSnakeNode<MappingNode> {
+) : Action, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val name: String
 		get() = node.getRequiredText("name")

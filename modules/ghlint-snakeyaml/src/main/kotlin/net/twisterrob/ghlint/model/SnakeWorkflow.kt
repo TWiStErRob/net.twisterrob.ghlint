@@ -13,7 +13,7 @@ public class SnakeWorkflow internal constructor(
 	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
-) : Workflow, HasSnakeNode<MappingNode> {
+) : Workflow, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val name: String?
 		get() = node.getOptionalText("name")

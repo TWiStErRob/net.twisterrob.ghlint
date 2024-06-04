@@ -13,7 +13,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeRuns(
 	override val factory: SnakeComponentFactory,
-) : HasSnakeNode<MappingNode> {
+) : HasSnakeNode<MappingNode>, SnakeElement {
 
 	public class SnakeJavascriptRuns(
 		override val factory: SnakeComponentFactory,

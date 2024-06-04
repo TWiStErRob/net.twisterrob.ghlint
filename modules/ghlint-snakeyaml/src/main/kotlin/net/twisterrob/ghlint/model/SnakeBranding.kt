@@ -9,7 +9,7 @@ public class SnakeBranding internal constructor(
 	override val parent: Action,
 	override val node: MappingNode,
 	override val target: Node,
-) : Action.Branding, HasSnakeNode<MappingNode> {
+) : Action.Branding, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val icon: String?
 		get() = node.getOptionalText("icon")

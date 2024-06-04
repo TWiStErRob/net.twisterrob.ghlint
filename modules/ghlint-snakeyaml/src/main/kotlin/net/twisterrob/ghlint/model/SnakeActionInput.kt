@@ -11,7 +11,7 @@ public class SnakeActionInput internal constructor(
 	override val id: String,
 	override val node: MappingNode,
 	override val target: Node,
-) : Action.ActionInput, HasSnakeNode<MappingNode> {
+) : Action.ActionInput, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val description: String
 		get() = node.getRequiredText("description")

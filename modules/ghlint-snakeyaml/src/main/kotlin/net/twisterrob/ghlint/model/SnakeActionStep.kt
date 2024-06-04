@@ -10,7 +10,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeActionStep protected constructor(
 	override val factory: SnakeComponentFactory,
-) : ActionStep.BaseStep, HasSnakeNode<MappingNode> {
+) : ActionStep.BaseStep, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val name: String?
 		get() = node.getOptionalText("name")
