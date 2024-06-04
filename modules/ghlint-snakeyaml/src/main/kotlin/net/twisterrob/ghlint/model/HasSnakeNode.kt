@@ -11,10 +11,15 @@ internal interface HasSnakeNode<N : Node> : Element {
 	/**
 	 * The node that represents this object in the YAML document.
 	 *
-	 * This is used to drill down and extract more information from the document.
+	 * This is used in implementations to drill down and extract more information from the document.
 	 */
 	val node: N
 
+	/**
+	 * The file that contains this object.
+	 *
+	 * Note: this is not used anywhere else except [location] below.
+	 */
 	val file: File
 		get() = factory.file
 
@@ -22,6 +27,8 @@ internal interface HasSnakeNode<N : Node> : Element {
 	 * The node that represents the location of this object in reporting.
 	 *
 	 * This might be the key, or parent of [node].
+	 *
+	 * Note: this is not used anywhere else except [location] below.
 	 */
 	val target: Node
 
