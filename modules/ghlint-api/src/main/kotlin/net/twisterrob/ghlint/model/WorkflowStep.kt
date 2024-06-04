@@ -13,6 +13,7 @@ public sealed interface WorkflowStep : Step, Component {
 
 	public companion object;
 
+	// TODO find a way to remove this from the API.
 	public interface BaseStep : WorkflowStep, Step.BaseStep {
 
 		public companion object

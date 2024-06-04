@@ -223,8 +223,8 @@ class ActionVisitorTest {
 
 	@Test fun `visitCompositeRuns delegates steps`() {
 		val target: Action.Runs.CompositeRuns = mock()
-		val child1: ActionStep = mock<ActionStep.BaseStep>()
-		val child2: ActionStep = mock<ActionStep.BaseStep>()
+		val child1: ActionStep = mock()
+		val child2: ActionStep = mock()
 		whenever(target.steps).thenReturn(listOf(child1, child2))
 		doNothing().whenever(subject).visitActionStep(reporting, child1)
 		doNothing().whenever(subject).visitActionStep(reporting, child2)
