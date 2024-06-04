@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequiredText
@@ -10,11 +9,8 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public sealed class SnakeWorkflowStep protected constructor(
-	private val factory: SnakeComponentFactory,
-) : WorkflowStep.BaseStep, HasSnakeNode<MappingNode> {
-
-	override val location: Location
-		get() = super.location
+	override val factory: SnakeComponentFactory,
+) : WorkflowStep.BaseStep, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val name: String?
 		get() = node.getOptionalText("name")
@@ -29,7 +25,7 @@ public sealed class SnakeWorkflowStep protected constructor(
 		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
 	public class SnakeWorkflowStepRun internal constructor(
-		factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,
@@ -48,7 +44,7 @@ public sealed class SnakeWorkflowStep protected constructor(
 	}
 
 	public class SnakeWorkflowStepUses internal constructor(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Job.NormalJob,
 		override val index: Step.Index,
 		override val node: MappingNode,

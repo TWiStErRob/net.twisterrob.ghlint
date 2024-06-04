@@ -7,10 +7,13 @@ import net.twisterrob.ghlint.model.Content
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.InvalidContent
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.Workflow
+import net.twisterrob.ghlint.model.wholeFile
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
+import net.twisterrob.ghlint.testing.aLocation
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.testIssue
 import org.junit.jupiter.api.Test
@@ -90,7 +93,7 @@ class SafeRuleTest {
 		)
 		val finding = findings.single()
 		finding.rule shouldBe subject
-		finding.location shouldBe fakeFile.content.location
+		finding.location shouldBe aLocation(fakeFile.wholeFile)
 	}
 
 	@Test fun `escapes exception markdown`() {
@@ -123,7 +126,7 @@ class SafeRuleTest {
 
 		val finding = findings.single()
 		finding.rule shouldBe subject
-		finding.location shouldBe fakeFile.content.location
+		finding.location shouldBe aLocation(fakeFile.wholeFile)
 	}
 
 	@Test fun `propagates error as finding`() {
@@ -144,15 +147,17 @@ class SafeRuleTest {
 		)
 		val finding = findings.single()
 		finding.rule shouldBe subject
-		finding.location shouldBe fakeFile.content.location
+		finding.location shouldBe aLocation(fakeFile.wholeFile)
 	}
 
 	private fun fakeFile(): File {
 		val content: Content = mock<InvalidContent>()
 		whenever(content.location).thenReturn(mock())
 
+		val location = FileLocation("test.yml")
 		val file: File = mock()
-		whenever(file.location).thenReturn(FileLocation("test.yml"))
+		whenever(file.location).thenReturn(location)
+		whenever(file.origin).thenReturn(RawFile(location, "fake\ncontents"))
 
 		whenever(file.content).thenReturn(content)
 		whenever(content.parent).thenReturn(file)

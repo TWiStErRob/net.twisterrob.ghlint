@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.model
 
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#actions
+ * https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
  */
 public interface Action : Component, Content {
 

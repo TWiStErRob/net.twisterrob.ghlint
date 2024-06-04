@@ -5,13 +5,15 @@ import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 
 public class SnakeEnvExplicit internal constructor(
+	override val factory: SnakeComponentFactory,
 	override val node: MappingNode,
 	override val target: Node,
 	override val map: Map<String, String>,
-) : Env.Explicit, HasSnakeNode<MappingNode>
+) : Env.Explicit, HasSnakeNode<MappingNode>, SnakeElement
 
 public class SnakeEnvDynamic internal constructor(
+	override val factory: SnakeComponentFactory,
 	override val node: ScalarNode,
 	override val target: Node,
 	override val text: String,
-) : Env.Dynamic, HasSnakeNode<ScalarNode>
+) : Env.Dynamic, HasSnakeNode<ScalarNode>, SnakeElement

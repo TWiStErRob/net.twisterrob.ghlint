@@ -2,11 +2,9 @@ package net.twisterrob.ghlint.model
 
 import net.twisterrob.ghlint.results.Location
 
-public sealed interface Content {
+public sealed interface Content : Element {
 
 	public val parent: File
-
-	public val location: Location
 
 	public companion object
 }
