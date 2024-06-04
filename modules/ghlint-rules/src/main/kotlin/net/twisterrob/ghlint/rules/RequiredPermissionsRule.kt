@@ -21,7 +21,8 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	override fun visitWorkflowUsesStep(reporting: Reporting, step: WorkflowStep.Uses) {
 		super.visitWorkflowUsesStep(reporting, step)
 
-		val expectedPermissions = REQUIRED_PERMISSIONS_DEFINITIONS[step.uses.action]?.resolve?.invoke(step) ?: return
+		val definition = REQUIRED_PERMISSIONS_DEFINITIONS[step.uses.action] ?: return
+		val expectedPermissions = definition.resolve(step)
 		val effectivePermissions = step.parent.effectivePermissions ?: return
 		val definedPermissions = effectivePermissions.effectiveScopes
 
@@ -29,7 +30,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 		remaining.forEach { expected ->
 			reporting.report(MissingRequiredActionPermissions, step) {
-				"${it} requires `${expected}` permission for `${step.uses.action}` to work."
+				"${it} requires `${expected}` permission for `${step.uses.action}` to work: ${definition.reason}"
 			}
 		}
 	}
