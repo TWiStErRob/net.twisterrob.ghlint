@@ -1,13 +1,9 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.results.Location
-
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#the-components-of-github-actions
  */
 public sealed interface Component {
-
-	public val location: Location
 
 	public companion object
 }

@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
@@ -15,9 +14,6 @@ public class SnakeWorkflow internal constructor(
 	override val node: MappingNode,
 	override val target: Node,
 ) : Workflow, HasSnakeNode<MappingNode> {
-
-	override val location: Location
-		get() = super.location
 
 	override val name: String?
 		get() = node.getOptionalText("name")
