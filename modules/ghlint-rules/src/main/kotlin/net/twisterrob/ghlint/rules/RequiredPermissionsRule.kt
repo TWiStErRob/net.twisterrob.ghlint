@@ -22,8 +22,8 @@ private data class RequiredScopes(
 	val scope: Set<Scope>,
 	val reason: String,
 ) {
-	constructor(permission: Permission, access: Access, reason: String)
-			: this(setOf(Scope(permission, access)), reason)
+	constructor(reason: String, vararg scopes: Scope)
+			: this(@Suppress("detekt.SpreadOperator") setOf(*scopes), reason)
 
 	companion object {
 		val NO_GITHUB_TOKEN: Set<RequiredScopes> = setOf(
@@ -64,9 +64,8 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 					if (step.with.isGitHubToken("token")) {
 						setOf(
 							RequiredScopes(
-								Permission.CONTENTS,
-								Access.READ,
-								"To read the repository contents during git clone/fetch."
+								"To read the repository contents during git clone/fetch.",
+								Scope(Permission.CONTENTS, Access.READ),
 							)
 						)
 					} else {
@@ -80,17 +79,14 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 				resolve = { step ->
 					if (step.with.isGitHubToken("repo-token")) {
 						val basics = RequiredScopes(
-							setOf(
-								Scope(Permission.ISSUES, Access.WRITE),
-								Scope(Permission.PULL_REQUESTS, Access.WRITE),
-							),
-							"To comment or close stale issues and PRs."
+							"To comment or close stale issues and PRs.",
+							Scope(Permission.ISSUES, Access.WRITE),
+							Scope(Permission.PULL_REQUESTS, Access.WRITE),
 						)
 						val deleteBranch = when (step.with?.get("delete-branch")) {
 							"true" -> RequiredScopes(
-								Permission.CONTENTS,
-								Access.WRITE,
-								"To delete HEAD branches when closing PRs."
+								"To delete HEAD branches when closing PRs.",
+								Scope(Permission.CONTENTS, Access.WRITE),
 							)
 
 							"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
