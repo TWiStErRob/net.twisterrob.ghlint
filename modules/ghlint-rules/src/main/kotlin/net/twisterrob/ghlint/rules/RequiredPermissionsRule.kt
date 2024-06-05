@@ -39,28 +39,42 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, RequiredPermissionsDefinition> = mapOf(
 			"actions/checkout" to RequiredPermissionsDefinition(
+				// https://github.com/actions/checkout/blob/main/action.yml
 				resolve = {
-					if (!it.with.isGitHubToken("token")) {
+					if (it.with.isGitHubToken("token")) {
+						setOf(Scope(Permission.CONTENTS, Access.READ))
+					} else {
 						// Permissions are suppressed if a custom PAT is defined explicitly.
 						emptySet()
-					} else {
-						setOf(Scope(Permission.CONTENTS, Access.READ))
 					}
 				},
 				reason = "To read the repository contents during git clone/fetch."
 			),
+			"actions/stale" to RequiredPermissionsDefinition(
+				// https://github.com/actions/stale/blob/main/action.yml
+				resolve = {
+					if (it.with.isGitHubToken("repo-token")) {
+						val basics = setOf(
+							Scope(Permission.ISSUES, Access.WRITE),
+							Scope(Permission.PULL_REQUESTS, Access.WRITE),
+						)
+						val deleteBranch = when (it.with?.get("delete-branch")) {
+							"true" -> setOf(Scope(Permission.CONTENTS, Access.WRITE))
+							"false" -> emptySet()
+							null -> emptySet()
+							else -> emptySet()
+						}
+						basics + deleteBranch
+					} else {
+						// Permissions are suppressed if a custom PAT is defined explicitly.
+						emptySet()
+					}
+				},
+				reason = "To delete HEAD branches when closing PRs."
+			),
 		)
 
 		private val REQUIRED_PERMISSIONS_OLD: Map<String, Set<Scope>> = mapOf(
-			// Permissions are only required if `repo-token` is not defined, or it's using github.token explicitly.
-			"actions/stale" to setOf(
-				// https://github.com/actions/stale/blob/main/action.yml
-				// Only when delete-branch == true, default is false.
-				Scope(Permission.CONTENTS, Access.WRITE), // To delete HEAD branches when closing PRs.
-				// These are required, unless repo-token is a secret.
-				Scope(Permission.ISSUES, Access.WRITE),
-				Scope(Permission.PULL_REQUESTS, Access.WRITE),
-			),
 			// Permissions are only required if `token` is not defined, or it's using github.token explicitly.
 			"actions/deploy-pages" to setOf(
 				// https://github.com/actions/deploy-pages/blob/main/action.yml
