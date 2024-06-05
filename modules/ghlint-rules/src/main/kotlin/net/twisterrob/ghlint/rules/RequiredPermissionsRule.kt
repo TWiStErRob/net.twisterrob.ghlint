@@ -13,10 +13,7 @@ import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-private data class RequiredPermissionsDefinition(
-	val resolve: (step: WorkflowStep.Uses) -> Set<RequiredScopes>,
-	val reason: String,
-)
+private typealias InferRequiredPermissions = (step: WorkflowStep.Uses) -> Set<RequiredScopes>
 
 private data class RequiredScopes(
 	val scope: Set<Scope>,
@@ -42,7 +39,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		val definition = REQUIRED_PERMISSIONS_DEFINITIONS[step.uses.action] ?: return
-		val expectedPermissions = definition.resolve(step)
+		val expectedPermissions = definition(step)
 		val effectivePermissions = step.parent.effectivePermissions ?: return
 		val definedPermissions = effectivePermissions.effectiveScopes
 
@@ -50,56 +47,50 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 		remaining.forEach { expected ->
 			reporting.report(MissingRequiredActionPermissions, step) {
-				"${it} requires `${expected}` permission for `${step.uses.action}` to work: ${definition.reason}"
+				"${it} requires `${expected}` permission for `${step.uses.action}` to work: {definition.reason}"
 			}
 		}
 	}
 
 	private companion object {
 
-		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, RequiredPermissionsDefinition> = mapOf(
-			"actions/checkout" to RequiredPermissionsDefinition(
-				// https://github.com/actions/checkout/blob/main/action.yml
-				resolve = { step ->
-					if (step.with.isGitHubToken("token")) {
-						setOf(
-							RequiredScopes(
-								"To read the repository contents during git clone/fetch.",
-								Scope(Permission.CONTENTS, Access.READ),
-							)
+		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, InferRequiredPermissions> = mapOf(
+			// https://github.com/actions/checkout/blob/main/action.yml
+			"actions/checkout" to { step ->
+				if (step.with.isGitHubToken("token")) {
+					setOf(
+						RequiredScopes(
+							"To read the repository contents during git clone/fetch.",
+							Scope(Permission.CONTENTS, Access.READ),
 						)
-					} else {
-						RequiredScopes.NO_GITHUB_TOKEN
-					}
-				},
-				reason = "To read the repository contents during git clone/fetch."
-			),
-			"actions/stale" to RequiredPermissionsDefinition(
-				// https://github.com/actions/stale/blob/main/action.yml
-				resolve = { step ->
-					if (step.with.isGitHubToken("repo-token")) {
-						val basics = RequiredScopes(
-							"To comment or close stale issues and PRs.",
-							Scope(Permission.ISSUES, Access.WRITE),
-							Scope(Permission.PULL_REQUESTS, Access.WRITE),
+					)
+				} else {
+					RequiredScopes.NO_GITHUB_TOKEN
+				}
+			},
+			// https://github.com/actions/stale/blob/main/action.yml
+			"actions/stale" to { step ->
+				if (step.with.isGitHubToken("repo-token")) {
+					val basics = RequiredScopes(
+						"To comment or close stale issues and PRs.",
+						Scope(Permission.ISSUES, Access.WRITE),
+						Scope(Permission.PULL_REQUESTS, Access.WRITE),
+					)
+					val deleteBranch = when (step.with?.get("delete-branch")) {
+						"true" -> RequiredScopes(
+							"To delete HEAD branches when closing PRs.",
+							Scope(Permission.CONTENTS, Access.WRITE),
 						)
-						val deleteBranch = when (step.with?.get("delete-branch")) {
-							"true" -> RequiredScopes(
-								"To delete HEAD branches when closing PRs.",
-								Scope(Permission.CONTENTS, Access.WRITE),
-							)
 
-							"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
-							null -> RequiredScopes.empty("Not deleting branches by default.")
-							else -> RequiredScopes.empty("Undecidable whether branches are deleted.")
-						}
-						setOf(basics, deleteBranch)
-					} else {
-						RequiredScopes.NO_GITHUB_TOKEN
+						"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
+						null -> RequiredScopes.empty("Not deleting branches by default.")
+						else -> RequiredScopes.empty("Undecidable whether branches are deleted.")
 					}
-				},
-				reason = "To delete HEAD branches when closing PRs."
-			),
+					setOf(basics, deleteBranch)
+				} else {
+					RequiredScopes.NO_GITHUB_TOKEN
+				}
+			},
 		)
 
 		@Suppress("detekt.UnusedPrivateProperty") // To have a clean build, TODO remove before merging.
