@@ -103,6 +103,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			),
 		)
 
+		@Suppress("detekt.UnusedPrivateProperty") // To have a clean build, TODO remove before merging.
 		private val REQUIRED_PERMISSIONS_OLD: Map<String, Set<Scope>> = mapOf(
 			// Permissions are only required if `token` is not defined, or it's using github.token explicitly.
 			"actions/deploy-pages" to setOf(
