@@ -14,9 +14,21 @@ import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
 private data class RequiredPermissionsDefinition(
-	val resolve: (step: WorkflowStep.Uses) -> Set<Scope>,
+	val resolve: (step: WorkflowStep.Uses) -> Set<RequiredScopes>,
 	val reason: String,
 )
+
+private data class RequiredScopes(
+	val scope: Set<Scope>,
+	val reason: String,
+) {
+	constructor(permission: Permission, access: Access, reason: String)
+			: this(setOf(Scope(permission, access)), reason)
+
+	companion object {
+		val EMPTY = RequiredScopes(emptySet(), "Not required.")
+	}
+}
 
 public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	override val issues: List<Issue> = listOf(MissingRequiredActionPermissions)
@@ -29,7 +41,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		val effectivePermissions = step.parent.effectivePermissions ?: return
 		val definedPermissions = effectivePermissions.effectiveScopes
 
-		val remaining = expectedPermissions - definedPermissions
+		val remaining = expectedPermissions.flatMap { it.scope } - definedPermissions
 
 		remaining.forEach { expected ->
 			reporting.report(MissingRequiredActionPermissions, step) {
@@ -45,7 +57,13 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 				// https://github.com/actions/checkout/blob/main/action.yml
 				resolve = { step ->
 					if (step.with.isGitHubToken("token")) {
-						setOf(Scope(Permission.CONTENTS, Access.READ))
+						setOf(
+							RequiredScopes(
+								Permission.CONTENTS,
+								Access.READ,
+								"To read the repository contents during git clone/fetch."
+							)
+						)
 					} else {
 						// Permissions are suppressed if a custom PAT is defined explicitly.
 						emptySet()
@@ -57,17 +75,25 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 				// https://github.com/actions/stale/blob/main/action.yml
 				resolve = { step ->
 					if (step.with.isGitHubToken("repo-token")) {
-						val basics = setOf(
-							Scope(Permission.ISSUES, Access.WRITE),
-							Scope(Permission.PULL_REQUESTS, Access.WRITE),
+						val basics = RequiredScopes(
+							setOf(
+								Scope(Permission.ISSUES, Access.WRITE),
+								Scope(Permission.PULL_REQUESTS, Access.WRITE),
+							),
+							"To comment or close stale issues and PRs."
 						)
 						val deleteBranch = when (step.with?.get("delete-branch")) {
-							"true" -> setOf(Scope(Permission.CONTENTS, Access.WRITE))
-							"false" -> emptySet()
-							null -> emptySet()
-							else -> emptySet()
+							"true" -> RequiredScopes(
+								Permission.CONTENTS,
+								Access.WRITE,
+								"To delete HEAD branches when closing PRs."
+							)
+
+							"false" -> RequiredScopes.EMPTY
+							null -> RequiredScopes.EMPTY
+							else -> RequiredScopes.EMPTY
 						}
-						basics + deleteBranch
+						setOf(basics, deleteBranch)
 					} else {
 						// Permissions are suppressed if a custom PAT is defined explicitly.
 						emptySet()
