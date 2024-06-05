@@ -38,22 +38,22 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	private companion object {
 
 		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, RequiredPermissionsDefinition> = mapOf(
-				"actions/checkout" to RequiredPermissionsDefinition(
-						resolve = {
-							val token = it.with?.get("token")
-							if (
-								token != null &&
-								token != "\${{ github.token }}" &&
-								token != "\${{ secrets.GITHUB_TOKEN }}"
-							) {
-								// Permissions are suppressed if a custom PAT is defined explicitly.
-								emptySet()
-							} else {
-								setOf(Scope(Permission.CONTENTS, Access.READ))
-							}
-						},
-						reason = "To read the repository contents during git clone/fetch."
-				),
+			"actions/checkout" to RequiredPermissionsDefinition(
+				resolve = {
+					val token = it.with?.get("token")
+					if (
+						token != null &&
+						token != "\${{ github.token }}" &&
+						token != "\${{ secrets.GITHUB_TOKEN }}"
+					) {
+						// Permissions are suppressed if a custom PAT is defined explicitly.
+						emptySet()
+					} else {
+						setOf(Scope(Permission.CONTENTS, Access.READ))
+					}
+				},
+				reason = "To read the repository contents during git clone/fetch."
+			),
 		)
 
 		/**
@@ -61,52 +61,55 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		 * Explicit `${{ github.token }}` / `${{ secrets.GITHUB_TOKEN }}` should be handled for these.
 		 */
 		private val REQUIRED_PERMISSIONS_OLD: Map<String, Set<Scope>> = mapOf(
-				// Permissions are only required if `repo-token` is not defined, or it's using github.token explicitly.
-				"actions/stale" to setOf(
-						// https://github.com/actions/stale/blob/main/action.yml
-						// Only when delete-branch == true, default is false.
-						Scope(Permission.CONTENTS, Access.WRITE), // To delete HEAD branches when closing PRs.
-						// These are required, unless repo-token is a secret.
-						Scope(Permission.ISSUES, Access.WRITE),
-						Scope(Permission.PULL_REQUESTS, Access.WRITE),
-				),
-				// Permissions are only required if `token` is not defined, or it's using github.token explicitly.
-				"actions/deploy-pages" to setOf(
-						// https://github.com/actions/deploy-pages/blob/main/action.yml
-						// Only when `token` is not defined explicitly, or it's using github.token explicitly.
-						Scope(Permission.PAGES, Access.WRITE), // To deploy to GitHub Pages.
-						Scope(Permission.ID_TOKEN, Access.WRITE), // To verify the deployment originates from an appropriate source.
-				),
-				"github/codeql-action/upload-sarif" to setOf(
-						// https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
-						// Only when `github_token` is not defined, or it's using github.token explicitly.
-						Scope(Permission.SECURITY_EVENTS, Access.WRITE), // To upload SARIF files.
-						// Only in private repositories / internal organizations.
-						Scope(Permission.ACTIONS, Access.WRITE),
-				),
-				"8BitJonny/gh-get-current-pr" to setOf(
-						// https://github.com/8BitJonny/gh-get-current-pr/blob/master/action.yml
-						// Only when `github-token` is not defined, or it's using github.token explicitly.
-						Scope(Permission.PULL_REQUESTS, Access.READ), // To get the current PR.
-				),
-				// Permissions are only required if `github_token` is not defined, or it's using github.token explicitly.
-				"EnricoMi/publish-unit-test-result-action" to setOf(
-						// https://github.com/EnricoMi/publish-unit-test-result-action/blob/master/action.yml
-						// Only when check_run == true, or not listed as default is true.
-						Scope(Permission.CHECKS, Access.WRITE), // To publish check runs.
-						// Only when comment_mode != off.
-						// (i.e. always, changes, changes in failures, changes in errors, failures, errors; default is always)
-						Scope(Permission.PULL_REQUESTS, Access.WRITE), // To comment on PRs.
-						// Only in private repos:
-						Scope(Permission.ISSUES, Access.READ),
-						Scope(Permission.CONTENTS, Access.READ),
-				),
+			// Permissions are only required if `repo-token` is not defined, or it's using github.token explicitly.
+			"actions/stale" to setOf(
+				// https://github.com/actions/stale/blob/main/action.yml
+				// Only when delete-branch == true, default is false.
+				Scope(Permission.CONTENTS, Access.WRITE), // To delete HEAD branches when closing PRs.
+				// These are required, unless repo-token is a secret.
+				Scope(Permission.ISSUES, Access.WRITE),
+				Scope(Permission.PULL_REQUESTS, Access.WRITE),
+			),
+			// Permissions are only required if `token` is not defined, or it's using github.token explicitly.
+			"actions/deploy-pages" to setOf(
+				// https://github.com/actions/deploy-pages/blob/main/action.yml
+				// Only when `token` is not defined explicitly, or it's using github.token explicitly.
+				Scope(Permission.PAGES, Access.WRITE), // To deploy to GitHub Pages.
+				Scope(
+					Permission.ID_TOKEN,
+					Access.WRITE
+				), // To verify the deployment originates from an appropriate source.
+			),
+			"github/codeql-action/upload-sarif" to setOf(
+				// https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
+				// Only when `github_token` is not defined, or it's using github.token explicitly.
+				Scope(Permission.SECURITY_EVENTS, Access.WRITE), // To upload SARIF files.
+				// Only in private repositories / internal organizations.
+				Scope(Permission.ACTIONS, Access.WRITE),
+			),
+			"8BitJonny/gh-get-current-pr" to setOf(
+				// https://github.com/8BitJonny/gh-get-current-pr/blob/master/action.yml
+				// Only when `github-token` is not defined, or it's using github.token explicitly.
+				Scope(Permission.PULL_REQUESTS, Access.READ), // To get the current PR.
+			),
+			// Permissions are only required if `github_token` is not defined, or it's using github.token explicitly.
+			"EnricoMi/publish-unit-test-result-action" to setOf(
+				// https://github.com/EnricoMi/publish-unit-test-result-action/blob/master/action.yml
+				// Only when check_run == true, or not listed as default is true.
+				Scope(Permission.CHECKS, Access.WRITE), // To publish check runs.
+				// Only when comment_mode != off.
+				// (i.e. always, changes, changes in failures, changes in errors, failures, errors; default is always)
+				Scope(Permission.PULL_REQUESTS, Access.WRITE), // To comment on PRs.
+				// Only in private repos:
+				Scope(Permission.ISSUES, Access.READ),
+				Scope(Permission.CONTENTS, Access.READ),
+			),
 		)
 
 		val MissingRequiredActionPermissions = Issue(
-				id = "MissingRequiredActionPermissions",
-				title = "Required permissions are not declared for action.",
-				description = """
+			id = "MissingRequiredActionPermissions",
+			title = "Required permissions are not declared for action.",
+			description = """
 				Certain GitHub Actions require specific permissions to be specified for the GITHUB_TOKEN to work correctly.
 				
 				For example, the `actions/checkout` action requires `contents: read` permission to be able to
@@ -119,10 +122,10 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 				* [Syntax for workflow-level permissions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions)
 				* [Syntax for job-level permissions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idpermissions)
 			""".trimIndent(),
-				compliant = listOf(
-						Example(
-								explanation = "Required permissions are explicitly declared on the job.",
-								content = """
+			compliant = listOf(
+				Example(
+					explanation = "Required permissions are explicitly declared on the job.",
+					content = """
 						on: push
 						jobs:
 						  example:
@@ -132,10 +135,10 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 						    steps:
 						      - uses: actions/checkout@v4
 					""".trimIndent(),
-						),
-						Example(
-								explanation = "Required permissions are explicitly declared on the workflow.",
-								content = """
+				),
+				Example(
+					explanation = "Required permissions are explicitly declared on the workflow.",
+					content = """
 						on: push
 						permissions:
 						  contents: read
@@ -145,12 +148,12 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 						    steps:
 						      - uses: actions/checkout@v4
 					""".trimIndent(),
-						),
 				),
-				nonCompliant = listOf(
-						Example(
-								explanation = "Required permissions are not declared on the job or workflow.",
-								content = """
+			),
+			nonCompliant = listOf(
+				Example(
+					explanation = "Required permissions are not declared on the job or workflow.",
+					content = """
 						on: push
 						jobs:
 						  example:
@@ -160,8 +163,8 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 						    steps:
 						      - uses: actions/checkout@v4
 					""".trimIndent(),
-						),
 				),
+			),
 		)
 	}
 }

@@ -28,7 +28,8 @@ class RequiredPermissionsRuleTest {
 
 		results shouldHave singleFinding(
 			"MissingRequiredActionPermissions",
-			"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work."
+			"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work: " +
+					"To read the repository contents during git clone/fetch."
 		)
 	}
 
@@ -84,10 +85,8 @@ class RequiredPermissionsRuleTest {
 	}
 
 	@Test fun `passes when a known required permission for checkout action is satisified via a token`() {
-		val uses = "$" + "{{ secrets.some_token }}"
-
 		val results = check<RequiredPermissionsRule>(
-				"""
+			"""
 				on: push
 				jobs:
 				  test:
@@ -97,7 +96,7 @@ class RequiredPermissionsRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				        with:
-				          token: ${uses}
+				          token: ${'$'}{{ secrets.some_token }}
 			""".trimIndent()
 		)
 
@@ -105,10 +104,9 @@ class RequiredPermissionsRuleTest {
 	}
 
 	@Test fun `reports when a known required permission for checkout action is not specified via a with token`() {
-		val uses = "$" + "{{ github.token }}"
 
 		val results = check<RequiredPermissionsRule>(
-				"""
+			"""
 				on: push
 				jobs:
 				  test:
@@ -118,13 +116,14 @@ class RequiredPermissionsRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				        with:
-				          token: ${uses}
+				          token: ${'$'}{{ github.token }}
 			""".trimIndent()
 		)
 
 		results shouldHave singleFinding(
-				"MissingRequiredActionPermissions",
-				"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work."
+			"MissingRequiredActionPermissions",
+			"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work: " +
+					"To read the repository contents during git clone/fetch."
 		)
 	}
 }
