@@ -26,7 +26,12 @@ private data class RequiredScopes(
 			: this(setOf(Scope(permission, access)), reason)
 
 	companion object {
-		val EMPTY = RequiredScopes(emptySet(), "Not required.")
+		val NO_GITHUB_TOKEN: Set<RequiredScopes> = setOf(
+			empty("No permissions are needed for the GitHub Token if a custom PAT is defined explicitly.")
+		)
+
+		fun empty(reason: String = "Not required."): RequiredScopes =
+			RequiredScopes(emptySet(), reason)
 	}
 }
 
@@ -65,8 +70,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 							)
 						)
 					} else {
-						// Permissions are suppressed if a custom PAT is defined explicitly.
-						emptySet()
+						RequiredScopes.NO_GITHUB_TOKEN
 					}
 				},
 				reason = "To read the repository contents during git clone/fetch."
@@ -89,14 +93,13 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 								"To delete HEAD branches when closing PRs."
 							)
 
-							"false" -> RequiredScopes.EMPTY
-							null -> RequiredScopes.EMPTY
-							else -> RequiredScopes.EMPTY
+							"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
+							null -> RequiredScopes.empty("Not deleting branches by default.")
+							else -> RequiredScopes.empty("Undecidable whether branches are deleted.")
 						}
 						setOf(basics, deleteBranch)
 					} else {
-						// Permissions are suppressed if a custom PAT is defined explicitly.
-						emptySet()
+						RequiredScopes.NO_GITHUB_TOKEN
 					}
 				},
 				reason = "To delete HEAD branches when closing PRs."
