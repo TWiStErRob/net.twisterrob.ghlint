@@ -13,7 +13,10 @@ import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-private data class RequiredPermissionsDefinition(val resolve: (WorkflowStep.Uses) -> Set<Scope>, val reason: String)
+private data class RequiredPermissionsDefinition(
+	val resolve: (step: WorkflowStep.Uses) -> Set<Scope>,
+	val reason: String,
+)
 
 public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	override val issues: List<Issue> = listOf(MissingRequiredActionPermissions)
@@ -40,8 +43,8 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, RequiredPermissionsDefinition> = mapOf(
 			"actions/checkout" to RequiredPermissionsDefinition(
 				// https://github.com/actions/checkout/blob/main/action.yml
-				resolve = {
-					if (it.with.isGitHubToken("token")) {
+				resolve = { step ->
+					if (step.with.isGitHubToken("token")) {
 						setOf(Scope(Permission.CONTENTS, Access.READ))
 					} else {
 						// Permissions are suppressed if a custom PAT is defined explicitly.
@@ -52,13 +55,13 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			),
 			"actions/stale" to RequiredPermissionsDefinition(
 				// https://github.com/actions/stale/blob/main/action.yml
-				resolve = {
-					if (it.with.isGitHubToken("repo-token")) {
+				resolve = { step ->
+					if (step.with.isGitHubToken("repo-token")) {
 						val basics = setOf(
 							Scope(Permission.ISSUES, Access.WRITE),
 							Scope(Permission.PULL_REQUESTS, Access.WRITE),
 						)
-						val deleteBranch = when (it.with?.get("delete-branch")) {
+						val deleteBranch = when (step.with?.get("delete-branch")) {
 							"true" -> setOf(Scope(Permission.CONTENTS, Access.WRITE))
 							"false" -> emptySet()
 							null -> emptySet()
