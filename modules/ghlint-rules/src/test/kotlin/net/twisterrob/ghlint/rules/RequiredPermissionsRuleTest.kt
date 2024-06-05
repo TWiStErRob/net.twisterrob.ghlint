@@ -7,6 +7,8 @@ import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 
 class RequiredPermissionsRuleTest {
 
@@ -84,7 +86,7 @@ class RequiredPermissionsRuleTest {
 		results shouldHave noFindings()
 	}
 
-	@Test fun `passes when a known required permission for checkout action is satisified via a token`() {
+	@Test fun `passes when a known required permission for checkout action is satisfied via a token`() {
 		val results = check<RequiredPermissionsRule>(
 			"""
 				on: push
@@ -103,8 +105,11 @@ class RequiredPermissionsRuleTest {
 		results shouldHave noFindings()
 	}
 
-	@Test fun `reports when a known required permission for checkout action is not specified via a with token`() {
-
+	@MethodSource("gitHubTokens")
+	@ParameterizedTest
+	fun `reports when a known required permission for github token in checkout action is not specified`(
+		githubToken: String,
+	) {
 		val results = check<RequiredPermissionsRule>(
 			"""
 				on: push
@@ -116,7 +121,7 @@ class RequiredPermissionsRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				        with:
-				          token: ${'$'}{{ github.token }}
+				          token: ${githubToken}
 			""".trimIndent()
 		)
 
@@ -124,6 +129,20 @@ class RequiredPermissionsRuleTest {
 			"MissingRequiredActionPermissions",
 			"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work: " +
 					"To read the repository contents during git clone/fetch."
+		)
+	}
+
+	companion object {
+		@JvmStatic
+		fun gitHubTokens(): List<String> = listOf(
+			"\${{ github.token }}",
+			"\${{github.token}}",
+			"\${{   github.token}}",
+			"\${{github.token   }}",
+			"\${{ secrets.GITHUB_TOKEN }}",
+			"\${{secrets.GITHUB_TOKEN}}",
+			"\${{   secrets.GITHUB_TOKEN}}",
+			"\${{   secrets.GITHUB_TOKEN   }}",
 		)
 	}
 }

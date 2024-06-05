@@ -223,7 +223,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
  */
 private fun Map<String, String>?.isGitHubToken(inputKey: String): Boolean {
 	val token = this?.get(inputKey)
-	return token == null
-			|| token == "\${{ github.token }}"
-			|| token == "\${{ secrets.GITHUB_TOKEN }}"
+	return token == null || GITHUB_TOKEN_REGEX.matches(token)
 }
+
+private val GITHUB_TOKEN_REGEX = Regex("""^\s*${"\\$"}\{\{\s*(github\.token|secrets.GITHUB_TOKEN)\s*\}\}\s*$""")
