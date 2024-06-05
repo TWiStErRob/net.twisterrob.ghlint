@@ -40,12 +40,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, RequiredPermissionsDefinition> = mapOf(
 			"actions/checkout" to RequiredPermissionsDefinition(
 				resolve = {
-					val token = it.with?.get("token")
-					if (
-						token != null &&
-						token != "\${{ github.token }}" &&
-						token != "\${{ secrets.GITHUB_TOKEN }}"
-					) {
+					if (!it.with.isGitHubToken("token")) {
 						// Permissions are suppressed if a custom PAT is defined explicitly.
 						emptySet()
 					} else {
@@ -56,10 +51,6 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			),
 		)
 
-		/**
-		 * `github.token` is defined by default in many actions.
-		 * Explicit `${{ github.token }}` / `${{ secrets.GITHUB_TOKEN }}` should be handled for these.
-		 */
 		private val REQUIRED_PERMISSIONS_OLD: Map<String, Set<Scope>> = mapOf(
 			// Permissions are only required if `repo-token` is not defined, or it's using github.token explicitly.
 			"actions/stale" to setOf(
@@ -167,4 +158,38 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			),
 		)
 	}
+}
+
+/**
+ * `github.token` is defined by default in many actions, however their naming varies significantly.
+ *
+ * This function assumes that the [inputKey] is defined similar to this:
+ * ```yaml
+ * inputs:
+ *   my-token:
+ *     default: ${{ github.token }}
+ * ```
+ * ```yaml
+ * uses: my-action
+ * with:
+ *   #my-token: ${{ github.token }} # Default, no need to list.
+ * ```
+ * It is possible that the user defined a custom, but default token, those should be all equivalent:
+ *
+ * ```yaml
+ * uses: my-action
+ * with:
+ *   my-token: ${{ github.token }}
+ * ```
+ * ```yaml
+ * uses: my-action
+ * with:
+ *   my-token: ${{ secrets.GITHUB_TOKEN }}
+ * ```
+ */
+private fun Map<String, String>?.isGitHubToken(inputKey: String): Boolean {
+	val token = this?.get(inputKey)
+	return token == null
+			|| token == "\${{ github.token }}"
+			|| token == "\${{ secrets.GITHUB_TOKEN }}"
 }
