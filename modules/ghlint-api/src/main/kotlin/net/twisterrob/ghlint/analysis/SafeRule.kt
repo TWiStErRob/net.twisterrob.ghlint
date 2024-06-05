@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.analysis
 
 import net.twisterrob.ghlint.model.File
+import net.twisterrob.ghlint.model.wholeFile
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -21,7 +22,7 @@ internal class SafeRule(
 			val errorFinding = Finding(
 				rule = this,
 				issue = RuleErrored,
-				location = file.content.location,
+				location = file.wholeFile,
 				message = @Suppress("detekt.StringShouldBeRawString") // Cannot be, because we don't control stackTraceToString.
 				// This stackTraceToString ends with \n and it might contain ```, so using ```` to wrap it.
 				"${unsafeRule} errored while checking ${file.location.path}:\n````\n${ex.stackTraceToString()}````",

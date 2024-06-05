@@ -3,17 +3,22 @@ package net.twisterrob.ghlint.model
 import io.kotest.matchers.maps.beEmpty
 import io.kotest.matchers.maps.haveSize
 import io.kotest.matchers.should
-import org.intellij.lang.annotations.Language
+import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.loadUnsafe
 import org.junit.jupiter.api.Test
 
 class SnakeWorkflowTest {
 
-	@Test fun `no jobs`() {
-		val workflow = load(
+	private val File.theWorkflow: Workflow
+		get() = this.content as Workflow
+
+	@Test fun `zero jobs`() {
+		val workflow = loadUnsafe(
 			"""
-				jobs:
+				on: push
+				jobs: {}
 			""".trimIndent()
-		)
+		).theWorkflow
 
 		workflow.jobs should beEmpty()
 	}
@@ -21,19 +26,15 @@ class SnakeWorkflowTest {
 	@Test fun `has jobs`() {
 		val workflow = load(
 			"""
+				on: push
 				jobs:
 				  job1:
-				    steps:
+				    uses: reusable/workflow.yml
 				  job2:
-				    steps:
+				    uses: reusable/workflow.yml
 			""".trimIndent()
-		)
+		).theWorkflow
 
 		workflow.jobs should haveSize(2)
-	}
-
-	private fun load(@Language("yaml") yaml: String): SnakeWorkflow {
-		val yamlFile = RawFile(FileLocation("test.yml"), yaml)
-		return SnakeComponentFactory().createFile(yamlFile).content as SnakeWorkflow
 	}
 }

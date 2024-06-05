@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.model
 
 /**
  * https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#workflows
+ * https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
  */
 public interface Workflow : Component, Content {
 
