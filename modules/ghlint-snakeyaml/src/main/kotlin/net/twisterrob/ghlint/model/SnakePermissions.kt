@@ -7,9 +7,10 @@ import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakePermissions internal constructor(
+	override val factory: SnakeComponentFactory,
 	override val node: MappingNode,
 	override val target: Node,
-) : Permissions, HasSnakeNode<MappingNode> {
+) : Permissions, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val actions: Access get() = node.access(Permission.ACTIONS)
 	override val attestations: Access get() = node.access(Permission.ATTESTATIONS)
