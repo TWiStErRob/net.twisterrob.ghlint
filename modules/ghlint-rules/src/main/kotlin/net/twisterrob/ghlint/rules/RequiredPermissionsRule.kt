@@ -13,24 +13,12 @@ import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
 
-private typealias InferRequiredPermissions = (step: WorkflowStep.Uses) -> Set<RequiredScopes>
+private typealias InferRequiredPermissions = (step: WorkflowStep.Uses) -> Set<RequiredScope>
 
-private data class RequiredScopes(
-	val scope: Set<Scope>,
+private data class RequiredScope(
+	val scope: Scope,
 	val reason: String,
-) {
-	constructor(reason: String, vararg scopes: Scope)
-			: this(@Suppress("detekt.SpreadOperator") setOf(*scopes), reason)
-
-	companion object {
-		val NO_GITHUB_TOKEN: Set<RequiredScopes> = setOf(
-			empty("No permissions are needed for the GitHub Token if a custom PAT is defined explicitly.")
-		)
-
-		fun empty(reason: String = "Not required."): RequiredScopes =
-			RequiredScopes(emptySet(), reason)
-	}
-}
+)
 
 public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	override val issues: List<Issue> = listOf(MissingRequiredActionPermissions)
@@ -43,11 +31,11 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		val effectivePermissions = step.parent.effectivePermissions ?: return
 		val definedPermissions = effectivePermissions.effectiveScopes
 
-		val remaining = expectedPermissions.flatMap { it.scope } - definedPermissions
+		val remaining = expectedPermissions.filterNot { definedPermissions.contains(it.scope) }
 
 		remaining.forEach { expected ->
 			reporting.report(MissingRequiredActionPermissions, step) {
-				"${it} requires `${expected}` permission for `${step.uses.action}` to work: {definition.reason}"
+				"${it} requires `${expected.scope}` permission for `${step.uses.action}` to work: ${expected.reason}"
 			}
 		}
 	}
@@ -59,38 +47,38 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			"actions/checkout" to { step ->
 				if (step.with.isGitHubToken("token")) {
 					setOf(
-						RequiredScopes(
+						RequiredScope(
+								Scope(Permission.CONTENTS, Access.READ),
 							"To read the repository contents during git clone/fetch.",
-							Scope(Permission.CONTENTS, Access.READ),
 						)
 					)
 				} else {
-					RequiredScopes.NO_GITHUB_TOKEN
+					emptySet()
 				}
 			},
 			// https://github.com/actions/stale/blob/main/action.yml
-			"actions/stale" to { step ->
-				if (step.with.isGitHubToken("repo-token")) {
-					val basics = RequiredScopes(
-						"To comment or close stale issues and PRs.",
-						Scope(Permission.ISSUES, Access.WRITE),
-						Scope(Permission.PULL_REQUESTS, Access.WRITE),
-					)
-					val deleteBranch = when (step.with?.get("delete-branch")) {
-						"true" -> RequiredScopes(
-							"To delete HEAD branches when closing PRs.",
-							Scope(Permission.CONTENTS, Access.WRITE),
-						)
-
-						"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
-						null -> RequiredScopes.empty("Not deleting branches by default.")
-						else -> RequiredScopes.empty("Undecidable whether branches are deleted.")
-					}
-					setOf(basics, deleteBranch)
-				} else {
-					RequiredScopes.NO_GITHUB_TOKEN
-				}
-			},
+//			"actions/stale" to { step ->
+//				if (step.with.isGitHubToken("repo-token")) {
+//					val basics = RequiredScopes(
+//						"To comment or close stale issues and PRs.",
+//						Scope(Permission.ISSUES, Access.WRITE),
+//						Scope(Permission.PULL_REQUESTS, Access.WRITE),
+//					)
+//					val deleteBranch = when (step.with?.get("delete-branch")) {
+//						"true" -> RequiredScopes(
+//							"To delete HEAD branches when closing PRs.",
+//							Scope(Permission.CONTENTS, Access.WRITE),
+//						)
+//
+//						"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
+//						null -> RequiredScopes.empty("Not deleting branches by default.")
+//						else -> RequiredScopes.empty("Undecidable whether branches are deleted.")
+//					}
+//					setOf(basics, deleteBranch)
+//				} else {
+//					RequiredScopes.NO_GITHUB_TOKEN
+//				}
+//			},
 		)
 
 		@Suppress("detekt.UnusedPrivateProperty") // To have a clean build, TODO remove before merging.
