@@ -140,6 +140,45 @@ class RequiredPermissionsRuleTest {
 
 	@Nested
 	inner class Stale {
+		@Test fun `passes when basic permissions are specified`() {
+			val results = check<RequiredPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    permissions:
+					      issues: write
+					      pull-requests: write
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/stale@v4
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `passes when permissions are specified for delete-branch`() {
+			val results = check<RequiredPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    permissions:
+					      issues: write
+					      pull-requests: write
+					      contents: write
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/stale@v4
+					        with:
+					          delete-branch: true
+				""".trimIndent()
+			)
+
+			results shouldHave noFindings()
+		}
+
 		@Test fun `reports when missing issues and pr permissions`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
@@ -165,6 +204,124 @@ class RequiredPermissionsRuleTest {
 					"Step[actions/stale@v4] in Job[test] requires `pull-requests: write` permission for `actions/stale` to work: " +
 							"To comment or close stale PRs.",
 				),
+			)
+		}
+
+		@MethodSource("net.twisterrob.ghlint.rules.RequiredPermissionsRuleTest#gitHubTokens")
+		@ParameterizedTest
+		fun `reports when missing issues and pr permissions for github token`(
+			githubToken: String,
+		) {
+			val results = check<RequiredPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    permissions:
+					      packages: read
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/stale@v4
+					        with:
+					          token: ${githubToken}
+				""".trimIndent()
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/stale@v4] in Job[test] requires `issues: write` permission for `actions/stale` to work: " +
+							"To comment or close stale issues.",
+				),
+				aFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/stale@v4] in Job[test] requires `pull-requests: write` permission for `actions/stale` to work: " +
+							"To comment or close stale PRs.",
+				),
+			)
+		}
+
+		@Test fun `reports when missing basic and delete-branch permissions`() {
+			val results = check<RequiredPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    permissions:
+					      packages: read
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/stale@v4
+					        with:
+					          delete-branch: true
+				""".trimIndent()
+			)
+
+			results shouldHave exactFindings(
+				aFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/stale@v4] in Job[test] requires `issues: write` permission for `actions/stale` to work: " +
+							"To comment or close stale issues.",
+				),
+				aFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/stale@v4] in Job[test] requires `pull-requests: write` permission for `actions/stale` to work: " +
+							"To comment or close stale PRs.",
+				),
+				aFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/stale@v4] in Job[test] requires `contents: write` permission for `actions/stale` to work: " +
+							"To delete HEAD branches when closing PRs.",
+				),
+			)
+		}
+
+		@Test fun `reports when missing delete-branch permission`() {
+			val results = check<RequiredPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    permissions:
+					      issues: write
+					      pull-requests: write
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/stale@v4
+					        with:
+					          delete-branch: true
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"MissingRequiredActionPermissions",
+				"Step[actions/stale@v4] in Job[test] requires `contents: write` permission for `actions/stale` to work: " +
+						"To delete HEAD branches when closing PRs.",
+			)
+		}
+
+		@Test fun `reports when missing delete-branch contents permission required level`() {
+			val results = check<RequiredPermissionsRule>(
+				"""
+					on: push
+					jobs:
+					  test:
+					    permissions:
+					      contents: read
+					      issues: write
+					      pull-requests: write
+					    runs-on: ubuntu-latest
+					    steps:
+					      - uses: actions/stale@v4
+					        with:
+					          delete-branch: true
+				""".trimIndent()
+			)
+
+			results shouldHave singleFinding(
+				"MissingRequiredActionPermissions",
+				"Step[actions/stale@v4] in Job[test] requires `contents: write` permission for `actions/stale` to work: " +
+						"To delete HEAD branches when closing PRs.",
 			)
 		}
 	}
