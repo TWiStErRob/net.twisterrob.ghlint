@@ -80,6 +80,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 					emptySet()
 				}
 			},
+			// https://github.com/8BitJonny/gh-get-current-pr/blob/master/action.yml
 			"8BitJonny/gh-get-current-pr" to { step ->
 				if (step.with.isUsingGitHubToken("repo-token")) {
 					setOf(
