@@ -1,8 +1,5 @@
 package net.twisterrob.ghlint.rules
 
-import net.twisterrob.ghlint.model.Access
-import net.twisterrob.ghlint.model.Permission
-import net.twisterrob.ghlint.model.Scope
 import net.twisterrob.ghlint.model.WorkflowStep
 import net.twisterrob.ghlint.model.effectivePermissions
 import net.twisterrob.ghlint.model.effectiveScopes
@@ -12,13 +9,10 @@ import net.twisterrob.ghlint.rule.Reporting
 import net.twisterrob.ghlint.rule.report
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
-
-private typealias InferRequiredPermissions = (step: WorkflowStep.Uses) -> Set<RequiredScope>
-
-private data class RequiredScope(
-	val scope: Scope,
-	val reason: String,
-)
+import net.twisterrob.ghlint.rules.permissions.requirements.ActionsCheckoutPermissions
+import net.twisterrob.ghlint.rules.permissions.requirements.ActionsStalePermissions
+import net.twisterrob.ghlint.rules.permissions.requirements.EightBitJohhnyGetCurrentPrPermissions
+import net.twisterrob.ghlint.rules.permissions.InferRequiredPermissions
 
 public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 	override val issues: List<Issue> = listOf(MissingRequiredActionPermissions)
@@ -27,7 +21,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		super.visitWorkflowUsesStep(reporting, step)
 
 		val definition = REQUIRED_PERMISSIONS_DEFINITIONS[step.uses.action] ?: return
-		val expectedPermissions = definition(step)
+		val expectedPermissions = definition.infer(step)
 		val effectivePermissions = step.parent.effectivePermissions ?: return
 		val definedPermissions = effectivePermissions.effectiveScopes
 
@@ -42,92 +36,11 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 
 	private companion object {
 
-		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, InferRequiredPermissions> = mapOf(
-			// https://github.com/actions/checkout/blob/main/action.yml
-			"actions/checkout" to { step ->
-				if (step.with.isUsingGitHubToken("token")) {
-					setOf(
-						RequiredScope(
-								Scope(Permission.CONTENTS, Access.READ),
-							"To read the repository contents during git clone/fetch.",
-						)
-					)
-				} else {
-					emptySet()
-				}
-			},
-			// https://github.com/actions/stale/blob/main/action.yml
-			"actions/stale" to { step ->
-				if (step.with.isUsingGitHubToken("repo-token")) {
-					// TODO support days-before-* inputs. (i.e. -1 would make these permissions NOT required.)
-					val issues = RequiredScope(
-						Scope(Permission.ISSUES, Access.WRITE),
-						"To comment or close stale issues.",
-					)
-					val prs = RequiredScope(
-						Scope(Permission.PULL_REQUESTS, Access.WRITE),
-						"To comment or close stale PRs.",
-					)
-					val deleteBranch = if (step.with?.get("delete-branch") == "true") {
-						RequiredScope(
-								Scope(Permission.CONTENTS, Access.WRITE),
-								"To delete HEAD branches when closing PRs.",
-						)
-					} else {
-						null
-					}
-					setOf(issues, prs) + listOfNotNull(deleteBranch)
-				} else {
-					emptySet()
-				}
-			},
-			// https://github.com/8BitJonny/gh-get-current-pr/blob/master/action.yml
-			"8BitJonny/gh-get-current-pr" to { step ->
-				if (step.with.isUsingGitHubToken("repo-token")) {
-					setOf(
-						RequiredScope(
-								Scope(Permission.PULL_REQUESTS, Access.READ),
-							"To get the current PR.",
-						)
-					)
-				} else {
-					emptySet()
-				}
-			}
-		)
-
-		@Suppress("detekt.UnusedPrivateProperty") // To have a clean build, TODO remove before merging.
-		private val REQUIRED_PERMISSIONS_OLD: Map<String, Set<Scope>> = mapOf(
-			// Permissions are only required if `token` is not defined, or it's using github.token explicitly.
-			"actions/deploy-pages" to setOf(
-				// https://github.com/actions/deploy-pages/blob/main/action.yml
-				// Only when `token` is not defined explicitly, or it's using github.token explicitly.
-				Scope(Permission.PAGES, Access.WRITE), // To deploy to GitHub Pages.
-				Scope(
-					Permission.ID_TOKEN,
-					Access.WRITE
-				), // To verify the deployment originates from an appropriate source.
-			),
-			"github/codeql-action/upload-sarif" to setOf(
-				// https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
-				// Only when `github_token` is not defined, or it's using github.token explicitly.
-				Scope(Permission.SECURITY_EVENTS, Access.WRITE), // To upload SARIF files.
-				// Only in private repositories / internal organizations.
-				Scope(Permission.ACTIONS, Access.WRITE),
-			),
-			// Permissions are only required if `github_token` is not defined, or it's using github.token explicitly.
-			"EnricoMi/publish-unit-test-result-action" to setOf(
-				// https://github.com/EnricoMi/publish-unit-test-result-action/blob/master/action.yml
-				// Only when check_run == true, or not listed as default is true.
-				Scope(Permission.CHECKS, Access.WRITE), // To publish check runs.
-				// Only when comment_mode != off.
-				// (i.e. always, changes, changes in failures, changes in errors, failures, errors; default is always)
-				Scope(Permission.PULL_REQUESTS, Access.WRITE), // To comment on PRs.
-				// Only in private repos:
-				Scope(Permission.ISSUES, Access.READ),
-				Scope(Permission.CONTENTS, Access.READ),
-			),
-		)
+		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, InferRequiredPermissions> = listOf(
+			ActionsCheckoutPermissions,
+			ActionsStalePermissions,
+			EightBitJohhnyGetCurrentPrPermissions,
+		).associateBy { it.actionName }
 
 		val MissingRequiredActionPermissions = Issue(
 			id = "MissingRequiredActionPermissions",
@@ -191,37 +104,3 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		)
 	}
 }
-
-/**
- * `github.token` is defined by default in many actions, however their naming varies significantly.
- *
- * This function assumes that the [inputKey] is defined similar to this:
- * ```yaml
- * inputs:
- *   my-token:
- *     default: ${{ github.token }}
- * ```
- * ```yaml
- * uses: my-action
- * with:
- *   #my-token: ${{ github.token }} # Default, no need to list.
- * ```
- * It is possible that the user defined a custom, but default token, those should be all equivalent:
- *
- * ```yaml
- * uses: my-action
- * with:
- *   my-token: ${{ github.token }}
- * ```
- * ```yaml
- * uses: my-action
- * with:
- *   my-token: ${{ secrets.GITHUB_TOKEN }}
- * ```
- */
-private fun Map<String, String>?.isUsingGitHubToken(inputKey: String): Boolean {
-	val token = this?.get(inputKey)
-	return token == null || GITHUB_TOKEN_REGEX.matches(token)
-}
-
-private val GITHUB_TOKEN_REGEX = Regex("""^\s*${"\\$"}\{\{\s*(github\.token|secrets.GITHUB_TOKEN)\s*\}\}\s*$""")
