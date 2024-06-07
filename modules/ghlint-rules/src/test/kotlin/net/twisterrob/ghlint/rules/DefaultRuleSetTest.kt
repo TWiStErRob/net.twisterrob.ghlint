@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import io.kotest.matchers.collections.shouldBeSortedBy
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.test
 import net.twisterrob.ghlint.testing.testRulesPackage
@@ -48,5 +49,12 @@ class DefaultRuleSetTest {
 	@Test
 	fun `includes all rules in the package`() {
 		testRulesPackage(DefaultRuleSet::class)
+	}
+
+	@Test
+	fun `rules are alphabetically sorted`() {
+		val rules = DefaultRuleSet().createRules()
+
+		rules shouldBeSortedBy { it::class.simpleName.orEmpty() }
 	}
 }
