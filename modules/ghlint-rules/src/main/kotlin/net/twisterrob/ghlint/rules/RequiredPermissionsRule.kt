@@ -45,7 +45,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 		private val REQUIRED_PERMISSIONS_DEFINITIONS: Map<String, InferRequiredPermissions> = mapOf(
 			// https://github.com/actions/checkout/blob/main/action.yml
 			"actions/checkout" to { step ->
-				if (step.with.isGitHubToken("token")) {
+				if (step.with.isUsingGitHubToken("token")) {
 					setOf(
 						RequiredScope(
 								Scope(Permission.CONTENTS, Access.READ),
@@ -58,7 +58,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			},
 			// https://github.com/actions/stale/blob/main/action.yml
 			"actions/stale" to { step ->
-				if (step.with.isGitHubToken("repo-token")) {
+				if (step.with.isUsingGitHubToken("repo-token")) {
 					val issues = RequiredScope(
 						Scope(Permission.ISSUES, Access.WRITE),
 						"To comment or close stale issues.",
@@ -80,6 +80,18 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 					emptySet()
 				}
 			},
+			"8BitJonny/gh-get-current-pr" to { step ->
+				if (step.with.isUsingGitHubToken("repo-token")) {
+					setOf(
+						RequiredScope(
+								Scope(Permission.PULL_REQUESTS, Access.READ),
+							"To get the current PR.",
+						)
+					)
+				} else {
+					emptySet()
+				}
+			}
 		)
 
 		@Suppress("detekt.UnusedPrivateProperty") // To have a clean build, TODO remove before merging.
@@ -100,11 +112,6 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 				Scope(Permission.SECURITY_EVENTS, Access.WRITE), // To upload SARIF files.
 				// Only in private repositories / internal organizations.
 				Scope(Permission.ACTIONS, Access.WRITE),
-			),
-			"8BitJonny/gh-get-current-pr" to setOf(
-				// https://github.com/8BitJonny/gh-get-current-pr/blob/master/action.yml
-				// Only when `github-token` is not defined, or it's using github.token explicitly.
-				Scope(Permission.PULL_REQUESTS, Access.READ), // To get the current PR.
 			),
 			// Permissions are only required if `github_token` is not defined, or it's using github.token explicitly.
 			"EnricoMi/publish-unit-test-result-action" to setOf(
@@ -210,7 +217,7 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
  *   my-token: ${{ secrets.GITHUB_TOKEN }}
  * ```
  */
-private fun Map<String, String>?.isGitHubToken(inputKey: String): Boolean {
+private fun Map<String, String>?.isUsingGitHubToken(inputKey: String): Boolean {
 	val token = this?.get(inputKey)
 	return token == null || GITHUB_TOKEN_REGEX.matches(token)
 }
