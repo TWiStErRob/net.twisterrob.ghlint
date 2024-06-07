@@ -1,7 +1,9 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -129,6 +131,34 @@ class RequiredPermissionsRuleTest {
 			"MissingRequiredActionPermissions",
 			"Step[actions/checkout@v4] in Job[test] requires `contents: read` permission for `actions/checkout` to work: " +
 					"To read the repository contents during git clone/fetch."
+		)
+	}
+
+	@Test fun `reports when a known required permission for github token in stale action is not specified`() {
+		val results = check<RequiredPermissionsRule>(
+			"""
+				on: push
+				jobs:
+				  test:
+				    permissions:
+				      packages: read
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/stale@v4
+			""".trimIndent()
+		)
+
+		results shouldHave exactFindings(aFinding(
+			"MissingRequiredActionPermissions",
+			"Step[actions/stale@v4] in Job[test] requires `issues: write` permission for `actions/stale` to work: " +
+					"To comment or close stale issues."
+		),
+			aFinding(
+					"MissingRequiredActionPermissions",
+					"Step[actions/stale@v4] in Job[test] requires `pull-requests: write` permission for `actions/stale` to work: " +
+							"To close stale PRs."
+			),
+
 		)
 	}
 

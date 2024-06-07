@@ -57,28 +57,29 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 				}
 			},
 			// https://github.com/actions/stale/blob/main/action.yml
-//			"actions/stale" to { step ->
-//				if (step.with.isGitHubToken("repo-token")) {
-//					val basics = RequiredScopes(
-//						"To comment or close stale issues and PRs.",
-//						Scope(Permission.ISSUES, Access.WRITE),
-//						Scope(Permission.PULL_REQUESTS, Access.WRITE),
-//					)
-//					val deleteBranch = when (step.with?.get("delete-branch")) {
-//						"true" -> RequiredScopes(
-//							"To delete HEAD branches when closing PRs.",
-//							Scope(Permission.CONTENTS, Access.WRITE),
-//						)
-//
-//						"false" -> RequiredScopes.empty("Explicitly not deleting branches.")
-//						null -> RequiredScopes.empty("Not deleting branches by default.")
-//						else -> RequiredScopes.empty("Undecidable whether branches are deleted.")
-//					}
-//					setOf(basics, deleteBranch)
-//				} else {
-//					RequiredScopes.NO_GITHUB_TOKEN
-//				}
-//			},
+			"actions/stale" to { step ->
+				if (step.with.isGitHubToken("repo-token")) {
+					val issues = RequiredScope(
+						Scope(Permission.ISSUES, Access.WRITE),
+						"To comment or close stale issues.",
+					)
+					val prs = RequiredScope(
+						Scope(Permission.PULL_REQUESTS, Access.WRITE),
+						"To close stale PRs.",
+					)
+					val deleteBranch = if (step.with?.get("delete-branch") == "true") {
+						RequiredScope(
+								Scope(Permission.CONTENTS, Access.WRITE),
+								"To delete HEAD branches when closing PRs.",
+						)
+					} else {
+						null
+					}
+					setOf(issues, prs) + listOfNotNull(deleteBranch)
+				} else {
+					emptySet()
+				}
+			},
 		)
 
 		@Suppress("detekt.UnusedPrivateProperty") // To have a clean build, TODO remove before merging.
