@@ -1,8 +1,13 @@
+.gradle/
 /build/
 /gradle/plugins/build/
 /modules/**/build/
-.gradle/
+
+.kotlin/
+
 .idea/
-/temp/
+
 /report.sarif
+
+/temp/
 .DS_Store
