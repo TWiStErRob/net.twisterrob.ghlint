@@ -59,13 +59,14 @@ public class RequiredPermissionsRule : VisitorRule, WorkflowVisitor {
 			// https://github.com/actions/stale/blob/main/action.yml
 			"actions/stale" to { step ->
 				if (step.with.isUsingGitHubToken("repo-token")) {
+					// TODO support days-before-* inputs. (i.e. -1 would make these permissions NOT required.)
 					val issues = RequiredScope(
 						Scope(Permission.ISSUES, Access.WRITE),
 						"To comment or close stale issues.",
 					)
 					val prs = RequiredScope(
 						Scope(Permission.PULL_REQUESTS, Access.WRITE),
-						"To close stale PRs.",
+						"To comment or close stale PRs.",
 					)
 					val deleteBranch = if (step.with?.get("delete-branch") == "true") {
 						RequiredScope(

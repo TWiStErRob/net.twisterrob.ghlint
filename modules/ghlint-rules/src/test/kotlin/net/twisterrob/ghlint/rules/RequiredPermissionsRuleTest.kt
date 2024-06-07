@@ -19,7 +19,7 @@ class RequiredPermissionsRuleTest {
 
 	@Nested
 	inner class Checkout {
-		@Test fun `should report when missing a known required permission`() {
+		@Test fun `reports when missing contents permission`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
@@ -40,7 +40,7 @@ class RequiredPermissionsRuleTest {
 			)
 		}
 
-		@Test fun `passes when a known required permission is specified`() {
+		@Test fun `passes when contents permission is specified`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
@@ -57,7 +57,7 @@ class RequiredPermissionsRuleTest {
 			results shouldHave noFindings()
 		}
 
-		@Test fun `passes when a known required permission is specified at workflow level`() {
+		@Test fun `passes when contents permission is specified at workflow level`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
@@ -74,7 +74,7 @@ class RequiredPermissionsRuleTest {
 			results shouldHave noFindings()
 		}
 
-		@Test fun `passes when a known required permission is specified at higher access level`() {
+		@Test fun `passes when contents permission is specified at higher access level`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
@@ -91,7 +91,7 @@ class RequiredPermissionsRuleTest {
 			results shouldHave noFindings()
 		}
 
-		@Test fun `passes when a known required permission is satisfied via a token`() {
+		@Test fun `passes when contents permission is satisfied via an external token`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
@@ -112,7 +112,7 @@ class RequiredPermissionsRuleTest {
 
 		@MethodSource("net.twisterrob.ghlint.rules.RequiredPermissionsRuleTest#gitHubTokens")
 		@ParameterizedTest
-		fun `reports when a known required permission for github token is not specified`(
+		fun `reports when missing contents permission for github token`(
 			githubToken: String,
 		) {
 			val results = check<RequiredPermissionsRule>(
@@ -140,7 +140,7 @@ class RequiredPermissionsRuleTest {
 
 	@Nested
 	inner class Stale {
-		@Test fun `reports when a known required permission for github token is not specified`() {
+		@Test fun `reports when missing issues and pr permissions`() {
 			val results = check<RequiredPermissionsRule>(
 				"""
 					on: push
@@ -163,7 +163,7 @@ class RequiredPermissionsRuleTest {
 				aFinding(
 					"MissingRequiredActionPermissions",
 					"Step[actions/stale@v4] in Job[test] requires `pull-requests: write` permission for `actions/stale` to work: " +
-							"To close stale PRs."
+							"To comment or close stale PRs.",
 				),
 			)
 		}
