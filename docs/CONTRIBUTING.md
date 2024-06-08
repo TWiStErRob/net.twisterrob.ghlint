@@ -6,7 +6,8 @@ IntelliJ IDEA Community / Ultimate. (Please report any issues with Community as 
 
 Recommended plugins:
 
-* [detekt](https://plugins.jetbrains.com/plugin/10761-detekt) (config file: [config/detekt/detekt.yml](../config/detekt/detekt.yml))
+* [detekt](https://plugins.jetbrains.com/plugin/10761-detekt)
+  (config file: [config/detekt/detekt.yml](../config/detekt/detekt.yml))
   For a faster feedback loop.
 * [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown)
   Syntax highlight of .md files, and rule descriptions.
