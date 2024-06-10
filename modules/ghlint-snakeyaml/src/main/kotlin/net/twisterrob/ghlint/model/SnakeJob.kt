@@ -24,8 +24,8 @@ public sealed class SnakeJob protected constructor(
 	override val env: Env?
 		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
-	override val permissions: Map<String, String>?
-		get() = node.getOptional("permissions")?.run { map.toTextMap() }
+	override val permissions: Permissions?
+		get() = node.getOptional("permissions")?.let { factory.createPermissions(it) }
 
 	override val needs: List<String>?
 		get() = when (val needs = node.getOptional("needs")) {
