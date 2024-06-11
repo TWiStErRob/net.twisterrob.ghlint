@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.array
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
@@ -16,11 +15,8 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
 public sealed class SnakeJob protected constructor(
-	private val factory: SnakeComponentFactory,
-) : Job.BaseJob, HasSnakeNode<MappingNode> {
-
-	override val location: Location
-		get() = super.location
+	override val factory: SnakeComponentFactory,
+) : Job.BaseJob, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val name: String?
 		get() = node.getOptionalText("name")
@@ -28,8 +24,8 @@ public sealed class SnakeJob protected constructor(
 	override val env: Env?
 		get() = node.getOptional("env")?.let { factory.createEnv(it) }
 
-	override val permissions: Map<String, String>?
-		get() = node.getOptional("permissions")?.run { map.toTextMap() }
+	override val permissions: Permissions?
+		get() = node.getOptional("permissions")?.let { factory.createPermissions(it) }
 
 	override val needs: List<String>?
 		get() = when (val needs = node.getOptional("needs")) {
@@ -43,7 +39,7 @@ public sealed class SnakeJob protected constructor(
 		get() = node.getOptionalText("if")
 
 	public class SnakeNormalJob internal constructor(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -68,7 +64,7 @@ public sealed class SnakeJob protected constructor(
 	}
 
 	public class SnakeReusableWorkflowCallJob internal constructor(
-		private val factory: SnakeComponentFactory,
+		override val factory: SnakeComponentFactory,
 		override val parent: Workflow,
 		override val id: String,
 		override val node: MappingNode,
@@ -86,13 +82,15 @@ public sealed class SnakeJob protected constructor(
 	}
 
 	public class SnakeSecretsExplicit internal constructor(
+		override val factory: SnakeComponentFactory,
 		override val node: MappingNode,
 		override val target: Node,
 		private val map: Map<String, String>,
-	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode<MappingNode>
+	) : Job.Secrets.Explicit, Map<String, String> by map, HasSnakeNode<MappingNode>, SnakeElement
 
 	public class SnakeSecretsInherit internal constructor(
+		override val factory: SnakeComponentFactory,
 		override val node: Node,
 		override val target: Node,
-	) : Job.Secrets.Inherit, HasSnakeNode<Node>
+	) : Job.Secrets.Inherit, HasSnakeNode<Node>, SnakeElement
 }

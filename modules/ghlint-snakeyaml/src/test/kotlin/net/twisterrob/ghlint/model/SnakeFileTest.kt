@@ -3,13 +3,14 @@ package net.twisterrob.ghlint.model
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.instanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import org.intellij.lang.annotations.Language
+import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.loadUnsafe
 import org.junit.jupiter.api.Test
 
 class SnakeFileTest {
 
 	@Test fun `syntax error`() {
-		val file = load("x: *")
+		val file = loadUnsafe("x: *")
 
 		file.content.parent shouldBe file
 
@@ -20,7 +21,7 @@ class SnakeFileTest {
 	@Test fun `valid workflow`() {
 		val file = load(
 			"""
-				on:
+				on: push
 				jobs:
 				  test:
 				    uses: reusable/workflow.yml
@@ -33,7 +34,7 @@ class SnakeFileTest {
 	@Test fun `content is not re-created`() {
 		val file = load(
 			"""
-				on:
+				on: push
 				jobs:
 				  test:
 				    uses: reusable/workflow.yml
@@ -44,13 +45,8 @@ class SnakeFileTest {
 	}
 
 	@Test fun `content is not re-created on error`() {
-		val file = load("<invalid yaml/>")
+		val file = loadUnsafe("<invalid yaml/>")
 
 		file.content shouldBeSameInstanceAs file.content
-	}
-
-	private fun load(@Language("yaml") yaml: String): File {
-		val yamlFile = RawFile(FileLocation("test.yml"), yaml)
-		return SnakeComponentFactory().createFile(yamlFile)
 	}
 }

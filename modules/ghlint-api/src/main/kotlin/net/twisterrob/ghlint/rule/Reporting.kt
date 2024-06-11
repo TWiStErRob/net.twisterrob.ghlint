@@ -16,13 +16,13 @@ public interface Reporting {
 }
 
 context(Rule)
-public fun Reporting.report(issue: Issue, context: Component, message: (String) -> String) {
+public fun Reporting.report(issue: Issue, target: Component, message: (String) -> String) {
 	report(
 		Finding(
 			rule = this@Rule,
 			issue = issue,
-			location = context.location,
-			message = message(context.toTarget()),
+			location = target.location,
+			message = message(target.toTarget()),
 		)
 	)
 }

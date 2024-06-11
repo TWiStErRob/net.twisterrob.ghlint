@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.yaml
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.SnakeComponentFactory
+import net.twisterrob.ghlint.model.SnakeFile
 import org.intellij.lang.annotations.Language
 import org.snakeyaml.engine.v2.api.Dump
 import org.snakeyaml.engine.v2.api.DumpSettings
@@ -12,13 +13,11 @@ import java.io.StringWriter
 
 public object SnakeYaml {
 
-	private val factory = SnakeComponentFactory()
-
 	public fun load(file: RawFile): File =
-		factory.createFile(file)
+		SnakeComponentFactory(file).file
 
 	public fun loadRaw(yaml: RawFile): Node =
-		factory.loadYaml(yaml)
+		(SnakeComponentFactory(yaml).file as SnakeFile).node
 
 	@Language("yaml")
 	public fun save(node: Node): String {

@@ -13,15 +13,18 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.whenever
 
+private val file = RawFile(FileLocation("test.yml"), "content")
+
 class SnakeComponentFactoryTest {
 
-	private val subject = SnakeComponentFactory()
+	private fun subject(file: RawFile = net.twisterrob.ghlint.model.file): SnakeComponentFactory =
+		SnakeComponentFactory(file)
 
 	@Nested
 	inner class `createFile Test` {
 
 		@Test fun `creates SnakeFile`() {
-			val file = RawFile(FileLocation("test.yaml"), "content")
+			val subject = subject()
 			val content = mock<InvalidContent>()
 
 			val spy = spy(subject)
@@ -39,8 +42,7 @@ class SnakeComponentFactoryTest {
 		}
 
 		@Test fun `captures syntax error`() {
-			val file = RawFile(FileLocation("test.yaml"), "content")
-
+			val subject = subject()
 			val spy = spy(subject)
 			val syntaxError = RuntimeException("Syntax error")
 			doThrow(syntaxError).whenever(spy).loadYaml(file)
@@ -58,6 +60,7 @@ class SnakeComponentFactoryTest {
 
 		@Test fun `creates invalid content for unknown file`() {
 			val file = RawFile(FileLocation("test.unknown"), "content")
+			val subject = subject(file)
 
 			val result = subject.createFile(file)
 

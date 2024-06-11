@@ -1,23 +1,18 @@
 package net.twisterrob.ghlint.model
 
-import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.yaml.getOptional
 import net.twisterrob.ghlint.yaml.getOptionalText
 import net.twisterrob.ghlint.yaml.getRequired
 import net.twisterrob.ghlint.yaml.map
-import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
 public class SnakeWorkflow internal constructor(
-	private val factory: SnakeComponentFactory,
+	override val factory: SnakeComponentFactory,
 	override val parent: File,
 	override val node: MappingNode,
 	override val target: Node,
-) : Workflow, HasSnakeNode<MappingNode> {
-
-	override val location: Location
-		get() = super.location
+) : Workflow, HasSnakeNode<MappingNode>, SnakeElement {
 
 	override val name: String?
 		get() = node.getOptionalText("name")
@@ -36,8 +31,8 @@ public class SnakeWorkflow internal constructor(
 			}
 			.associateBy { it.id }
 
-	override val permissions: Map<String, String>?
-		get() = node.getOptional("permissions")?.run { map.toTextMap() }
+	override val permissions: Permissions?
+		get() = node.getOptional("permissions")?.let { factory.createPermissions(it) }
 
 	override val defaults: Defaults?
 		get() = node.getOptional("defaults")?.let { factory.createDefaults(it) }
