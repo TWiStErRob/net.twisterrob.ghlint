@@ -5,13 +5,14 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.workflow
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 class EffectivePermissionsKtTest {
 
 	private fun loadSingleJob(@Language("yaml") yaml: String): Job {
-		val file = load(yaml)
+		val file = load(workflow(yaml))
 		return (file.content as Workflow).jobs.values.single()
 	}
 

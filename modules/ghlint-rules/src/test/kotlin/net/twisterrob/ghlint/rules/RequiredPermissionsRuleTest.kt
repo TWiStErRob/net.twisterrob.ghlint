@@ -7,6 +7,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -20,7 +21,7 @@ class RequiredPermissionsRuleTest {
 	@Nested
 	inner class Checkout {
 		@Test fun `reports when missing contents permission`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -30,8 +31,10 @@ class RequiredPermissionsRuleTest {
 					      pull-requests: write
 					    steps:
 					      - uses: actions/checkout@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingRequiredActionPermissions",
@@ -41,7 +44,7 @@ class RequiredPermissionsRuleTest {
 		}
 
 		@Test fun `passes when contents permission is specified`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -51,14 +54,16 @@ class RequiredPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - uses: actions/checkout@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when contents permission is specified at workflow level`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					permissions:
@@ -68,14 +73,16 @@ class RequiredPermissionsRuleTest {
 					    runs-on: ubuntu-latest
 					    steps:
 					      - uses: actions/checkout@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when contents permission is specified at higher access level`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -85,14 +92,16 @@ class RequiredPermissionsRuleTest {
 					      contents: write
 					    steps:
 					      - uses: actions/checkout@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when contents permission is satisfied via an external token`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -104,8 +113,10 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/checkout@v4
 					        with:
 					          token: ${'$'}{{ secrets.some_token }}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -115,7 +126,7 @@ class RequiredPermissionsRuleTest {
 		fun `reports when missing contents permission for github token`(
 			githubToken: String,
 		) {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -127,8 +138,10 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/checkout@v4
 					        with:
 					          token: ${githubToken}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingRequiredActionPermissions",
@@ -141,7 +154,7 @@ class RequiredPermissionsRuleTest {
 	@Nested
 	inner class Stale {
 		@Test fun `passes when basic permissions are specified`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -152,14 +165,16 @@ class RequiredPermissionsRuleTest {
 					    runs-on: ubuntu-latest
 					    steps:
 					      - uses: actions/stale@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when permissions are specified for delete-branch`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -173,14 +188,16 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/stale@v4
 					        with:
 					          delete-branch: true
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when missing issues and pr permissions`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -190,8 +207,10 @@ class RequiredPermissionsRuleTest {
 					    runs-on: ubuntu-latest
 					    steps:
 					      - uses: actions/stale@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -212,7 +231,7 @@ class RequiredPermissionsRuleTest {
 		fun `reports when missing issues and pr permissions for github token`(
 			githubToken: String,
 		) {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -224,8 +243,10 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/stale@v4
 					        with:
 					          token: ${githubToken}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -242,7 +263,7 @@ class RequiredPermissionsRuleTest {
 		}
 
 		@Test fun `reports when missing basic and delete-branch permissions`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -254,8 +275,10 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/stale@v4
 					        with:
 					          delete-branch: true
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -277,7 +300,7 @@ class RequiredPermissionsRuleTest {
 		}
 
 		@Test fun `reports when missing delete-branch permission`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -290,8 +313,10 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/stale@v4
 					        with:
 					          delete-branch: true
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingRequiredActionPermissions",
@@ -301,7 +326,7 @@ class RequiredPermissionsRuleTest {
 		}
 
 		@Test fun `reports when missing delete-branch contents permission required level`() {
-			val results = check<RequiredPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -315,8 +340,10 @@ class RequiredPermissionsRuleTest {
 					      - uses: actions/stale@v4
 					        with:
 					          delete-branch: true
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<RequiredPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingRequiredActionPermissions",

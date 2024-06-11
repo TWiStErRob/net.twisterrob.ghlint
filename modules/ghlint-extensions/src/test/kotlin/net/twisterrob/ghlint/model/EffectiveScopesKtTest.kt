@@ -2,13 +2,14 @@ package net.twisterrob.ghlint.model
 
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.workflow
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 class EffectiveScopesKtTest {
 
 	private fun loadPermissions(@Language("yaml") yaml: String): Permissions {
-		val file = load(yaml)
+		val file = load(workflow(yaml))
 		return (file.content as Workflow).permissions!!
 	}
 
