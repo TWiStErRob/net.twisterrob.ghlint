@@ -4,10 +4,9 @@ java-source = "11"
 java-target = "11"
 java-toolchain = "11"
 java-toolchainTest = "21"
-kotlin-build = "1.9.24"
-kotlin-target = { strictly = "1.9.24" }
-kotlin-language = "1.9"
-kotlin-serialization = "1.6.3"
+kotlin-build = "2.0.0"
+kotlin-target = { strictly = "2.0.0" }
+kotlin-serialization = "1.7.0"
 
 detekt = "1.23.6"
 jsr305 = "3.0.2"
@@ -16,10 +15,10 @@ sarif4k = "0.6.0"
 clikt = "4.4.0"
 buildConfig = "5.3.5"
 r8 = "8.4.21"
-classgraph = "4.8.172"
+classgraph = "4.8.173"
 
 junit-jupiter = "5.10.2"
-kotest = "5.9.0"
+kotest = "5.9.1"
 mockito-kotlin = "5.3.1"
 jsonSchema = "1.6.0"
 
