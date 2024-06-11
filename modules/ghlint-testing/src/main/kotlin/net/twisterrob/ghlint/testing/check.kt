@@ -8,6 +8,7 @@ package net.twisterrob.ghlint.testing
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeIn
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
 import org.intellij.lang.annotations.Language
@@ -19,6 +20,11 @@ import org.intellij.lang.annotations.Language
  * @see checkUnsafe
  */
 public var isDebugEnabled: Boolean = System.getProperty("ghlint.debug", "false").toBooleanStrict()
+
+public inline fun <reified T : Rule> check(file: RawFile): List<Finding> {
+	val rule = createRule<T>()
+	return rule.check(file.content, file.location.path)
+}
 
 public inline fun <reified T : Rule> check(
 	@Language("yaml") yaml: String,

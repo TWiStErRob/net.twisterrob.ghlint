@@ -7,6 +7,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -15,7 +16,7 @@ class RedundantShellRuleTest {
 	@TestFactory fun metadata() = test(RedundantShellRule::class)
 
 	@Test fun `reports when both job and workflow have the same default shell`() {
-		val results = check<RedundantShellRule>(
+		val file = yaml(
 			"""
 				on: push
 				defaults:
@@ -31,6 +32,8 @@ class RedundantShellRuleTest {
 				      - run: echo "Test"
 			""".trimIndent()
 		)
+
+		val results = check<RedundantShellRule>(file)
 
 		results shouldHave singleFinding(
 			"RedundantDefaultShell",
