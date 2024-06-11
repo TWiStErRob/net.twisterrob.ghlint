@@ -1,10 +1,12 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -17,7 +19,7 @@ class MissingNameRuleTest {
 	@TestFactory fun metadata() = test(MissingNameRule::class)
 
 	@Test fun `reports when workflow is missing a name`() {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				on: push
 				#name: Missing
@@ -28,8 +30,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingWorkflowName",
@@ -40,7 +44,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when workflow has empty name`(name: String) {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				on: push
 				name: ${name}
@@ -51,8 +55,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingWorkflowName",
@@ -63,7 +69,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when workflow has blank name`(name: String, @Suppress("UNUSED_PARAMETER") value: String) {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				on: push
 				name: ${name}
@@ -74,8 +80,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingWorkflowName",
@@ -84,7 +92,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when workflow has a name`() {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Test
 				on: push
@@ -95,14 +103,16 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when job is missing a name`() {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -113,8 +123,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingJobName",
@@ -125,7 +137,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when job has empty name`(name: String) {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -136,8 +148,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingJobName",
@@ -148,7 +162,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when job has blank name`(name: String, @Suppress("UNUSED_PARAMETER") value: String) {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -159,8 +173,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingJobName",
@@ -169,7 +185,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when job has a name`() {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -180,14 +196,16 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Irrelevant
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is missing a name in job`() {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -198,8 +216,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        #name: Missing
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -210,7 +230,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when step has empty name in job`(name: String) {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -221,8 +241,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        name: ${name}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -233,7 +255,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when step has blank name in job`(name: String, value: String) {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -244,8 +266,10 @@ class MissingNameRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        name: ${name}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -254,7 +278,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when step has a name in job`() {
-		val results = check<MissingNameRule>(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -265,14 +289,16 @@ class MissingNameRuleTest {
 				    steps:
 				      - name: Test
 				        run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is missing a name in action`() {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -283,8 +309,9 @@ class MissingNameRuleTest {
 				      shell: bash
 				      #name: Missing
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -295,7 +322,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when step has empty name in action`(name: String) {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -306,8 +333,9 @@ class MissingNameRuleTest {
 				      shell: bash
 				      name: ${name}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -318,7 +346,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when step has blank name in action`(name: String, value: String) {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -329,8 +357,9 @@ class MissingNameRuleTest {
 				      shell: bash
 				      name: ${name}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -339,7 +368,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when step has a name in action`() {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -350,8 +379,9 @@ class MissingNameRuleTest {
 				      run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave noFindings()
 	}

@@ -3,10 +3,12 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -17,7 +19,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	@TestFactory fun metadata() = test(SafeEnvironmentFileRedirectRule::class)
 
 	@Test fun `passes when no environment file is used`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -25,14 +27,16 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when no environment file is used in actions`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -42,14 +46,15 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    - run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when non-environment file is used`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -57,14 +62,16 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test" >> ${'$'}OUTPUT
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when non-environment file is used in actions`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -74,8 +81,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    - run: echo "Test" >> ${'$'}OUTPUT
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -88,7 +96,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 				(acceptedSyntaxes(environmentFile) + rejectedSyntaxes(environmentFile)).flatMap { (name, syntax) ->
 					listOf(
 						dynamicTest(name) {
-							val results = check<SafeEnvironmentFileRedirectRule>(
+							val file = workflow(
 								"""
 									on: push
 									jobs:
@@ -96,8 +104,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 									    runs-on: test
 									    steps:
 									      - run: echo ${syntax}
-								""".trimIndent()
+								""".trimIndent(),
 							)
+
+							val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 							results shouldHave noFindings()
 						},
@@ -116,7 +126,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					.flatMap { (name, syntax) ->
 						listOf(
 							dynamicTest(name) {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = workflow(
 									"""
 										on: push
 										jobs:
@@ -126,13 +136,15 @@ class SafeEnvironmentFileRedirectRuleTest {
 										    # Intentionally unconventionally indented, see redirects().
 										    - run: |
 										        echo ${syntax}
-									""".trimIndent()
+									""".trimIndent(),
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave noFindings()
 							},
 							dynamicTest("${name} in actions") {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = action(
 									"""
 										name: "Test"
 										description: Test
@@ -143,8 +155,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 										        echo ${syntax}
 										      shell: bash
 									""".trimIndent(),
-									fileName = "action.yml",
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave noFindings()
 							},
@@ -163,7 +176,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					.flatMap { (name, syntax) ->
 						listOf(
 							dynamicTest(name) {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = workflow(
 									"""
 										on: push
 										jobs:
@@ -173,8 +186,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 										    # Intentionally unconventionally indented, see redirects().
 										    - run: |
 										        echo ${syntax}
-									""".trimIndent()
+									""".trimIndent(),
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
 									"SafeEnvironmentFileRedirect",
@@ -182,7 +197,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 								)
 							},
 							dynamicTest("${name} in actions") {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = action(
 									"""
 										name: "Test"
 										description: Test
@@ -193,8 +208,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 										        echo ${syntax}
 										      shell: bash
 									""".trimIndent(),
-									fileName = "action.yml",
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
 									"SafeEnvironmentFileRedirect",

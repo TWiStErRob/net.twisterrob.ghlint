@@ -7,6 +7,8 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.workflow
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -14,6 +16,9 @@ class SnakeJobTest {
 
 	private val File.theJob: Job
 		get() = (this.content as SnakeWorkflow).jobs.values.single()
+
+	private fun load(@Language("yaml") yaml: String): Job =
+		load(workflow(yaml)).theJob
 
 	@Test fun `normal job has steps`() {
 		val job = load(
@@ -26,7 +31,7 @@ class SnakeJobTest {
 				      - uses: actions/checkout@v4
 				      - uses: actions/checkout@v4
 			""".trimIndent()
-		).theJob
+		)
 
 		job.shouldBeInstanceOf<Job.NormalJob>()
 		job.steps should haveSize(2)
@@ -40,7 +45,7 @@ class SnakeJobTest {
 				  test:
 				    uses: reusable/workflow.yml
 			""".trimIndent()
-		).theJob
+		)
 
 		job.shouldBeInstanceOf<Job.ReusableWorkflowCallJob>()
 		job.uses shouldBe "reusable/workflow.yml"
@@ -57,7 +62,7 @@ class SnakeJobTest {
 					  test:
 					    uses: reusable/workflow.yml
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.ReusableWorkflowCallJob>()
 			job.needs should beNull()
@@ -72,7 +77,7 @@ class SnakeJobTest {
 					    needs: other
 					    uses: reusable/workflow.yml
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.ReusableWorkflowCallJob>()
 			job.needs should containExactly("other")
@@ -87,7 +92,7 @@ class SnakeJobTest {
 					    needs: [test1, test2]
 					    uses: reusable/workflow.yml
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.ReusableWorkflowCallJob>()
 			job.needs should containExactly("test1", "test2")
@@ -104,7 +109,7 @@ class SnakeJobTest {
 					      - test2
 					    uses: reusable/workflow.yml
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.ReusableWorkflowCallJob>()
 			job.needs should containExactly("test1", "test2")
@@ -120,7 +125,7 @@ class SnakeJobTest {
 					    steps:
 					      - uses: actions/checkout@v4
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.NormalJob>()
 			job.needs should beNull()
@@ -137,7 +142,7 @@ class SnakeJobTest {
 					    steps:
 					      - uses: actions/checkout@v4
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.NormalJob>()
 			job.needs should containExactly("other")
@@ -154,7 +159,7 @@ class SnakeJobTest {
 					    steps:
 					      - uses: actions/checkout@v4
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.NormalJob>()
 			job.needs should containExactly("test1", "test2")
@@ -173,7 +178,7 @@ class SnakeJobTest {
 					    steps:
 					      - uses: actions/checkout@v4
 				""".trimIndent()
-			).theJob
+			)
 
 			job.shouldBeInstanceOf<Job.NormalJob>()
 			job.needs should containExactly("test1", "test2")

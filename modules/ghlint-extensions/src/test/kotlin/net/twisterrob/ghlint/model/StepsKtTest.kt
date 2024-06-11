@@ -11,6 +11,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.yaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -18,17 +19,15 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class StepsKtTest {
 
-	private fun loadStep(index: Int, @Language("yaml") yaml: String, fileName: String = "test.yml"): Step {
-		val file = load(yaml, fileName)
-		return when (val content = file.content) {
+	private fun File.nthStep(index: Int): Step =
+		when (val content = content) {
 			is Workflow -> (content.jobs.values.single() as Job.NormalJob).steps[index]
 			is Action -> (content.runs as Action.Runs.CompositeRuns).steps[index]
 			is InvalidContent -> error("Invalid content: ${content.error}")
 		}
-	}
 
 	private fun test(@Language("yaml") yaml: String, fileName: String = "test.yml", stepsLength: Int, stepIndex: Int) {
-		val step = loadStep(stepIndex, yaml, fileName)
+		val step = load(yaml(yaml, fileName)).nthStep(stepIndex)
 
 		withClue("preconditions") {
 			step.index.value shouldBe stepIndex

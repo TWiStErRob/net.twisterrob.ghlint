@@ -2,10 +2,12 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -21,48 +23,56 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step job`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(1)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes few step job`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(5)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes max steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(10)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(11)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManyJobs",
@@ -72,12 +82,14 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(20)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManyJobs",
@@ -91,60 +103,68 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step job`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(1)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes few step job`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(5)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes max steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(20)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(21)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManySteps",
@@ -154,15 +174,17 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(40)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManySteps",
@@ -176,7 +198,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step action`() {
-			val results = check<ComponentCountRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -184,15 +206,16 @@ class ComponentCountRuleTest {
 					  using: composite
 					  steps:${Random.generateActionSteps(1)}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes few step action`() {
-			val results = check<ComponentCountRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -200,15 +223,16 @@ class ComponentCountRuleTest {
 					  using: composite
 					  steps:${Random.generateActionSteps(5)}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes max steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -216,15 +240,16 @@ class ComponentCountRuleTest {
 					  using: composite
 					  steps:${Random.generateActionSteps(20)}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val results = check<ComponentCountRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -232,8 +257,9 @@ class ComponentCountRuleTest {
 					  using: composite
 					  steps:${Random.generateActionSteps(21)}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManySteps",
@@ -243,7 +269,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -251,8 +277,9 @@ class ComponentCountRuleTest {
 					  using: composite
 					  steps:${Random.generateActionSteps(40)}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManySteps",

@@ -1,10 +1,12 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -20,7 +22,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -29,8 +31,10 @@ class DoubleCurlyIfRuleTest {
 					    if:     ${'$'}{{     true     }}    
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -41,7 +45,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -50,12 +54,14 @@ class DoubleCurlyIfRuleTest {
 					    if: ${'$'}{{ ${condition} }}
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave noFindings()
 
-			val resultsNoSpacing = check<DoubleCurlyIfRule>(
+			val fileNoSpacing = workflow(
 				"""
 					on: push
 					jobs:
@@ -64,8 +70,10 @@ class DoubleCurlyIfRuleTest {
 					    if: ${'$'}{{${condition}}}
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val resultsNoSpacing = check<DoubleCurlyIfRule>(fileNoSpacing)
 
 			resultsNoSpacing shouldHave noFindings()
 		}
@@ -73,7 +81,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -82,8 +90,10 @@ class DoubleCurlyIfRuleTest {
 					    if: ${condition}
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
 				"DoubleCurlyIf",
@@ -94,7 +104,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -103,8 +113,10 @@ class DoubleCurlyIfRuleTest {
 					    if: ${condition}
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
 				"DoubleCurlyIf",
@@ -118,7 +130,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -127,8 +139,10 @@ class DoubleCurlyIfRuleTest {
 					    steps:
 					      - run: echo "Test"
 					        if:     ${'$'}{{     true     }}    
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -139,7 +153,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -148,12 +162,14 @@ class DoubleCurlyIfRuleTest {
 					    steps:
 					      - run: echo "Test"
 					        if: ${'$'}{{ ${condition} }}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave noFindings()
 
-			val resultsNoSpacing = check<DoubleCurlyIfRule>(
+			val fileNoSpacing = workflow(
 				"""
 					on: push
 					jobs:
@@ -162,8 +178,10 @@ class DoubleCurlyIfRuleTest {
 					    steps:
 					      - run: echo "Test"
 					        if: ${'$'}{{${condition}}}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val resultsNoSpacing = check<DoubleCurlyIfRule>(fileNoSpacing)
 
 			resultsNoSpacing shouldHave noFindings()
 		}
@@ -171,7 +189,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -180,8 +198,10 @@ class DoubleCurlyIfRuleTest {
 					    steps:
 					      - run: echo "Test"
 					        if: ${condition}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
 				"DoubleCurlyIf",
@@ -192,7 +212,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -201,8 +221,10 @@ class DoubleCurlyIfRuleTest {
 					    steps:
 					      - run: echo "Test"
 					        if: ${condition}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
 				"DoubleCurlyIf",
@@ -216,7 +238,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val results = check<DoubleCurlyIfRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -227,8 +249,9 @@ class DoubleCurlyIfRuleTest {
 					      shell: bash
 					      if:     ${'$'}{{     true     }}    
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -239,7 +262,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -250,12 +273,13 @@ class DoubleCurlyIfRuleTest {
 					      shell: bash
 					      if: ${'$'}{{ ${condition} }}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave noFindings()
 
-			val resultsNoSpacing = check<DoubleCurlyIfRule>(
+			val fileNoSpacing = action(
 				"""
 					name: Test
 					description: Test
@@ -266,8 +290,9 @@ class DoubleCurlyIfRuleTest {
 					        shell: bash
 					        if: ${'$'}{{${condition}}}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val resultsNoSpacing = check<DoubleCurlyIfRule>(fileNoSpacing)
 
 			resultsNoSpacing shouldHave noFindings()
 		}
@@ -275,7 +300,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -287,8 +312,9 @@ class DoubleCurlyIfRuleTest {
 					      if: >
 					        ${condition}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
 				"DoubleCurlyIf",
@@ -299,7 +325,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val results = check<DoubleCurlyIfRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -310,8 +336,9 @@ class DoubleCurlyIfRuleTest {
 					      shell: bash
 					      if: ${condition}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
 				"DoubleCurlyIf",

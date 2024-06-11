@@ -2,8 +2,11 @@ package net.twisterrob.ghlint
 
 import io.kotest.matchers.paths.shouldContainFile
 import io.kotest.matchers.paths.shouldContainNFiles
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
+import io.kotest.matchers.string.beEmpty
+import io.kotest.matchers.string.match
 import net.twisterrob.ghlint.GHLintTest.Fixtures.errorFile
 import net.twisterrob.ghlint.GHLintTest.Fixtures.errorFileMessage
 import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile1
@@ -12,79 +15,148 @@ import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile2
 import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
+import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
+import net.twisterrob.ghlint.test.captureSystemStreams
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.whenever
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import org.junit.jupiter.api.parallel.Resources
 import java.nio.file.Path
+import kotlin.io.path.absolute
 import kotlin.io.path.writeText
 
+/**
+ * @see GHLint.run
+ */
 class GHLintTest {
 
 	@Test
-	fun `no files`() {
-		val configuration: Configuration = mock()
-		whenever(configuration.files).thenReturn(emptyList())
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
+	fun `no files`(@TempDir tempDir: Path) {
+		val result = captureSystemStreams {
+			GHLint().run(FakeConfiguration(tempDir, emptyList(), isReportExitCode = true))
+		}
 
-		val result = GHLint().run(configuration)
-
-		result shouldBe 0
+		result.stdout should beEmpty()
+		result.stderr should beEmpty()
+		result.result shouldBe 0
 	}
 
 	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `single valid file`(@TempDir tempDir: Path) {
-		val test = tempDir.resolve("test.yml")
-		test.writeText(
-			"""
-				name: "Test"
-				on: push
-				jobs:
-				  test:
-				    name: "Test"
-				    runs-on: ubuntu-latest
-				    timeout-minutes: 1
-				    permissions: {}
-				    steps:
-				      - name: "Test"
-				        shell: bash
-				        run: echo "Test"
-			""".trimIndent()
-		)
-		val configuration: Configuration = mock()
-		whenever(configuration.root).thenReturn(tempDir)
-		whenever(configuration.files).thenReturn(listOf(test))
-		whenever(configuration.isReportExitCode).thenReturn(true)
+		val test = validFile1.writeTo(tempDir)
 
-		val result = GHLint().run(configuration)
+		val result = captureSystemStreams {
+			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
+		}
 
-		result shouldBe 0
-		tempDir shouldContainFile "test.yml"
+		result.stdout should beEmpty()
+		result.stderr should beEmpty()
+		result.result shouldBe 0
+		tempDir shouldContainFile validFile1.location.name
 		tempDir shouldContainNFiles 1
 	}
 
 	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 	fun `single invalid file`(@TempDir tempDir: Path) {
-		val test = tempDir.resolve("test.yml")
-		test.writeText(
-			"""
-			""".trimIndent()
-		)
-		val configuration: Configuration = mock()
-		whenever(configuration.root).thenReturn(tempDir)
-		whenever(configuration.files).thenReturn(listOf(test))
-		whenever(configuration.isReportExitCode).thenReturn(true)
+		val test = invalidFile1.writeTo(tempDir)
 
-		val result = GHLint().run(configuration)
+		val result = captureSystemStreams {
+			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
+		}
 
-		result shouldBe 1
-		tempDir shouldContainFile "test.yml"
+		result.stdout should beEmpty()
+		result.stderr should beEmpty()
+		result.result shouldBe 1
+		tempDir shouldContainFile invalidFile1.location.name
 		tempDir shouldContainNFiles 1
+	}
+
+	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
+	fun `single valid file in verbose mode`(@TempDir tempDir: Path) {
+		val test = validFile1.writeTo(tempDir)
+
+		val result = captureSystemStreams {
+			GHLint().run(
+				FakeConfiguration(
+					root = tempDir,
+					files = listOf(test),
+					isReportExitCode = true,
+					isVerbose = true
+				)
+			)
+		}
+
+		result.result shouldBe 0
+		result.stderr should beEmpty()
+		result.stdout shouldMatchEntire """
+			Received the following files for analysis against JSON-schema and rules:
+			 * ${test.absolute()}
+			Analyzing ${test.absolute()}... found 0 findings in ${timing}.
+			There are 0 findings in ${timing}.
+			Exiting with code 0.
+			
+		""".trimIndent()
+		tempDir shouldContainFile test.fileName.toString()
+		tempDir shouldContainNFiles 1
+	}
+
+	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
+	fun `some invalid files in verbose mode`(@TempDir tempDir: Path) {
+		val test1 = validFile1.writeTo(tempDir)
+		val test2 = invalidFile1.writeTo(tempDir)
+		val test3 = validFile2.writeTo(tempDir)
+		val test4 = invalidFile2.writeTo(tempDir)
+
+		val result = captureSystemStreams {
+			GHLint().run(
+				FakeConfiguration(
+					root = tempDir,
+					files = listOf(test1, test2, test3, test4),
+					isReportExitCode = true,
+					isVerbose = true,
+				)
+			)
+		}
+
+		result.result shouldBe 1
+		result.stderr should beEmpty()
+		result.stdout shouldMatchEntire """
+			Received the following files for analysis against JSON-schema and rules:
+			 * ${test1.absolute()}
+			 * ${test2.absolute()}
+			 * ${test3.absolute()}
+			 * ${test4.absolute()}
+			Analyzing ${test1.absolute()}... found 0 findings in ${timing}.
+			Analyzing ${test2.absolute()}... found 2 findings in ${timing}.
+			Analyzing ${test3.absolute()}... found 0 findings in ${timing}.
+			Analyzing ${test4.absolute()}... found 2 findings in ${timing}.
+			There are 4 findings in ${timing}.
+			Exiting with code 1.
+			
+		""".trimIndent()
+		tempDir shouldContainFile test1.fileName.toString()
+		tempDir shouldContainFile test2.fileName.toString()
+		tempDir shouldContainFile test3.fileName.toString()
+		tempDir shouldContainFile test4.fileName.toString()
+		tempDir shouldContainNFiles 4
 	}
 
 	@Nested
@@ -276,27 +348,47 @@ class GHLintTest {
 		}
 	}
 
+	companion object {
+
+		@Language("RegExp")
+		private val timing = """\E\d+(\.\d+)?m?s\Q"""
+
+		private fun RawFile.writeTo(tempDir: Path): Path {
+			val file = tempDir.resolve(location.path)
+			file.writeText(content)
+			return file
+		}
+	}
+
 	object Fixtures {
 
 		val validFile1 = RawFile(
 			location = FileLocation("test-valid1.yml"),
 			content = """
+				name: "Valid workflow #1"
 				on: push
 				jobs:
-				  job:
+				  test:
+				    name: "Test"
 				    uses: reusable/workflow.yml
+				    permissions: {}
 			""".trimIndent()
 		)
 
 		val validFile2 = RawFile(
 			location = FileLocation("test-valid2.yml"),
 			content = """
+				name: "Valid workflow #2"
 				on: push
 				jobs:
-				  job:
+				  test:
+				    name: "Test"
+				    timeout-minutes: 10
 				    runs-on: ubuntu-latest
+				    permissions: {}
 				    steps:
-				      - uses: actions/checkout@v4
+				      - name: "Checkout"
+				        uses: actions/checkout@v4
 			""".trimIndent()
 		)
 
@@ -332,4 +424,9 @@ class GHLintTest {
 			```
 		""".trimIndent()
 	}
+}
+
+private infix fun <A : CharSequence> A?.shouldMatchEntire(regex: String): A {
+	this should match("""\Q${regex.replace("\n", System.lineSeparator())}\E""")
+	return this!!
 }

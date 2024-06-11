@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -33,7 +34,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class MissingJobPermissionsTest {
 
 		@Test fun `reports when there are no permissions declared`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -41,8 +42,10 @@ class ExplicitJobPermissionsRuleTest {
 					    runs-on: test
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingJobPermissions",
@@ -51,14 +54,16 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports when there are no permissions declared on reusable call`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    uses: reusable/workflow.yml
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingJobPermissions",
@@ -67,7 +72,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes explicit permissions on the job`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -77,14 +82,16 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes explicit permissions on the reusable workflow call`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -92,14 +99,16 @@ class ExplicitJobPermissionsRuleTest {
 					    uses: reusable/workflow.yml
 					    permissions:
 					      contents: read
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports the job that has no permissions declared`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -119,8 +128,10 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingJobPermissions",
@@ -129,7 +140,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports reusable workflow call that has no permissions declared`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -147,8 +158,10 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"MissingJobPermissions",
@@ -157,7 +170,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes explicit no permissions on the job`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -166,22 +179,26 @@ class ExplicitJobPermissionsRuleTest {
 					    permissions: {}
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes explicit no permissions on reusable workflow call`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
 					  test:
 					    uses: reusable/workflow.yml
 					    permissions: {}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -191,7 +208,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class ExplicitJobPermissionsTest {
 
 		@Test fun `reports when permissions are on the workflow level for normal job`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					permissions:
@@ -201,8 +218,10 @@ class ExplicitJobPermissionsRuleTest {
 					    runs-on: test
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"ExplicitJobPermissions",
@@ -211,7 +230,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports when permissions are on the workflow level for reusable job`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					permissions:
@@ -219,8 +238,10 @@ class ExplicitJobPermissionsRuleTest {
 					jobs:
 					  test:
 					    uses: reusable/workflow.yml
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"ExplicitJobPermissions",
@@ -229,7 +250,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes when permissions are on the job-level for normal job`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -239,14 +260,16 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: read
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when permissions are on the job-level for reusable job`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -254,14 +277,16 @@ class ExplicitJobPermissionsRuleTest {
 					    uses: reusable/workflow.yml
 					    permissions:
 					      contents: read
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `should report when redundant workflow level permissions and job-level permissions`() {
-			val results = check<ExplicitJobPermissionsRule>(
+			val file = workflow(
 				"""
 					on: push
 					permissions:
@@ -275,8 +300,10 @@ class ExplicitJobPermissionsRuleTest {
 					      contents: write
 					    steps:
 					      - uses: actions/checkout@v4
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
 				"ExplicitJobPermissions",

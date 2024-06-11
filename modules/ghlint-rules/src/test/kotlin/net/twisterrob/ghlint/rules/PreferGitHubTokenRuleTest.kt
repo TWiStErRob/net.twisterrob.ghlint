@@ -1,10 +1,12 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -13,7 +15,7 @@ class PreferGitHubTokenRuleTest {
 	@TestFactory fun metadata() = test(PreferGitHubTokenRule::class)
 
 	@Test fun `passes when env is dynamic`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -22,14 +24,16 @@ class PreferGitHubTokenRuleTest {
 				    env: ${'$'}{{ format('{0}', env.GITHUB_TOKEN) }}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is used in workflow env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -39,14 +43,16 @@ class PreferGitHubTokenRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in workflow env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -56,14 +62,16 @@ class PreferGitHubTokenRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in workflow env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -73,8 +81,10 @@ class PreferGitHubTokenRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -83,7 +93,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -93,14 +103,16 @@ class PreferGitHubTokenRuleTest {
 				      MY_ENV: ${'$'}{{ github.token }}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -110,14 +122,16 @@ class PreferGitHubTokenRuleTest {
 				      MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -127,8 +141,10 @@ class PreferGitHubTokenRuleTest {
 				      MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -137,7 +153,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -145,14 +161,16 @@ class PreferGitHubTokenRuleTest {
 				    uses: test/workflow.yml
 				    with:
 				      input: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -160,14 +178,16 @@ class PreferGitHubTokenRuleTest {
 				    uses: test/workflow.yml
 				    with:
 				      input: ${'$'}{{ env.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -175,8 +195,10 @@ class PreferGitHubTokenRuleTest {
 				    uses: test/workflow.yml
 				    with:
 				      test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -185,7 +207,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job secret`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -193,28 +215,32 @@ class PreferGitHubTokenRuleTest {
 				    uses: test/workflow.yml
 				    secrets:
 				      input: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes job secret inherit`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    uses: test/workflow.yml
 				    secrets: inherit
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job secret`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -222,14 +248,16 @@ class PreferGitHubTokenRuleTest {
 				    uses: test/workflow.yml
 				    secrets:
 				      input: ${'$'}{{ env.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job secret`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -237,8 +265,10 @@ class PreferGitHubTokenRuleTest {
 				    uses: test/workflow.yml
 				    secrets:
 				      test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -247,7 +277,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -257,14 +287,16 @@ class PreferGitHubTokenRuleTest {
 				      - uses: some/action@v1
 				        env:
 				          MY_ENV: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is used in action step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -275,14 +307,15 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -292,14 +325,16 @@ class PreferGitHubTokenRuleTest {
 				      - uses: some/action@v1
 				        env:
 				          MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in action step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -310,14 +345,15 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -327,8 +363,10 @@ class PreferGitHubTokenRuleTest {
 				      - uses: some/action@v1
 				        env:
 				          MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -338,7 +376,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in action step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -349,8 +387,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -360,7 +399,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -370,14 +409,16 @@ class PreferGitHubTokenRuleTest {
 				      - run: "Test"
 				        env:
 				          MY_ENV: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is used in action run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -389,14 +430,15 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -406,14 +448,16 @@ class PreferGitHubTokenRuleTest {
 				      - run: "Test"
 				        env:
 				          MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in action run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -425,14 +469,15 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -442,8 +487,10 @@ class PreferGitHubTokenRuleTest {
 				      - run: "Test"
 				        env:
 				          MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -453,7 +500,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in action run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -465,8 +512,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -476,7 +524,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -486,14 +534,16 @@ class PreferGitHubTokenRuleTest {
 				      - uses: test/action@v0
 				        with:
 				          test-input: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is used in action step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -504,14 +554,15 @@ class PreferGitHubTokenRuleTest {
 				      with:
 				        test-input: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -521,14 +572,16 @@ class PreferGitHubTokenRuleTest {
 				      - uses: test/action@v0
 				        with:
 				          test-input: ${'$'}{{ env.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in action step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -539,14 +592,15 @@ class PreferGitHubTokenRuleTest {
 				      with:
 				        test-input: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -556,8 +610,10 @@ class PreferGitHubTokenRuleTest {
 				      - uses: test/action@v0
 				        with:
 				          test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -567,7 +623,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in action step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -578,8 +634,9 @@ class PreferGitHubTokenRuleTest {
 				      with:
 				        test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",

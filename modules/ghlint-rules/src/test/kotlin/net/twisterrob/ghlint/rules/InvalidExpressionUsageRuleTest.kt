@@ -1,10 +1,12 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -13,31 +15,35 @@ class InvalidExpressionUsageRuleTest {
 	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
 
 	@Test fun `passes when no expression in uses field`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: actions/checkout@v4
+				      - uses: actions/checkout@v4
 			""".trimIndent(),
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when expression in uses field`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: actions/checkout@${'$'}{{ github.ref }}
+				      - uses: actions/checkout@${'$'}{{ github.ref }}
 			""".trimIndent(),
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",
@@ -46,7 +52,7 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `passes when expression not in uses field for action`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: "Test"
@@ -56,14 +62,15 @@ class InvalidExpressionUsageRuleTest {
 				    - name: "Test"
 				      uses: actions/checkout@v4
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when expression in uses field for action`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: "Test"
@@ -73,8 +80,9 @@ class InvalidExpressionUsageRuleTest {
 				    - name: "Test"
 				      uses: actions/checkout@${'$'}{{ github.sha }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",
@@ -83,30 +91,33 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `passes when no expression in uses field for local action`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: ./actions/local
+				      - uses: ./actions/local
 			""".trimIndent(),
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when expression in uses field for workflow call job`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    uses: org/repo/.github/workflows/reusable.yml@${'$'}{{ github.ref_name }}
 			""".trimIndent(),
-			fileName = "workflow.yml",
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",

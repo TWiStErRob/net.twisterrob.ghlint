@@ -162,14 +162,18 @@ private fun testCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode> {
 			listOf(
 				dynamicTest("${name} syntax") {
 					validate(
-						yaml = example.content,
-						fileName = "compliant/${example.path}",
+						yaml(
+							content = example.content,
+							fileName = "compliant/${example.path}",
+						)
 					) shouldHave noFindings()
 				},
 				dynamicTest("${name} has no findings") {
 					rule.checkUnsafe(
-						yaml = example.content,
-						fileName = "compliant/${example.path}",
+						yaml(
+							content = example.content,
+							fileName = "compliant/${example.path}",
+						)
 					) shouldHave noFindings()
 				},
 				dynamicTest("${name} explanation") {
@@ -195,12 +199,16 @@ private fun testNonCompliantExamples(rule: Rule, issue: Issue): List<DynamicNode
 			listOf(
 				dynamicTest("${name} has findings") {
 					val validation = validate(
-						yaml = example.content,
-						fileName = "non-compliant/${example.path}",
+						yaml(
+							content = example.content,
+							fileName = "non-compliant/${example.path}",
+						)
 					)
 					val ruleOutput = rule.checkUnsafe(
-						yaml = example.content,
-						fileName = "non-compliant/${example.path}",
+						yaml(
+							content = example.content,
+							fileName = "non-compliant/${example.path}",
+						)
 					)
 					val findings = validation + ruleOutput
 					findings shouldHave onlyFindings(issue.id)

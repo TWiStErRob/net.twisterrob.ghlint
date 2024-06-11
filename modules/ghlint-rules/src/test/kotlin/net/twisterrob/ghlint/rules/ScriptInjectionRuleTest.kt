@@ -2,10 +2,12 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.throwable.shouldHaveMessage
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -19,7 +21,7 @@ class ScriptInjectionRuleTest {
 	inner class ShellScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -27,14 +29,16 @@ class ScriptInjectionRuleTest {
 					    runs-on: test
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's no variable usage in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -44,14 +48,15 @@ class ScriptInjectionRuleTest {
 					    - run: echo "Test"
 					      shell: bash
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -61,14 +66,16 @@ class ScriptInjectionRuleTest {
 					      - run: echo "${'$'}{VAR}"
 					        env:
 					          VAR: value
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -80,14 +87,15 @@ class ScriptInjectionRuleTest {
 					      env:
 					        VAR: value
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when there's possibility of shell injection`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -95,8 +103,10 @@ class ScriptInjectionRuleTest {
 					    runs-on: test
 					    steps:
 					      - run: echo "${'$'}{{ github.event.pull_request.title }}"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"ShellScriptInjection",
@@ -105,7 +115,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of shell injection in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -115,8 +125,9 @@ class ScriptInjectionRuleTest {
 					    - run: echo "${'$'}{{ github.event.pull_request.title }}"
 					      shell: bash
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"ShellScriptInjection",
@@ -129,7 +140,7 @@ class ScriptInjectionRuleTest {
 	inner class JSScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -139,14 +150,16 @@ class ScriptInjectionRuleTest {
 					      - uses: actions/github-script@v7
 					        with:
 					          script: return "Test";
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's no variable usage in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -157,14 +170,15 @@ class ScriptInjectionRuleTest {
 					      with:
 					        script: return "Test";
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -177,14 +191,16 @@ class ScriptInjectionRuleTest {
 					        with:
 					          script: |
 					            return process.env.INPUT;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just an environment variable in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -198,14 +214,15 @@ class ScriptInjectionRuleTest {
 					        script: |
 					          return process.env.INPUT;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -218,14 +235,16 @@ class ScriptInjectionRuleTest {
 					        with:
 					          script: |
 					            return `prefix ${'$'}{process.env.INPUT} suffix`;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -239,14 +258,15 @@ class ScriptInjectionRuleTest {
 					        script: |
 					          return `prefix ${'$'}{process.env.INPUT} suffix`;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when there's possibility of script injection`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -258,8 +278,10 @@ class ScriptInjectionRuleTest {
 					          script: |
 					            const title = "${'$'}{{ github.event.pull_request.title }}";
 					            return title;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
@@ -268,7 +290,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -281,8 +303,9 @@ class ScriptInjectionRuleTest {
 					          const title = "${'$'}{{ github.event.pull_request.title }}";
 					          return title;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
@@ -291,7 +314,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection regardless of version`() {
-			val results = check<ScriptInjectionRule>(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -304,8 +327,10 @@ class ScriptInjectionRuleTest {
 					          script: |
 					            const title = "${'$'}{{ github.event.pull_request.title }}";
 					            return title;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
@@ -314,7 +339,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection regardless of version in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -328,8 +353,9 @@ class ScriptInjectionRuleTest {
 					          const title = "${'$'}{{ github.event.pull_request.title }}";
 					          return title;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
@@ -338,74 +364,80 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `fails when there's a missing script`() {
+			val file = workflow(
+				"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: test
+					    steps:
+					      - uses: actions/github-script@v7
+					        with:
+					          scirpt: "Wrong"
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						on: push
-						jobs:
-						  test:
-						    runs-on: test
-						    steps:
-						      - uses: actions/github-script@v7
-						        with:
-						          scirpt: "Wrong"
-					""".trimIndent()
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
 		}
 
 		@Test fun `fails when there's a missing script in action`() {
+			val file = action(
+				"""
+					name: "Test"
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - uses: actions/github-script@v7
+					      with:
+					        scirpt: "Wrong"
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						name: "Test"
-						description: Test
-						runs:
-						  using: composite
-						  steps:
-						    - uses: actions/github-script@v7
-						      with:
-						        scirpt: "Wrong"
-					""".trimIndent(),
-					fileName = "action.yml",
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
 		}
 
 		@Test fun `fails when there's a missing with`() {
+			val file = workflow(
+				"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: test
+					    steps:
+					      - uses: actions/github-script@v7
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						on: push
-						jobs:
-						  test:
-						    runs-on: test
-						    steps:
-						      - uses: actions/github-script@v7
-					""".trimIndent()
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
 		}
 
 		@Test fun `fails when there's a missing with in action`() {
+			val file = action(
+				"""
+					name: "Test"
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - uses: actions/github-script@v7
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						name: "Test"
-						description: Test
-						runs:
-						  using: composite
-						  steps:
-						    - uses: actions/github-script@v7
-					""".trimIndent(),
-					fileName = "action.yml",
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."

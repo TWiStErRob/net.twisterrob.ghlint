@@ -1,10 +1,12 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,7 +17,7 @@ class MissingGhTokenRuleTest {
 	@TestFactory fun metadata() = test(MissingGhTokenRule::class)
 
 	@Test fun `passes when token is defined on step`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -26,14 +28,16 @@ class MissingGhTokenRuleTest {
 				      - run: gh pr list
 				        env:
 				          GH_TOKEN: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token and host are defined on step`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -45,14 +49,16 @@ class MissingGhTokenRuleTest {
 				        env:
 				          GH_HOST: github.example.com
 				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on action step`() {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -65,14 +71,15 @@ class MissingGhTokenRuleTest {
 				      env:
 				        GH_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token and host are defined on action step`() {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -86,14 +93,15 @@ class MissingGhTokenRuleTest {
 				        GH_HOST: github.example.com
 				        GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on job`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -104,14 +112,16 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: gh pr list
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token and host are defined on job`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -123,14 +133,16 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: gh pr list
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on workflow`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -141,14 +153,16 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: gh pr list
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token and host are defined on workflow`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -160,14 +174,16 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: gh pr list
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token and host are defined at different levels`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -180,14 +196,16 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: gh pr list
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on step as secret`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -198,14 +216,16 @@ class MissingGhTokenRuleTest {
 				      - run: gh pr list
 				        env:
 				          GH_TOKEN: ${'$'}{{ secrets.GITHUB_TOKEN }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token is defined on action step as secret`() {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -218,8 +238,9 @@ class MissingGhTokenRuleTest {
 				      env:
 				        GH_TOKEN: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -227,7 +248,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used in different shell contexts`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -236,8 +257,10 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
@@ -248,7 +271,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports missing host when gh is used in different shell contexts`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -259,8 +282,10 @@ class MissingGhTokenRuleTest {
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 				        env:
 				          GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhHost",
@@ -271,7 +296,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports missing enterprise token when gh is used in different shell contexts`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -282,8 +307,10 @@ class MissingGhTokenRuleTest {
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
 				        env:
 				          GH_HOST: github.example.com
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
@@ -294,7 +321,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used in different shell contexts in actions`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -305,8 +332,9 @@ class MissingGhTokenRuleTest {
 				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
@@ -317,7 +345,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getInvalidGhCommands")
 	@ParameterizedTest
 	fun `passes when gh command is not in the right context`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -326,8 +354,10 @@ class MissingGhTokenRuleTest {
 				    steps:
 				      - uses: actions/checkout@v4
 				      - run: |${'\n'}${script.prependIndent("\t\t\t\t          ")}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -335,7 +365,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getInvalidGhCommands")
 	@ParameterizedTest
 	fun `passes when gh command is not in the right context in actions`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -346,14 +376,15 @@ class MissingGhTokenRuleTest {
 				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports dynamic env, even though it's inconclusive`() {
-		val results = check<MissingGhTokenRule>(
+		val file = workflow(
 			"""
 				on: push
 				env: ${'$'}{{ {} }}
@@ -362,8 +393,10 @@ class MissingGhTokenRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: gh pr view
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
