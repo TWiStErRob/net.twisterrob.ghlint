@@ -22,7 +22,7 @@ class InvalidExpressionUsageRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: actions/checkout@v4
+				      - uses: actions/checkout@v4
 			""".trimIndent(),
 		)
 
@@ -39,7 +39,7 @@ class InvalidExpressionUsageRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: actions/checkout@${'$'}{{ github.ref }}
+				      - uses: actions/checkout@${'$'}{{ github.ref }}
 			""".trimIndent(),
 		)
 
@@ -98,7 +98,7 @@ class InvalidExpressionUsageRuleTest {
 				  test:
 				    runs-on: test
 				    steps:
-				    - uses: ./actions/local
+				      - uses: ./actions/local
 			""".trimIndent(),
 		)
 
@@ -108,15 +108,16 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `reports when expression in uses field for workflow call job`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    uses: org/repo/.github/workflows/reusable.yml@${'$'}{{ github.ref_name }}
 			""".trimIndent(),
-			fileName = "workflow.yml",
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",

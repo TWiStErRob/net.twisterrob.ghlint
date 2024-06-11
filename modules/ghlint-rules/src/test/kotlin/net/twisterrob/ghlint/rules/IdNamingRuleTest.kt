@@ -54,7 +54,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when workflow id is lower kebab`(id: String) {
-		val results = check<IdNamingRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -65,6 +65,8 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 			fileName = "${id}.yml",
 		)
+
+		val results = check<IdNamingRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -91,7 +93,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when step id is lower kebab`(id: String) {
-		val results = check<IdNamingRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -103,6 +105,8 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 			fileName = "${id}.yml",
 		)
+
+		val results = check<IdNamingRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -131,7 +135,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when workflow id is not lower kebab`(id: String) {
-		val results = check<IdNamingRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -142,6 +146,8 @@ class IdNamingRuleTest {
 			""".trimIndent(),
 			fileName = "${id}.yml",
 		)
+
+		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
 			"WorkflowIdNaming",

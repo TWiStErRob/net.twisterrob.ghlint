@@ -26,14 +26,6 @@ public inline fun <reified T : Rule> check(file: RawFile): List<Finding> {
 	return rule.check(file.content, file.location.path)
 }
 
-public inline fun <reified T : Rule> check(
-	@Language("yaml") yaml: String,
-	fileName: String = "test.yml",
-): List<Finding> {
-	val rule = createRule<T>()
-	return rule.check(yaml, fileName)
-}
-
 public inline fun <reified T : Rule> checkUnsafe(
 	@Language("yaml") yaml: String,
 	fileName: String = "test.yml",

@@ -364,74 +364,80 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `fails when there's a missing script`() {
+			val file = workflow(
+				"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: test
+					    steps:
+					      - uses: actions/github-script@v7
+					        with:
+					          scirpt: "Wrong"
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						on: push
-						jobs:
-						  test:
-						    runs-on: test
-						    steps:
-						      - uses: actions/github-script@v7
-						        with:
-						          scirpt: "Wrong"
-					""".trimIndent()
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
 		}
 
 		@Test fun `fails when there's a missing script in action`() {
+			val file = action(
+				"""
+					name: "Test"
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - uses: actions/github-script@v7
+					      with:
+					        scirpt: "Wrong"
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						name: "Test"
-						description: Test
-						runs:
-						  using: composite
-						  steps:
-						    - uses: actions/github-script@v7
-						      with:
-						        scirpt: "Wrong"
-					""".trimIndent(),
-					fileName = "action.yml",
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
 		}
 
 		@Test fun `fails when there's a missing with`() {
+			val file = workflow(
+				"""
+					on: push
+					jobs:
+					  test:
+					    runs-on: test
+					    steps:
+					      - uses: actions/github-script@v7
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						on: push
-						jobs:
-						  test:
-						    runs-on: test
-						    steps:
-						      - uses: actions/github-script@v7
-					""".trimIndent()
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
 		}
 
 		@Test fun `fails when there's a missing with in action`() {
+			val file = action(
+				"""
+					name: "Test"
+					description: Test
+					runs:
+					  using: composite
+					  steps:
+					    - uses: actions/github-script@v7
+				""".trimIndent(),
+			)
+
 			val result = assertThrows<RuntimeException> {
-				check<ScriptInjectionRule>(
-					"""
-						name: "Test"
-						description: Test
-						runs:
-						  using: composite
-						  steps:
-						    - uses: actions/github-script@v7
-					""".trimIndent(),
-					fileName = "action.yml",
-				)
+				check<ScriptInjectionRule>(file)
 			}
 
 			result shouldHaveMessage "Key script is missing in the map."
