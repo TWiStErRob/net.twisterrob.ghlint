@@ -36,7 +36,6 @@ class SnakePermissionsTest {
 				  deployments: ${accessString}
 				  id-token: ${accessString}
 				  issues: ${accessString}
-				  #metadata: ${accessString}
 				  packages: ${accessString}
 				  pages: ${accessString}
 				  pull-requests: ${accessString}
@@ -60,7 +59,6 @@ class SnakePermissionsTest {
 		workflow.permissions?.deployments shouldBe access
 		workflow.permissions?.idToken shouldBe access
 		workflow.permissions?.issues shouldBe access
-		//workflow.permissions?.metadata shouldBe access
 		workflow.permissions?.packages shouldBe access
 		workflow.permissions?.pages shouldBe access
 		workflow.permissions?.pullRequests shouldBe access
@@ -89,7 +87,6 @@ class SnakePermissionsTest {
 				      deployments: ${accessString}
 				      id-token: ${accessString}
 				      issues: ${accessString}
-				      #metadata: ${accessString}
 				      packages: ${accessString}
 				      pages: ${accessString}
 				      pull-requests: ${accessString}
@@ -111,7 +108,6 @@ class SnakePermissionsTest {
 		job.permissions?.deployments shouldBe access
 		job.permissions?.idToken shouldBe access
 		job.permissions?.issues shouldBe access
-		//job.permissions?.metadata shouldBe access
 		job.permissions?.packages shouldBe access
 		job.permissions?.pages shouldBe access
 		job.permissions?.pullRequests shouldBe access
