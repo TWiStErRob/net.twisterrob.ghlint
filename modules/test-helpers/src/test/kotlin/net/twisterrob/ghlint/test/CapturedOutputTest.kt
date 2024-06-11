@@ -26,8 +26,8 @@ class CapturedOutputTest {
 				System.err.print("World")
 				42
 			}
-			captured.out shouldBe "Hello"
-			captured.err shouldBe "World"
+			captured.stdout shouldBe "Hello"
+			captured.stderr shouldBe "World"
 			captured.result shouldBe 42
 		}
 
@@ -43,12 +43,12 @@ class CapturedOutputTest {
 				42
 			}
 			captured.result shouldBe 42
-			captured.out shouldBe """
+			captured.stdout shouldBe """
 				Hello
 				GH-Lint
 				
 			""".trimIndent().replace("\n", System.lineSeparator())
-			captured.err shouldBe """
+			captured.stderr shouldBe """
 				World
 				Testing
 				
@@ -69,8 +69,8 @@ class CapturedOutputTest {
 				print("Hello")
 				42
 			}
-			captured.out shouldBe "Hello"
-			captured.err should beEmpty()
+			captured.stdout shouldBe "Hello"
+			captured.stderr should beEmpty()
 			captured.result shouldBe 42
 		}
 
@@ -107,8 +107,8 @@ class CapturedOutputTest {
 				"42"
 			}
 			captured.result shouldBe "42"
-			captured.err should beEmpty()
-			captured.out shouldBe "Hello${System.lineSeparator()}"
+			captured.stderr should beEmpty()
+			captured.stdout shouldBe "Hello${System.lineSeparator()}"
 		}
 
 		@Test
@@ -121,8 +121,8 @@ class CapturedOutputTest {
 				"42"
 			}
 			captured.result shouldBe "42"
-			captured.err should beEmpty()
-			captured.out shouldBe """
+			captured.stderr should beEmpty()
+			captured.stdout shouldBe """
 				Hello
 				GH-Lint
 				Testing
@@ -138,8 +138,8 @@ class CapturedOutputTest {
 				42
 			}
 			captured.result shouldBe 42
-			captured.err should beEmpty()
-			captured.out should beEmpty()
+			captured.stderr should beEmpty()
+			captured.stdout should beEmpty()
 		}
 	}
 
@@ -156,8 +156,8 @@ class CapturedOutputTest {
 				System.err.print("Hello")
 				42
 			}
-			captured.out should beEmpty()
-			captured.err shouldBe "Hello"
+			captured.stdout should beEmpty()
+			captured.stderr shouldBe "Hello"
 			captured.result shouldBe 42
 		}
 
@@ -194,8 +194,8 @@ class CapturedOutputTest {
 				"42"
 			}
 			captured.result shouldBe "42"
-			captured.out should beEmpty()
-			captured.err shouldBe "Hello${System.lineSeparator()}"
+			captured.stdout should beEmpty()
+			captured.stderr shouldBe "Hello${System.lineSeparator()}"
 		}
 
 		@Test
@@ -208,8 +208,8 @@ class CapturedOutputTest {
 				"42"
 			}
 			captured.result shouldBe "42"
-			captured.out should beEmpty()
-			captured.err shouldBe """
+			captured.stdout should beEmpty()
+			captured.stderr shouldBe """
 				Hello
 				GH-Lint
 				Testing
@@ -225,8 +225,8 @@ class CapturedOutputTest {
 				42
 			}
 			captured.result shouldBe 42
-			captured.out should beEmpty()
-			captured.err should beEmpty()
+			captured.stdout should beEmpty()
+			captured.stderr should beEmpty()
 		}
 	}
 }

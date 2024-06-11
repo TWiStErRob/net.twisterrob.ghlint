@@ -9,8 +9,8 @@ import kotlin.contracts.contract
 
 public class CapturedOutput<T>(
 	public val result: T,
-	public val out: String,
-	public val err: String,
+	public val stdout: String,
+	public val stderr: String,
 )
 
 /**
@@ -31,8 +31,8 @@ public inline fun <R> captureSystemStreams(block: () -> R): CapturedOutput<R> {
 	val result = captureSystemOut { captureSystemErr { block() } }
 	return CapturedOutput(
 		result = result.result.result,
-		out = result.out,
-		err = result.result.err,
+		stdout = result.stdout,
+		stderr = result.result.stderr,
 	)
 }
 
@@ -60,8 +60,8 @@ public inline fun <R> captureSystemOut(block: () -> R): CapturedOutput<R> {
 	}
 	return CapturedOutput(
 		result = result,
-		out = buffer.toString(Charsets.UTF_8),
-		err = "",
+		stdout = buffer.toString(Charsets.UTF_8),
+		stderr = "",
 	)
 }
 
@@ -70,7 +70,7 @@ public inline fun <R> captureSystemOut(block: () -> R): CapturedOutput<R> {
  *
  * @see captureSystemOut
  */
-public inline fun captureSystemOutOnly(block: () -> Unit): String = captureSystemOut { block() }.out
+public inline fun captureSystemOutOnly(block: () -> Unit): String = captureSystemOut { block() }.stdout
 
 /**
  * Captures the output of [System.err] during the execution of [block].
@@ -96,8 +96,8 @@ public inline fun <R> captureSystemErr(block: () -> R): CapturedOutput<R> {
 	}
 	return CapturedOutput(
 		result = result,
-		out = "",
-		err = buffer.toString(Charsets.UTF_8),
+		stdout = "",
+		stderr = buffer.toString(Charsets.UTF_8),
 	)
 }
 
@@ -106,4 +106,4 @@ public inline fun <R> captureSystemErr(block: () -> R): CapturedOutput<R> {
  *
  * @see captureSystemErr
  */
-public inline fun captureSystemErrOnly(block: () -> Unit): String = captureSystemErr { block() }.err
+public inline fun captureSystemErrOnly(block: () -> Unit): String = captureSystemErr { block() }.stderr

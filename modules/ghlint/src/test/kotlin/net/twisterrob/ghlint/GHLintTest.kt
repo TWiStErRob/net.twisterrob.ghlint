@@ -43,8 +43,8 @@ class GHLintTest {
 			GHLint().run(FakeConfiguration(tempDir, emptyList(), isReportExitCode = true))
 		}
 
-		result.out should beEmpty()
-		result.err should beEmpty()
+		result.stdout should beEmpty()
+		result.stderr should beEmpty()
 		result.result shouldBe 0
 	}
 
@@ -58,8 +58,8 @@ class GHLintTest {
 			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
 		}
 
-		result.out should beEmpty()
-		result.err should beEmpty()
+		result.stdout should beEmpty()
+		result.stderr should beEmpty()
 		result.result shouldBe 0
 		tempDir shouldContainFile validFile1.location.name
 		tempDir shouldContainNFiles 1
@@ -75,8 +75,8 @@ class GHLintTest {
 			GHLint().run(FakeConfiguration(tempDir, listOf(test), isReportExitCode = true))
 		}
 
-		result.out should beEmpty()
-		result.err should beEmpty()
+		result.stdout should beEmpty()
+		result.stderr should beEmpty()
 		result.result shouldBe 1
 		tempDir shouldContainFile invalidFile1.location.name
 		tempDir shouldContainNFiles 1
@@ -100,8 +100,8 @@ class GHLintTest {
 		}
 
 		result.result shouldBe 0
-		result.err should beEmpty()
-		result.out shouldMatchEntire """
+		result.stderr should beEmpty()
+		result.stdout shouldMatchEntire """
 			Received the following files for analysis against JSON-schema and rules:
 			 * ${test.absolute()}
 			Analyzing ${test.absolute()}... found 0 findings in ${timing}.
@@ -135,8 +135,8 @@ class GHLintTest {
 		}
 
 		result.result shouldBe 1
-		result.err should beEmpty()
-		result.out shouldMatchEntire """
+		result.stderr should beEmpty()
+		result.stdout shouldMatchEntire """
 			Received the following files for analysis against JSON-schema and rules:
 			 * ${test1.absolute()}
 			 * ${test2.absolute()}
