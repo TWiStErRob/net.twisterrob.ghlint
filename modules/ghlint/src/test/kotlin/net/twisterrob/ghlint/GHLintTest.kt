@@ -108,8 +108,7 @@ class GHLintTest {
 			Received the following files for analysis against JSON-schema and rules:
 			 * ${test.absolute()}
 			Analyzing ${test.absolute()}... found 0 findings in ${timing}.
-			Total: 0 findings in ${timing}.
-			There are 0 findings.
+			There are 0 findings in ${timing}.
 			Exiting with code 0.
 			
 		""".trimIndent()
@@ -149,8 +148,7 @@ class GHLintTest {
 			Analyzing ${test2.absolute()}... found 2 findings in ${timing}.
 			Analyzing ${test3.absolute()}... found 0 findings in ${timing}.
 			Analyzing ${test4.absolute()}... found 2 findings in ${timing}.
-			Total: 4 findings in ${timing}.
-			There are 4 findings.
+			There are 4 findings in ${timing}.
 			Exiting with code 1.
 			
 		""".trimIndent()
@@ -165,7 +163,7 @@ class GHLintTest {
 	inner class AnalyzeTest {
 
 		private fun analyze(vararg files: RawFile): List<Finding> =
-			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()), false).findings
+			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()), false)
 
 		@Test fun `no files validates`() {
 			val results = analyze(/* nothing */)
