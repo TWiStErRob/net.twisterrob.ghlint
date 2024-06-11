@@ -33,6 +33,9 @@ import java.nio.file.Path
 import kotlin.io.path.absolute
 import kotlin.io.path.writeText
 
+/**
+ * @see GHLint.run
+ */
 class GHLintTest {
 
 	@Test
@@ -162,7 +165,7 @@ class GHLintTest {
 	inner class AnalyzeTest {
 
 		private fun analyze(vararg files: RawFile): List<Finding> =
-			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()), false)
+			GHLint().analyze(files.toList(), listOf(BuiltInRuleSet()), false).findings
 
 		@Test fun `no files validates`() {
 			val results = analyze(/* nothing */)

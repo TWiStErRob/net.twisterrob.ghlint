@@ -12,7 +12,7 @@ import kotlin.time.toDuration
 public class Analyzer {
 
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-	public fun analyze(files: List<File>, ruleSets: List<RuleSet>, verbose: Boolean): List<Finding> {
+	public fun analyze(files: List<File>, ruleSets: List<RuleSet>, verbose: Boolean): AnalysisResults {
 		val timedFindings = files.map { file ->
 			if (verbose) {
 				print("Analyzing ${file.location.path}...")
@@ -32,13 +32,17 @@ public class Analyzer {
 			fileFindings
 		}
 		val findings = timedFindings.flatMap { it.value }
-		if (verbose) {
-			val totalTiming = timedFindings.sumOf { it.duration.inWholeMilliseconds }.milliseconds
-			println("Total: ${findings.size} findings in ${totalTiming}.")
-		}
-		return findings
+		val totalTime = timedFindings
+			.fold(Duration.ZERO) { sum, it -> sum + it.duration }
+			.roundToMilliseconds()
+		return AnalysisResults(findings, totalTime)
 	}
 }
 
 private fun Duration.roundToMilliseconds(): Duration =
 	inWholeMilliseconds.toDuration(DurationUnit.MILLISECONDS)
+
+public class AnalysisResults(
+	public val findings: List<Finding>,
+	public val totalTime: Duration,
+)
