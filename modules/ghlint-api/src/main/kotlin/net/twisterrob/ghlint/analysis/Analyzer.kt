@@ -25,7 +25,8 @@ public class Analyzer {
 					.toList()
 			}
 			if (verbose) {
-				println(" found ${fileFindings.value.size} findings in ${fileFindings.duration.roundToMilliseconds()}.")
+				val timing = fileFindings.duration.roundToMilliseconds()
+				println(" found ${fileFindings.value.size} findings in ${timing}.")
 			}
 			fileFindings.value
 		}
