@@ -11,7 +11,6 @@ import io.kotest.matchers.collections.shouldBeIn
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Rule
-import org.intellij.lang.annotations.Language
 
 /**
  * Enables debug logging for testing functions.
@@ -23,19 +22,16 @@ public var isDebugEnabled: Boolean = System.getProperty("ghlint.debug", "false")
 
 public inline fun <reified T : Rule> check(file: RawFile): List<Finding> {
 	val rule = createRule<T>()
-	return rule.check(file.content, file.location.path)
+	return rule.check(file)
 }
 
-public inline fun <reified T : Rule> checkUnsafe(
-	@Language("yaml") yaml: String,
-	fileName: String = "test.yml",
-): List<Finding> {
+public inline fun <reified T : Rule> checkUnsafe(file: RawFile): List<Finding> {
 	val rule = createRule<T>()
-	return rule.checkUnsafe(yaml, fileName)
+	return rule.checkUnsafe(file)
 }
 
 /**
- * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
+ * Checks the given [file] through the [Rule] and returns the [Finding]s.
  * Additional validation is performed to ensure correct syntax and internal consistency.
  *
  * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
@@ -46,13 +42,10 @@ public inline fun <reified T : Rule> checkUnsafe(
  * @see check
  * @see checkUnsafe
  */
-public fun Rule.check(
-	@Language("yaml") yaml: String,
-	fileName: String = "test.yml",
-): List<Finding> = check(yaml, fileName, validate = true)
+public fun Rule.check(file: RawFile): List<Finding> = check(file, validate = true)
 
 /**
- * Checks the given [yaml] through the [Rule] and returns the [Finding]s.
+ * Checks the given [file] through the [Rule] and returns the [Finding]s.
  * It's unsafe because it performs no validation to ensure correct syntax and internal consistency.
  *
  * Debug logging can be enabled via [isDebugEnabled] top level property in the same package.
@@ -63,20 +56,13 @@ public fun Rule.check(
  * @see check
  * @see checkUnsafe
  */
-public fun Rule.checkUnsafe(
-	@Language("yaml") yaml: String,
-	fileName: String = "test.yml",
-): List<Finding> = check(yaml, fileName, validate = false)
+public fun Rule.checkUnsafe(file: RawFile): List<Finding> = check(file, validate = false)
 
-private fun Rule.check(
-	yaml: String,
-	fileName: String,
-	validate: Boolean,
-): List<Finding> {
+private fun Rule.check(file: RawFile, validate: Boolean): List<Finding> {
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
-	if (isDebugEnabled) println("${this} > ${fileName}:\n${yaml}")
-	val file = if (validate) load(yaml, fileName) else loadUnsafe(yaml, fileName)
-	val findings = this.check(file)
+	if (isDebugEnabled) println("${this} > ${file.location.path}:\n${file.content}")
+	val loadedFile = if (validate) load(file) else loadUnsafe(file)
+	val findings = this.check(loadedFile)
 	@Suppress("detekt.ForbiddenMethodCall") // TODO logging.
 	if (isDebugEnabled) findings.forEach { println(it.testString()) }
 	assertFindingsProducibleByRule(findings, this)

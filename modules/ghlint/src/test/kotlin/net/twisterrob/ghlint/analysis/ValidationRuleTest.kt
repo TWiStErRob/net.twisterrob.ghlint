@@ -11,6 +11,7 @@ import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
 import net.twisterrob.ghlint.testing.workflow
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -57,7 +58,9 @@ class ValidationRuleTest {
 	@TestFactory fun metadata() = test(ValidationRule::class)
 
 	@Test fun `syntax error`() {
-		val findings = checkUnsafe<ValidationRule>("mapping: *")
+		val file = yaml("mapping: *")
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave singleFinding(
 			issue = "YamlSyntaxError",
@@ -79,11 +82,13 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `wrong workflow yaml contents`() {
-		val findings = checkUnsafe<ValidationRule>(
+		val file = workflow(
 			"""
 				foo: bar
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave exactFindings(
 			aFinding(
@@ -105,12 +110,13 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `wrong action yaml contents`() {
-		val findings = checkUnsafe<ValidationRule>(
+		val file = action(
 			"""
 				foo: bar
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave exactFindings(
 			aFinding(
@@ -148,7 +154,7 @@ class ValidationRuleTest {
 
 	@Test fun `duplicate key is reported`() {
 		@Suppress("YAMLDuplicatedKeys")
-		val findings = checkUnsafe<ValidationRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -162,6 +168,8 @@ class ValidationRuleTest {
 				      - uses: actions/checkout@v4
 			""".trimIndent(),
 		)
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
