@@ -26,7 +26,7 @@ public class Analyzer {
 			}
 			if (verbose) {
 				val timing = fileFindings.duration.roundToMilliseconds()
-				println(" found ${fileFindings.value.size} findings in $timing.")
+				println(" found ${fileFindings.value.size} findings in ${timing}.")
 			}
 			fileFindings.value
 		}

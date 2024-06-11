@@ -6,6 +6,7 @@ import java.util.Properties
 
 plugins {
 	id("org.gradle.java")
+	id("org.gradle.java-test-fixtures")
 }
 
 @Suppress("UnstableApiUsage")

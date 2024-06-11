@@ -12,6 +12,7 @@ import net.twisterrob.ghlint.ruleset.RuleSet
 import net.twisterrob.ghlint.yaml.SnakeYaml
 import org.jetbrains.annotations.TestOnly
 import kotlin.io.path.readText
+import kotlin.time.measureTimedValue
 
 public class GHLint {
 
@@ -31,17 +32,20 @@ public class GHLint {
 
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
 		val ruleSets = listOf(BuiltInRuleSet(), DefaultRuleSet())
-		val findings = analyze(files, ruleSets, config.isVerbose)
+		val result = measureTimedValue { analyze(files, ruleSets, config.isVerbose) }
+		val findings = result.value
 
 		if (config.isVerbose) {
-			println("There are ${findings.size} findings.")
+			println("There are ${findings.size} findings in ${result.duration}.")
 		}
 
 		if (config.isReportConsole) {
 			if (config.isVerbose) {
 				println("Reporting findings to console.")
 			}
-			TextReporter(System.out).report(findings)
+			TextReporter(
+				output = System.out,
+			).report(findings)
 		}
 		if (config.isReportGitHubCommands) {
 			if (config.isVerbose) {
