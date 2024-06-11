@@ -46,5 +46,6 @@ test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.re
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-build" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-build" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }

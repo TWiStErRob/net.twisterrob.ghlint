@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-	api(libs.plugins.kotlin.asDependency())
+	api(libs.plugins.kotlin.asProvider().asDependency())
+	api(libs.plugins.kotlin.serialization.asDependency())
 	api(libs.plugins.detekt.asDependency())
 
 	// TODEL https://github.com/gradle/gradle/issues/15383

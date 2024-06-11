@@ -1,10 +1,12 @@
 plugins {
 	id("net.twisterrob.ghlint.library")
+	id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24"
 }
 
 dependencies {
 	api(projects.ghlintApi)
 	implementation(projects.ghlintExtensions)
+	implementation(libs.kotlin.serialization)
 
 	testImplementation(projects.ghlintTesting)
 }
