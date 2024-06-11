@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -14,7 +14,7 @@ class DuplicateShellRuleTest {
 	@TestFactory fun metadata() = test(DuplicateShellRule::class)
 
 	@Test fun `reports when 2 steps have an explicit shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -37,7 +37,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `reports when 3 steps have an explicit shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -62,7 +62,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `reports when multiple steps have an explicit shell intermingled with other steps`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -88,7 +88,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when there are no run steps`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -107,7 +107,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when job has default shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -128,7 +128,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when workflow has default shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -149,7 +149,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when steps have different shells`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -169,7 +169,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when steps override default shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -192,7 +192,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `reports when steps override default shell on job, but all the same`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -219,7 +219,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `reports when steps override default shell on workflow, but all the same`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -246,7 +246,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `reports when steps override default shell on workflow, but all the same, multiple jobs`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -280,7 +280,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when steps override default shell to different values`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -310,7 +310,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when a step overrides default shell to different values`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -342,7 +342,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when a step missing shell - job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -366,7 +366,7 @@ class DuplicateShellRuleTest {
 	}
 
 	@Test fun `passes when a step missing shell - workflow`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:

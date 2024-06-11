@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -22,7 +22,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["error", "warn", "ignore"])
 		fun `passes input is defined`(value: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -43,7 +43,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `reports when input is missing`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -73,7 +73,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["true", "false"])
 		fun `passes input is defined`(value: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -94,7 +94,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `reports when input is missing`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -122,7 +122,7 @@ class FailFastActionsRuleTest {
 	inner class FailFastPeterEvansCreatePullRequestTest {
 
 		@Test fun `reports when action is used`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -142,7 +142,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `reports when action is used with hash`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -171,7 +171,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["true", "false"])
 		fun `passes input is defined`(value: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -194,7 +194,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `reports when input is missing`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -219,7 +219,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `passes when input is not relevant`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -237,7 +237,7 @@ class FailFastActionsRuleTest {
 	}
 
 	@Test fun `passes on other actions`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

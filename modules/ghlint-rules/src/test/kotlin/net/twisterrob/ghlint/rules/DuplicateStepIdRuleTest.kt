@@ -11,7 +11,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -26,7 +26,7 @@ class DuplicateStepIdRuleTest {
 	inner class Workflows {
 
 		@Test fun `passes when no ids are defined`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -45,7 +45,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `passes when same or similar ids are in different jobs`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -72,7 +72,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when ids are similar`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -98,7 +98,7 @@ class DuplicateStepIdRuleTest {
 
 		// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
 		@Test fun `passes when ids are close, but different`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -118,7 +118,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when multiple ids are similar`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -153,7 +153,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when ids are the same`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -176,7 +176,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when multiple ids are the same`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -227,7 +227,7 @@ class DuplicateStepIdRuleTest {
 					|        id: step-id-${it}
 				""".trimMargin()
 			}
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -259,7 +259,7 @@ class DuplicateStepIdRuleTest {
 					|        id: step-id
 				""".trimMargin()
 			}
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:

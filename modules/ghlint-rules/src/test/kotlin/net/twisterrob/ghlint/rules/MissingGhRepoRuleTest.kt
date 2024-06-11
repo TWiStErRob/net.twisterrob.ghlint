@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,7 +16,7 @@ class MissingGhRepoRuleTest {
 	@TestFactory fun metadata() = test(MissingGhRepoRule::class)
 
 	@Test fun `passes when checkout creates context for gh`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -34,7 +34,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `passes when repository is explicitly declared`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -53,7 +53,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `passes when repository is explicitly declared globally on the workflow`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -72,7 +72,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `passes when repository is explicitly declared globally on the job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -91,7 +91,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `passes when checkout and repository are both declared`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -128,7 +128,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `ignores unrelated steps`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -149,7 +149,7 @@ class MissingGhRepoRuleTest {
 	@MethodSource("net.twisterrob.ghlint.rules.MissingGhTokenRuleTest#getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used but there's no repository context`(script: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -171,7 +171,7 @@ class MissingGhRepoRuleTest {
 	@MethodSource("net.twisterrob.ghlint.rules.MissingGhTokenRuleTest#getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used but there's no repository context - steps before and after`(script: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

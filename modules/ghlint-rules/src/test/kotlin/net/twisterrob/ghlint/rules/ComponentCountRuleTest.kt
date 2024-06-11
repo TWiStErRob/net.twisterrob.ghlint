@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -22,7 +22,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(1)}
@@ -36,7 +36,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes few step job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(5)}
@@ -50,7 +50,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes max steps count`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(10)}
@@ -64,7 +64,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(11)}
@@ -81,7 +81,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:${Random.generateJobs(20)}
@@ -102,7 +102,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -119,7 +119,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes few step job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -136,7 +136,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes max steps count`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -153,7 +153,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -173,7 +173,7 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:

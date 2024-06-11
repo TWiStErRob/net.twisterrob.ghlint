@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -14,7 +14,7 @@ class MissingJobTimeoutRuleTest {
 	@TestFactory fun metadata() = test(MissingJobTimeoutRule::class)
 
 	@Test fun `passes when timeout is defined`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -32,7 +32,7 @@ class MissingJobTimeoutRuleTest {
 	}
 
 	@Test fun `passes when timeout is defined as expression`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -50,7 +50,7 @@ class MissingJobTimeoutRuleTest {
 	}
 
 	@Test fun `fails when timeout is missing`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -70,7 +70,7 @@ class MissingJobTimeoutRuleTest {
 	}
 
 	@Test fun `fails when timeout is missing even when a step has timeout`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

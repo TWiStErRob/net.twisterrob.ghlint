@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -34,7 +34,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class MissingJobPermissionsTest {
 
 		@Test fun `reports when there are no permissions declared`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -54,7 +54,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports when there are no permissions declared on reusable call`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -72,7 +72,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes explicit permissions on the job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -91,7 +91,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes explicit permissions on the reusable workflow call`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -108,7 +108,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports the job that has no permissions declared`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -140,7 +140,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports reusable workflow call that has no permissions declared`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -170,7 +170,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes explicit no permissions on the job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -188,7 +188,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes explicit no permissions on reusable workflow call`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -208,7 +208,7 @@ class ExplicitJobPermissionsRuleTest {
 	inner class ExplicitJobPermissionsTest {
 
 		@Test fun `reports when permissions are on the workflow level for normal job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					permissions:
@@ -230,7 +230,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `reports when permissions are on the workflow level for reusable job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					permissions:
@@ -250,7 +250,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes when permissions are on the job-level for normal job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -269,7 +269,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `passes when permissions are on the job-level for reusable job`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -286,7 +286,7 @@ class ExplicitJobPermissionsRuleTest {
 		}
 
 		@Test fun `should report when redundant workflow level permissions and job-level permissions`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					permissions:

@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -14,7 +14,7 @@ class InvalidExpressionUsageRuleTest {
 	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
 
 	@Test fun `passes when no expression in uses field`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -31,7 +31,7 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `reports when expression in uses field`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -88,7 +88,7 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `passes when no expression in uses field for local action`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

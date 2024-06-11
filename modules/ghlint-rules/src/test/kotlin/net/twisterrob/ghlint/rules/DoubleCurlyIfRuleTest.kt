@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -21,7 +21,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -44,7 +44,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -60,7 +60,7 @@ class DoubleCurlyIfRuleTest {
 
 			results shouldHave noFindings()
 
-			val fileNoSpacing = yaml(
+			val fileNoSpacing = workflow(
 				"""
 					on: push
 					jobs:
@@ -80,7 +80,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -103,7 +103,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -129,7 +129,7 @@ class DoubleCurlyIfRuleTest {
 
 		@Test
 		fun `passes even with lots of spacing`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -152,7 +152,7 @@ class DoubleCurlyIfRuleTest {
 		)
 		@ParameterizedTest
 		fun `passes wrapped condition`(condition: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -168,7 +168,7 @@ class DoubleCurlyIfRuleTest {
 
 			results shouldHave noFindings()
 
-			val fileNoSpacing = yaml(
+			val fileNoSpacing = workflow(
 				"""
 					on: push
 					jobs:
@@ -188,7 +188,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getValidConditions")
 		@ParameterizedTest
 		fun `fails not fully wrapped condition`(condition: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -211,7 +211,7 @@ class DoubleCurlyIfRuleTest {
 		@MethodSource("net.twisterrob.ghlint.rules.DoubleCurlyIfRuleTest#getInvalidConditions")
 		@ParameterizedTest
 		fun `fails not strangely constructed condition`(condition: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:

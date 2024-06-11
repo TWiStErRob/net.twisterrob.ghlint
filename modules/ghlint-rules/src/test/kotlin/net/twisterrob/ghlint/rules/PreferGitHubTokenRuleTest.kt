@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -14,7 +14,7 @@ class PreferGitHubTokenRuleTest {
 	@TestFactory fun metadata() = test(PreferGitHubTokenRule::class)
 
 	@Test fun `passes when env is dynamic`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -32,7 +32,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in workflow env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -51,7 +51,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in workflow env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -70,7 +70,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in workflow env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -92,7 +92,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -111,7 +111,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -130,7 +130,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -152,7 +152,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job input`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -169,7 +169,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job input`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -186,7 +186,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job input`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -206,7 +206,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job secret`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -223,7 +223,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes job secret inherit`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -239,7 +239,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job secret`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -256,7 +256,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job secret`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -276,7 +276,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job step env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -313,7 +313,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job step env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -350,7 +350,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job step env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -395,7 +395,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job run step env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -433,7 +433,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job run step env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -471,7 +471,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job run step env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -517,7 +517,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in job step input`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -554,7 +554,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in job step input`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -591,7 +591,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in job step input`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

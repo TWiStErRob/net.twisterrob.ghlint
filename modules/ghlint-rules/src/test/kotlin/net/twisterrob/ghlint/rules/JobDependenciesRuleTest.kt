@@ -7,7 +7,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -18,7 +18,7 @@ class JobDependenciesRuleTest {
 	@TestFactory fun metadata() = test(JobDependenciesRule::class)
 
 	@Test fun `passes when single job has no dependency`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -33,7 +33,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `passes when parallel jobs have no dependency`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -50,7 +50,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `reports when single job references unknown job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -69,7 +69,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `reports when there are multiple unknown job references in a diamond`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -102,7 +102,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `passes on long chain of jobs`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:${Random.generate(1000) { if (it == 1) emptyList() else listOf("test${it - 1}") }}
@@ -115,7 +115,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `passes on large fan of jobs`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:${Random.generate(100) { n -> (1..<n).map { "test${it}" } }}
@@ -128,7 +128,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `passes on large parallel flow of jobs`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:${Random.generate(100) { listOf("start") }}
@@ -149,7 +149,7 @@ class JobDependenciesRuleTest {
 	inner class CyclesTest {
 
 		@Test fun `reports when single job self-references`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -168,7 +168,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when two jobs reference each other`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -190,7 +190,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when for jobs reference each other`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -218,7 +218,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when three jobs form a cycle`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -243,7 +243,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when chain ends in self-reference cycle`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:

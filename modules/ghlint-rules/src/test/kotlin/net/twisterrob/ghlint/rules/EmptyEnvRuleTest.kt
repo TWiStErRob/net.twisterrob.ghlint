@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -14,7 +14,7 @@ class EmptyEnvRuleTest {
 	@TestFactory fun metadata() = test(EmptyEnvRule::class)
 
 	@Test fun `passes when no env defined`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -31,7 +31,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `passes when workflow has dynamic env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env: ${'$'}{{ {} }}
@@ -49,7 +49,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `reports when workflow has empty env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env: {}
@@ -70,7 +70,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `passes when job has dynamic env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -88,7 +88,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `reports when job has empty env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -109,7 +109,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `passes when step has dynamic env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -127,7 +127,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `reports when step has empty env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -148,7 +148,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `reports when run step has empty env`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

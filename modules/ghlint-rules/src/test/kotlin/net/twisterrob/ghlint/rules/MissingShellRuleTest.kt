@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -36,7 +36,7 @@ class MissingShellRuleTest {
 	@TestFactory fun metadata() = test(MissingShellRule::class)
 
 	@Test fun `reports when step is missing a shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -56,7 +56,7 @@ class MissingShellRuleTest {
 	}
 
 	@Test fun `passes when shell is declared on step`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -74,7 +74,7 @@ class MissingShellRuleTest {
 	}
 
 	@Test fun `passes when shell is declared on the job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -95,7 +95,7 @@ class MissingShellRuleTest {
 	}
 
 	@Test fun `passes when shell is declared on the workflow`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -115,7 +115,7 @@ class MissingShellRuleTest {
 	}
 
 	@Test fun `reports when step is declared on another job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

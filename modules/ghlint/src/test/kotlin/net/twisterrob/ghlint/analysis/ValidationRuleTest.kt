@@ -9,7 +9,7 @@ import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -131,7 +131,7 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `valid workflow contents`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

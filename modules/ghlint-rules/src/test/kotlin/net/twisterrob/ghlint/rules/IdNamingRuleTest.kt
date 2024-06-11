@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,7 +16,7 @@ class IdNamingRuleTest {
 	@TestFactory fun metadata() = test(IdNamingRule::class)
 
 	@Test fun `passes when no step id`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -70,7 +70,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when job id is lower kebab`(id: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -149,7 +149,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when job id is not lower kebab`(id: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -171,7 +171,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when step id is not lower kebab`(id: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:

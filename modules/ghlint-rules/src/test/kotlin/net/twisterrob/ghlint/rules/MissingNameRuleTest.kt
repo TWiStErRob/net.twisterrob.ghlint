@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -18,7 +18,7 @@ class MissingNameRuleTest {
 	@TestFactory fun metadata() = test(MissingNameRule::class)
 
 	@Test fun `reports when workflow is missing a name`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				#name: Missing
@@ -43,7 +43,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when workflow has empty name`(name: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				name: ${name}
@@ -68,7 +68,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when workflow has blank name`(name: String, @Suppress("UNUSED_PARAMETER") value: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				name: ${name}
@@ -91,7 +91,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when workflow has a name`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Test
 				on: push
@@ -111,7 +111,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `reports when job is missing a name`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -136,7 +136,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when job has empty name`(name: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -161,7 +161,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when job has blank name`(name: String, @Suppress("UNUSED_PARAMETER") value: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -184,7 +184,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when job has a name`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -204,7 +204,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `reports when step is missing a name in job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -229,7 +229,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when step has empty name in job`(name: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -254,7 +254,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when step has blank name in job`(name: String, value: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push
@@ -277,7 +277,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when step has a name in job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				name: Irrelevant
 				on: push

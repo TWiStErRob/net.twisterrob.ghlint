@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,7 +16,7 @@ class MissingGhTokenRuleTest {
 	@TestFactory fun metadata() = test(MissingGhTokenRule::class)
 
 	@Test fun `passes when token is defined on step`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -36,7 +36,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token and host are defined on step`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -98,7 +98,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token is defined on job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -118,7 +118,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token and host are defined on job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -139,7 +139,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token is defined on workflow`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -159,7 +159,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token and host are defined on workflow`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -180,7 +180,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token and host are defined at different levels`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env:
@@ -202,7 +202,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token is defined on step as secret`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -244,7 +244,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used in different shell contexts`(script: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -267,7 +267,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports missing host when gh is used in different shell contexts`(script: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -292,7 +292,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports missing enterprise token when gh is used in different shell contexts`(script: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -340,7 +340,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getInvalidGhCommands")
 	@ParameterizedTest
 	fun `passes when gh command is not in the right context`(script: String) {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -378,7 +378,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `reports dynamic env, even though it's inconclusive`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				env: ${'$'}{{ {} }}

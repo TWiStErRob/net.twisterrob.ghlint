@@ -5,7 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -20,7 +20,7 @@ class ImplicitStatusCheckRuleTest {
 	inner class NeverUseAlwaysStepTest {
 
 		@Test fun `passes when always is not in the condition`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -38,7 +38,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `passes when always is explicitly expressed`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -56,7 +56,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `fails when always is used`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -77,7 +77,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `fails when always is used as part of a condition`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -184,7 +184,7 @@ class ImplicitStatusCheckRuleTest {
 	inner class NeverUseAlwaysJobTest {
 
 		@Test fun `passes when always is not in the condition`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -202,7 +202,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `passes when always is explicitly expressed`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -220,7 +220,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `fails when always is used`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -241,7 +241,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `fails when always is used as part of a condition`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -268,7 +268,7 @@ class ImplicitStatusCheckRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["success", "failure", "cancelled", "always"])
 		fun `fails when negative status check condition is used`(function: String) {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:

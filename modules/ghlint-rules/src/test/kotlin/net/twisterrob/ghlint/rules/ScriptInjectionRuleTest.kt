@@ -6,7 +6,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -20,7 +20,7 @@ class ScriptInjectionRuleTest {
 	inner class ShellScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -54,7 +54,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -92,7 +92,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of shell injection`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -136,7 +136,7 @@ class ScriptInjectionRuleTest {
 	inner class JSScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -173,7 +173,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -216,7 +216,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -259,7 +259,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:
@@ -306,7 +306,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection regardless of version`() {
-			val file = yaml(
+			val file = workflow(
 				"""
 					on: push
 					jobs:

@@ -7,7 +7,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	@TestFactory fun metadata() = test(SafeEnvironmentFileRedirectRule::class)
 
 	@Test fun `passes when no environment file is used`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -52,7 +52,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	}
 
 	@Test fun `passes when non-environment file is used`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -93,7 +93,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 				(acceptedSyntaxes(environmentFile) + rejectedSyntaxes(environmentFile)).flatMap { (name, syntax) ->
 					listOf(
 						dynamicTest(name) {
-							val file = yaml(
+							val file = workflow(
 								"""
 									on: push
 									jobs:
@@ -123,7 +123,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					.flatMap { (name, syntax) ->
 						listOf(
 							dynamicTest(name) {
-								val file = yaml(
+								val file = workflow(
 									"""
 										on: push
 										jobs:
@@ -172,7 +172,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					.flatMap { (name, syntax) ->
 						listOf(
 							dynamicTest(name) {
-								val file = yaml(
+								val file = workflow(
 									"""
 										on: push
 										jobs:

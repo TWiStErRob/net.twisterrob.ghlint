@@ -7,7 +7,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
-import net.twisterrob.ghlint.testing.yaml
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -16,7 +16,7 @@ class RedundantShellRuleTest {
 	@TestFactory fun metadata() = test(RedundantShellRule::class)
 
 	@Test fun `reports when both job and workflow have the same default shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -42,7 +42,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `passes when both job and workflow have different default shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -65,7 +65,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `reports when step has the same shell as the default in job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -89,7 +89,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `reports when step has the same shell as the default in workflow`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -113,7 +113,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `reports when step has the same shell as the default in workflow and job`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -146,7 +146,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `passes when job and step have different shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -167,7 +167,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `passes when workflow and step have different shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
@@ -188,7 +188,7 @@ class RedundantShellRuleTest {
 	}
 
 	@Test fun `passes when workflow, job and step have different shell`() {
-		val file = yaml(
+		val file = workflow(
 			"""
 				on: push
 				defaults:
