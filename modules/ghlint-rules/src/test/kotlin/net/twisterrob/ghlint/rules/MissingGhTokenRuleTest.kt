@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -57,7 +58,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token is defined on action step`() {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -70,14 +71,15 @@ class MissingGhTokenRuleTest {
 				      env:
 				        GH_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when token and host are defined on action step`() {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -91,8 +93,9 @@ class MissingGhTokenRuleTest {
 				        GH_HOST: github.example.com
 				        GH_ENTERPRISE_TOKEN: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -222,7 +225,7 @@ class MissingGhTokenRuleTest {
 	}
 
 	@Test fun `passes when token is defined on action step as secret`() {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -235,8 +238,9 @@ class MissingGhTokenRuleTest {
 				      env:
 				        GH_TOKEN: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -317,7 +321,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used in different shell contexts in actions`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -328,8 +332,9 @@ class MissingGhTokenRuleTest {
 				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhToken",
@@ -360,7 +365,7 @@ class MissingGhTokenRuleTest {
 	@MethodSource("getInvalidGhCommands")
 	@ParameterizedTest
 	fun `passes when gh command is not in the right context in actions`(script: String) {
-		val results = check<MissingGhTokenRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -371,8 +376,9 @@ class MissingGhTokenRuleTest {
 				    - run: |${'\n'}${script.prependIndent("\t\t\t\t        ")}
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave noFindings()
 	}

@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.throwable.shouldHaveMessage
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -37,7 +38,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's no variable usage in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -47,8 +48,9 @@ class ScriptInjectionRuleTest {
 					    - run: echo "Test"
 					      shell: bash
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -73,7 +75,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just an environment variable in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -85,8 +87,9 @@ class ScriptInjectionRuleTest {
 					      env:
 					        VAR: value
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -112,7 +115,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of shell injection in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -122,8 +125,9 @@ class ScriptInjectionRuleTest {
 					    - run: echo "${'$'}{{ github.event.pull_request.title }}"
 					      shell: bash
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"ShellScriptInjection",
@@ -155,7 +159,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's no variable usage in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -166,8 +170,9 @@ class ScriptInjectionRuleTest {
 					      with:
 					        script: return "Test";
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -195,7 +200,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just an environment variable in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -209,8 +214,9 @@ class ScriptInjectionRuleTest {
 					        script: |
 					          return process.env.INPUT;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -238,7 +244,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -252,8 +258,9 @@ class ScriptInjectionRuleTest {
 					        script: |
 					          return `prefix ${'$'}{process.env.INPUT} suffix`;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -283,7 +290,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -296,8 +303,9 @@ class ScriptInjectionRuleTest {
 					          const title = "${'$'}{{ github.event.pull_request.title }}";
 					          return title;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
@@ -331,7 +339,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection regardless of version in action`() {
-			val results = check<ScriptInjectionRule>(
+			val file = action(
 				"""
 					name: "Test"
 					description: Test
@@ -345,8 +353,9 @@ class ScriptInjectionRuleTest {
 					          const title = "${'$'}{{ github.event.pull_request.title }}";
 					          return title;
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",

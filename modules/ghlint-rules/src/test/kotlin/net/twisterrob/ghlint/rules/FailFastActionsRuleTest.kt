@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -276,7 +277,7 @@ class FailFastActionsRuleTest {
 	}
 
 	@Test fun `reports problems in actions`() {
-		val results = check<FailFastActionsRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -288,8 +289,9 @@ class FailFastActionsRuleTest {
 				        path: |
 				          build/some/report/
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<FailFastActionsRule>(file)
 
 		results shouldHave singleFinding(
 			"FailFastUploadArtifact",
@@ -298,7 +300,7 @@ class FailFastActionsRuleTest {
 	}
 
 	@Test fun `passes in actions`() {
-		val results = check<FailFastActionsRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -335,8 +337,9 @@ class FailFastActionsRuleTest {
 				      with:
 				        action_fail_on_inconclusive: false
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<FailFastActionsRule>(file)
 
 		results shouldHave noFindings()
 	}

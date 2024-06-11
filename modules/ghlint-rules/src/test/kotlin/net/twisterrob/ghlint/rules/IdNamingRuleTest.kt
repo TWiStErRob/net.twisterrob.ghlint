@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -33,7 +34,7 @@ class IdNamingRuleTest {
 	}
 
 	@Test fun `passes when no step id in action`() {
-		val results = check<IdNamingRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -43,8 +44,9 @@ class IdNamingRuleTest {
 				    - run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<IdNamingRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -108,7 +110,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getLowerKebabIds")
 	fun `passes when step id is lower kebab in action`(id: String) {
-		val results = check<IdNamingRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -119,8 +121,9 @@ class IdNamingRuleTest {
 				      run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<IdNamingRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -194,7 +197,7 @@ class IdNamingRuleTest {
 	@ParameterizedTest
 	@MethodSource("getNonLowerKebabIds")
 	fun `reports when step id is not lower kebab in action`(id: String) {
-		val results = check<IdNamingRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -205,8 +208,9 @@ class IdNamingRuleTest {
 				      run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
 			"StepIdNaming",

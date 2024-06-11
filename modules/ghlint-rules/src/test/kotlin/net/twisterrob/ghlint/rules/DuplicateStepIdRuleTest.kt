@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.string.shouldMatch
 import net.twisterrob.ghlint.testing.aFinding
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
@@ -282,7 +283,7 @@ class DuplicateStepIdRuleTest {
 	inner class Actions {
 
 		@Test fun `passes when no ids are defined`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -296,14 +297,15 @@ class DuplicateStepIdRuleTest {
 					    - run: echo "Test"
 					      shell: bash
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when ids are similar`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -320,8 +322,9 @@ class DuplicateStepIdRuleTest {
 					      shell: bash
 					      id: test2
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
 				"SimilarStepId",
@@ -331,7 +334,7 @@ class DuplicateStepIdRuleTest {
 
 		// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
 		@Test fun `passes when ids are close, but different`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -345,14 +348,15 @@ class DuplicateStepIdRuleTest {
 					      shell: bash
 					      run: 'true'
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when multiple ids are similar`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -369,8 +373,9 @@ class DuplicateStepIdRuleTest {
 					      shell: bash
 					      id: test3
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -389,7 +394,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when ids are the same`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -403,8 +408,9 @@ class DuplicateStepIdRuleTest {
 					      shell: bash
 					      id: test
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
 				"DuplicateStepId",
@@ -413,7 +419,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when multiple ids are the same`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -436,8 +442,9 @@ class DuplicateStepIdRuleTest {
 					      shell: bash
 					      id: hello
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -464,7 +471,7 @@ class DuplicateStepIdRuleTest {
 					|      id: step-id-${it}
 				""".trimMargin()
 			}
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -472,8 +479,9 @@ class DuplicateStepIdRuleTest {
 					  using: composite
 					  steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results should haveSize(159_931)
 			val messageRegex = Regex(
@@ -498,7 +506,7 @@ class DuplicateStepIdRuleTest {
 					|      id: step-id
 				""".trimMargin()
 			}
-			val results = check<DuplicateStepIdRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -506,8 +514,9 @@ class DuplicateStepIdRuleTest {
 					  using: composite
 					  steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
 				"DuplicateStepId",

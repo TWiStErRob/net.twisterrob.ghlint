@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -169,7 +170,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `passes when step has dynamic env in action`() {
-		val results = check<EmptyEnvRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -179,14 +180,15 @@ class EmptyEnvRuleTest {
 				    - uses: some/action@v1
 				      env: ${'$'}{{ {} }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step has empty env in action`() {
-		val results = check<EmptyEnvRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -196,8 +198,9 @@ class EmptyEnvRuleTest {
 				    - uses: some/action@v1
 				      env: {}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
 			"EmptyStepEnv",
@@ -206,7 +209,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `reports when run step has empty env in action`() {
-		val results = check<EmptyEnvRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -217,8 +220,9 @@ class EmptyEnvRuleTest {
 				      shell: bash 
 				      env: {}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
 			"EmptyStepEnv",

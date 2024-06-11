@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -297,7 +298,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `reports when step is missing a name in action`() {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -308,8 +309,9 @@ class MissingNameRuleTest {
 				      shell: bash
 				      #name: Missing
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -320,7 +322,7 @@ class MissingNameRuleTest {
 	@MethodSource("getEmptyNames")
 	@ParameterizedTest
 	fun `reports when step has empty name in action`(name: String) {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -331,8 +333,9 @@ class MissingNameRuleTest {
 				      shell: bash
 				      name: ${name}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -343,7 +346,7 @@ class MissingNameRuleTest {
 	@MethodSource("getBlankNames")
 	@ParameterizedTest
 	fun `reports when step has blank name in action`(name: String, value: String) {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -354,8 +357,9 @@ class MissingNameRuleTest {
 				      shell: bash
 				      name: ${name}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingStepName",
@@ -364,7 +368,7 @@ class MissingNameRuleTest {
 	}
 
 	@Test fun `passes when step has a name in action`() {
-		val results = check<MissingNameRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -375,8 +379,9 @@ class MissingNameRuleTest {
 				      run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingNameRule>(file)
 
 		results shouldHave noFindings()
 	}

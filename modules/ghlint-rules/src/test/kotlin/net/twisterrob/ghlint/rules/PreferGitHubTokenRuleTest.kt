@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -295,7 +296,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in action step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -306,8 +307,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -332,7 +334,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in action step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -343,8 +345,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -373,7 +376,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in action step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -384,8 +387,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -414,7 +418,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in action run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -426,8 +430,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -452,7 +457,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in action run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -464,8 +469,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -494,7 +500,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in action run step env`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -506,8 +512,9 @@ class PreferGitHubTokenRuleTest {
 				      env:
 				        MY_ENV: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",
@@ -536,7 +543,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when token is used in action step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -547,8 +554,9 @@ class PreferGitHubTokenRuleTest {
 				      with:
 				        test-input: ${'$'}{{ github.token }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -573,7 +581,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `passes when GITHUB_TOKEN variable is used in action step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -584,8 +592,9 @@ class PreferGitHubTokenRuleTest {
 				      with:
 				        test-input: ${'$'}{{ env.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -614,7 +623,7 @@ class PreferGitHubTokenRuleTest {
 	}
 
 	@Test fun `reports when GITHUB_TOKEN secret is used in action step input`() {
-		val results = check<PreferGitHubTokenRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -625,8 +634,9 @@ class PreferGitHubTokenRuleTest {
 				      with:
 				        test-input: ${'$'}{{ secrets.GITHUB_TOKEN }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
 			"PreferGitHubToken",

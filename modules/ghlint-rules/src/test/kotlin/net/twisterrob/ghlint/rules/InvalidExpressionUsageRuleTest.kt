@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -51,7 +52,7 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `passes when expression not in uses field for action`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: "Test"
@@ -61,14 +62,15 @@ class InvalidExpressionUsageRuleTest {
 				    - name: "Test"
 				      uses: actions/checkout@v4
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when expression in uses field for action`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: "Test"
@@ -78,8 +80,9 @@ class InvalidExpressionUsageRuleTest {
 				    - name: "Test"
 				      uses: actions/checkout@${'$'}{{ github.sha }}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",

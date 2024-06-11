@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -36,7 +37,7 @@ class EnvironmentFileOverwriteRuleTest {
 	}
 
 	@Test fun `passes when no environment file is used in actions`() {
-		val results = check<EnvironmentFileOverwriteRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -46,8 +47,9 @@ class EnvironmentFileOverwriteRuleTest {
 				    - run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<EnvironmentFileOverwriteRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -77,7 +79,7 @@ class EnvironmentFileOverwriteRuleTest {
 							results shouldHave noFindings()
 						},
 						dynamicTest("${name} in actions") {
-							val results = check<EnvironmentFileOverwriteRule>(
+							val file = action(
 								"""
 									name: "Test"
 									description: Test
@@ -87,8 +89,9 @@ class EnvironmentFileOverwriteRuleTest {
 									    - run: echo ${syntax}
 									      shell: bash
 								""".trimIndent(),
-								fileName = "action.yml",
 							)
+
+							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave noFindings()
 						},
@@ -123,7 +126,7 @@ class EnvironmentFileOverwriteRuleTest {
 							results shouldHave noFindings()
 						},
 						dynamicTest("${name} in actions") {
-							val results = check<EnvironmentFileOverwriteRule>(
+							val file = action(
 								"""
 									name: "Test"
 									description: Test
@@ -134,8 +137,9 @@ class EnvironmentFileOverwriteRuleTest {
 									        echo "Test" ${syntax}
 									      shell: bash
 								""".trimIndent(),
-								fileName = "action.yml",
 							)
+
+							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave noFindings()
 						},
@@ -173,7 +177,7 @@ class EnvironmentFileOverwriteRuleTest {
 							)
 						},
 						dynamicTest("${name} in actions") {
-							val results = check<EnvironmentFileOverwriteRule>(
+							val file = action(
 								"""
 									name: "Test"
 									description: Test
@@ -184,8 +188,9 @@ class EnvironmentFileOverwriteRuleTest {
 									        echo "Test" ${syntax}
 									      shell: bash
 								""".trimIndent(),
-								fileName = "action.yml",
 							)
+
+							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave singleFinding(
 								"EnvironmentFileOverwritten",

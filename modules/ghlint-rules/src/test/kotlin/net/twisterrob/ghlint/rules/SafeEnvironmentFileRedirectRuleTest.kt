@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -35,7 +36,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	}
 
 	@Test fun `passes when no environment file is used in actions`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -45,8 +46,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    - run: echo "Test"
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -69,7 +71,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	}
 
 	@Test fun `passes when non-environment file is used in actions`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = action(
 			"""
 				name: "Test"
 				description: Test
@@ -79,8 +81,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    - run: echo "Test" >> ${'$'}OUTPUT
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -141,7 +144,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 								results shouldHave noFindings()
 							},
 							dynamicTest("${name} in actions") {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = action(
 									"""
 										name: "Test"
 										description: Test
@@ -152,8 +155,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 										        echo ${syntax}
 										      shell: bash
 									""".trimIndent(),
-									fileName = "action.yml",
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave noFindings()
 							},
@@ -193,7 +197,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 								)
 							},
 							dynamicTest("${name} in actions") {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = action(
 									"""
 										name: "Test"
 										description: Test
@@ -204,8 +208,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 										        echo ${syntax}
 										      shell: bash
 									""".trimIndent(),
-									fileName = "action.yml",
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
 									"SafeEnvironmentFileRedirect",

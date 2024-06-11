@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -102,7 +103,7 @@ class ImplicitStatusCheckRuleTest {
 	inner class NeverUseAlwaysActionStepTest {
 
 		@Test fun `passes when always is not in the condition`() {
-			val results = check<ImplicitStatusCheckRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -113,14 +114,15 @@ class ImplicitStatusCheckRuleTest {
 					      shell: bash
 					      if: success() || failure()
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when always is explicitly expressed`() {
-			val results = check<ImplicitStatusCheckRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -131,14 +133,15 @@ class ImplicitStatusCheckRuleTest {
 					      shell: bash
 					      if: success() || failure() || cancelled()
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `fails when always is used`() {
-			val results = check<ImplicitStatusCheckRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -149,8 +152,9 @@ class ImplicitStatusCheckRuleTest {
 					      shell: bash
 					      if: always()
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
 				"NeverUseAlways",
@@ -159,7 +163,7 @@ class ImplicitStatusCheckRuleTest {
 		}
 
 		@Test fun `fails when always is used as part of a condition`() {
-			val results = check<ImplicitStatusCheckRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -170,8 +174,9 @@ class ImplicitStatusCheckRuleTest {
 					      shell: bash
 					      if: github.context.value && (always() || failure())
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
 				"NeverUseAlways",
@@ -291,7 +296,7 @@ class ImplicitStatusCheckRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["success", "failure", "cancelled", "always"])
 		fun `fails when negative status check condition is used in action step`(function: String) {
-			val results = check<ImplicitStatusCheckRule>(
+			val file = action(
 				"""
 					name: Test
 					description: Test
@@ -302,8 +307,9 @@ class ImplicitStatusCheckRuleTest {
 					      shell: bash
 					      if: ${'$'}{{ ! ${function}() }}
 				""".trimIndent(),
-				fileName = "action.yml",
 			)
+
+			val results = check<ImplicitStatusCheckRule>(file)
 
 			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
 				"NegativeStatusCheck",

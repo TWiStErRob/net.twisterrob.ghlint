@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.analysis
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.aFinding
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.checkUnsafe
 import net.twisterrob.ghlint.testing.exactFindings
@@ -169,7 +170,7 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `valid action contents`() {
-		val findings = check<ValidationRule>(
+		val file = action(
 			"""
 				name: ""
 				description: ""
@@ -177,8 +178,9 @@ class ValidationRuleTest {
 				  using: node20
 				  main: index.js
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val findings = check<ValidationRule>(file)
 
 		findings shouldHave noFindings()
 	}

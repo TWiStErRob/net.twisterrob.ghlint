@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -111,7 +112,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `ignores composite actions`() {
-		val results = check<MissingGhRepoRule>(
+		val file = action(
 			"""
 				name: Test
 				description: Test
@@ -121,8 +122,9 @@ class MissingGhRepoRuleTest {
 				    - run: gh pr list
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val results = check<MissingGhRepoRule>(file)
 
 		results shouldHave noFindings()
 	}
