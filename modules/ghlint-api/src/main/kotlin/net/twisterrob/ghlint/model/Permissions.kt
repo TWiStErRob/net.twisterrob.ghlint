@@ -1,9 +1,7 @@
 package net.twisterrob.ghlint.model
 
 /**
- * See [list of permissions](
-https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-).
+ * See [list of permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token).
  */
 @Suppress("detekt.ComplexInterface")
 public interface Permissions {
@@ -25,8 +23,8 @@ public interface Permissions {
 	public val map: Map<String, String>
 
 	@Suppress("detekt.CyclomaticComplexMethod")
-	public operator fun get(permission: Permission): Access {
-		return when (permission) {
+	public operator fun get(permission: Permission): Access =
+		when (permission) {
 			Permission.ACTIONS -> actions
 			Permission.ATTESTATIONS -> attestations
 			Permission.CHECKS -> checks
@@ -42,5 +40,4 @@ public interface Permissions {
 			Permission.SECURITY_EVENTS -> securityEvents
 			Permission.STATUSES -> statuses
 		}
-	}
 }
