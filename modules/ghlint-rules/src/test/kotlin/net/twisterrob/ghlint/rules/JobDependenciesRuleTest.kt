@@ -7,6 +7,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -17,7 +18,7 @@ class JobDependenciesRuleTest {
 	@TestFactory fun metadata() = test(JobDependenciesRule::class)
 
 	@Test fun `passes when single job has no dependency`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -26,11 +27,13 @@ class JobDependenciesRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when parallel jobs have no dependency`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -41,11 +44,13 @@ class JobDependenciesRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when single job references unknown job`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -55,6 +60,8 @@ class JobDependenciesRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave singleFinding(
 			"MissingNeedsJob",
 			"Job[test] references Job[missing], which does not exist.",
@@ -62,7 +69,7 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `reports when there are multiple unknown job references in a diamond`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -80,6 +87,8 @@ class JobDependenciesRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave exactFindings(
 			aFinding(
 				"MissingNeedsJob",
@@ -93,29 +102,33 @@ class JobDependenciesRuleTest {
 	}
 
 	@Test fun `passes on long chain of jobs`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:${Random.generate(1000) { if (it == 1) emptyList() else listOf("test${it - 1}") }}
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes on large fan of jobs`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:${Random.generate(100) { n -> (1..<n).map { "test${it}" } }}
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes on large parallel flow of jobs`() {
-		val results = check<JobDependenciesRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:${Random.generate(100) { listOf("start") }}
@@ -127,6 +140,8 @@ class JobDependenciesRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<JobDependenciesRule>(file)
+
 		results shouldHave noFindings()
 	}
 
@@ -134,7 +149,7 @@ class JobDependenciesRuleTest {
 	inner class CyclesTest {
 
 		@Test fun `reports when single job self-references`() {
-			val results = check<JobDependenciesRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -144,6 +159,8 @@ class JobDependenciesRuleTest {
 				""".trimIndent(),
 			)
 
+			val results = check<JobDependenciesRule>(file)
+
 			results shouldHave singleFinding(
 				"JobDependencyCycle",
 				"Job[test] forms a dependency cycle: [test].",
@@ -151,7 +168,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when two jobs reference each other`() {
-			val results = check<JobDependenciesRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -164,6 +181,8 @@ class JobDependenciesRuleTest {
 				""".trimIndent(),
 			)
 
+			val results = check<JobDependenciesRule>(file)
+
 			results shouldHave singleFinding(
 				"JobDependencyCycle",
 				"Job[test1] forms a dependency cycle: [test1, test2].",
@@ -171,7 +190,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when for jobs reference each other`() {
-			val results = check<JobDependenciesRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -190,6 +209,8 @@ class JobDependenciesRuleTest {
 				""".trimIndent(),
 			)
 
+			val results = check<JobDependenciesRule>(file)
+
 			results shouldHave singleFinding(
 				"JobDependencyCycle",
 				"Job[test1] forms a dependency cycle: [test1, test2].",
@@ -197,7 +218,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when three jobs form a cycle`() {
-			val results = check<JobDependenciesRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -213,6 +234,8 @@ class JobDependenciesRuleTest {
 				""".trimIndent(),
 			)
 
+			val results = check<JobDependenciesRule>(file)
+
 			results shouldHave singleFinding(
 				"JobDependencyCycle",
 				"Job[test1] forms a dependency cycle: [test1, test2, test3].",
@@ -220,7 +243,7 @@ class JobDependenciesRuleTest {
 		}
 
 		@Test fun `reports when chain ends in self-reference cycle`() {
-			val results = check<JobDependenciesRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -235,6 +258,8 @@ class JobDependenciesRuleTest {
 					    uses: reusable/workflow.yml
 				""".trimIndent(),
 			)
+
+			val results = check<JobDependenciesRule>(file)
 
 			results shouldHave singleFinding(
 				"JobDependencyCycle",

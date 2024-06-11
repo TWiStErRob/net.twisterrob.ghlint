@@ -7,6 +7,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -17,7 +18,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	@TestFactory fun metadata() = test(SafeEnvironmentFileRedirectRule::class)
 
 	@Test fun `passes when no environment file is used`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -25,8 +26,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -49,7 +52,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 	}
 
 	@Test fun `passes when non-environment file is used`() {
-		val results = check<SafeEnvironmentFileRedirectRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -57,8 +60,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test" >> ${'$'}OUTPUT
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -88,7 +93,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 				(acceptedSyntaxes(environmentFile) + rejectedSyntaxes(environmentFile)).flatMap { (name, syntax) ->
 					listOf(
 						dynamicTest(name) {
-							val results = check<SafeEnvironmentFileRedirectRule>(
+							val file = yaml(
 								"""
 									on: push
 									jobs:
@@ -96,8 +101,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 									    runs-on: test
 									    steps:
 									      - run: echo ${syntax}
-								""".trimIndent()
+								""".trimIndent(),
 							)
+
+							val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 							results shouldHave noFindings()
 						},
@@ -116,7 +123,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					.flatMap { (name, syntax) ->
 						listOf(
 							dynamicTest(name) {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = yaml(
 									"""
 										on: push
 										jobs:
@@ -126,8 +133,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 										    # Intentionally unconventionally indented, see redirects().
 										    - run: |
 										        echo ${syntax}
-									""".trimIndent()
+									""".trimIndent(),
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave noFindings()
 							},
@@ -163,7 +172,7 @@ class SafeEnvironmentFileRedirectRuleTest {
 					.flatMap { (name, syntax) ->
 						listOf(
 							dynamicTest(name) {
-								val results = check<SafeEnvironmentFileRedirectRule>(
+								val file = yaml(
 									"""
 										on: push
 										jobs:
@@ -173,8 +182,10 @@ class SafeEnvironmentFileRedirectRuleTest {
 										    # Intentionally unconventionally indented, see redirects().
 										    - run: |
 										        echo ${syntax}
-									""".trimIndent()
+									""".trimIndent(),
 								)
+
+								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
 									"SafeEnvironmentFileRedirect",

@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -35,7 +36,7 @@ class MissingShellRuleTest {
 	@TestFactory fun metadata() = test(MissingShellRule::class)
 
 	@Test fun `reports when step is missing a shell`() {
-		val results = check<MissingShellRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -43,8 +44,10 @@ class MissingShellRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingShellRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingShell",
@@ -53,7 +56,7 @@ class MissingShellRuleTest {
 	}
 
 	@Test fun `passes when shell is declared on step`() {
-		val results = check<MissingShellRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -62,14 +65,16 @@ class MissingShellRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingShellRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when shell is declared on the job`() {
-		val results = check<MissingShellRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -81,14 +86,16 @@ class MissingShellRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        shell: bash
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingShellRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when shell is declared on the workflow`() {
-		val results = check<MissingShellRule>(
+		val file = yaml(
 			"""
 				on: push
 				defaults:
@@ -99,14 +106,16 @@ class MissingShellRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingShellRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step is declared on another job`() {
-		val results = check<MissingShellRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -121,8 +130,10 @@ class MissingShellRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingShellRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingShell",

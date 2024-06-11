@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,7 +16,7 @@ class MissingGhRepoRuleTest {
 	@TestFactory fun metadata() = test(MissingGhRepoRule::class)
 
 	@Test fun `passes when checkout creates context for gh`() {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -27,11 +28,13 @@ class MissingGhRepoRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<MissingGhRepoRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when repository is explicitly declared`() {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -44,11 +47,13 @@ class MissingGhRepoRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<MissingGhRepoRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when repository is explicitly declared globally on the workflow`() {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				env:
@@ -61,11 +66,13 @@ class MissingGhRepoRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<MissingGhRepoRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when repository is explicitly declared globally on the job`() {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -78,11 +85,13 @@ class MissingGhRepoRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<MissingGhRepoRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when checkout and repository are both declared`() {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -95,6 +104,8 @@ class MissingGhRepoRuleTest {
 				          GH_REPO: ${'$'}{{ github.repository }}
 			""".trimIndent(),
 		)
+
+		val results = check<MissingGhRepoRule>(file)
 
 		results shouldHave noFindings()
 	}
@@ -117,7 +128,7 @@ class MissingGhRepoRuleTest {
 	}
 
 	@Test fun `ignores unrelated steps`() {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -130,13 +141,15 @@ class MissingGhRepoRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<MissingGhRepoRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@MethodSource("net.twisterrob.ghlint.rules.MissingGhTokenRuleTest#getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used but there's no repository context`(script: String) {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -147,6 +160,8 @@ class MissingGhRepoRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<MissingGhRepoRule>(file)
+
 		results shouldHave singleFinding(
 			"MissingGhRepo",
 			"Step[#0] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
@@ -156,7 +171,7 @@ class MissingGhRepoRuleTest {
 	@MethodSource("net.twisterrob.ghlint.rules.MissingGhTokenRuleTest#getValidGhCommands")
 	@ParameterizedTest
 	fun `reports when gh is used but there's no repository context - steps before and after`(script: String) {
-		val results = check<MissingGhRepoRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -168,6 +183,8 @@ class MissingGhRepoRuleTest {
 				      - uses: actions/upload-artifact@v4
 			""".trimIndent(),
 		)
+
+		val results = check<MissingGhRepoRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingGhRepo",

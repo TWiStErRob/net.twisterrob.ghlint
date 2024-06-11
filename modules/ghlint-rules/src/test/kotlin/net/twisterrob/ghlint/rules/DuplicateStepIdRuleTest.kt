@@ -11,6 +11,7 @@ import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -25,7 +26,7 @@ class DuplicateStepIdRuleTest {
 	inner class Workflows {
 
 		@Test fun `passes when no ids are defined`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -35,14 +36,16 @@ class DuplicateStepIdRuleTest {
 					      - run: echo "Test"
 					      - run: echo "Test"
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `passes when same or similar ids are in different jobs`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -60,14 +63,16 @@ class DuplicateStepIdRuleTest {
 					        id: step-id
 					      - run: echo "Test"
 					        id: mystep2
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when ids are similar`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -80,8 +85,10 @@ class DuplicateStepIdRuleTest {
 					        id: step
 					      - run: echo "Test"
 					        id: test2
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
 				"SimilarStepId",
@@ -91,7 +98,7 @@ class DuplicateStepIdRuleTest {
 
 		// Regression for https://github.com/TWiStErRob/net.twisterrob.ghlint/issues/166
 		@Test fun `passes when ids are close, but different`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -102,14 +109,16 @@ class DuplicateStepIdRuleTest {
 					        run: 'true'
 					      - id: pages
 					        run: 'true'
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when multiple ids are similar`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -122,8 +131,10 @@ class DuplicateStepIdRuleTest {
 					        id: test2
 					      - run: echo "Test"
 					        id: test3
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -142,7 +153,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when ids are the same`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -153,8 +164,10 @@ class DuplicateStepIdRuleTest {
 					        id: test
 					      - run: echo "Test"
 					        id: test
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
 				"DuplicateStepId",
@@ -163,7 +176,7 @@ class DuplicateStepIdRuleTest {
 		}
 
 		@Test fun `reports when multiple ids are the same`() {
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -187,6 +200,8 @@ class DuplicateStepIdRuleTest {
 					        id: hello
 				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave exactFindings(
 				aFinding(
@@ -212,15 +227,17 @@ class DuplicateStepIdRuleTest {
 					|        id: step-id-${it}
 				""".trimMargin()
 			}
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results should haveSize(4970)
 			val messageRegex = """Job\[test] has similar step identifiers: `step-id-\d+` and `step-id-\d+`.""".toRegex()
@@ -242,15 +259,17 @@ class DuplicateStepIdRuleTest {
 					|        id: step-id
 				""".trimMargin()
 			}
-			val results = check<DuplicateStepIdRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${"\n" + steps.prependIndent("\t\t\t\t\t")}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
 				"DuplicateStepId",

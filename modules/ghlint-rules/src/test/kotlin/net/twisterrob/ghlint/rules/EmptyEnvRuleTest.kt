@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -13,7 +14,7 @@ class EmptyEnvRuleTest {
 	@TestFactory fun metadata() = test(EmptyEnvRule::class)
 
 	@Test fun `passes when no env defined`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -21,14 +22,16 @@ class EmptyEnvRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when workflow has dynamic env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				env: ${'$'}{{ {} }}
@@ -37,14 +40,16 @@ class EmptyEnvRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when workflow has empty env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				env: {}
@@ -53,8 +58,10 @@ class EmptyEnvRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
 			"EmptyWorkflowEnv",
@@ -63,7 +70,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `passes when job has dynamic env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -72,14 +79,16 @@ class EmptyEnvRuleTest {
 				    env: ${'$'}{{ {} }}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when job has empty env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -88,8 +97,10 @@ class EmptyEnvRuleTest {
 				    env: {}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
 			"EmptyJobEnv",
@@ -98,7 +109,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `passes when step has dynamic env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -107,14 +118,16 @@ class EmptyEnvRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        env: ${'$'}{{ {} }}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when step has empty env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -123,8 +136,10 @@ class EmptyEnvRuleTest {
 				    steps:
 				      - uses: some/action@v1
 				        env: {}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
 			"EmptyStepEnv",
@@ -133,7 +148,7 @@ class EmptyEnvRuleTest {
 	}
 
 	@Test fun `reports when run step has empty env`() {
-		val results = check<EmptyEnvRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -142,8 +157,10 @@ class EmptyEnvRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        env: {}
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
 			"EmptyStepEnv",

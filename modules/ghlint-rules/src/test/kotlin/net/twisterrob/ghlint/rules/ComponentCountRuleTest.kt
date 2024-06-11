@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -21,48 +22,56 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step job`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:${Random.generateJobs(1)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes few step job`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:${Random.generateJobs(5)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes max steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:${Random.generateJobs(10)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:${Random.generateJobs(11)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManyJobs",
@@ -72,12 +81,14 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:${Random.generateJobs(20)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManyJobs",
@@ -91,60 +102,68 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `passes single step job`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(1)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes few step job`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(5)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `passes max steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(20)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test
 		fun `fails max steps count + 1`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(21)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManySteps",
@@ -154,15 +173,17 @@ class ComponentCountRuleTest {
 
 		@Test
 		fun `fails double steps count`() {
-			val results = check<ComponentCountRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
 					  test:
 					    runs-on: test
 					    steps:${Random.generateSteps(40)}
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
 				"TooManySteps",

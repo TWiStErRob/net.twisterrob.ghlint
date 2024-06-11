@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -13,7 +14,7 @@ class InvalidExpressionUsageRuleTest {
 	@TestFactory fun metadata() = test(InvalidExpressionUsageRule::class)
 
 	@Test fun `passes when no expression in uses field`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -24,11 +25,13 @@ class InvalidExpressionUsageRuleTest {
 			""".trimIndent(),
 		)
 
+		val results = check<InvalidExpressionUsageRule>(file)
+
 		results shouldHave noFindings()
 	}
 
 	@Test fun `reports when expression in uses field`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -38,6 +41,8 @@ class InvalidExpressionUsageRuleTest {
 				    - uses: actions/checkout@${'$'}{{ github.ref }}
 			""".trimIndent(),
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
 			"InvalidExpressionUsage",
@@ -83,7 +88,7 @@ class InvalidExpressionUsageRuleTest {
 	}
 
 	@Test fun `passes when no expression in uses field for local action`() {
-		val results = check<InvalidExpressionUsageRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -93,6 +98,8 @@ class InvalidExpressionUsageRuleTest {
 				    - uses: ./actions/local
 			""".trimIndent(),
 		)
+
+		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave noFindings()
 	}

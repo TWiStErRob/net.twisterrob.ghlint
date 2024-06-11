@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -21,7 +22,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["error", "warn", "ignore"])
 		fun `passes input is defined`(value: String) {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -33,14 +34,16 @@ class FailFastActionsRuleTest {
 					          if-no-files-found: ${value}
 					          path: |
 					            build/some/report/
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when input is missing`() {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -51,8 +54,10 @@ class FailFastActionsRuleTest {
 					        with:
 					          path: |
 					            build/some/report/
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 
 			results shouldHave singleFinding(
@@ -68,7 +73,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["true", "false"])
 		fun `passes input is defined`(value: String) {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -80,14 +85,16 @@ class FailFastActionsRuleTest {
 					          action_fail_on_inconclusive: ${value}
 					          junit_files: |
 					            **/build/**/TEST-*.xml
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when input is missing`() {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -98,8 +105,10 @@ class FailFastActionsRuleTest {
 					        with:
 					          junit_files: |
 					            **/build/**/TEST-*.xml
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave singleFinding(
 				"FailFastPublishUnitTestResults",
@@ -113,7 +122,7 @@ class FailFastActionsRuleTest {
 	inner class FailFastPeterEvansCreatePullRequestTest {
 
 		@Test fun `reports when action is used`() {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -121,8 +130,10 @@ class FailFastActionsRuleTest {
 					    runs-on: test
 					    steps:
 					      - uses: peter-evans/create-pull-request@v6
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
@@ -131,7 +142,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `reports when action is used with hash`() {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -141,8 +152,10 @@ class FailFastActionsRuleTest {
 					      - uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50 # v6.0.0
 					        with:
 					          title: "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave singleFinding(
 				"FailFastPeterEvansCreatePullRequest",
@@ -158,7 +171,7 @@ class FailFastActionsRuleTest {
 		@ParameterizedTest
 		@ValueSource(strings = ["true", "false"])
 		fun `passes input is defined`(value: String) {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -172,14 +185,16 @@ class FailFastActionsRuleTest {
 					            LICENCE
 					            executable.exe
 					            package*.zip
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 
 		@Test fun `reports when input is missing`() {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -192,8 +207,10 @@ class FailFastActionsRuleTest {
 					            LICENCE
 					            executable.exe
 					            package*.zip
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave singleFinding(
 				"FailFastSoftpropsGhRelease",
@@ -202,7 +219,7 @@ class FailFastActionsRuleTest {
 		}
 
 		@Test fun `passes when input is not relevant`() {
-			val results = check<FailFastActionsRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -210,15 +227,17 @@ class FailFastActionsRuleTest {
 					    runs-on: test
 					    steps:
 					      - uses: softprops/action-gh-release@v2
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<FailFastActionsRule>(file)
 
 			results shouldHave noFindings()
 		}
 	}
 
 	@Test fun `passes on other actions`() {
-		val results = check<FailFastActionsRule>(
+		val file = yaml(
 			"""
 				on: push
 				jobs:
@@ -248,8 +267,10 @@ class FailFastActionsRuleTest {
 				        uses: other/publish-unit-test-result-action@v0
 				        with:
 				          action_fail_on_inconclusive: false
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<FailFastActionsRule>(file)
 
 		results shouldHave noFindings()
 	}

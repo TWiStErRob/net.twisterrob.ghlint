@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -19,7 +20,7 @@ class ScriptInjectionRuleTest {
 	inner class ShellScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -27,8 +28,10 @@ class ScriptInjectionRuleTest {
 					    runs-on: test
 					    steps:
 					      - run: echo "Test"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -51,7 +54,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -61,8 +64,10 @@ class ScriptInjectionRuleTest {
 					      - run: echo "${'$'}{VAR}"
 					        env:
 					          VAR: value
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -87,7 +92,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of shell injection`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -95,8 +100,10 @@ class ScriptInjectionRuleTest {
 					    runs-on: test
 					    steps:
 					      - run: echo "${'$'}{{ github.event.pull_request.title }}"
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"ShellScriptInjection",
@@ -129,7 +136,7 @@ class ScriptInjectionRuleTest {
 	inner class JSScriptInjectionTest {
 
 		@Test fun `passes when there's no variable usage`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -139,8 +146,10 @@ class ScriptInjectionRuleTest {
 					      - uses: actions/github-script@v7
 					        with:
 					          script: return "Test";
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -164,7 +173,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just an environment variable`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -177,8 +186,10 @@ class ScriptInjectionRuleTest {
 					        with:
 					          script: |
 					            return process.env.INPUT;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -205,7 +216,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `passes when there's just string interpolation in JavaScript`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -218,8 +229,10 @@ class ScriptInjectionRuleTest {
 					        with:
 					          script: |
 					            return `prefix ${'$'}{process.env.INPUT} suffix`;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave noFindings()
 		}
@@ -246,7 +259,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -258,8 +271,10 @@ class ScriptInjectionRuleTest {
 					          script: |
 					            const title = "${'$'}{{ github.event.pull_request.title }}";
 					            return title;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
@@ -291,7 +306,7 @@ class ScriptInjectionRuleTest {
 		}
 
 		@Test fun `reports when there's possibility of script injection regardless of version`() {
-			val results = check<ScriptInjectionRule>(
+			val file = yaml(
 				"""
 					on: push
 					jobs:
@@ -304,8 +319,10 @@ class ScriptInjectionRuleTest {
 					          script: |
 					            const title = "${'$'}{{ github.event.pull_request.title }}";
 					            return title;
-				""".trimIndent()
+				""".trimIndent(),
 			)
+
+			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
 				"JSScriptInjection",
