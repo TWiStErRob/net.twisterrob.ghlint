@@ -1,21 +1,22 @@
 package net.twisterrob.ghlint.testing
 
 import net.twisterrob.ghlint.model.FileLocation
+import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.results.ColumnNumber
 import net.twisterrob.ghlint.results.LineNumber
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.results.Position
 
-public operator fun String.invoke(string: String, occurrence: Int = 1): String =
-	this.locationOfNth(string, occurrence).testString()
+public operator fun RawFile.invoke(string: String, occurrence: Int = 1): String =
+	this.content.locationOfNth(this.location, string, occurrence).testString()
 
-public fun String.locationOfNth(string: String, occurrence: Int = 1): Location {
+internal fun String.locationOfNth(location: FileLocation, string: String, occurrence: Int = 1): Location {
 	require('\r' !in this) { "Only \\n line endings are supported." }
 	require(occurrence > 0) { "Occurrence must be positive, but was ${occurrence}." }
 	val found = this.indexOfNth(string, occurrence)
 	require(found != -1) { "Cannot find occurrence #${occurrence} of '${string}' in:\n$this" }
 	return Location(
-		FileLocation("test.yml"),
+		location,
 		this.positionOf(found),
 		this.positionOf(found + string.length),
 	)

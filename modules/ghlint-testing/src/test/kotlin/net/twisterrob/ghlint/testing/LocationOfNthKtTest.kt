@@ -18,9 +18,11 @@ class LocationOfNthKtTest {
 			text
 		""".trimIndent()
 
-		text.locationOfNth("text", 1) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 1)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(1), ColumnNumber(1)),
 				Position(LineNumber(1), ColumnNumber(5)),
 			)
@@ -32,9 +34,11 @@ class LocationOfNthKtTest {
 			text text text text
 		""".trimIndent()
 
-		text.locationOfNth("text", 1) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 1)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(1), ColumnNumber(1)),
 				Position(LineNumber(1), ColumnNumber(5)),
 			)
@@ -46,9 +50,11 @@ class LocationOfNthKtTest {
 			text text text text
 		""".trimIndent()
 
-		text.locationOfNth("text", 2) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 2)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(1), ColumnNumber(6)),
 				Position(LineNumber(1), ColumnNumber(10)),
 			)
@@ -60,9 +66,11 @@ class LocationOfNthKtTest {
 			text text text text
 		""".trimIndent()
 
-		text.locationOfNth("text", 4) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 4)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(1), ColumnNumber(16)),
 				Position(LineNumber(1), ColumnNumber(20)),
 			)
@@ -77,9 +85,11 @@ class LocationOfNthKtTest {
 			text
 		""".trimIndent()
 
-		text.locationOfNth("text", 1) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 1)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(1), ColumnNumber(1)),
 				Position(LineNumber(1), ColumnNumber(5)),
 			)
@@ -94,9 +104,11 @@ class LocationOfNthKtTest {
 			text
 		""".trimIndent()
 
-		text.locationOfNth("text", 3) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 3)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(3), ColumnNumber(1)),
 				Position(LineNumber(3), ColumnNumber(5)),
 			)
@@ -111,9 +123,11 @@ class LocationOfNthKtTest {
 			text
 		""".trimIndent()
 
-		text.locationOfNth("text", 4) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 4)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(4), ColumnNumber(1)),
 				Position(LineNumber(4), ColumnNumber(5)),
 			)
@@ -126,9 +140,11 @@ class LocationOfNthKtTest {
 			text text
 		""".trimIndent()
 
-		text.locationOfNth("text", 4) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "text", 4)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(2), ColumnNumber(6)),
 				Position(LineNumber(2), ColumnNumber(10)),
 			)
@@ -143,9 +159,11 @@ class LocationOfNthKtTest {
 			line4
 		""".trimIndent()
 
-		text.locationOfNth("line3", 1) shouldBe aLocation(
+		val result = text.locationOfNth(LOCATION, "line3", 1)
+
+		result shouldBe aLocation(
 			Location(
-				FileLocation("test.yml"),
+				LOCATION,
 				Position(LineNumber(3), ColumnNumber(1)),
 				Position(LineNumber(3), ColumnNumber(6)),
 			)
@@ -157,9 +175,12 @@ class LocationOfNthKtTest {
 			text
 		""".trimIndent()
 
-		val ex = shouldThrow<IllegalArgumentException> { text.locationOfNth("text", 0) }
-		ex.message shouldNotContain "text"
-		ex.message shouldContain "0"
+		val result = shouldThrow<IllegalArgumentException> {
+			text.locationOfNth(LOCATION, "text", 0)
+		}
+
+		result.message shouldNotContain "text"
+		result.message shouldContain "0"
 	}
 
 	@Test fun `errors on negative occurrence`() {
@@ -167,9 +188,12 @@ class LocationOfNthKtTest {
 			text
 		""".trimIndent()
 
-		val ex = shouldThrow<IllegalArgumentException> { text.locationOfNth("text", -5) }
-		ex.message shouldNotContain "text"
-		ex.message shouldContain "-5"
+		val result = shouldThrow<IllegalArgumentException> {
+			text.locationOfNth(LOCATION, "text", -5)
+		}
+
+		result.message shouldNotContain "text"
+		result.message shouldContain "-5"
 	}
 
 	@Test fun `errors on too many occurrences`() {
@@ -178,8 +202,15 @@ class LocationOfNthKtTest {
 			text text
 		""".trimIndent()
 
-		val ex = shouldThrow<IllegalArgumentException> { text.locationOfNth("text", 5) }
-		ex.message shouldContain "text"
-		ex.message shouldContain "5"
+		val result = shouldThrow<IllegalArgumentException> {
+			text.locationOfNth(LOCATION, "text", 5)
+		}
+
+		result.message shouldContain "text"
+		result.message shouldContain "5"
+	}
+
+	companion object {
+		private val LOCATION = FileLocation("test.yml")
 	}
 }

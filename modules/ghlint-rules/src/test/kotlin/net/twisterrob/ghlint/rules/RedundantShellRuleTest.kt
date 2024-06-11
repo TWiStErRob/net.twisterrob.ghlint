@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.exactFindings
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -37,7 +38,8 @@ class RedundantShellRuleTest {
 
 		results shouldHave singleFinding(
 			"RedundantDefaultShell",
-			"Both Job[test] and Workflow[test] has `bash` shell as default, one of them can be removed."
+			file("test", 1),
+			"Both Job[test] and Workflow[test] has `bash` shell as default, one of them can be removed.",
 		)
 	}
 
