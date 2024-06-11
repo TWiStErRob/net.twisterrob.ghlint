@@ -2,7 +2,9 @@ package net.twisterrob.ghlint.model
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.workflow
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -12,14 +14,18 @@ import org.mockito.Mockito.mock
 
 class SeesEnvVarKtTest {
 
-	private fun loadRunStep(@Language("yaml") yaml: String, fileName: String = "test.yml"): Step {
-		val file = load(yaml, fileName)
-		return when (val content = file.content) {
+	private val File.theStep: Step
+		get() = when (val content = content) {
 			is Workflow -> (content.jobs.values.single() as Job.NormalJob).steps.single()
 			is Action -> (content.runs as Action.Runs.CompositeRuns).steps.single()
 			is InvalidContent -> error("Invalid content: ${content.error}")
 		}
-	}
+
+	private fun loadActionRunStep(@Language("yaml") yaml: String): Step =
+		load(action(yaml)).theStep
+
+	private fun loadWorkflowRunStep(@Language("yaml") yaml: String): Step =
+		load(workflow(yaml)).theStep
 
 	@Test fun `fails on unknown step`() {
 		val step: Step.BaseStep = mock()
@@ -30,7 +36,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `no variables defined in workflow`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				jobs:
@@ -48,7 +54,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `explicit variable is defined for step in workflow`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				jobs:
@@ -68,7 +74,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `job variable is defined for step in workflow`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				jobs:
@@ -88,7 +94,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `workflow variable is defined for step in workflow`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				env:
@@ -111,7 +117,7 @@ class SeesEnvVarKtTest {
 		stepKey: String,
 		stepValue: String,
 	) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				env:
@@ -133,7 +139,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `all possible variables is defined for step in workflow - workflow`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				env:
@@ -157,7 +163,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `many different variables for step in workflow - workflow`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				env:
@@ -188,7 +194,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `many different variables for step in workflow - job`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				env:
@@ -219,7 +225,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `many different variables for step in workflow - step`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadWorkflowRunStep(
 			"""
 				on: push
 				env:
@@ -251,7 +257,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `no variables defined in action`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadActionRunStep(
 			"""
 				name: Test
 				description: Test
@@ -261,7 +267,6 @@ class SeesEnvVarKtTest {
 				    - ${stepKey}: ${stepValue}
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
 
 		step.seesEnvVar("MY_VAR") shouldBe false
@@ -271,7 +276,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `variable is defined for step in action`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadActionRunStep(
 			"""
 				name: Test
 				description: Test
@@ -283,7 +288,6 @@ class SeesEnvVarKtTest {
 				        MY_VAR: value
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
 
 		step.seesEnvVar("MY_VAR") shouldBe true
@@ -293,7 +297,7 @@ class SeesEnvVarKtTest {
 	@MethodSource("getActions")
 	@ParameterizedTest
 	fun `multiple variables are defined for step in action`(stepKey: String, stepValue: String) {
-		val step = loadRunStep(
+		val step = loadActionRunStep(
 			"""
 				name: Test
 				description: Test
@@ -307,7 +311,6 @@ class SeesEnvVarKtTest {
 				        MY_VAR2: value2
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
 
 		step.seesEnvVar("MY_VAR") shouldBe true

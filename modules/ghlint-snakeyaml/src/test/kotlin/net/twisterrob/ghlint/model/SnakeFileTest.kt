@@ -3,50 +3,59 @@ package net.twisterrob.ghlint.model
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.instanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import net.twisterrob.ghlint.testing.file
 import net.twisterrob.ghlint.testing.load
 import net.twisterrob.ghlint.testing.loadUnsafe
+import net.twisterrob.ghlint.testing.workflow
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 
 class SnakeFileTest {
 
 	@Test fun `syntax error`() {
-		val file = loadUnsafe("x: *")
+		val file = yaml("x: *", "file.yml")
+		val loaded = loadUnsafe(file)
 
-		file.content.parent shouldBe file
+		loaded.content.parent shouldBe loaded
 
-		file.content shouldBe instanceOf<InvalidContent>()
-		file.content shouldBe instanceOf<SnakeSyntaxErrorContent>()
+		loaded.content shouldBe instanceOf<InvalidContent>()
+		loaded.content shouldBe instanceOf<SnakeSyntaxErrorContent>()
 	}
 
 	@Test fun `valid workflow`() {
-		val file = load(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    uses: reusable/workflow.yml
-			""".trimIndent()
+			""".trimIndent(),
+			fileName = "test.yml"
 		)
+		val loaded = load(file)
 
-		file.content shouldBe instanceOf<Workflow>()
+		loaded.content shouldBe instanceOf<Workflow>()
 	}
 
 	@Test fun `content is not re-created`() {
-		val file = load(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
 				  test:
 				    uses: reusable/workflow.yml
-			""".trimIndent()
+			""".trimIndent(),
+			fileName = "test.yml"
 		)
+		val loaded = load(file)
 
-		file.content shouldBeSameInstanceAs file.content
+		loaded.content shouldBeSameInstanceAs loaded.content
 	}
 
 	@Test fun `content is not re-created on error`() {
-		val file = loadUnsafe("<invalid yaml/>")
+		val file = file("<invalid yaml/>", "file.name")
+		val loaded = loadUnsafe(file)
 
-		file.content shouldBeSameInstanceAs file.content
+		loaded.content shouldBeSameInstanceAs loaded.content
 	}
 }

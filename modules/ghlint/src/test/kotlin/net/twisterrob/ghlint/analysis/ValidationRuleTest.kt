@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.analysis
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.aFinding
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.checkUnsafe
 import net.twisterrob.ghlint.testing.exactFindings
@@ -9,6 +10,8 @@ import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -55,7 +58,9 @@ class ValidationRuleTest {
 	@TestFactory fun metadata() = test(ValidationRule::class)
 
 	@Test fun `syntax error`() {
-		val findings = checkUnsafe<ValidationRule>("mapping: *")
+		val file = yaml("mapping: *")
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave singleFinding(
 			issue = "YamlSyntaxError",
@@ -77,11 +82,13 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `wrong workflow yaml contents`() {
-		val findings = checkUnsafe<ValidationRule>(
+		val file = workflow(
 			"""
 				foo: bar
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave exactFindings(
 			aFinding(
@@ -103,12 +110,13 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `wrong action yaml contents`() {
-		val findings = checkUnsafe<ValidationRule>(
+		val file = action(
 			"""
 				foo: bar
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val findings = checkUnsafe<ValidationRule>(file)
 
 		findings shouldHave exactFindings(
 			aFinding(
@@ -130,7 +138,7 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `valid workflow contents`() {
-		val findings = check<ValidationRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -139,12 +147,14 @@ class ValidationRuleTest {
 			""".trimIndent(),
 		)
 
+		val findings = check<ValidationRule>(file)
+
 		findings shouldHave noFindings()
 	}
 
 	@Test fun `duplicate key is reported`() {
 		@Suppress("YAMLDuplicatedKeys")
-		val findings = checkUnsafe<ValidationRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -159,6 +169,8 @@ class ValidationRuleTest {
 			""".trimIndent(),
 		)
 
+		val findings = checkUnsafe<ValidationRule>(file)
+
 		findings shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
 			message = "Duplicate key: a-job (/jobs/a-job)",
@@ -166,7 +178,7 @@ class ValidationRuleTest {
 	}
 
 	@Test fun `valid action contents`() {
-		val findings = check<ValidationRule>(
+		val file = action(
 			"""
 				name: ""
 				description: ""
@@ -174,8 +186,9 @@ class ValidationRuleTest {
 				  using: node20
 				  main: index.js
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
+
+		val findings = check<ValidationRule>(file)
 
 		findings shouldHave noFindings()
 	}

@@ -5,6 +5,7 @@ import io.kotest.matchers.maps.haveSize
 import io.kotest.matchers.should
 import net.twisterrob.ghlint.testing.load
 import net.twisterrob.ghlint.testing.loadUnsafe
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 
 class SnakeWorkflowTest {
@@ -13,18 +14,19 @@ class SnakeWorkflowTest {
 		get() = this.content as Workflow
 
 	@Test fun `zero jobs`() {
-		val workflow = loadUnsafe(
+		val file = workflow(
 			"""
 				on: push
 				jobs: {}
 			""".trimIndent()
-		).theWorkflow
+		)
+		val workflow = loadUnsafe(file).theWorkflow
 
 		workflow.jobs should beEmpty()
 	}
 
 	@Test fun `has jobs`() {
-		val workflow = load(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -32,8 +34,9 @@ class SnakeWorkflowTest {
 				    uses: reusable/workflow.yml
 				  job2:
 				    uses: reusable/workflow.yml
-			""".trimIndent()
-		).theWorkflow
+			""".trimIndent(),
+		)
+		val workflow = load(file).theWorkflow
 
 		workflow.jobs should haveSize(2)
 	}

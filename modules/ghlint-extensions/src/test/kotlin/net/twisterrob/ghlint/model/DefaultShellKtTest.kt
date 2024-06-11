@@ -4,6 +4,7 @@ import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.workflow
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -14,7 +15,7 @@ class DefaultShellKtTest {
 	inner class WorkflowTest {
 
 		private fun loadWorkflow(@Language("yaml") yaml: String): Workflow {
-			val file = load(yaml)
+			val file = load(workflow(yaml))
 			return file.content as Workflow
 		}
 
@@ -111,7 +112,7 @@ class DefaultShellKtTest {
 	inner class JobTest {
 
 		private fun loadJob(@Language("yaml") yaml: String): Job.NormalJob {
-			val file = load(yaml)
+			val file = load(workflow(yaml))
 			return (file.content as Workflow).jobs.values.single() as Job.NormalJob
 		}
 

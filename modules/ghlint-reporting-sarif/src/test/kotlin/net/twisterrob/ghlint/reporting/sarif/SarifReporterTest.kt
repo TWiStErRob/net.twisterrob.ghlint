@@ -10,6 +10,7 @@ import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
 import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.StringWriter
@@ -47,7 +48,7 @@ class SarifReporterTest {
 			IntegrationTestRule::class
 		)
 		val file = root.resolve("test.yml").createFile()
-		val findings = check<IntegrationTestRule>(
+		val workflow = workflow(
 			"""
 				on: push
 				jobs:
@@ -58,6 +59,8 @@ class SarifReporterTest {
 			""".trimIndent(),
 			fileName = file.toString(),
 		)
+		val findings = check<IntegrationTestRule>(workflow)
+
 		SarifReporter(writer, root, listOf(testRuleSet)).report(findings)
 
 		writer.toString() shouldBe sarifReport(root, "report.sarif.json")

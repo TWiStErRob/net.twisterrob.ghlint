@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
+import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -13,7 +14,7 @@ class MissingJobTimeoutRuleTest {
 	@TestFactory fun metadata() = test(MissingJobTimeoutRule::class)
 
 	@Test fun `passes when timeout is defined`() {
-		val results = check<MissingJobTimeoutRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -22,14 +23,16 @@ class MissingJobTimeoutRuleTest {
 				    timeout-minutes: 5
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingJobTimeoutRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `passes when timeout is defined as expression`() {
-		val results = check<MissingJobTimeoutRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -38,14 +41,16 @@ class MissingJobTimeoutRuleTest {
 				    timeout-minutes: ${'$'}{{ inputs.timeout-minutes }}
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingJobTimeoutRule>(file)
 
 		results shouldHave noFindings()
 	}
 
 	@Test fun `fails when timeout is missing`() {
-		val results = check<MissingJobTimeoutRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -53,8 +58,10 @@ class MissingJobTimeoutRuleTest {
 				    runs-on: test
 				    steps:
 				      - run: echo "Test"
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingJobTimeoutRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingJobTimeout",
@@ -63,7 +70,7 @@ class MissingJobTimeoutRuleTest {
 	}
 
 	@Test fun `fails when timeout is missing even when a step has timeout`() {
-		val results = check<MissingJobTimeoutRule>(
+		val file = workflow(
 			"""
 				on: push
 				jobs:
@@ -72,8 +79,10 @@ class MissingJobTimeoutRuleTest {
 				    steps:
 				      - run: echo "Test"
 				        timeout-minutes: 5
-			""".trimIndent()
+			""".trimIndent(),
 		)
+
+		val results = check<MissingJobTimeoutRule>(file)
 
 		results shouldHave singleFinding(
 			"MissingJobTimeout",

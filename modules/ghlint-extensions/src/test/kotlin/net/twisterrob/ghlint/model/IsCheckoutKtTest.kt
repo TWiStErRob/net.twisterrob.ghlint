@@ -1,7 +1,9 @@
 package net.twisterrob.ghlint.model
 
 import io.kotest.matchers.shouldBe
+import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.load
+import net.twisterrob.ghlint.testing.workflow
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -9,18 +11,22 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class IsCheckoutKtTest {
 
-	private fun loadFirstStep(@Language("yaml") yaml: String, fileName: String = "test.yml"): Step {
-		val file = load(yaml, fileName)
-		return when (val content = file.content) {
+	private val File.theStep: Step
+		get() = when (val content = content) {
 			is Workflow -> (content.jobs.values.single() as Job.NormalJob).steps.single()
 			is Action -> (content.runs as Action.Runs.CompositeRuns).steps.single()
 			is InvalidContent -> error("Invalid content: ${content.error}")
 		}
-	}
+
+	private fun loadActionStep(@Language("yaml") yaml: String): Step =
+		load(action(yaml)).theStep
+
+	private fun loadWorkflowStep(@Language("yaml") yaml: String): Step =
+		load(workflow(yaml)).theStep
 
 	@MethodSource("getCheckoutActions")
 	@ParameterizedTest fun `standard checkout actions in workflow`(action: String) {
-		val step = loadFirstStep(
+		val step = loadWorkflowStep(
 			"""
 				on: push
 				jobs:
@@ -36,7 +42,7 @@ class IsCheckoutKtTest {
 
 	@MethodSource("getNonCheckoutActions")
 	@ParameterizedTest fun `non-checkout actions in workflow`(action: String) {
-		val step = loadFirstStep(
+		val step = loadWorkflowStep(
 			"""
 				on: push
 				jobs:
@@ -51,7 +57,7 @@ class IsCheckoutKtTest {
 	}
 
 	@Test fun `runs step in workflow`() {
-		val step = loadFirstStep(
+		val step = loadWorkflowStep(
 			"""
 				on: push
 				jobs:
@@ -67,7 +73,7 @@ class IsCheckoutKtTest {
 
 	@MethodSource("getCheckoutActions")
 	@ParameterizedTest fun `standard checkout actions in action`(action: String) {
-		val step = loadFirstStep(
+		val step = loadActionStep(
 			"""
 				name: Test
 				description: Test
@@ -76,7 +82,6 @@ class IsCheckoutKtTest {
 				  steps:
 				    - uses: ${action}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
 
 		step.isCheckout shouldBe true
@@ -84,7 +89,7 @@ class IsCheckoutKtTest {
 
 	@MethodSource("getNonCheckoutActions")
 	@ParameterizedTest fun `non-checkout actions in action`(action: String) {
-		val step = loadFirstStep(
+		val step = loadActionStep(
 			"""
 				name: Test
 				description: Test
@@ -93,14 +98,13 @@ class IsCheckoutKtTest {
 				  steps:
 				    - uses: ${action}
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
 
 		step.isCheckout shouldBe false
 	}
 
 	@Test fun `runs step in action`() {
-		val step = loadFirstStep(
+		val step = loadActionStep(
 			"""
 				name: Test
 				description: Test
@@ -110,7 +114,6 @@ class IsCheckoutKtTest {
 				    - run: git checkout
 				      shell: bash
 			""".trimIndent(),
-			fileName = "action.yml",
 		)
 
 		step.isCheckout shouldBe false
