@@ -328,4 +328,13 @@ public class SnakeComponentFactory(
 			target = node,
 		)
 	}
+
+	internal fun createPermissions(node: Node): Permissions {
+		node as MappingNode
+		return SnakePermissions(
+			factory = this,
+			node = node,
+			target = node,
+		)
+	}
 }
