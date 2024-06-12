@@ -37,9 +37,9 @@ class RedundantShellRuleTest {
 		val results = check<RedundantShellRule>(file)
 
 		results shouldHave singleFinding(
-			"RedundantDefaultShell",
-			file("test", 1),
-			"Both Job[test] and Workflow[test] has `bash` shell as default, one of them can be removed.",
+			issue = "RedundantDefaultShell",
+			message = "Both Job[test] and Workflow[test] has `bash` shell as default, one of them can be removed.",
+			location = file("test", 1),
 		)
 	}
 
@@ -85,8 +85,8 @@ class RedundantShellRuleTest {
 		val results = check<RedundantShellRule>(file)
 
 		results shouldHave singleFinding(
-			"RedundantShell",
-			"Both Job[test] and Step[#0] in Job[test] has `bash` shell, the step's shell can be removed."
+			issue = "RedundantShell",
+			message = "Both Job[test] and Step[#0] in Job[test] has `bash` shell, the step's shell can be removed.",
 		)
 	}
 
@@ -109,8 +109,8 @@ class RedundantShellRuleTest {
 		val results = check<RedundantShellRule>(file)
 
 		results shouldHave singleFinding(
-			"RedundantShell",
-			"Both Workflow[test] and Step[#0] in Job[test] has `bash` shell, the step's shell can be removed."
+			issue = "RedundantShell",
+			message = "Both Workflow[test] and Step[#0] in Job[test] has `bash` shell, the step's shell can be removed.",
 		)
 	}
 

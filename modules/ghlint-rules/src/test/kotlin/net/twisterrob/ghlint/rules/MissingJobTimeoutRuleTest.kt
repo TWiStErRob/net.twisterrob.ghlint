@@ -64,8 +64,8 @@ class MissingJobTimeoutRuleTest {
 		val results = check<MissingJobTimeoutRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingJobTimeout",
-			"Job[test] is missing `timeout-minutes`."
+			issue = "MissingJobTimeout",
+			message = "Job[test] is missing `timeout-minutes`.",
 		)
 	}
 
@@ -85,8 +85,8 @@ class MissingJobTimeoutRuleTest {
 		val results = check<MissingJobTimeoutRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingJobTimeout",
-			"Job[test] is missing `timeout-minutes`."
+			issue = "MissingJobTimeout",
+			message = "Job[test] is missing `timeout-minutes`.",
 		)
 	}
 }

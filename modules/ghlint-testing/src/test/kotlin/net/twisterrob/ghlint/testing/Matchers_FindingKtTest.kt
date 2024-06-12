@@ -81,8 +81,8 @@ class Matchers_FindingKtTest {
 				)
 
 				results shouldHave singleFinding(
-					TestRule.TestIssue1.id,
-					"message"
+					issue = TestRule.TestIssue1.id,
+					message = "message",
 				)
 			}
 
@@ -93,8 +93,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"not the right message"
+						issue = TestRule.TestIssue1.id,
+						message = "not the right message",
 					)
 				}
 
@@ -116,8 +116,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"message",
+						issue = "WrongIssueId",
+						message = "message",
 					)
 				}
 
@@ -139,8 +139,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"not the right message"
+						issue = "WrongIssueId",
+						message = "not the right message",
 					)
 				}
 
@@ -160,8 +160,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -178,8 +178,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -206,8 +206,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -234,8 +234,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 

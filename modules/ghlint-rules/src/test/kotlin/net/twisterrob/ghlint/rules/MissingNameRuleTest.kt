@@ -36,8 +36,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingWorkflowName",
-			"""Workflow[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingWorkflowName",
+			message = """Workflow[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -61,8 +61,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingWorkflowName",
-			"""Workflow[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingWorkflowName",
+			message = """Workflow[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -86,8 +86,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingWorkflowName",
-			"""Workflow[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingWorkflowName",
+			message = """Workflow[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -129,8 +129,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingJobName",
-			"""Job[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingJobName",
+			message = """Job[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -154,8 +154,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingJobName",
-			"""Job[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingJobName",
+			message = """Job[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -179,8 +179,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingJobName",
-			"""Job[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingJobName",
+			message = """Job[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -222,8 +222,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingStepName",
-			"""Step[#0] in Job[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingStepName",
+			message = """Step[#0] in Job[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -247,8 +247,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingStepName",
-			"""Step[""] in Job[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingStepName",
+			message = """Step[""] in Job[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -272,8 +272,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingStepName",
-			"""Step["${value}"] in Job[test] is missing a name, add one to improve developer experience."""
+			issue = "MissingStepName",
+			message = """Step["${value}"] in Job[test] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -314,8 +314,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingStepName",
-			"""Step[#0] in Action["Test"] is missing a name, add one to improve developer experience."""
+			issue = "MissingStepName",
+			message = """Step[#0] in Action["Test"] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -338,8 +338,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingStepName",
-			"""Step[""] in Action["Test"] is missing a name, add one to improve developer experience."""
+			issue = "MissingStepName",
+			message = """Step[""] in Action["Test"] is missing a name, add one to improve developer experience.""",
 		)
 	}
 
@@ -362,8 +362,8 @@ class MissingNameRuleTest {
 		val results = check<MissingNameRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingStepName",
-			"""Step["${value}"] in Action["Test"] is missing a name, add one to improve developer experience."""
+			issue = "MissingStepName",
+			message = """Step["${value}"] in Action["Test"] is missing a name, add one to improve developer experience.""",
 		)
 	}
 

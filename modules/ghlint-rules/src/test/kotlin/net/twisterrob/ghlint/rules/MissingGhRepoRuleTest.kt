@@ -165,8 +165,8 @@ class MissingGhRepoRuleTest {
 		val results = check<MissingGhRepoRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhRepo",
-			"Step[#0] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
+			issue = "MissingGhRepo",
+			message = "Step[#0] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
 		)
 	}
 
@@ -189,8 +189,8 @@ class MissingGhRepoRuleTest {
 		val results = check<MissingGhRepoRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhRepo",
-			"Step[#1] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
+			issue = "MissingGhRepo",
+			message = "Step[#1] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
 		)
 	}
 }

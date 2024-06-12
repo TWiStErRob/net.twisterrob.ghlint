@@ -75,8 +75,8 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManyJobs",
-				"Workflow[test] has 11 jobs, maximum recommended is 10."
+				issue = "TooManyJobs",
+				message = "Workflow[test] has 11 jobs, maximum recommended is 10.",
 			)
 		}
 
@@ -92,8 +92,8 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManyJobs",
-				"Workflow[test] has 20 jobs, maximum recommended is 10."
+				issue = "TooManyJobs",
+				message = "Workflow[test] has 20 jobs, maximum recommended is 10.",
 			)
 		}
 	}
@@ -167,8 +167,8 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"Job[test] has 21 steps, maximum recommended is 20."
+				issue = "TooManySteps",
+				message = "Job[test] has 21 steps, maximum recommended is 20.",
 			)
 		}
 
@@ -187,8 +187,8 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"Job[test] has 40 steps, maximum recommended is 20."
+				issue = "TooManySteps",
+				message = "Job[test] has 40 steps, maximum recommended is 20.",
 			)
 		}
 	}
@@ -262,8 +262,8 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"""Action["Test"] has 21 steps, maximum recommended is 20."""
+				issue = "TooManySteps",
+				message = """Action["Test"] has 21 steps, maximum recommended is 20.""",
 			)
 		}
 
@@ -282,8 +282,8 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"""Action["Test"] has 40 steps, maximum recommended is 20."""
+				issue = "TooManySteps",
+				message = """Action["Test"] has 40 steps, maximum recommended is 20.""",
 			)
 		}
 	}

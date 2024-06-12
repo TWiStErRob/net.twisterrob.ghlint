@@ -50,8 +50,8 @@ class MissingShellRuleTest {
 		val results = check<MissingShellRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingShell",
-			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
+			issue = "MissingShell",
+			message = "Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling.",
 		)
 	}
 
@@ -136,8 +136,8 @@ class MissingShellRuleTest {
 		val results = check<MissingShellRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingShell",
-			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
+			issue = "MissingShell",
+			message = "Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling.",
 		)
 	}
 }

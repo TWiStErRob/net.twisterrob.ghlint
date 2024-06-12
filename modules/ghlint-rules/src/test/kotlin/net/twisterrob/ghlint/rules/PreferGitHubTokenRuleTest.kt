@@ -87,8 +87,8 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			"`MY_ENV` environment variable in Workflow[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = "`MY_ENV` environment variable in Workflow[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -147,8 +147,8 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			"`MY_ENV` environment variable in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = "`MY_ENV` environment variable in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -201,8 +201,8 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			"`test-input` input in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = "`test-input` input in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -271,8 +271,8 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			"`test-input` secret in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = "`test-input` secret in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -369,9 +369,9 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			@Suppress("detekt.MaxLineLength")
-			"`MY_ENV` environment variable in Step[some/action@v1] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = @Suppress("detekt.MaxLineLength")
+			"`MY_ENV` environment variable in Step[some/action@v1] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -392,9 +392,9 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			@Suppress("detekt.MaxLineLength")
-			"""`MY_ENV` environment variable in Step[some/action@v1] in Action["Test"] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."""
+			issue = "PreferGitHubToken",
+			message = @Suppress("detekt.MaxLineLength")
+			"""`MY_ENV` environment variable in Step[some/action@v1] in Action["Test"] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.""",
 		)
 	}
 
@@ -493,9 +493,9 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			@Suppress("detekt.MaxLineLength")
-			"`MY_ENV` environment variable in Step[#0] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = @Suppress("detekt.MaxLineLength")
+			"`MY_ENV` environment variable in Step[#0] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -517,9 +517,9 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			@Suppress("detekt.MaxLineLength")
-			"""`MY_ENV` environment variable in Step[#0] in Action["Test"] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."""
+			issue = "PreferGitHubToken",
+			message = @Suppress("detekt.MaxLineLength")
+			"""`MY_ENV` environment variable in Step[#0] in Action["Test"] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.""",
 		)
 	}
 
@@ -616,9 +616,9 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			@Suppress("detekt.MaxLineLength")
-			"`test-input` input in Step[test/action@v0] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."
+			issue = "PreferGitHubToken",
+			message = @Suppress("detekt.MaxLineLength")
+			"`test-input` input in Step[test/action@v0] in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
 		)
 	}
 
@@ -639,9 +639,9 @@ class PreferGitHubTokenRuleTest {
 		val results = check<PreferGitHubTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"PreferGitHubToken",
-			@Suppress("detekt.MaxLineLength")
-			"""`test-input` input in Step[test/action@v0] in Action["Test"] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`."""
+			issue = "PreferGitHubToken",
+			message = @Suppress("detekt.MaxLineLength")
+			"""`test-input` input in Step[test/action@v0] in Action["Test"] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.""",
 		)
 	}
 }

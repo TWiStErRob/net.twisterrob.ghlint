@@ -150,8 +150,8 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"WorkflowIdNaming",
-			"""Workflow[${id}] should have a lower-case kebab ID."""
+			issue = "WorkflowIdNaming",
+			message = """Workflow[${id}] should have a lower-case kebab ID.""",
 		)
 	}
 
@@ -172,8 +172,8 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"JobIdNaming",
-			"""Job[${id}] should have a lower-case kebab ID."""
+			issue = "JobIdNaming",
+			message = """Job[${id}] should have a lower-case kebab ID.""",
 		)
 	}
 
@@ -195,8 +195,8 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"StepIdNaming",
-			"""Step[${id}] in Job[test] should have a lower-case kebab ID."""
+			issue = "StepIdNaming",
+			message = """Step[${id}] in Job[test] should have a lower-case kebab ID.""",
 		)
 	}
 
@@ -219,8 +219,8 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"StepIdNaming",
-			"""Step[${id}] in Action["Test"] should have a lower-case kebab ID."""
+			issue = "StepIdNaming",
+			message = """Step[${id}] in Action["Test"] should have a lower-case kebab ID.""",
 		)
 	}
 

@@ -63,8 +63,8 @@ class JobDependenciesRuleTest {
 		val results = check<JobDependenciesRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingNeedsJob",
-			"Job[test] references Job[missing], which does not exist.",
+			issue = "MissingNeedsJob",
+			message = "Job[test] references Job[missing], which does not exist.",
 		)
 	}
 
@@ -162,8 +162,8 @@ class JobDependenciesRuleTest {
 			val results = check<JobDependenciesRule>(file)
 
 			results shouldHave singleFinding(
-				"JobDependencyCycle",
-				"Job[test] forms a dependency cycle: [test].",
+				issue = "JobDependencyCycle",
+				message = "Job[test] forms a dependency cycle: [test].",
 			)
 		}
 
@@ -184,8 +184,8 @@ class JobDependenciesRuleTest {
 			val results = check<JobDependenciesRule>(file)
 
 			results shouldHave singleFinding(
-				"JobDependencyCycle",
-				"Job[test1] forms a dependency cycle: [test1, test2].",
+				issue = "JobDependencyCycle",
+				message = "Job[test1] forms a dependency cycle: [test1, test2].",
 			)
 		}
 
@@ -212,8 +212,8 @@ class JobDependenciesRuleTest {
 			val results = check<JobDependenciesRule>(file)
 
 			results shouldHave singleFinding(
-				"JobDependencyCycle",
-				"Job[test1] forms a dependency cycle: [test1, test2].",
+				issue = "JobDependencyCycle",
+				message = "Job[test1] forms a dependency cycle: [test1, test2].",
 			)
 		}
 
@@ -237,8 +237,8 @@ class JobDependenciesRuleTest {
 			val results = check<JobDependenciesRule>(file)
 
 			results shouldHave singleFinding(
-				"JobDependencyCycle",
-				"Job[test1] forms a dependency cycle: [test1, test2, test3].",
+				issue = "JobDependencyCycle",
+				message = "Job[test1] forms a dependency cycle: [test1, test2, test3].",
 			)
 		}
 
@@ -262,8 +262,8 @@ class JobDependenciesRuleTest {
 			val results = check<JobDependenciesRule>(file)
 
 			results shouldHave singleFinding(
-				"JobDependencyCycle",
-				"Job[test3] forms a dependency cycle: [test3].",
+				issue = "JobDependencyCycle",
+				message = "Job[test3] forms a dependency cycle: [test3].",
 			)
 		}
 	}

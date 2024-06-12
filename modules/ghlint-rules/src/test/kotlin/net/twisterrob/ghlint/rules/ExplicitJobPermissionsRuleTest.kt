@@ -48,8 +48,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
 			)
 		}
 
@@ -66,8 +66,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
 			)
 		}
 
@@ -134,8 +134,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
 			)
 		}
 
@@ -164,8 +164,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
 			)
 		}
 
@@ -224,8 +224,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"ExplicitJobPermissions",
-				"Job[test] should have explicit permissions."
+				issue = "ExplicitJobPermissions",
+				message = "Job[test] should have explicit permissions.",
 			)
 		}
 
@@ -244,8 +244,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"ExplicitJobPermissions",
-				"Job[test] should have explicit permissions."
+				issue = "ExplicitJobPermissions",
+				message = "Job[test] should have explicit permissions.",
 			)
 		}
 
@@ -306,8 +306,8 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"ExplicitJobPermissions",
-				"Workflow[test] has redundant permissions."
+				issue = "ExplicitJobPermissions",
+				message = "Workflow[test] has redundant permissions.",
 			)
 		}
 	}

@@ -172,8 +172,8 @@ class EnvironmentFileOverwriteRuleTest {
 							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave singleFinding(
-								"EnvironmentFileOverwritten",
-								"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
+								issue = "EnvironmentFileOverwritten",
+								message = "Step[#0] in Job[test] overwrites environment file `${environmentFile}`.",
 							)
 						},
 						dynamicTest("${name} in actions") {
@@ -193,8 +193,8 @@ class EnvironmentFileOverwriteRuleTest {
 							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave singleFinding(
-								"EnvironmentFileOverwritten",
-								"""Step[#0] in Action["Test"] overwrites environment file `${environmentFile}`."""
+								issue = "EnvironmentFileOverwritten",
+								message = """Step[#0] in Action["Test"] overwrites environment file `${environmentFile}`.""",
 							)
 						},
 					)

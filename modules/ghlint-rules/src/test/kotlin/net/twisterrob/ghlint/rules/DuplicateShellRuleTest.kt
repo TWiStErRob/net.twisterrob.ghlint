@@ -31,8 +31,8 @@ class DuplicateShellRuleTest {
 		val results = check<DuplicateShellRule>(file)
 
 		results shouldHave singleFinding(
-			"DuplicateShellOnSteps",
-			"Job[test] has all (2) steps defining bash shell, set default shell on job."
+			issue = "DuplicateShellOnSteps",
+			message = "Job[test] has all (2) steps defining bash shell, set default shell on job.",
 		)
 	}
 
@@ -56,8 +56,8 @@ class DuplicateShellRuleTest {
 		val results = check<DuplicateShellRule>(file)
 
 		results shouldHave singleFinding(
-			"DuplicateShellOnSteps",
-			"Job[test] has all (3) steps defining bash shell, set default shell on job."
+			issue = "DuplicateShellOnSteps",
+			message = "Job[test] has all (3) steps defining bash shell, set default shell on job.",
 		)
 	}
 
@@ -82,8 +82,8 @@ class DuplicateShellRuleTest {
 		val results = check<DuplicateShellRule>(file)
 
 		results shouldHave singleFinding(
-			"DuplicateShellOnSteps",
-			"Job[test] has all (2) steps defining bash shell, set default shell on job."
+			issue = "DuplicateShellOnSteps",
+			message = "Job[test] has all (2) steps defining bash shell, set default shell on job.",
 		)
 	}
 
@@ -212,9 +212,9 @@ class DuplicateShellRuleTest {
 		val results = check<DuplicateShellRule>(file)
 
 		results shouldHave singleFinding(
-			"DuplicateShellOnSteps",
-			"All (2) steps in Job[test] override shell as `sh`, " +
-					"change the default shell on the job from `bash` to `sh`, and remove shells from steps."
+			issue = "DuplicateShellOnSteps",
+			message = "All (2) steps in Job[test] override shell as `sh`, " +
+					"change the default shell on the job from `bash` to `sh`, and remove shells from steps.",
 		)
 	}
 
@@ -239,9 +239,9 @@ class DuplicateShellRuleTest {
 		val results = check<DuplicateShellRule>(file)
 
 		results shouldHave singleFinding(
-			"DuplicateShellOnSteps",
-			"All (2) steps in Workflow[test] override shell as `sh`, " +
-					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps."
+			issue = "DuplicateShellOnSteps",
+			message = "All (2) steps in Workflow[test] override shell as `sh`, " +
+					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps.",
 		)
 	}
 
@@ -273,9 +273,9 @@ class DuplicateShellRuleTest {
 		val results = check<DuplicateShellRule>(file)
 
 		results shouldHave singleFinding(
-			"DuplicateShellOnSteps",
-			"All (4) steps in Workflow[test] override shell as `sh`, " +
-					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps."
+			issue = "DuplicateShellOnSteps",
+			message = "All (4) steps in Workflow[test] override shell as `sh`, " +
+					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps.",
 		)
 	}
 

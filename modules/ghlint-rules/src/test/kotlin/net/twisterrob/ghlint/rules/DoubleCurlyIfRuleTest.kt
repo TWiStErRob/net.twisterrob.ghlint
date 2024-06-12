@@ -96,8 +96,8 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Job[test] does not have double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Job[test] does not have double-curly-braces.",
 			)
 		}
 
@@ -119,8 +119,8 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Job[test] has nested or invalid double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Job[test] has nested or invalid double-curly-braces.",
 			)
 		}
 	}
@@ -204,8 +204,8 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Step[#0] in Job[test] does not have double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Step[#0] in Job[test] does not have double-curly-braces.",
 			)
 		}
 
@@ -227,8 +227,8 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Step[#0] in Job[test] has nested or invalid double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Step[#0] in Job[test] has nested or invalid double-curly-braces.",
 			)
 		}
 	}
@@ -317,8 +317,8 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"""Step[#0] in Action["Test"] does not have double-curly-braces."""
+				issue = "DoubleCurlyIf",
+				message = """Step[#0] in Action["Test"] does not have double-curly-braces.""",
 			)
 		}
 
@@ -341,8 +341,8 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"""Step[#0] in Action["Test"] has nested or invalid double-curly-braces."""
+				issue = "DoubleCurlyIf",
+				message = """Step[#0] in Action["Test"] has nested or invalid double-curly-braces.""",
 			)
 		}
 	}

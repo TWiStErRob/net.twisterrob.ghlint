@@ -263,8 +263,8 @@ class MissingGhTokenRuleTest {
 		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhToken",
-			"Step[#1] in Job[test] should see `GH_TOKEN` environment variable."
+			issue = "MissingGhToken",
+			message = "Step[#1] in Job[test] should see `GH_TOKEN` environment variable.",
 		)
 	}
 
@@ -288,8 +288,8 @@ class MissingGhTokenRuleTest {
 		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhHost",
-			"Step[#1] in Job[test] should see `GH_HOST` environment variable when using `GH_ENTERPRISE_TOKEN`."
+			issue = "MissingGhHost",
+			message = "Step[#1] in Job[test] should see `GH_HOST` environment variable when using `GH_ENTERPRISE_TOKEN`.",
 		)
 	}
 
@@ -313,8 +313,8 @@ class MissingGhTokenRuleTest {
 		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhToken",
-			"Step[#1] in Job[test] should see `GH_ENTERPRISE_TOKEN` environment variable when using `GH_HOST`."
+			issue = "MissingGhToken",
+			message = "Step[#1] in Job[test] should see `GH_ENTERPRISE_TOKEN` environment variable when using `GH_HOST`.",
 		)
 	}
 
@@ -337,8 +337,8 @@ class MissingGhTokenRuleTest {
 		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhToken",
-			"""Step[#1] in Action["Test"] should see `GH_TOKEN` environment variable."""
+			issue = "MissingGhToken",
+			message = """Step[#1] in Action["Test"] should see `GH_TOKEN` environment variable.""",
 		)
 	}
 
@@ -399,8 +399,8 @@ class MissingGhTokenRuleTest {
 		val results = check<MissingGhTokenRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingGhToken",
-			"Step[#0] in Job[test] should see `GH_TOKEN` environment variable."
+			issue = "MissingGhToken",
+			message = "Step[#0] in Job[test] should see `GH_TOKEN` environment variable.",
 		)
 	}
 

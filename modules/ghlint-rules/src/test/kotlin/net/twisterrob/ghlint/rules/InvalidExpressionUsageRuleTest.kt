@@ -46,8 +46,8 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
-			"InvalidExpressionUsage",
-			"Step[actions/checkout@${'$'}{{ github.ref }}] in Job[test] contains a GitHub expression in the `uses` field.",
+			issue = "InvalidExpressionUsage",
+			message = "Step[actions/checkout@${'$'}{{ github.ref }}] in Job[test] contains a GitHub expression in the `uses` field.",
 		)
 	}
 
@@ -85,8 +85,8 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
-			"InvalidExpressionUsage",
-			"""Step["Test"] in Action["Test"] contains a GitHub expression in the `uses` field.""",
+			issue = "InvalidExpressionUsage",
+			message = """Step["Test"] in Action["Test"] contains a GitHub expression in the `uses` field.""",
 		)
 	}
 
@@ -120,8 +120,8 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
-			"InvalidExpressionUsage",
-			"""Job[test] contains a GitHub expression in the `uses` field.""",
+			issue = "InvalidExpressionUsage",
+			message = """Job[test] contains a GitHub expression in the `uses` field.""",
 		)
 	}
 }

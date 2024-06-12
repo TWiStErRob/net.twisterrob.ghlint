@@ -72,8 +72,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
-				"NeverUseAlways",
-				"""Step[#0] in Job[test] uses the always() condition."""
+				issue = "NeverUseAlways",
+				message = """Step[#0] in Job[test] uses the always() condition.""",
 			)
 		}
 
@@ -93,8 +93,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
-				"NeverUseAlways",
-				"""Step[#0] in Job[test] uses the always() condition."""
+				issue = "NeverUseAlways",
+				message = """Step[#0] in Job[test] uses the always() condition.""",
 			)
 		}
 	}
@@ -157,8 +157,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
-				"NeverUseAlways",
-				"""Step[#0] in Action["Test"] uses the always() condition."""
+				issue = "NeverUseAlways",
+				message = """Step[#0] in Action["Test"] uses the always() condition.""",
 			)
 		}
 
@@ -179,8 +179,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
-				"NeverUseAlways",
-				"""Step[#0] in Action["Test"] uses the always() condition."""
+				issue = "NeverUseAlways",
+				message = """Step[#0] in Action["Test"] uses the always() condition.""",
 			)
 		}
 	}
@@ -240,8 +240,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
-				"NeverUseAlways",
-				"Job[test] uses the always() condition."
+				issue = "NeverUseAlways",
+				message = "Job[test] uses the always() condition.",
 			)
 		}
 
@@ -261,8 +261,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results shouldHave singleFinding(
-				"NeverUseAlways",
-				"Job[test] uses the always() condition."
+				issue = "NeverUseAlways",
+				message = "Job[test] uses the always() condition.",
 			)
 		}
 	}
@@ -288,8 +288,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
-				"NegativeStatusCheck",
-				"""Step[#0] in Job[test] uses a negative condition."""
+				issue = "NegativeStatusCheck",
+				message = """Step[#0] in Job[test] uses a negative condition.""",
 			)
 		}
 
@@ -312,8 +312,8 @@ class ImplicitStatusCheckRuleTest {
 			val results = check<ImplicitStatusCheckRule>(file)
 
 			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
-				"NegativeStatusCheck",
-				"""Step[#0] in Action["Test"] uses a negative condition."""
+				issue = "NegativeStatusCheck",
+				message = """Step[#0] in Action["Test"] uses a negative condition.""",
 			)
 		}
 	}

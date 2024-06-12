@@ -92,8 +92,8 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"SimilarStepId",
-				"Job[test] has similar step identifiers: `test1` and `test2`.",
+				issue = "SimilarStepId",
+				message = "Job[test] has similar step identifiers: `test1` and `test2`.",
 			)
 		}
 
@@ -171,8 +171,8 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"Job[test] has the `test` step identifier multiple times.",
+				issue = "DuplicateStepId",
+				message = "Job[test] has the `test` step identifier multiple times.",
 			)
 		}
 
@@ -273,8 +273,8 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"""Job[test] has the `step-id` step identifier multiple times.""",
+				issue = "DuplicateStepId",
+				message = """Job[test] has the `step-id` step identifier multiple times.""",
 			)
 		}
 	}
@@ -327,8 +327,8 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"SimilarStepId",
-				"""Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+				issue = "SimilarStepId",
+				message = """Action["Test"] has similar step identifiers: `test1` and `test2`.""",
 			)
 		}
 
@@ -413,8 +413,8 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"""Action["Test"] has the `test` step identifier multiple times.""",
+				issue = "DuplicateStepId",
+				message = """Action["Test"] has the `test` step identifier multiple times.""",
 			)
 		}
 
@@ -519,8 +519,8 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"""Action["Test"] has the `step-id` step identifier multiple times.""",
+				issue = "DuplicateStepId",
+				message = """Action["Test"] has the `step-id` step identifier multiple times.""",
 			)
 		}
 	}

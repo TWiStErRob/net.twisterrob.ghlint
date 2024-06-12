@@ -192,8 +192,8 @@ class SafeEnvironmentFileRedirectRuleTest {
 								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
-									"SafeEnvironmentFileRedirect",
-									"""Step[#0] in Job[test] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
+									issue = "SafeEnvironmentFileRedirect",
+									message = """Step[#0] in Job[test] should be formatted as `>> "${'$'}{${environmentFile}}"`.""",
 								)
 							},
 							dynamicTest("${name} in actions") {
@@ -213,8 +213,8 @@ class SafeEnvironmentFileRedirectRuleTest {
 								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
-									"SafeEnvironmentFileRedirect",
-									"""Step[#0] in Action["Test"] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
+									issue = "SafeEnvironmentFileRedirect",
+									message = """Step[#0] in Action["Test"] should be formatted as `>> "${'$'}{${environmentFile}}"`.""",
 								)
 							},
 						)
