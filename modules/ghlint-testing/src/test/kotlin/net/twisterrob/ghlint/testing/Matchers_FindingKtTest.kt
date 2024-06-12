@@ -268,9 +268,9 @@ class Matchers_FindingKtTest {
 				)
 
 				results shouldHave singleFinding(
-					TestRule.TestIssue1.id,
-					"test.file/1:2-3:4",
-					"message"
+					issue = TestRule.TestIssue1.id,
+					message = "message",
+					location = "test.file/1:2-3:4",
 				)
 			}
 
@@ -281,9 +281,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"file.test/5:6-7:8",
-						"not the right message"
+						issue = TestRule.TestIssue1.id,
+						message = "not the right message",
+						location = "file.test/5:6-7:8",
 					)
 				}
 
@@ -305,9 +305,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"not the right message"
+						issue = TestRule.TestIssue1.id,
+						message = "not the right message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -329,9 +329,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"test.file/1:2-3:4",
-						"message",
+						issue = "WrongIssueId",
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -353,9 +353,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"test.file/5:6-7:8",
-						"not the right message"
+						issue = "WrongIssueId",
+						message = "not the right message",
+						location = "test.file/5:6-7:8",
 					)
 				}
 
@@ -375,9 +375,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -394,9 +394,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -423,9 +423,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -452,9 +452,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 

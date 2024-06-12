@@ -47,7 +47,9 @@ class InvalidExpressionUsageRuleTest {
 
 		results shouldHave singleFinding(
 			issue = "InvalidExpressionUsage",
-			message = "Step[actions/checkout@${'$'}{{ github.ref }}] in Job[test] contains a GitHub expression in the `uses` field.",
+			message = """
+				Step[actions/checkout@${'$'}{{ github.ref }}] in Job[test] contains a GitHub expression in the `uses` field.
+			""".trimIndent(),
 		)
 	}
 

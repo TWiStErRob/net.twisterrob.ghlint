@@ -215,7 +215,9 @@ class FailFastActionsRuleTest {
 
 			results shouldHave singleFinding(
 				issue = "FailFastSoftpropsGhRelease",
-				message = """Step[softprops/action-gh-release@v2] in Job[test] should have input `fail_on_unmatched_files: true`.""",
+				message = """
+					Step[softprops/action-gh-release@v2] in Job[test] should have input `fail_on_unmatched_files: true`.
+				""".trimIndent(),
 			)
 		}
 

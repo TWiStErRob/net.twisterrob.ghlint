@@ -91,8 +91,8 @@ public fun singleFinding(issue: String, message: String): Matcher<List<Finding>>
  * ```
  * but it's recommended to use [exactFindings] wherever possible.
  */
-public fun singleFinding(issue: String, location: String, message: String): Matcher<List<Finding>> =
-	haveSize<Finding>(1) and aFinding(issue, location, message)
+public fun singleFinding(issue: String, message: String, location: String): Matcher<List<Finding>> =
+	haveSize<Finding>(1) and aFinding(issue, message, location)
 
 /**
  * Matches a specific finding in the list.
@@ -123,7 +123,7 @@ public fun aFinding(issue: String, message: String): Matcher<List<Finding>> =
  *
  * @see aLocation
  */
-public fun aFinding(issue: String, location: String, message: String): Matcher<List<Finding>> =
+public fun aFinding(issue: String, message: String, location: String): Matcher<List<Finding>> =
 	object : Matcher<List<Finding>> {
 		override fun test(value: List<Finding>): MatcherResult = MatcherResult(
 			value.singleOrNull {

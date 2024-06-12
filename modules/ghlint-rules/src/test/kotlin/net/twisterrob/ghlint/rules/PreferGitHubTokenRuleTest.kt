@@ -88,7 +88,9 @@ class PreferGitHubTokenRuleTest {
 
 		results shouldHave singleFinding(
 			issue = "PreferGitHubToken",
-			message = "`MY_ENV` environment variable in Workflow[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
+			message = """
+				`MY_ENV` environment variable in Workflow[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.
+			""".trimIndent(),
 		)
 	}
 
@@ -148,7 +150,9 @@ class PreferGitHubTokenRuleTest {
 
 		results shouldHave singleFinding(
 			issue = "PreferGitHubToken",
-			message = "`MY_ENV` environment variable in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.",
+			message = """
+				`MY_ENV` environment variable in Job[test] should use `github.token` in `${'$'}{{ secrets.GITHUB_TOKEN }}`.
+			""".trimIndent(),
 		)
 	}
 

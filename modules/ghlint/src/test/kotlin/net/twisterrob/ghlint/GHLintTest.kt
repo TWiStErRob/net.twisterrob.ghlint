@@ -189,20 +189,20 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid1.yml/1:1-1:9",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid1.yml/1:1-1:9",
 				),
 			)
 		}
@@ -225,27 +225,27 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid1.yml/1:1-1:9",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid1.yml/1:1-1:9",
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid2.yml/2:7-2:9",
 					message = """
 						Object has less than 1 properties (/jobs)
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid2.yml/2:7-2:9",
 				),
 			)
 		}
@@ -261,20 +261,20 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "empty.yml/1:1-1:1",
 					message = """
 						Value is [null] but should be [object] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "empty.yml/1:1-1:1",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "empty.yml/1:1-1:1",
 					message = """
 						File empty.yml could not be loaded:
 						```
 						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = "empty.yml/1:1-1:1",
 				),
 			)
 		}
@@ -290,20 +290,20 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "newline.yml/1:1-1:1",
 					message = """
 						Value is [null] but should be [object] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "newline.yml/1:1-1:1",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "newline.yml/1:1-2:1",
 					message = """
 						File newline.yml could not be loaded:
 						```
 						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = "newline.yml/1:1-2:1",
 				),
 			)
 		}
@@ -313,8 +313,8 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "YamlSyntaxError",
+				message = errorFileMessage,
 				location = "tabs.yml/1:1-1:3",
-				message = errorFileMessage
 			)
 		}
 
@@ -324,25 +324,25 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "YamlSyntaxError",
+					message = errorFileMessage,
 					location = "tabs.yml/1:1-1:3",
-					message = errorFileMessage
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid1.yml/1:1-1:9",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = "test-invalid1.yml/1:1-1:9",
 				),
 			)
 		}
