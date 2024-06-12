@@ -20,6 +20,7 @@ import net.twisterrob.ghlint.test.captureSystemStreams
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.file
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.workflow
@@ -194,7 +195,7 @@ class GHLintTest {
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
 					""".trimIndent(),
-					location = "test-invalid1.yml/1:1-1:9",
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "YamlLoadError",
@@ -204,7 +205,7 @@ class GHLintTest {
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
 					""".trimIndent(),
-					location = "test-invalid1.yml/1:1-1:9",
+					location = invalidFile1(invalidFile1.content),
 				),
 			)
 		}
@@ -214,10 +215,10 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
-				location = "test-invalid2.yml/2:7-2:9",
 				message = """
 					Object has less than 1 properties (/jobs)
-				""".trimIndent()
+				""".trimIndent(),
+				location = invalidFile2("{}"),
 			)
 		}
 
@@ -230,7 +231,7 @@ class GHLintTest {
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
 					""".trimIndent(),
-					location = "test-invalid1.yml/1:1-1:9",
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "YamlLoadError",
@@ -240,14 +241,14 @@ class GHLintTest {
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
 					""".trimIndent(),
-					location = "test-invalid1.yml/1:1-1:9",
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
 						Object has less than 1 properties (/jobs)
 					""".trimIndent(),
-					location = "test-invalid2.yml/2:7-2:9",
+					location = invalidFile2("{}"),
 				),
 			)
 		}
@@ -305,7 +306,7 @@ class GHLintTest {
 						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
 						```
 					""".trimIndent(),
-					location = "newline.yml/1:1-2:1",
+					location = testFile("\n"),
 				),
 			)
 		}
@@ -316,7 +317,7 @@ class GHLintTest {
 			results shouldHave singleFinding(
 				issue = "YamlSyntaxError",
 				message = errorFileMessage,
-				location = "tabs.yml/1:1-1:3",
+				location = errorFile("\t\t"),
 			)
 		}
 
@@ -327,14 +328,14 @@ class GHLintTest {
 				aFinding(
 					issue = "YamlSyntaxError",
 					message = errorFileMessage,
-					location = "tabs.yml/1:1-1:3",
+					location = errorFile("\t\t"),
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
 					""".trimIndent(),
-					location = "test-invalid1.yml/1:1-1:9",
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "YamlLoadError",
@@ -344,7 +345,7 @@ class GHLintTest {
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
 					""".trimIndent(),
-					location = "test-invalid1.yml/1:1-1:9",
+					location = invalidFile1(invalidFile1.content),
 				),
 			)
 		}
