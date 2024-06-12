@@ -13,15 +13,17 @@ import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile2
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile2
-import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.test.captureSystemStreams
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
+import net.twisterrob.ghlint.testing.file
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
+import net.twisterrob.ghlint.testing.workflow
+import net.twisterrob.ghlint.testing.yaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -251,9 +253,9 @@ class GHLintTest {
 		}
 
 		@Test fun `empty file is flagged`() {
-			val testFile = RawFile(
-				location = FileLocation("empty.yml"),
-				content = ""
+			val testFile = file(
+				fileName = "empty.yml",
+				content = "",
 			)
 
 			val results = analyze(testFile)
@@ -280,9 +282,9 @@ class GHLintTest {
 		}
 
 		@Test fun `newline file is flagged`() {
-			val testFile = RawFile(
-				location = FileLocation("newline.yml"),
-				content = "\n"
+			val testFile = file(
+				fileName = "newline.yml",
+				content = "\n",
 			)
 
 			val results = analyze(testFile)
@@ -362,8 +364,8 @@ class GHLintTest {
 
 	object Fixtures {
 
-		val validFile1 = RawFile(
-			location = FileLocation("test-valid1.yml"),
+		val validFile1 = workflow(
+			fileName = "test-valid1.yml",
 			content = """
 				name: "Valid workflow #1"
 				on: push
@@ -372,11 +374,11 @@ class GHLintTest {
 				    name: "Test"
 				    uses: reusable/workflow.yml
 				    permissions: {}
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val validFile2 = RawFile(
-			location = FileLocation("test-valid2.yml"),
+		val validFile2 = workflow(
+			fileName = "test-valid2.yml",
 			content = """
 				name: "Valid workflow #2"
 				on: push
@@ -389,27 +391,27 @@ class GHLintTest {
 				    steps:
 				      - name: "Checkout"
 				        uses: actions/checkout@v4
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val invalidFile1 = RawFile(
-			location = FileLocation("test-invalid1.yml"),
+		val invalidFile1 = workflow(
+			fileName = "test-invalid1.yml",
 			content = """
 				on: push
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val invalidFile2 = RawFile(
-			location = FileLocation("test-invalid2.yml"),
+		val invalidFile2 = workflow(
+			fileName = "test-invalid2.yml",
 			content = """
 				on: push
 				jobs: {}
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val errorFile = RawFile(
-			location = FileLocation("tabs.yml"),
-			content = "\t\t"
+		val errorFile = yaml(
+			fileName = "tabs.yml",
+			content = "\t\t",
 		)
 
 		val errorFileMessage = """
