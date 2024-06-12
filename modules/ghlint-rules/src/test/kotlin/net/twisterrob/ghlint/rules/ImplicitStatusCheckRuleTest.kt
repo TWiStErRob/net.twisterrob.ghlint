@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -74,6 +75,7 @@ class ImplicitStatusCheckRuleTest {
 			results shouldHave singleFinding(
 				issue = "NeverUseAlways",
 				message = """Step[#0] in Job[test] uses the always() condition.""",
+				location = file("-", 2),
 			)
 		}
 
@@ -95,6 +97,7 @@ class ImplicitStatusCheckRuleTest {
 			results shouldHave singleFinding(
 				issue = "NeverUseAlways",
 				message = """Step[#0] in Job[test] uses the always() condition.""",
+				location = file("-", 2),
 			)
 		}
 	}
@@ -159,6 +162,7 @@ class ImplicitStatusCheckRuleTest {
 			results shouldHave singleFinding(
 				issue = "NeverUseAlways",
 				message = """Step[#0] in Action["Test"] uses the always() condition.""",
+				location = file("-"),
 			)
 		}
 
@@ -181,6 +185,7 @@ class ImplicitStatusCheckRuleTest {
 			results shouldHave singleFinding(
 				issue = "NeverUseAlways",
 				message = """Step[#0] in Action["Test"] uses the always() condition.""",
+				location = file("-"),
 			)
 		}
 	}
@@ -242,6 +247,7 @@ class ImplicitStatusCheckRuleTest {
 			results shouldHave singleFinding(
 				issue = "NeverUseAlways",
 				message = "Job[test] uses the always() condition.",
+				location = file("test"),
 			)
 		}
 
@@ -263,6 +269,7 @@ class ImplicitStatusCheckRuleTest {
 			results shouldHave singleFinding(
 				issue = "NeverUseAlways",
 				message = "Job[test] uses the always() condition.",
+				location = file("test"),
 			)
 		}
 	}
@@ -290,6 +297,7 @@ class ImplicitStatusCheckRuleTest {
 			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
 				issue = "NegativeStatusCheck",
 				message = """Step[#0] in Job[test] uses a negative condition.""",
+				location = file("-", 2),
 			)
 		}
 
@@ -314,6 +322,7 @@ class ImplicitStatusCheckRuleTest {
 			results.filterNot { it.issue.id == "NeverUseAlways" } shouldHave singleFinding(
 				issue = "NegativeStatusCheck",
 				message = """Step[#0] in Action["Test"] uses a negative condition.""",
+				location = file("-"),
 			)
 		}
 	}

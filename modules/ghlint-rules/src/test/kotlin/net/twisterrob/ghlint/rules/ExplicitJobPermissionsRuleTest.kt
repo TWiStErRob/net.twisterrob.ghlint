@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -50,6 +51,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "MissingJobPermissions",
 				message = "Job[test] is missing permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -68,6 +70,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "MissingJobPermissions",
 				message = "Job[test] is missing permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -136,6 +139,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "MissingJobPermissions",
 				message = "Job[test] is missing permissions.",
+				location = file("test", 2),
 			)
 		}
 
@@ -166,6 +170,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "MissingJobPermissions",
 				message = "Job[test] is missing permissions.",
+				location = file("test", 2),
 			)
 		}
 
@@ -226,6 +231,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "ExplicitJobPermissions",
 				message = "Job[test] should have explicit permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -246,6 +252,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "ExplicitJobPermissions",
 				message = "Job[test] should have explicit permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -308,6 +315,7 @@ class ExplicitJobPermissionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "ExplicitJobPermissions",
 				message = "Workflow[test] has redundant permissions.",
+				location = file("jobs"),
 			)
 		}
 	}

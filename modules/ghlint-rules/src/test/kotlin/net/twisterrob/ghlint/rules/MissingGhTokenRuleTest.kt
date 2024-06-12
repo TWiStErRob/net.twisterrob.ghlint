@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -265,6 +266,7 @@ class MissingGhTokenRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhToken",
 			message = "Step[#1] in Job[test] should see `GH_TOKEN` environment variable.",
+			location = file("-", 3),
 		)
 	}
 
@@ -290,6 +292,7 @@ class MissingGhTokenRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhHost",
 			message = "Step[#1] in Job[test] should see `GH_HOST` environment variable when using `GH_ENTERPRISE_TOKEN`.",
+			location = file("-", 3),
 		)
 	}
 
@@ -315,6 +318,7 @@ class MissingGhTokenRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhToken",
 			message = "Step[#1] in Job[test] should see `GH_ENTERPRISE_TOKEN` environment variable when using `GH_HOST`.",
+			location = file("-", 3),
 		)
 	}
 
@@ -339,6 +343,7 @@ class MissingGhTokenRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhToken",
 			message = """Step[#1] in Action["Test"] should see `GH_TOKEN` environment variable.""",
+			location = file("-", 2),
 		)
 	}
 
@@ -401,6 +406,7 @@ class MissingGhTokenRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhToken",
 			message = "Step[#0] in Job[test] should see `GH_TOKEN` environment variable.",
+			location = file("-", 2),
 		)
 	}
 

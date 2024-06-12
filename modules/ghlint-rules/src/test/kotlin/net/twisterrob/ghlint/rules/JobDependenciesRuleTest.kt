@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.exactFindings
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -65,6 +66,7 @@ class JobDependenciesRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingNeedsJob",
 			message = "Job[test] references Job[missing], which does not exist.",
+			location = file("test"),
 		)
 	}
 
@@ -93,10 +95,12 @@ class JobDependenciesRuleTest {
 			aFinding(
 				issue = "MissingNeedsJob",
 				message = "Job[test1] references Job[missing1], which does not exist.",
+				location = file("test1"),
 			),
 			aFinding(
 				issue = "MissingNeedsJob",
 				message = "Job[test2] references Job[missing2], which does not exist.",
+				location = file("test2"),
 			)
 		)
 	}
@@ -164,6 +168,7 @@ class JobDependenciesRuleTest {
 			results shouldHave singleFinding(
 				issue = "JobDependencyCycle",
 				message = "Job[test] forms a dependency cycle: [test].",
+				location = file("test"),
 			)
 		}
 
@@ -186,6 +191,7 @@ class JobDependenciesRuleTest {
 			results shouldHave singleFinding(
 				issue = "JobDependencyCycle",
 				message = "Job[test1] forms a dependency cycle: [test1, test2].",
+				location = file("test1"),
 			)
 		}
 
@@ -214,6 +220,7 @@ class JobDependenciesRuleTest {
 			results shouldHave singleFinding(
 				issue = "JobDependencyCycle",
 				message = "Job[test1] forms a dependency cycle: [test1, test2].",
+				location = file("test1"),
 			)
 		}
 
@@ -239,6 +246,7 @@ class JobDependenciesRuleTest {
 			results shouldHave singleFinding(
 				issue = "JobDependencyCycle",
 				message = "Job[test1] forms a dependency cycle: [test1, test2, test3].",
+				location = file("test1"),
 			)
 		}
 
@@ -264,6 +272,7 @@ class JobDependenciesRuleTest {
 			results shouldHave singleFinding(
 				issue = "JobDependencyCycle",
 				message = "Job[test3] forms a dependency cycle: [test3].",
+				location = file("test3", 2),
 			)
 		}
 	}

@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -167,6 +168,7 @@ class MissingGhRepoRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhRepo",
 			message = "Step[#0] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
+			location = file("-", 2),
 		)
 	}
 
@@ -191,6 +193,7 @@ class MissingGhRepoRuleTest {
 		results shouldHave singleFinding(
 			issue = "MissingGhRepo",
 			message = "Step[#1] in Job[test] should see `GH_REPO` environment variable or have a repository cloned.",
+			location = file("-", 4),
 		)
 	}
 }

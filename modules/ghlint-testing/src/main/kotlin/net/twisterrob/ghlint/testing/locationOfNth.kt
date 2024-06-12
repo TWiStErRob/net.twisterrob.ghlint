@@ -7,8 +7,27 @@ import net.twisterrob.ghlint.results.LineNumber
 import net.twisterrob.ghlint.results.Location
 import net.twisterrob.ghlint.results.Position
 
+/**
+ * Find the location of the [occurrence]th [string] in [this] [RawFile].
+ *
+ * @param string String to find.
+ * @param occurrence 1-based index of the occurrence to find.
+ *
+ * @see aLocation
+ * @see singleFinding
+ * @see aFinding
+ */
 public operator fun RawFile.invoke(string: String, occurrence: Int = 1): String =
-	this.content.locationOfNth(this.location, string, occurrence).testString()
+	this.locationOfNth(string, occurrence).testString()
+
+/**
+ * Find the [Location] of the [occurrence]th [string] in [this] [RawFile].
+ *
+ * @param string String to find.
+ * @param occurrence 1-based index of the occurrence to find.
+ */
+public fun RawFile.locationOfNth(string: String, occurrence: Int = 1): Location =
+	this.content.locationOfNth(this.location, string, occurrence)
 
 internal fun String.locationOfNth(location: FileLocation, string: String, occurrence: Int = 1): Location {
 	require('\r' !in this) { "Only \\n line endings are supported." }

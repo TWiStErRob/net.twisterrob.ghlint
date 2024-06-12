@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -64,6 +65,7 @@ class FailFastActionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "FailFastUploadArtifact",
 				message = """Step[actions/upload-artifact@v4] in Job[test] should have input `if-no-files-found: error`.""",
+				location = file("-", 2),
 			)
 		}
 	}
@@ -115,6 +117,7 @@ class FailFastActionsRuleTest {
 				issue = "FailFastPublishUnitTestResults",
 				message = @Suppress("detekt.MaxLineLength")
 				"""Step[EnricoMi/publish-unit-test-result-action@v2] in Job[test] should have input `action_fail_on_inconclusive: true`.""",
+				location = file("-", 2),
 			)
 		}
 	}
@@ -139,6 +142,7 @@ class FailFastActionsRuleTest {
 			results shouldHave singleFinding(
 				issue = "FailFastPeterEvansCreatePullRequest",
 				message = """Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@v6] in Job[test].""",
+				location = file("-", 2),
 			)
 		}
 
@@ -162,6 +166,7 @@ class FailFastActionsRuleTest {
 				issue = "FailFastPeterEvansCreatePullRequest",
 				message = @Suppress("detekt.MaxLineLength")
 				"""Use `gh pr create` to open a PR instead of Step[peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50] in Job[test].""",
+				location = file("-", 2),
 			)
 		}
 	}
@@ -218,6 +223,7 @@ class FailFastActionsRuleTest {
 				message = """
 					Step[softprops/action-gh-release@v2] in Job[test] should have input `fail_on_unmatched_files: true`.
 				""".trimIndent(),
+				location = file("-", 2),
 			)
 		}
 
@@ -298,6 +304,7 @@ class FailFastActionsRuleTest {
 		results shouldHave singleFinding(
 			issue = "FailFastUploadArtifact",
 			message = """Step[actions/upload-artifact@v4] in Action["Test"] should have input `if-no-files-found: error`.""",
+			location = file("-"),
 		)
 	}
 

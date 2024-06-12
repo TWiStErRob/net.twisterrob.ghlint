@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -33,6 +34,7 @@ class DuplicateShellRuleTest {
 		results shouldHave singleFinding(
 			issue = "DuplicateShellOnSteps",
 			message = "Job[test] has all (2) steps defining bash shell, set default shell on job.",
+			location = file("test"),
 		)
 	}
 
@@ -58,6 +60,7 @@ class DuplicateShellRuleTest {
 		results shouldHave singleFinding(
 			issue = "DuplicateShellOnSteps",
 			message = "Job[test] has all (3) steps defining bash shell, set default shell on job.",
+			location = file("test"),
 		)
 	}
 
@@ -84,6 +87,7 @@ class DuplicateShellRuleTest {
 		results shouldHave singleFinding(
 			issue = "DuplicateShellOnSteps",
 			message = "Job[test] has all (2) steps defining bash shell, set default shell on job.",
+			location = file("test"),
 		)
 	}
 
@@ -215,6 +219,7 @@ class DuplicateShellRuleTest {
 			issue = "DuplicateShellOnSteps",
 			message = "All (2) steps in Job[test] override shell as `sh`, " +
 					"change the default shell on the job from `bash` to `sh`, and remove shells from steps.",
+			location = file("test"),
 		)
 	}
 
@@ -242,6 +247,7 @@ class DuplicateShellRuleTest {
 			issue = "DuplicateShellOnSteps",
 			message = "All (2) steps in Workflow[test] override shell as `sh`, " +
 					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps.",
+			location = file("jobs"),
 		)
 	}
 
@@ -276,6 +282,7 @@ class DuplicateShellRuleTest {
 			issue = "DuplicateShellOnSteps",
 			message = "All (4) steps in Workflow[test] override shell as `sh`, " +
 					"change the default shell on the workflow from `bash` to `sh`, and remove shells from steps.",
+			location = file("jobs"),
 		)
 	}
 
