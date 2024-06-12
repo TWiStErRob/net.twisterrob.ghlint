@@ -67,7 +67,10 @@ public fun noFindings(): Matcher<List<Finding>> =
  * but it's recommended to use [exactFindings] wherever possible.
  */
 public fun singleFinding(issue: String, message: String): Matcher<List<Finding>> =
-	haveSize<Finding>(1) and aFinding(issue, message)
+	haveSize<Finding>(1) and aFinding(
+		issue = issue,
+		message = message,
+	)
 
 /**
  * Matches findings containing exactly one specific issue.

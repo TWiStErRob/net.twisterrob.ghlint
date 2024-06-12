@@ -494,8 +494,8 @@ class Matchers_FindingKtTest {
 
 				results shouldHave exactFindings(
 					aFinding(
-						TestRule.TestIssue1.id,
-						"message",
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				)
 			}
@@ -508,12 +508,12 @@ class Matchers_FindingKtTest {
 
 				results shouldHave exactFindings(
 					aFinding(
-						TestRule.TestIssue1.id,
-						"message1",
+						issue = TestRule.TestIssue1.id,
+						message = "message1",
 					),
 					aFinding(
-						TestRule.TestIssue2.id,
-						"message2",
+						issue = TestRule.TestIssue2.id,
+						message = "message2",
 					),
 				)
 			}
@@ -527,12 +527,12 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue1.id,
-							"message1",
+							issue = TestRule.TestIssue1.id,
+							message = "message1",
 						),
 						aFinding(
-							TestRule.TestIssue2.id,
-							"different message",
+							issue = TestRule.TestIssue2.id,
+							message = "different message",
 						),
 					)
 				}
@@ -563,8 +563,8 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue1.id,
-							"message1",
+							issue = TestRule.TestIssue1.id,
+							message = "message1",
 						),
 					)
 				}
@@ -593,16 +593,16 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue1.id,
-							"message1",
+							issue = TestRule.TestIssue1.id,
+							message = "message1",
 						),
 						aFinding(
-							TestRule.TestIssue2.id,
-							"missing finding",
+							issue = TestRule.TestIssue2.id,
+							message = "missing finding",
 						),
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 					)
 				}
@@ -631,12 +631,12 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 						aFinding(
-							TestRule.TestIssue4.id,
-							"message4",
+							issue = TestRule.TestIssue4.id,
+							message = "message4",
 						),
 					)
 				}
@@ -667,8 +667,8 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 					)
 				}
@@ -696,12 +696,12 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue2.id,
-							"message1",
+							issue = TestRule.TestIssue2.id,
+							message = "message1",
 						),
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 					)
 				}

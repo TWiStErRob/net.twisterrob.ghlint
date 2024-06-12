@@ -139,16 +139,16 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"SimilarStepId",
-					"Job[test] has similar step identifiers: `test1` and `test2`.",
+					issue = "SimilarStepId",
+					message = "Job[test] has similar step identifiers: `test1` and `test2`.",
 				),
 				aFinding(
-					"SimilarStepId",
-					"Job[test] has similar step identifiers: `test1` and `test3`.",
+					issue = "SimilarStepId",
+					message = "Job[test] has similar step identifiers: `test1` and `test3`.",
 				),
 				aFinding(
-					"SimilarStepId",
-					"Job[test] has similar step identifiers: `test2` and `test3`.",
+					issue = "SimilarStepId",
+					message = "Job[test] has similar step identifiers: `test2` and `test3`.",
 				),
 			)
 		}
@@ -206,12 +206,12 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"DuplicateStepId",
-					"""Job[test] has the `hello` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Job[test] has the `hello` step identifier multiple times.""",
 				),
 				aFinding(
-					"DuplicateStepId",
-					"""Job[test] has the `world` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Job[test] has the `world` step identifier multiple times.""",
 				),
 			)
 		}
@@ -379,16 +379,16 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"SimilarStepId",
-					"""Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+					issue = "SimilarStepId",
+					message = """Action["Test"] has similar step identifiers: `test1` and `test2`.""",
 				),
 				aFinding(
-					"SimilarStepId",
-					"""Action["Test"] has similar step identifiers: `test1` and `test3`.""",
+					issue = "SimilarStepId",
+					message = """Action["Test"] has similar step identifiers: `test1` and `test3`.""",
 				),
 				aFinding(
-					"SimilarStepId",
-					"""Action["Test"] has similar step identifiers: `test2` and `test3`.""",
+					issue = "SimilarStepId",
+					message = """Action["Test"] has similar step identifiers: `test2` and `test3`.""",
 				),
 			)
 		}
@@ -448,12 +448,12 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"DuplicateStepId",
-					"""Action["Test"] has the `hello` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Action["Test"] has the `hello` step identifier multiple times.""",
 				),
 				aFinding(
-					"DuplicateStepId",
-					"""Action["Test"] has the `world` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Action["Test"] has the `world` step identifier multiple times.""",
 				),
 			)
 		}

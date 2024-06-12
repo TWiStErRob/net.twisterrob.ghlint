@@ -91,12 +91,12 @@ class JobDependenciesRuleTest {
 
 		results shouldHave exactFindings(
 			aFinding(
-				"MissingNeedsJob",
-				"Job[test1] references Job[missing1], which does not exist.",
+				issue = "MissingNeedsJob",
+				message = "Job[test1] references Job[missing1], which does not exist.",
 			),
 			aFinding(
-				"MissingNeedsJob",
-				"Job[test2] references Job[missing2], which does not exist.",
+				issue = "MissingNeedsJob",
+				message = "Job[test2] references Job[missing2], which does not exist.",
 			)
 		)
 	}
