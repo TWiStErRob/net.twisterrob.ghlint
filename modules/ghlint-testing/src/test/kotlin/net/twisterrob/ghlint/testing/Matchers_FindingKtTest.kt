@@ -81,8 +81,8 @@ class Matchers_FindingKtTest {
 				)
 
 				results shouldHave singleFinding(
-					TestRule.TestIssue1.id,
-					"message"
+					issue = TestRule.TestIssue1.id,
+					message = "message",
 				)
 			}
 
@@ -93,8 +93,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"not the right message"
+						issue = TestRule.TestIssue1.id,
+						message = "not the right message",
 					)
 				}
 
@@ -116,8 +116,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"message",
+						issue = "WrongIssueId",
+						message = "message",
 					)
 				}
 
@@ -139,8 +139,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"not the right message"
+						issue = "WrongIssueId",
+						message = "not the right message",
 					)
 				}
 
@@ -160,8 +160,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -178,8 +178,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -206,8 +206,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -234,8 +234,8 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				}
 
@@ -268,9 +268,9 @@ class Matchers_FindingKtTest {
 				)
 
 				results shouldHave singleFinding(
-					TestRule.TestIssue1.id,
-					"test.file/1:2-3:4",
-					"message"
+					issue = TestRule.TestIssue1.id,
+					message = "message",
+					location = "test.file/1:2-3:4",
 				)
 			}
 
@@ -281,9 +281,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"file.test/5:6-7:8",
-						"not the right message"
+						issue = TestRule.TestIssue1.id,
+						message = "not the right message",
+						location = "file.test/5:6-7:8",
 					)
 				}
 
@@ -305,9 +305,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"not the right message"
+						issue = TestRule.TestIssue1.id,
+						message = "not the right message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -329,9 +329,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"test.file/1:2-3:4",
-						"message",
+						issue = "WrongIssueId",
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -353,9 +353,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						"WrongIssueId",
-						"test.file/5:6-7:8",
-						"not the right message"
+						issue = "WrongIssueId",
+						message = "not the right message",
+						location = "test.file/5:6-7:8",
 					)
 				}
 
@@ -375,9 +375,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -394,9 +394,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -423,9 +423,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -452,9 +452,9 @@ class Matchers_FindingKtTest {
 
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave singleFinding(
-						TestRule.TestIssue1.id,
-						"test.file/1:2-3:4",
-						"message"
+						issue = TestRule.TestIssue1.id,
+						message = "message",
+						location = "test.file/1:2-3:4",
 					)
 				}
 
@@ -494,8 +494,8 @@ class Matchers_FindingKtTest {
 
 				results shouldHave exactFindings(
 					aFinding(
-						TestRule.TestIssue1.id,
-						"message",
+						issue = TestRule.TestIssue1.id,
+						message = "message",
 					)
 				)
 			}
@@ -508,12 +508,12 @@ class Matchers_FindingKtTest {
 
 				results shouldHave exactFindings(
 					aFinding(
-						TestRule.TestIssue1.id,
-						"message1",
+						issue = TestRule.TestIssue1.id,
+						message = "message1",
 					),
 					aFinding(
-						TestRule.TestIssue2.id,
-						"message2",
+						issue = TestRule.TestIssue2.id,
+						message = "message2",
 					),
 				)
 			}
@@ -527,12 +527,12 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue1.id,
-							"message1",
+							issue = TestRule.TestIssue1.id,
+							message = "message1",
 						),
 						aFinding(
-							TestRule.TestIssue2.id,
-							"different message",
+							issue = TestRule.TestIssue2.id,
+							message = "different message",
 						),
 					)
 				}
@@ -563,8 +563,8 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue1.id,
-							"message1",
+							issue = TestRule.TestIssue1.id,
+							message = "message1",
 						),
 					)
 				}
@@ -593,16 +593,16 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue1.id,
-							"message1",
+							issue = TestRule.TestIssue1.id,
+							message = "message1",
 						),
 						aFinding(
-							TestRule.TestIssue2.id,
-							"missing finding",
+							issue = TestRule.TestIssue2.id,
+							message = "missing finding",
 						),
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 					)
 				}
@@ -631,12 +631,12 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 						aFinding(
-							TestRule.TestIssue4.id,
-							"message4",
+							issue = TestRule.TestIssue4.id,
+							message = "message4",
 						),
 					)
 				}
@@ -667,8 +667,8 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 					)
 				}
@@ -696,12 +696,12 @@ class Matchers_FindingKtTest {
 				val failure = shouldThrow<AssertionError> {
 					results shouldHave exactFindings(
 						aFinding(
-							TestRule.TestIssue2.id,
-							"message1",
+							issue = TestRule.TestIssue2.id,
+							message = "message1",
 						),
 						aFinding(
-							TestRule.TestIssue3.id,
-							"message3",
+							issue = TestRule.TestIssue3.id,
+							message = "message3",
 						),
 					)
 				}

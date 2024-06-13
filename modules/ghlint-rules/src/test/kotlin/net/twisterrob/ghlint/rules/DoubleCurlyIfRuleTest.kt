@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -96,8 +97,9 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Job[test] does not have double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Job[test] does not have double-curly-braces.",
+				location = file("test"),
 			)
 		}
 
@@ -119,8 +121,9 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Job[test] has nested or invalid double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Job[test] has nested or invalid double-curly-braces.",
+				location = file("test"),
 			)
 		}
 	}
@@ -204,8 +207,9 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Step[#0] in Job[test] does not have double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Step[#0] in Job[test] does not have double-curly-braces.",
+				location = file("-", 2),
 			)
 		}
 
@@ -227,8 +231,9 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"Step[#0] in Job[test] has nested or invalid double-curly-braces."
+				issue = "DoubleCurlyIf",
+				message = "Step[#0] in Job[test] has nested or invalid double-curly-braces.",
+				location = file("-", 2),
 			)
 		}
 	}
@@ -317,8 +322,9 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"""Step[#0] in Action["Test"] does not have double-curly-braces."""
+				issue = "DoubleCurlyIf",
+				message = """Step[#0] in Action["Test"] does not have double-curly-braces.""",
+				location = file("-"),
 			)
 		}
 
@@ -341,8 +347,9 @@ class DoubleCurlyIfRuleTest {
 			val results = check<DoubleCurlyIfRule>(file)
 
 			results shouldHave singleFinding(
-				"DoubleCurlyIf",
-				"""Step[#0] in Action["Test"] has nested or invalid double-curly-braces."""
+				issue = "DoubleCurlyIf",
+				message = """Step[#0] in Action["Test"] has nested or invalid double-curly-braces.""",
+				location = file("-"),
 			)
 		}
 	}

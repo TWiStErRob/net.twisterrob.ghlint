@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -50,8 +51,9 @@ class MissingShellRuleTest {
 		val results = check<MissingShellRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingShell",
-			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
+			issue = "MissingShell",
+			message = "Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling.",
+			location = file("-", 2),
 		)
 	}
 
@@ -136,8 +138,9 @@ class MissingShellRuleTest {
 		val results = check<MissingShellRule>(file)
 
 		results shouldHave singleFinding(
-			"MissingShell",
-			"Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling."
+			issue = "MissingShell",
+			message = "Step[#0] in Job[test] is missing a shell, specify `bash` for better error handling.",
+			location = file("-", 4),
 		)
 	}
 }

@@ -89,7 +89,7 @@ class SafeRuleTest {
 			"toString of AlwaysFailingRule: RuntimeException errored while checking test.yml:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
-					"````"
+					"````",
 		)
 		val finding = findings.single()
 		finding.rule shouldBe subject
@@ -121,7 +121,7 @@ class SafeRuleTest {
 			"toString of AlwaysFailingRule: RuntimeException errored while checking test.yml:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
-					"````"
+					"````",
 		)
 
 		val finding = findings.single()
@@ -143,7 +143,7 @@ class SafeRuleTest {
 			"toString of AlwaysFailingRule: OutOfMemoryError errored while checking test.yml:\n" +
 					"````\n" +
 					stubFailure.stackTraceToString() +
-					"````"
+					"````",
 		)
 		val finding = findings.single()
 		finding.rule shouldBe subject

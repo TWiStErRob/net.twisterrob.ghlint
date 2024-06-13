@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -172,8 +173,9 @@ class EnvironmentFileOverwriteRuleTest {
 							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave singleFinding(
-								"EnvironmentFileOverwritten",
-								"Step[#0] in Job[test] overwrites environment file `${environmentFile}`."
+								issue = "EnvironmentFileOverwritten",
+								message = "Step[#0] in Job[test] overwrites environment file `${environmentFile}`.",
+								location = file("-", 2),
 							)
 						},
 						dynamicTest("${name} in actions") {
@@ -193,8 +195,9 @@ class EnvironmentFileOverwriteRuleTest {
 							val results = check<EnvironmentFileOverwriteRule>(file)
 
 							results shouldHave singleFinding(
-								"EnvironmentFileOverwritten",
-								"""Step[#0] in Action["Test"] overwrites environment file `${environmentFile}`."""
+								issue = "EnvironmentFileOverwritten",
+								message = """Step[#0] in Action["Test"] overwrites environment file `${environmentFile}`.""",
+								location = file("-"),
 							)
 						},
 					)

@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -65,8 +66,9 @@ class EmptyEnvRuleTest {
 		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
-			"EmptyWorkflowEnv",
-			"Workflow[test] should not have empty env."
+			issue = "EmptyWorkflowEnv",
+			message = "Workflow[test] should not have empty env.",
+			location = file("jobs"),
 		)
 	}
 
@@ -104,8 +106,9 @@ class EmptyEnvRuleTest {
 		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
-			"EmptyJobEnv",
-			"Job[test] should not have empty env."
+			issue = "EmptyJobEnv",
+			message = "Job[test] should not have empty env.",
+			location = file("test"),
 		)
 	}
 
@@ -143,8 +146,9 @@ class EmptyEnvRuleTest {
 		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
-			"EmptyStepEnv",
-			"Step[some/action@v1] in Job[test] should not have empty env."
+			issue = "EmptyStepEnv",
+			message = "Step[some/action@v1] in Job[test] should not have empty env.",
+			location = file("-", 2),
 		)
 	}
 
@@ -164,8 +168,9 @@ class EmptyEnvRuleTest {
 		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
-			"EmptyStepEnv",
-			"Step[#0] in Job[test] should not have empty env."
+			issue = "EmptyStepEnv",
+			message = "Step[#0] in Job[test] should not have empty env.",
+			location = file("-", 2),
 		)
 	}
 
@@ -203,8 +208,9 @@ class EmptyEnvRuleTest {
 		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
-			"EmptyStepEnv",
-			"""Step[some/action@v1] in Action["Test"] should not have empty env."""
+			issue = "EmptyStepEnv",
+			message = """Step[some/action@v1] in Action["Test"] should not have empty env.""",
+			location = file("-"),
 		)
 	}
 
@@ -225,8 +231,9 @@ class EmptyEnvRuleTest {
 		val results = check<EmptyEnvRule>(file)
 
 		results shouldHave singleFinding(
-			"EmptyStepEnv",
-			"""Step[#0] in Action["Test"] should not have empty env."""
+			issue = "EmptyStepEnv",
+			message = """Step[#0] in Action["Test"] should not have empty env.""",
+			location = file("-"),
 		)
 	}
 }

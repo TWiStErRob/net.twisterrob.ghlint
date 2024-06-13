@@ -5,8 +5,7 @@ import io.kotest.matchers.optional.bePresent
 import io.kotest.matchers.optional.shouldBePresent
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.model.RawFile
+import net.twisterrob.ghlint.testing.yaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -201,4 +200,4 @@ private val Node.mapping: MappingNode
 	get() = this as MappingNode
 
 private fun load(@Language("yaml") yaml: String): Node =
-	SnakeYaml.loadRaw(RawFile(FileLocation("test.yml"), yaml))
+	SnakeYaml.loadRaw(yaml(yaml))

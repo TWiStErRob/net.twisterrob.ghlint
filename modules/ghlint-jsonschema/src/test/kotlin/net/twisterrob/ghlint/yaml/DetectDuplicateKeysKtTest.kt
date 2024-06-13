@@ -3,8 +3,7 @@ package net.twisterrob.ghlint.yaml
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
-import net.twisterrob.ghlint.model.FileLocation
-import net.twisterrob.ghlint.model.RawFile
+import net.twisterrob.ghlint.testing.yaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
@@ -12,7 +11,7 @@ import org.junit.jupiter.api.Test
 class DetectDuplicateKeysKtTest {
 
 	private fun validate(@Language("yaml") yaml: String): List<YamlValidationProblem> {
-		val node = SnakeYaml.loadRaw(RawFile(FileLocation("test.yaml"), yaml))
+		val node = SnakeYaml.loadRaw(yaml(yaml, "test.yaml"))
 		return detectDuplicateKeys(node)
 	}
 
