@@ -385,7 +385,8 @@ class GHLintTest {
 				    name: "Test"
 				    timeout-minutes: 10
 				    runs-on: ubuntu-latest
-				    permissions: {}
+				    permissions:
+				      contents: read
 				    steps:
 				      - name: "Checkout"
 				        uses: actions/checkout@v4
