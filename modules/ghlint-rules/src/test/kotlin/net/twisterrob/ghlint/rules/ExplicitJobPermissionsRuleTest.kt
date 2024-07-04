@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.rules
 
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -48,8 +49,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -66,8 +68,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -134,8 +137,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
+				location = file("test", 2),
 			)
 		}
 
@@ -164,8 +168,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"MissingJobPermissions",
-				"Job[test] is missing permissions."
+				issue = "MissingJobPermissions",
+				message = "Job[test] is missing permissions.",
+				location = file("test", 2),
 			)
 		}
 
@@ -224,8 +229,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"ExplicitJobPermissions",
-				"Job[test] should have explicit permissions."
+				issue = "ExplicitJobPermissions",
+				message = "Job[test] should have explicit permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -244,8 +250,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"ExplicitJobPermissions",
-				"Job[test] should have explicit permissions."
+				issue = "ExplicitJobPermissions",
+				message = "Job[test] should have explicit permissions.",
+				location = file("test"),
 			)
 		}
 
@@ -306,8 +313,9 @@ class ExplicitJobPermissionsRuleTest {
 			val results = check<ExplicitJobPermissionsRule>(file)
 
 			results shouldHave singleFinding(
-				"ExplicitJobPermissions",
-				"Workflow[test] has redundant permissions."
+				issue = "ExplicitJobPermissions",
+				message = "Workflow[test] has redundant permissions.",
+				location = file("jobs"),
 			)
 		}
 	}

@@ -6,9 +6,12 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.string.shouldMatch
 import net.twisterrob.ghlint.testing.aFinding
+import net.twisterrob.ghlint.testing.aLocation
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.exactFindings
+import net.twisterrob.ghlint.testing.invoke
+import net.twisterrob.ghlint.testing.locationOfNth
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -92,8 +95,9 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"SimilarStepId",
-				"Job[test] has similar step identifiers: `test1` and `test2`.",
+				issue = "SimilarStepId",
+				message = "Job[test] has similar step identifiers: `test1` and `test2`.",
+				location = file("test"),
 			)
 		}
 
@@ -139,16 +143,19 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"SimilarStepId",
-					"Job[test] has similar step identifiers: `test1` and `test2`.",
+					issue = "SimilarStepId",
+					message = "Job[test] has similar step identifiers: `test1` and `test2`.",
+					location = file("test"),
 				),
 				aFinding(
-					"SimilarStepId",
-					"Job[test] has similar step identifiers: `test1` and `test3`.",
+					issue = "SimilarStepId",
+					message = "Job[test] has similar step identifiers: `test1` and `test3`.",
+					location = file("test"),
 				),
 				aFinding(
-					"SimilarStepId",
-					"Job[test] has similar step identifiers: `test2` and `test3`.",
+					issue = "SimilarStepId",
+					message = "Job[test] has similar step identifiers: `test2` and `test3`.",
+					location = file("test"),
 				),
 			)
 		}
@@ -171,8 +178,9 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"Job[test] has the `test` step identifier multiple times.",
+				issue = "DuplicateStepId",
+				message = "Job[test] has the `test` step identifier multiple times.",
+				location = file("test"),
 			)
 		}
 
@@ -206,12 +214,14 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"DuplicateStepId",
-					"""Job[test] has the `hello` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Job[test] has the `hello` step identifier multiple times.""",
+					location = file("test"),
 				),
 				aFinding(
-					"DuplicateStepId",
-					"""Job[test] has the `world` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Job[test] has the `world` step identifier multiple times.""",
+					location = file("test"),
 				),
 			)
 		}
@@ -245,6 +255,7 @@ class DuplicateStepIdRuleTest {
 			results.forEach { finding ->
 				finding.issue.id shouldBe "SimilarStepId"
 				finding.message shouldMatch messageRegex
+				finding.location shouldBe aLocation(file.locationOfNth("test"))
 			}
 		}
 
@@ -273,8 +284,9 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"""Job[test] has the `step-id` step identifier multiple times.""",
+				issue = "DuplicateStepId",
+				message = """Job[test] has the `step-id` step identifier multiple times.""",
+				location = file("test"),
 			)
 		}
 	}
@@ -327,8 +339,9 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"SimilarStepId",
-				"""Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+				issue = "SimilarStepId",
+				message = """Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+				location = file("name"),
 			)
 		}
 
@@ -379,16 +392,19 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"SimilarStepId",
-					"""Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+					issue = "SimilarStepId",
+					message = """Action["Test"] has similar step identifiers: `test1` and `test2`.""",
+					location = file("name"),
 				),
 				aFinding(
-					"SimilarStepId",
-					"""Action["Test"] has similar step identifiers: `test1` and `test3`.""",
+					issue = "SimilarStepId",
+					message = """Action["Test"] has similar step identifiers: `test1` and `test3`.""",
+					location = file("name"),
 				),
 				aFinding(
-					"SimilarStepId",
-					"""Action["Test"] has similar step identifiers: `test2` and `test3`.""",
+					issue = "SimilarStepId",
+					message = """Action["Test"] has similar step identifiers: `test2` and `test3`.""",
+					location = file("name"),
 				),
 			)
 		}
@@ -413,8 +429,9 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"""Action["Test"] has the `test` step identifier multiple times.""",
+				issue = "DuplicateStepId",
+				message = """Action["Test"] has the `test` step identifier multiple times.""",
+				location = file("name"),
 			)
 		}
 
@@ -448,12 +465,14 @@ class DuplicateStepIdRuleTest {
 
 			results shouldHave exactFindings(
 				aFinding(
-					"DuplicateStepId",
-					"""Action["Test"] has the `hello` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Action["Test"] has the `hello` step identifier multiple times.""",
+					location = file("name"),
 				),
 				aFinding(
-					"DuplicateStepId",
-					"""Action["Test"] has the `world` step identifier multiple times.""",
+					issue = "DuplicateStepId",
+					message = """Action["Test"] has the `world` step identifier multiple times.""",
+					location = file("name"),
 				),
 			)
 		}
@@ -519,8 +538,9 @@ class DuplicateStepIdRuleTest {
 			val results = check<DuplicateStepIdRule>(file)
 
 			results shouldHave singleFinding(
-				"DuplicateStepId",
-				"""Action["Test"] has the `step-id` step identifier multiple times.""",
+				issue = "DuplicateStepId",
+				message = """Action["Test"] has the `step-id` step identifier multiple times.""",
+				location = file("name"),
 			)
 		}
 	}

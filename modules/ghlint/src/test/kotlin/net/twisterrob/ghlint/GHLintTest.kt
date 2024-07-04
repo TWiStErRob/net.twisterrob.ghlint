@@ -13,15 +13,18 @@ import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.invalidFile2
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile1
 import net.twisterrob.ghlint.GHLintTest.Fixtures.validFile2
-import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.test.captureSystemStreams
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
+import net.twisterrob.ghlint.testing.file
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
+import net.twisterrob.ghlint.testing.workflow
+import net.twisterrob.ghlint.testing.yaml
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -189,20 +192,20 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile1(invalidFile1.content),
 				),
 			)
 		}
@@ -212,10 +215,10 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "JsonSchemaValidation",
-				location = "test-invalid2.yml/2:7-2:9",
 				message = """
 					Object has less than 1 properties (/jobs)
-				""".trimIndent()
+				""".trimIndent(),
+				location = invalidFile2("{}"),
 			)
 		}
 
@@ -225,35 +228,35 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid2.yml/2:7-2:9",
 					message = """
 						Object has less than 1 properties (/jobs)
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile2("{}"),
 				),
 			)
 		}
 
 		@Test fun `empty file is flagged`() {
-			val testFile = RawFile(
-				location = FileLocation("empty.yml"),
-				content = ""
+			val testFile = file(
+				fileName = "empty.yml",
+				content = "",
 			)
 
 			val results = analyze(testFile)
@@ -261,28 +264,28 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "empty.yml/1:1-1:1",
 					message = """
 						Value is [null] but should be [object] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "empty.yml/1:1-1:1",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "empty.yml/1:1-1:1",
 					message = """
 						File empty.yml could not be loaded:
 						```
 						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = "empty.yml/1:1-1:1",
 				),
 			)
 		}
 
 		@Test fun `newline file is flagged`() {
-			val testFile = RawFile(
-				location = FileLocation("newline.yml"),
-				content = "\n"
+			val testFile = file(
+				fileName = "newline.yml",
+				content = "\n",
 			)
 
 			val results = analyze(testFile)
@@ -290,20 +293,20 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "newline.yml/1:1-1:1",
 					message = """
 						Value is [null] but should be [object] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = "newline.yml/1:1-1:1",
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "newline.yml/1:1-2:1",
 					message = """
 						File newline.yml could not be loaded:
 						```
 						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = testFile("\n"),
 				),
 			)
 		}
@@ -313,8 +316,8 @@ class GHLintTest {
 
 			results shouldHave singleFinding(
 				issue = "YamlSyntaxError",
-				location = "tabs.yml/1:1-1:3",
-				message = errorFileMessage
+				message = errorFileMessage,
+				location = errorFile("\t\t"),
 			)
 		}
 
@@ -324,25 +327,25 @@ class GHLintTest {
 			results shouldHave exactFindings(
 				aFinding(
 					issue = "YamlSyntaxError",
-					location = "tabs.yml/1:1-1:3",
-					message = errorFileMessage
+					message = errorFileMessage,
+					location = errorFile("\t\t"),
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						Object does not have some of the required properties [[jobs]] ()
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile1(invalidFile1.content),
 				),
 				aFinding(
 					issue = "YamlLoadError",
-					location = "test-invalid1.yml/1:1-1:9",
 					message = """
 						File test-invalid1.yml could not be loaded:
 						```
 						java.lang.IllegalStateException: Missing required key: jobs in [on]
 						```
-					""".trimIndent()
+					""".trimIndent(),
+					location = invalidFile1(invalidFile1.content),
 				),
 			)
 		}
@@ -362,8 +365,8 @@ class GHLintTest {
 
 	object Fixtures {
 
-		val validFile1 = RawFile(
-			location = FileLocation("test-valid1.yml"),
+		val validFile1 = workflow(
+			fileName = "test-valid1.yml",
 			content = """
 				name: "Valid workflow #1"
 				on: push
@@ -372,11 +375,11 @@ class GHLintTest {
 				    name: "Test"
 				    uses: reusable/workflow.yml
 				    permissions: {}
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val validFile2 = RawFile(
-			location = FileLocation("test-valid2.yml"),
+		val validFile2 = workflow(
+			fileName = "test-valid2.yml",
 			content = """
 				name: "Valid workflow #2"
 				on: push
@@ -389,27 +392,27 @@ class GHLintTest {
 				    steps:
 				      - name: "Checkout"
 				        uses: actions/checkout@v4
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val invalidFile1 = RawFile(
-			location = FileLocation("test-invalid1.yml"),
+		val invalidFile1 = workflow(
+			fileName = "test-invalid1.yml",
 			content = """
 				on: push
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val invalidFile2 = RawFile(
-			location = FileLocation("test-invalid2.yml"),
+		val invalidFile2 = workflow(
+			fileName = "test-invalid2.yml",
 			content = """
 				on: push
 				jobs: {}
-			""".trimIndent()
+			""".trimIndent(),
 		)
 
-		val errorFile = RawFile(
-			location = FileLocation("tabs.yml"),
-			content = "\t\t"
+		val errorFile = yaml(
+			fileName = "tabs.yml",
+			content = "\t\t",
 		)
 
 		val errorFileMessage = """

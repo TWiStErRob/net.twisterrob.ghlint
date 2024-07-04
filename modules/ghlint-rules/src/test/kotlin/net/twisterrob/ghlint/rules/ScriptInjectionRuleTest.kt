@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldHave
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -109,8 +110,9 @@ class ScriptInjectionRuleTest {
 			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
-				"ShellScriptInjection",
-				"""Step[#0] in Job[test] shell script contains GitHub Expressions.""",
+				issue = "ShellScriptInjection",
+				message = """Step[#0] in Job[test] shell script contains GitHub Expressions.""",
+				location = file("-", 2),
 			)
 		}
 
@@ -130,8 +132,9 @@ class ScriptInjectionRuleTest {
 			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
-				"ShellScriptInjection",
-				"""Step[#0] in Action["Test"] shell script contains GitHub Expressions.""",
+				issue = "ShellScriptInjection",
+				message = """Step[#0] in Action["Test"] shell script contains GitHub Expressions.""",
+				location = file("-"),
 			)
 		}
 	}
@@ -284,8 +287,9 @@ class ScriptInjectionRuleTest {
 			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
-				"JSScriptInjection",
-				"""Step[actions/github-script@v7] in Job[test] JavaScript contains GitHub Expressions.""",
+				issue = "JSScriptInjection",
+				message = """Step[actions/github-script@v7] in Job[test] JavaScript contains GitHub Expressions.""",
+				location = file("-", 2),
 			)
 		}
 
@@ -308,8 +312,9 @@ class ScriptInjectionRuleTest {
 			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
-				"JSScriptInjection",
-				"""Step[actions/github-script@v7] in Action["Test"] JavaScript contains GitHub Expressions.""",
+				issue = "JSScriptInjection",
+				message = """Step[actions/github-script@v7] in Action["Test"] JavaScript contains GitHub Expressions.""",
+				location = file("-"),
 			)
 		}
 
@@ -333,8 +338,9 @@ class ScriptInjectionRuleTest {
 			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
-				"JSScriptInjection",
-				"""Step["Get title"] in Job[test] JavaScript contains GitHub Expressions.""",
+				issue = "JSScriptInjection",
+				message = """Step["Get title"] in Job[test] JavaScript contains GitHub Expressions.""",
+				location = file("-", 2),
 			)
 		}
 
@@ -358,8 +364,9 @@ class ScriptInjectionRuleTest {
 			val results = check<ScriptInjectionRule>(file)
 
 			results shouldHave singleFinding(
-				"JSScriptInjection",
-				"""Step["Get title"] in Action["Test"] JavaScript contains GitHub Expressions.""",
+				issue = "JSScriptInjection",
+				message = """Step["Get title"] in Action["Test"] JavaScript contains GitHub Expressions.""",
+				location = file("-"),
 			)
 		}
 

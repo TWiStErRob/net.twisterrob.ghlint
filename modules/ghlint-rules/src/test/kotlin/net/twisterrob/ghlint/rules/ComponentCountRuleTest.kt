@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -75,8 +76,9 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManyJobs",
-				"Workflow[test] has 11 jobs, maximum recommended is 10."
+				issue = "TooManyJobs",
+				message = "Workflow[test] has 11 jobs, maximum recommended is 10.",
+				location = file("jobs"),
 			)
 		}
 
@@ -92,8 +94,9 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManyJobs",
-				"Workflow[test] has 20 jobs, maximum recommended is 10."
+				issue = "TooManyJobs",
+				message = "Workflow[test] has 20 jobs, maximum recommended is 10.",
+				location = file("jobs"),
 			)
 		}
 	}
@@ -167,8 +170,9 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"Job[test] has 21 steps, maximum recommended is 20."
+				issue = "TooManySteps",
+				message = "Job[test] has 21 steps, maximum recommended is 20.",
+				location = file("test"),
 			)
 		}
 
@@ -187,8 +191,9 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"Job[test] has 40 steps, maximum recommended is 20."
+				issue = "TooManySteps",
+				message = "Job[test] has 40 steps, maximum recommended is 20.",
+				location = file("test"),
 			)
 		}
 	}
@@ -262,8 +267,9 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"""Action["Test"] has 21 steps, maximum recommended is 20."""
+				issue = "TooManySteps",
+				message = """Action["Test"] has 21 steps, maximum recommended is 20.""",
+				location = file("name"),
 			)
 		}
 
@@ -282,8 +288,9 @@ class ComponentCountRuleTest {
 			val results = check<ComponentCountRule>(file)
 
 			results shouldHave singleFinding(
-				"TooManySteps",
-				"""Action["Test"] has 40 steps, maximum recommended is 20."""
+				issue = "TooManySteps",
+				message = """Action["Test"] has 40 steps, maximum recommended is 20.""",
+				location = file("name"),
 			)
 		}
 	}

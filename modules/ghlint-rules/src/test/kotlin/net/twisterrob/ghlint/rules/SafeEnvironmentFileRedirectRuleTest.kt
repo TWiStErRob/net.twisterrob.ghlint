@@ -5,6 +5,7 @@ import net.twisterrob.ghlint.rules.testing.Shell.redirects
 import net.twisterrob.ghlint.rules.testing.Shell.x
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -192,8 +193,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
-									"SafeEnvironmentFileRedirect",
-									"""Step[#0] in Job[test] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
+									issue = "SafeEnvironmentFileRedirect",
+									message = """Step[#0] in Job[test] should be formatted as `>> "${'$'}{${environmentFile}}"`.""",
+									location = file("-", 2),
 								)
 							},
 							dynamicTest("${name} in actions") {
@@ -213,8 +215,9 @@ class SafeEnvironmentFileRedirectRuleTest {
 								val results = check<SafeEnvironmentFileRedirectRule>(file)
 
 								results shouldHave singleFinding(
-									"SafeEnvironmentFileRedirect",
-									"""Step[#0] in Action["Test"] should be formatted as `>> "${'$'}{${environmentFile}}"`."""
+									issue = "SafeEnvironmentFileRedirect",
+									message = """Step[#0] in Action["Test"] should be formatted as `>> "${'$'}{${environmentFile}}"`.""",
+									location = file("-"),
 								)
 							},
 						)

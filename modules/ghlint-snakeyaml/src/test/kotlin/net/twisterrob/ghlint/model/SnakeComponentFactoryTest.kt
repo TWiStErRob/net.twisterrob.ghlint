@@ -3,6 +3,8 @@ package net.twisterrob.ghlint.model
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.instanceOf
+import net.twisterrob.ghlint.testing.file
+import net.twisterrob.ghlint.testing.yaml
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doThrow
@@ -13,7 +15,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.whenever
 
-private val file = RawFile(FileLocation("test.yml"), "content")
+private val file = yaml("content", "test.yml")
 
 class SnakeComponentFactoryTest {
 
@@ -59,7 +61,7 @@ class SnakeComponentFactoryTest {
 		}
 
 		@Test fun `creates invalid content for unknown file`() {
-			val file = RawFile(FileLocation("test.unknown"), "content")
+			val file = file("content", "test.unknown")
 			val subject = subject(file)
 
 			val result = subject.createFile(file)

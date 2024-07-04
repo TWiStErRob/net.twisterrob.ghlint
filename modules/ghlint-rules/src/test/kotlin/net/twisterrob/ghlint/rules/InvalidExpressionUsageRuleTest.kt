@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -46,8 +47,11 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
-			"InvalidExpressionUsage",
-			"Step[actions/checkout@${'$'}{{ github.ref }}] in Job[test] contains a GitHub expression in the `uses` field.",
+			issue = "InvalidExpressionUsage",
+			message = """
+				Step[actions/checkout@${'$'}{{ github.ref }}] in Job[test] contains a GitHub expression in the `uses` field.
+			""".trimIndent(),
+			location = file("-", 2),
 		)
 	}
 
@@ -85,8 +89,9 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
-			"InvalidExpressionUsage",
-			"""Step["Test"] in Action["Test"] contains a GitHub expression in the `uses` field.""",
+			issue = "InvalidExpressionUsage",
+			message = """Step["Test"] in Action["Test"] contains a GitHub expression in the `uses` field.""",
+			location = file("-"),
 		)
 	}
 
@@ -120,8 +125,9 @@ class InvalidExpressionUsageRuleTest {
 		val results = check<InvalidExpressionUsageRule>(file)
 
 		results shouldHave singleFinding(
-			"InvalidExpressionUsage",
-			"""Job[test] contains a GitHub expression in the `uses` field.""",
+			issue = "InvalidExpressionUsage",
+			message = """Job[test] contains a GitHub expression in the `uses` field.""",
+			location = file("test"),
 		)
 	}
 }

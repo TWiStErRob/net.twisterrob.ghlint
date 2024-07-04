@@ -3,6 +3,7 @@ package net.twisterrob.ghlint.rules
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
 import net.twisterrob.ghlint.testing.test
@@ -150,8 +151,9 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"WorkflowIdNaming",
-			"""Workflow[${id}] should have a lower-case kebab ID."""
+			issue = "WorkflowIdNaming",
+			message = """Workflow[${id}] should have a lower-case kebab ID.""",
+			location = file("jobs"),
 		)
 	}
 
@@ -172,8 +174,9 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"JobIdNaming",
-			"""Job[${id}] should have a lower-case kebab ID."""
+			issue = "JobIdNaming",
+			message = """Job[${id}] should have a lower-case kebab ID.""",
+			location = file(id),
 		)
 	}
 
@@ -195,8 +198,9 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"StepIdNaming",
-			"""Step[${id}] in Job[test] should have a lower-case kebab ID."""
+			issue = "StepIdNaming",
+			message = """Step[${id}] in Job[test] should have a lower-case kebab ID.""",
+			location = file("-", 2),
 		)
 	}
 
@@ -219,8 +223,9 @@ class IdNamingRuleTest {
 		val results = check<IdNamingRule>(file)
 
 		results shouldHave singleFinding(
-			"StepIdNaming",
-			"""Step[${id}] in Action["Test"] should have a lower-case kebab ID."""
+			issue = "StepIdNaming",
+			message = """Step[${id}] in Action["Test"] should have a lower-case kebab ID.""",
+			location = file("-"),
 		)
 	}
 

@@ -6,6 +6,7 @@ import net.twisterrob.ghlint.testing.action
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.checkUnsafe
 import net.twisterrob.ghlint.testing.exactFindings
+import net.twisterrob.ghlint.testing.invoke
 import net.twisterrob.ghlint.testing.jupiter.AcceptFailingDynamicTest
 import net.twisterrob.ghlint.testing.noFindings
 import net.twisterrob.ghlint.testing.singleFinding
@@ -78,6 +79,7 @@ class ValidationRuleTest {
 				
 				```
 			""".trimIndent(),
+			location = file(file.content),
 		)
 	}
 
@@ -96,6 +98,7 @@ class ValidationRuleTest {
 				message = """
 					Object does not have some of the required properties [[jobs, on]] ()
 				""".trimIndent(),
+				location = file(file.content),
 			),
 			aFinding(
 				issue = "YamlLoadError",
@@ -105,6 +108,7 @@ class ValidationRuleTest {
 					java.lang.IllegalStateException: Missing required key: jobs in [foo]
 					```
 				""".trimIndent(),
+				location = file(file.content),
 			),
 		)
 	}
@@ -124,6 +128,7 @@ class ValidationRuleTest {
 				message = """
 					Object does not have some of the required properties [[name, description, runs]] ()
 				""".trimIndent(),
+				location = file(file.content),
 			),
 			aFinding(
 				issue = "YamlLoadError",
@@ -133,6 +138,7 @@ class ValidationRuleTest {
 					java.lang.IllegalStateException: Missing required key: name in [foo]
 					```
 				""".trimIndent(),
+				location = file(file.content),
 			),
 		)
 	}
@@ -174,6 +180,7 @@ class ValidationRuleTest {
 		findings shouldHave singleFinding(
 			issue = "JsonSchemaValidation",
 			message = "Duplicate key: a-job (/jobs/a-job)",
+			location = "test.yml/7:5-10:34",
 		)
 	}
 
