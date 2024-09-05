@@ -13,6 +13,9 @@ kotlin {
 
 dependencies {
 	implementation(libs.kotlin.stdlib)
+	plugins.withId("org.gradle.java-test-fixtures") {
+		add("testFixturesImplementation", libs.kotlin.stdlib)
+	}
 }
 
 // TODO kotlin.target.compilerOptions { ... }
