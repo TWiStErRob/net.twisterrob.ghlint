@@ -25,6 +25,7 @@ public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
 	MissingShellRule::class,
 	PreferGitHubTokenRule::class,
 	RedundantShellRule::class,
+	RequiredPermissionsRule::class,
 	SafeEnvironmentFileRedirectRule::class,
 	ScriptInjectionRule::class,
 )
