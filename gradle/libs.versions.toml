@@ -8,7 +8,7 @@ kotlin-build = "2.0.10"
 kotlin-target = { strictly = "2.0.20" }
 kotlin-serialization = "1.7.2"
 
-detekt = "1.23.6"
+detekt = "1.23.7"
 jsr305 = "3.0.2"
 snakeyaml2 = "2.7"
 sarif4k = "0.6.0"
