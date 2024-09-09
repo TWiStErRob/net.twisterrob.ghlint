@@ -366,17 +366,17 @@ class ComponentCountRuleTest {
 	}
 
 	private fun Random.generateJobs(count: Int): String =
-		"\n" + (1..count).joinToString(separator = "\n") {
+		"\n" + (1..count).joinToString(separator = "\n") { number ->
 			when (random().toInt() % 2) {
 				0 -> """
-					test${it}:
+					test${number}:
 					  runs-on: test
 					  steps:${generateSteps(nextInt(1, 5))}
 				""".trimIndent()
 
 				1 -> """
-					test${it}:
-					  uses: org/repo/.github/workflows/workflow.yml@v${it}
+					test${number}:
+					  uses: org/repo/.github/workflows/workflow.yml@v${number}
 				""".trimIndent()
 
 				else -> error("Not possible")
@@ -384,20 +384,20 @@ class ComponentCountRuleTest {
 		}.prependIndent("\t\t\t\t\t  ")
 
 	private fun Random.generateSteps(count: Int): String =
-		"\n" + (1..count).joinToString(separator = "\n") {
+		"\n" + (1..count).joinToString(separator = "\n") { number ->
 			when (nextInt(1, 3)) {
-				1 -> "- run: echo \"Test $it\""
-				2 -> "- uses: some/action@v${it}"
+				1 -> "- run: echo \"Test ${number}\""
+				2 -> "- uses: some/action@v${number}"
 				else -> error("Not possible")
 			}
 		}.prependIndent("\t\t\t\t\t    ")
 
 	private fun Random.generateActionSteps(count: Int): String =
-		"\n" + (1..count).joinToString(separator = "\n") {
+		"\n" + (1..count).joinToString(separator = "\n") { number ->
 			@Suppress("detekt.StringShouldBeRawString") // Complex string building, be explicit.
 			when (nextInt(1, 3)) {
-				1 -> "- run: echo \"Test $it\"\n  shell: bash"
-				2 -> "- uses: some/action@v${it}"
+				1 -> "- run: echo \"Test ${number}\"\n  shell: bash"
+				2 -> "- uses: some/action@v${number}"
 				else -> error("Not possible")
 			}
 		}.prependIndent("\t\t\t\t\t    ")

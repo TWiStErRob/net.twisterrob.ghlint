@@ -24,8 +24,8 @@ public class DuplicateShellRule : VisitorRule, WorkflowVisitor {
 			val (commonShell, count) = shells.entries.single()
 			val defaultShell = workflow.defaultShell
 			if (defaultShell != null && commonShell != null && commonShell != defaultShell) {
-				reporting.report(DuplicateShellOnSteps, workflow) {
-					"All (${count}) steps in ${it} override shell as `${commonShell}`, " +
+				reporting.report(DuplicateShellOnSteps, workflow) { workflowString ->
+					"All (${count}) steps in ${workflowString} override shell as `${commonShell}`, " +
 							"change the default shell on the workflow from `${defaultShell}` to `${commonShell}`, " +
 							"and remove shells from steps."
 				}
@@ -49,8 +49,8 @@ public class DuplicateShellRule : VisitorRule, WorkflowVisitor {
 			if (defaultShell != null) {
 				val (commonShell, count) = shells.entries.single()
 				if (commonShell != null && commonShell != defaultShell) {
-					reporting.report(DuplicateShellOnSteps, job) {
-						"All (${count}) steps in ${it} override shell as `${commonShell}`, " +
+					reporting.report(DuplicateShellOnSteps, job) { jobString ->
+						"All (${count}) steps in ${jobString} override shell as `${commonShell}`, " +
 								"change the default shell on the job from `${defaultShell}` to `${commonShell}`, " +
 								"and remove shells from steps."
 					}
