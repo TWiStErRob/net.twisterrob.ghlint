@@ -232,10 +232,10 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are similar`() {
-			val steps = (0..100).joinToString(separator = "\n") {
+			val steps = (0..100).joinToString(separator = "\n") { number ->
 				"""
 					|      - run: echo "Test"
-					|        id: step-id-${it}
+					|        id: step-id-${number}
 				""".trimMargin()
 			}
 			val file = workflow(
@@ -483,11 +483,11 @@ class DuplicateStepIdRuleTest {
 			threadMode = Timeout.ThreadMode.SEPARATE_THREAD // separate == preemptive.
 		)
 		@Test fun `reports when myriad of ids are similar`() {
-			val steps = (0..1000).joinToString(separator = "\n") {
+			val steps = (0..1000).joinToString(separator = "\n") { number ->
 				"""
 					|    - run: echo "Test"
 					|      shell: bash
-					|      id: step-id-${it}
+					|      id: step-id-${number}
 				""".trimMargin()
 			}
 			val file = action(

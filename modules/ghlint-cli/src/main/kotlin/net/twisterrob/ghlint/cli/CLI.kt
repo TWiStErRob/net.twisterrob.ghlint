@@ -54,9 +54,9 @@ public class CLI : CliktCommand(
 
 	init {
 		context {
-			helpFormatter = {
+			helpFormatter = { context ->
 				MordantHelpFormatter(
-					context = it,
+					context = context,
 					showRequiredTag = true,
 					showDefaultValues = true,
 					requiredOptionMarker = "*",
