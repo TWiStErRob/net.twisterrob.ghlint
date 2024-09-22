@@ -70,12 +70,12 @@ class ValidationRuleTest {
 				```
 				java.lang.IllegalArgumentException: Failed to parse YAML: while scanning an alias
 				 in reader, line 1, column 10:
-				     *
-				     ^
+				    mapping: *
+				             ^
 				unexpected character found ${'\u0000'}(0)
 				 in reader, line 1, column 11:
-				     *
-				      ^
+				    mapping: *
+				              ^
 				
 				```
 			""".trimIndent(),

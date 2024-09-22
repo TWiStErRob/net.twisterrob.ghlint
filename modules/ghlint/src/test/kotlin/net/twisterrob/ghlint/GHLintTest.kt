@@ -294,7 +294,7 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
-						Value is [null] but should be [object] ()
+						Object does not have some of the required properties [[jobs, on]] ()
 					""".trimIndent(),
 					location = "newline.yml/1:1-1:1",
 				),
@@ -303,7 +303,7 @@ class GHLintTest {
 					message = """
 						File newline.yml could not be loaded:
 						```
-						java.lang.IllegalArgumentException: Root node is not a mapping: ScalarNode.
+						java.lang.IllegalStateException: Missing required key: jobs in []
 						```
 					""".trimIndent(),
 					location = testFile("\n"),
