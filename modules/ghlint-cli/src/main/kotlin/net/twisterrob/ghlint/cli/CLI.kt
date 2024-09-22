@@ -21,7 +21,7 @@ import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
 import java.nio.file.Path
 
-public class CLI : CliktCommand(
+internal class CLI : CliktCommand(
 	name = "ghlint",
 	printHelpOnEmptyArgs = true,
 	help = """
