@@ -17,7 +17,7 @@ buildConfig = "5.5.0"
 r8 = "8.4.21"
 classgraph = "4.8.176"
 
-junit-jupiter = "5.11.0"
+junit-jupiter = "5.11.1"
 kotest = "5.9.1"
 mockito-kotlin = "5.4.0"
 jsonSchema = "1.7.1"
