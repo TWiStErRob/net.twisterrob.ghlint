@@ -77,6 +77,11 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 		languageVersion = libs.versions.java.target.map(JavaLanguageVersion::of)
 		vendor = JvmVendorSpec.ADOPTIUM // Temurin
 	}
+	
+	val max = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(22)
+		vendor = JvmVendorSpec.ADOPTIUM // Temurin
+	}
 
 	maxHeapSize = "1G"
 
@@ -89,7 +94,7 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 		"--pg-conf", rulesFile.asFile.absolutePath,
 		"--pg-conf-output", configFile.get().asFile.absolutePath,
 		"--output", r8File.get().asFile.absolutePath,
-		"--lib", javaLauncher.get().metadata.installationPath.asFile.absolutePath,
+		"--lib", max.get().metadata.installationPath.asFile.absolutePath,
 		fatJarFile.get().asFile.absolutePath,
 	)
 }
