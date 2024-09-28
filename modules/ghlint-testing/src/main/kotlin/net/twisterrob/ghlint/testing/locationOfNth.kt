@@ -49,7 +49,7 @@ private fun String.indexOfNth(string: String, occurrence: Int): Int =
 
 private fun String.positionOf(index: Int): Position {
 	val line = this.substring(0, index).count { '\n' == it }
-	val before = this.lines().take(line).sumOf { it.length + 1 }
+	val before = this.lineSequence().take(line).sumOf { it.length + 1 }
 	return Position(
 		LineNumber(line + 1),
 		ColumnNumber(index - before + 1),
