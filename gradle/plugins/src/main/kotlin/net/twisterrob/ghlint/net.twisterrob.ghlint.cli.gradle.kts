@@ -66,9 +66,9 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	outputs.file(r8File)
 	outputs.file(configFile)
 
-	// R8 uses the executing JDK to determine the classfile target.
 	javaLauncher = javaToolchains.launcherFor {
-		languageVersion = libs.versions.java.target.map(JavaLanguageVersion::of)
+		// https://github.com/ajalt/mordant/issues/233
+		languageVersion = JavaLanguageVersion.of(22)
 		vendor = JvmVendorSpec.ADOPTIUM // Temurin
 	}
 
