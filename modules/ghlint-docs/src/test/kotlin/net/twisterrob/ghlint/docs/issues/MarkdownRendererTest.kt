@@ -14,7 +14,7 @@ import net.twisterrob.ghlint.rule.visitor.ActionVisitor
 import net.twisterrob.ghlint.rule.visitor.InvalidContentVisitor
 import net.twisterrob.ghlint.rule.visitor.VisitorRule
 import net.twisterrob.ghlint.rule.visitor.WorkflowVisitor
-import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
+import net.twisterrob.ghlint.ruleset.LazyRuleSet
 import net.twisterrob.ghlint.ruleset.RuleSet
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Nested
@@ -622,7 +622,7 @@ class MarkdownRendererTest {
 internal class TestRuleSet(
 	override val id: String = "test-ruleset",
 	override val name: String = "Test RuleSet",
-) : RuleSet by ReflectiveRuleSet(id, name, TestRule::class)
+) : RuleSet by LazyRuleSet(id, name, ::TestRule)
 
 internal class TestRule : Rule {
 
