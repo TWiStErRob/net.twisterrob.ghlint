@@ -1,8 +1,5 @@
 import net.twisterrob.ghlint.build.dsl.libs
-import org.gradle.api.internal.file.FileOperations
-import org.gradle.kotlin.dsl.support.serviceOf
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
-import java.io.FileOutputStream
 
 plugins {
 	id("org.gradle.application")
@@ -41,7 +38,6 @@ val fatJar = tasks.register<Jar>("fatJar") {
 	)
 	// TODEL revert to .FAIL after https://github.com/ajalt/mordant/pull/232 is merged.
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-	mergeServices(this)
 }
 
 val r8Deps: Configuration = @Suppress("UnstableApiUsage") configurations.dependencyScope("r8").get()
@@ -115,26 +111,4 @@ tasks.register("versionFile") {
 	doLast {
 		versionFile.get().asFile.writeText(version.toString())
 	}
-}
-
-fun mergeServices(task: Jar) {
-	val servicesDir = task.project.layout.buildDirectory.dir("fatJar/services")
-	val fso = task.project.serviceOf<FileOperations>()
-	task.doFirst { fso.delete(servicesDir) }
-	task.eachFile {
-		// > Cannot copy zip entry .../'mordant-jvm-ffm-jvm.jar!META-INF/services/...TerminalInterfaceProvider'
-		// > to 'META-INF/services/com.github.ajalt.mordant.terminal.TerminalInterfaceProvider'
-		// > because zip entry '.../mordant-jvm-jna-jvm.jar!META-INF/services/...TerminalInterfaceProvider'
-		// > has already been copied there.
-		if (relativeSourcePath.startsWith("META-INF/services/")) {
-			this.exclude()
-			servicesDir
-				.get()
-				.also { it.asFile.mkdirs() }
-				.file(this.sourceName)
-				.let { FileOutputStream(it.asFile, true) }
-				.use { this.copyTo(it) }
-		}
-	}
-	task.from(servicesDir) { into("META-INF/services") }
 }
