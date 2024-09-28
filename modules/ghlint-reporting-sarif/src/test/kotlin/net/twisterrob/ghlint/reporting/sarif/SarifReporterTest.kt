@@ -8,7 +8,7 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
 import net.twisterrob.ghlint.rule.Rule
-import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
+import net.twisterrob.ghlint.ruleset.LazyRuleSet
 import net.twisterrob.ghlint.testing.check
 import net.twisterrob.ghlint.testing.workflow
 import org.junit.jupiter.api.Test
@@ -42,10 +42,10 @@ class SarifReporterTest {
 	private fun test(root: Path) {
 		val writer = StringWriter()
 
-		val testRuleSet = ReflectiveRuleSet(
+		val testRuleSet = LazyRuleSet(
 			id = "test-ruleset",
 			name = "Test RuleSet",
-			IntegrationTestRule::class
+			::IntegrationTestRule,
 		)
 		val file = root.resolve("test.yml").createFile()
 		val workflow = workflow(

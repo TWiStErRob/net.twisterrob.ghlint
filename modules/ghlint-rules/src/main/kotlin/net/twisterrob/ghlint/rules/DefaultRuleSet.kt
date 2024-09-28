@@ -1,30 +1,30 @@
 package net.twisterrob.ghlint.rules
 
-import net.twisterrob.ghlint.ruleset.ReflectiveRuleSet
+import net.twisterrob.ghlint.ruleset.LazyRuleSet
 import net.twisterrob.ghlint.ruleset.RuleSet
 
-public class DefaultRuleSet : RuleSet by ReflectiveRuleSet(
+public class DefaultRuleSet : RuleSet by LazyRuleSet(
 	id = "default",
 	name = "Default",
-	ComponentCountRule::class,
-	DoubleCurlyIfRule::class,
-	DuplicateShellRule::class,
-	DuplicateStepIdRule::class,
-	EmptyEnvRule::class,
-	EnvironmentFileOverwriteRule::class,
-	ExplicitJobPermissionsRule::class,
-	FailFastActionsRule::class,
-	IdNamingRule::class,
-	ImplicitStatusCheckRule::class,
-	InvalidExpressionUsageRule::class,
-	JobDependenciesRule::class,
-	MissingGhRepoRule::class,
-	MissingGhTokenRule::class,
-	MissingJobTimeoutRule::class,
-	MissingNameRule::class,
-	MissingShellRule::class,
-	PreferGitHubTokenRule::class,
-	RedundantShellRule::class,
-	SafeEnvironmentFileRedirectRule::class,
-	ScriptInjectionRule::class,
+	::ComponentCountRule,
+	::DoubleCurlyIfRule,
+	::DuplicateShellRule,
+	::DuplicateStepIdRule,
+	::EmptyEnvRule,
+	::EnvironmentFileOverwriteRule,
+	::ExplicitJobPermissionsRule,
+	::FailFastActionsRule,
+	::IdNamingRule,
+	::ImplicitStatusCheckRule,
+	::InvalidExpressionUsageRule,
+	::JobDependenciesRule,
+	::MissingGhRepoRule,
+	::MissingGhTokenRule,
+	::MissingJobTimeoutRule,
+	::MissingNameRule,
+	::MissingShellRule,
+	::PreferGitHubTokenRule,
+	::RedundantShellRule,
+	::SafeEnvironmentFileRedirectRule,
+	::ScriptInjectionRule,
 )
