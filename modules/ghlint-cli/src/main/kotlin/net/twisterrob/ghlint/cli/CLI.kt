@@ -17,7 +17,6 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
-import com.github.ajalt.mordant.platform.MultiplatformSystem
 import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
@@ -35,13 +34,6 @@ internal class CLI : CliktCommand(
 
 	init {
 		context {
-			exitProcess = { exitCode ->
-				// If the exit code 0, just continue as normal, don't forcefully terminate.
-				// This allows the documentation to be generated, see net.twisterrob.ghlint.docs.cli.MainKt.main.
-				if (exitCode != 0) {
-					MultiplatformSystem.exitProcess(exitCode)
-				}
-			}
 			helpFormatter = { context ->
 				MordantHelpFormatter(
 					context = context,
