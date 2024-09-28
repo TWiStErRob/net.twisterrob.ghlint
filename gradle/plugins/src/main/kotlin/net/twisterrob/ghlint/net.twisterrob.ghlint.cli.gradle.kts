@@ -38,11 +38,9 @@ val fatJar = tasks.register<Jar>("fatJar") {
 		"**/*.kotlin_metadata",
 		// Maven metadata.
 		"META-INF/maven/**",
-		// Proguard rules.
-		"META-INF/proguard/",
-		"META-INF/com.android.tools/",
 	)
-	duplicatesStrategy = DuplicatesStrategy.FAIL
+	// TODEL revert to .FAIL after https://github.com/ajalt/mordant/pull/232 is merged.
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	mergeServices(this)
 }
 
