@@ -1,6 +1,7 @@
 [versions]
 
 java-source = "11"
+# TODO Review r8.pro ffm exclusions when this is increased above 22.
 java-target = "11"
 java-toolchain = "11"
 java-toolchainTest = "21"

@@ -5,11 +5,7 @@ plugins {
 dependencies {
 	api(projects.ghlint)
 	implementation(projects.ghlintApi)
-	api(libs.clikt) {
-		// https://github.com/ajalt/mordant/releases/tag/3.0.0
-		// > Added new terminal implementation that uses the Foreign Function and Memory (FFM) API added in JDK 22.
-		exclude(group: "com.github.ajalt.mordant", "module": "mordant-jvm-ffm-jvm")
-	}
+	api(libs.clikt)
 }
 
 application {
