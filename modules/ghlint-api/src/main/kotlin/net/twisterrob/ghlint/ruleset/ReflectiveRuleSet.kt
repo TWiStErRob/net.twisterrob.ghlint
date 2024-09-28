@@ -16,6 +16,8 @@ import kotlin.reflect.KClass
  *     …
  * )
  * ```
+ *
+ * Note: this requires minification to keep default constructors, see `META-INF/com.android.tools/r8/ghlint-api.pro`.
  */
 public class ReflectiveRuleSet(
 	public override val id: String,
