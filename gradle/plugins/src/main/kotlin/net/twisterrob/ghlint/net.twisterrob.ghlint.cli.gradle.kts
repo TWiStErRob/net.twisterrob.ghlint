@@ -36,7 +36,7 @@ val fatJar = tasks.register<Jar>("fatJar") {
 		// Maven metadata.
 		"META-INF/maven/**",
 	)
-	// TODEL revert to .FAIL after https://github.com/ajalt/mordant/pull/232 is merged.
+	// TODEL try to revert to .FAIL after https://github.com/ajalt/mordant/pull/232 is merged.
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
@@ -67,7 +67,7 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	outputs.file(configFile)
 
 	javaLauncher = javaToolchains.launcherFor {
-		// https://github.com/ajalt/mordant/issues/233
+		// See https://github.com/ajalt/mordant/issues/233 why this is hardcoded.
 		languageVersion = JavaLanguageVersion.of(22)
 		vendor = JvmVendorSpec.ADOPTIUM // Temurin
 	}
