@@ -36,7 +36,8 @@ val fatJar = tasks.register<Jar>("fatJar") {
 		// Maven metadata.
 		"META-INF/maven/**",
 	)
-	duplicatesStrategy = DuplicatesStrategy.FAIL
+	// TODEL try to revert to .FAIL after https://github.com/ajalt/mordant/pull/232 is merged.
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 val r8Deps: Configuration = @Suppress("UnstableApiUsage") configurations.dependencyScope("r8").get()
@@ -65,9 +66,9 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	outputs.file(r8File)
 	outputs.file(configFile)
 
-	// R8 uses the executing JDK to determine the classfile target.
 	javaLauncher = javaToolchains.launcherFor {
-		languageVersion = libs.versions.java.target.map(JavaLanguageVersion::of)
+		// See https://github.com/ajalt/mordant/issues/233 why this is hardcoded.
+		languageVersion = JavaLanguageVersion.of(22)
 		vendor = JvmVendorSpec.ADOPTIUM // Temurin
 	}
 

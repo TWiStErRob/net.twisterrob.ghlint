@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.context
@@ -21,29 +22,8 @@ import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
 import java.nio.file.Path
 
-public class CLI : CliktCommand(
+internal class CLI : CliktCommand(
 	name = "ghlint",
-	printHelpOnEmptyArgs = true,
-	help = """
-		GitHub Actions Linter (GH-Lint).
-		A tool to lint GitHub Actions workflows and actions.  
-		See https://ghlint.twisterrob.net for more information.
-	""".trimIndent(),
-	epilog = """
-		Example usages:
-		
-		**Lint a single workflow**:  
-		`$ ghlint .github/workflows/main.yml`
-		
-		**Lint all workflows in GitHub Actions CI**:  
-		`$ ghlint --verbose --sarif=report.sarif.json .github/workflows/*.yml`
-		
-		**Lint a single action in repository root.**:  
-		`$ ghlint action.yml`
-		
-		**Lint for CI actions in a directory**:  
-		`$ ghlint actions/my-action/action.yml`
-	""".trimIndent(),
 ), Configuration {
 
 	@Suppress("detekt.ClassOrdering")
@@ -89,10 +69,36 @@ public class CLI : CliktCommand(
 		}
 	}
 
+	override val printHelpOnEmptyArgs: Boolean = true
+
 	override val isReportExitCode: Boolean get() = inputs.isReportExitCode
 	override val isReportConsole: Boolean get() = inputs.isReportConsole
 	override val isReportGitHubCommands: Boolean get() = inputs.isReportGitHubCommands
 	override val sarifReportLocation: Path? get() = inputs.sarifReportLocation
+
+	override fun help(context: Context): String =
+		"""
+			GitHub Actions Linter (GH-Lint).
+			A tool to lint GitHub Actions workflows and actions.  
+			See https://ghlint.twisterrob.net for more information.
+		""".trimIndent()
+
+	override fun helpEpilog(context: Context): String =
+		"""
+			Example usages:
+			
+			**Lint a single workflow**:  
+			`$ ghlint .github/workflows/main.yml`
+			
+			**Lint all workflows in GitHub Actions CI**:  
+			`$ ghlint --verbose --sarif=report.sarif.json .github/workflows/*.yml`
+			
+			**Lint a single action in repository root.**:  
+			`$ ghlint action.yml`
+			
+			**Lint for CI actions in a directory**:  
+			`$ ghlint actions/my-action/action.yml`
+		""".trimIndent()
 
 	private class InputOptions : OptionGroup("Reporting") {
 
