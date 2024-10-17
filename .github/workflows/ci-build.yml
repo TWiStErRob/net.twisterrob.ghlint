@@ -42,6 +42,7 @@ jobs:
           --continue
           --stacktrace
           --scan
+          --info
           cliJar
 
       - name: "Upload 'CLI Application' artifact."
