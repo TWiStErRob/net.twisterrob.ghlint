@@ -31,7 +31,7 @@ jobs:
       - name: "Set up Gradle."
         uses: gradle/actions/setup-gradle@v4
         with:
-          dependency-graph: ${{ github.ref == 'refs/heads/main' && 'generate-and-submit' || 'disabled' }}
+          dependency-graph: 'generate-and-submit'
           dependency-graph-continue-on-failure: false
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
