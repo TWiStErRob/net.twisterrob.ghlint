@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint.rules
 
+import net.twisterrob.ghlint.model.Access
 import net.twisterrob.ghlint.model.Job
 import net.twisterrob.ghlint.rule.Example
 import net.twisterrob.ghlint.rule.Issue
@@ -15,13 +16,27 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 
 	override fun visitJob(reporting: Reporting, job: Job) {
 		super.visitJob(reporting, job)
-		if (job.permissions == null && job.parent.permissions == null) {
+		val directPermissions = job.permissions
+		val parentPermissions = job.parent.permissions
+		if (directPermissions == null && parentPermissions == null) {
 			reporting.report(MissingJobPermissions, job) { "${it} is missing permissions." }
 		}
-		if (job.permissions == null && job.parent.permissions != null) {
-			reporting.report(ExplicitJobPermissions, job) { "${it} should have explicit permissions." }
+		if (directPermissions == null && parentPermissions != null) {
+			when {
+				parentPermissions.map.isEmpty() -> {
+					// This is fine, because it's explicitly empty, so no permissions are given to the job.
+				}
+				parentPermissions.contents == Access.READ && parentPermissions.map.size == 1 -> {
+					// This is fine, because it's using the default contents permission.
+					// Theoretically, this could still be an elevated permission,
+					// but practically it's quite annoying to deal with.
+				}
+				else -> {
+					reporting.report(ExplicitJobPermissions, job) { "${it} should have explicit permissions." }
+				}
+			}
 		}
-		if (job.permissions != null && job.parent.permissions != null) {
+		if (directPermissions != null && parentPermissions != null) {
 			reporting.report(ExplicitJobPermissions, job.parent) { "${it} has redundant permissions." }
 		}
 	}
@@ -91,7 +106,7 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 					content = """
 						on: push
 						permissions:
-						  contents: read
+						  pull-requests: read
 						jobs:
 						  example:
 						    runs-on: ubuntu-latest
@@ -148,6 +163,18 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 						      - run: echo "Example"
 					""".trimIndent(),
 				),
+				Example(
+					explanation = "All permissions are explicitly forbidden on the workflow level.",
+					content = """
+						on: push
+						permissions: {}
+						jobs:
+						  example:
+						    runs-on: ubuntu-latest
+						    steps:
+						      - run: echo "Example"
+					""".trimIndent(),
+				),
 			),
 			nonCompliant = listOf(
 				Example(
@@ -195,11 +222,14 @@ public class ExplicitJobPermissionsRule : VisitorRule, WorkflowVisitor {
 						Note: This could be actually acceptable, because the workflow has only one job,
 						but for consistency, copy-paste-ability, and habit-forming,
 						it's better to still flag it to enforce declaring it on the job level.
+						
+						One exemption from this rule is when the permission list only contains `contents: read`.
+						This is for practical reasons, as this is quite a common workflow structure.
 					""".trimIndent(),
 					content = """
 						on: push
 						permissions:
-						  contents: read
+						  actions: read
 						jobs:
 						  example:
 						    runs-on: ubuntu-latest

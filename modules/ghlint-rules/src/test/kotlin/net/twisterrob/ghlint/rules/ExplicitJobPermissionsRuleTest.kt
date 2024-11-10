@@ -217,7 +217,7 @@ class ExplicitJobPermissionsRuleTest {
 				"""
 					on: push
 					permissions:
-					  contents: read
+					  contents: write
 					jobs:
 					  test:
 					    runs-on: test
@@ -240,7 +240,7 @@ class ExplicitJobPermissionsRuleTest {
 				"""
 					on: push
 					permissions:
-					  contents: read
+					  actions: read
 					jobs:
 					  test:
 					    uses: reusable/workflow.yml
@@ -284,6 +284,47 @@ class ExplicitJobPermissionsRuleTest {
 					    uses: reusable/workflow.yml
 					    permissions:
 					      contents: read
+				""".trimIndent(),
+			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `passes when only read permission is given on the workflow level for normal job`() {
+			val file = workflow(
+				"""
+					on: push
+					permissions:
+					  contents: read
+					jobs:
+					  test-normal:
+					    runs-on: test
+					    steps:
+					      - run: echo "Test"
+					  test-reusable:
+					    uses: reusable/workflow.yml
+				""".trimIndent(),
+			)
+
+			val results = check<ExplicitJobPermissionsRule>(file)
+
+			results shouldHave noFindings()
+		}
+
+		@Test fun `passes when there are no permissions on the workflow level`() {
+			val file = workflow(
+				"""
+					on: push
+					permissions: {}
+					jobs:
+					  test-normal:
+					    runs-on: test
+					    steps:
+					      - run: echo "Test"
+					  test-reusable:
+					    uses: reusable/workflow.yml
 				""".trimIndent(),
 			)
 
