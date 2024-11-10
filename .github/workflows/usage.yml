@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - ".github/workflows/usage.yml"
-      - "action.yml"
+      - '.github/workflows/usage.yml'
+      - 'action.yml'
 
 jobs:
   ghlint:
@@ -23,16 +23,16 @@ jobs:
       actions: read
 
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     steps:
 
-      - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
+      - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
         uses: actions/checkout@v4
 
       - name: "Run GH-Lint validation."
         id: ghlint
         # TODO When using this file in your repo, change the following line to:
-        # uses: TWiStErRob/net.twisterrob.ghlint@v0
+        # uses: TWiStErRob/net.twisterrob.ghlint@v0.5.0
         uses: ./
 
       - name: "Upload 'GH-Lint Results' artifact."
