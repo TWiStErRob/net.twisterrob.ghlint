@@ -24,18 +24,37 @@ The repository that hosts the code can be referenced in a GitHub Actions workflo
 The minimal usage looks like this:
 
 ```yaml
-steps:
-  - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
-    uses: actions/checkout@v4
+name: "Validation"
 
-  - name: "Run GH-Lint validation."
-    id: ghlint
-    uses: TWiStErRob/net.twisterrob.ghlint@v0
+on:
+  pull_request:
+    paths:
+      - .github/workflows/**
 
-  - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
-    uses: github/codeql-action/upload-sarif@v3
-    with:
-      sarif_file: ${{ steps.ghlint.outputs.sarif-report }}
+jobs:
+  gh-lint:
+    name: "GH-Lint"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      # read: actions/checkout
+      contents: read
+      # write: codeql-action/upload-sarif
+      security-events: write
+    steps:
+      - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+
+      - name: "Run GH-Lint validation."
+        id: ghlint
+        uses: TWiStErRob/net.twisterrob.ghlint@v0.5.0
+
+      - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
+        if: ${{ success() || failure() }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          checkout_path: ${{ github.workspace }}
+          sarif_file: ${{ steps.ghlint.outputs.sarif-report }}
 ```
 
 See the [action.yml][action.yml] for inputs and outputs.
@@ -71,18 +90,36 @@ for more details.
 You can still use the GH-Lint Action, but you won't be able to publish the SARIF report to GitHub.
 
 ```yaml
-  - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
-    uses: actions/checkout@v4
+name: "Validation"
 
-  - name: "Download GH-Lint."
-    working-directory: ${{ runner.temp }}
-    env:
-      GHLINT_VERSION: '0.5.0'
-      GH_TOKEN: ${{ github.token }}
-    run: gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
+on:
+  pull_request:
+    paths:
+      - .github/workflows/**
 
-  - name: "Run GH-Lint validation."
-    run: java -jar ${RUNNER_TEMP}/ghlint.jar --exit --ghcommands .github/workflows/*.yml
+jobs:
+  gh-lint:
+    name: "GH-Lint"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      # read: actions/checkout
+      contents: read
+      # write: codeql-action/upload-sarif
+      security-events: write
+    steps:
+      - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
+        uses: actions/checkout@v4
+    
+      - name: "Download GH-Lint."
+        working-directory: ${{ runner.temp }}
+        env:
+          GHLINT_VERSION: '0.5.0'
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
+    
+      - name: "Run GH-Lint validation."
+        run: java -jar ${RUNNER_TEMP}/ghlint.jar --exit --ghcommands .github/workflows/*.yml
 ```
 
 This will fail your workflow if there are any findings.
@@ -102,10 +139,12 @@ If you want to independently set the version of the GH-Lint CLI in your action u
 
 ```yaml
   - name: "Run GH-Lint validation."
-    uses: TWiStErRob/net.twisterrob.ghlint@v0
+    uses: TWiStErRob/net.twisterrob.ghlint@v0.5.0
     with:
       version: '0.5.0' # ghlint
 ```
+
+The two versions don't have to match, however compatibility is not always guaranteed.
 
 ```json
 {
