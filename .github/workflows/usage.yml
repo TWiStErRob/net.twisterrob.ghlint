@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - ".github/workflows/usage.yml"
-      - "action.yml"
+      - '.github/workflows/usage.yml'
+      - 'action.yml'
 
 jobs:
   ghlint:

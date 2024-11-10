@@ -29,7 +29,7 @@ name: "Validation"
 on:
   pull_request:
     paths:
-      - .github/workflows/**
+      - '.github/workflows/**'
 
 jobs:
   gh-lint:
@@ -95,7 +95,7 @@ name: "Validation"
 on:
   pull_request:
     paths:
-      - .github/workflows/**
+      - '.github/workflows/**'
 
 jobs:
   gh-lint:
