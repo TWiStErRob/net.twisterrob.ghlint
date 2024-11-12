@@ -15,7 +15,7 @@ sarif4k = "0.6.0"
 clikt = "5.0.1"
 buildConfig = "5.5.0"
 r8 = "8.5.35"
-classgraph = "4.8.177"
+classgraph = "4.8.179"
 
 junit-jupiter = "5.11.3"
 kotest = "5.9.1"
