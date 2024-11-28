@@ -13,6 +13,10 @@ import org.junit.jupiter.api.parallel.Resources
 	"detekt.ForbiddenMethodCall", // Testing console output.
 	"ReplaceJavaStaticMethodWithKotlinAnalog", // Be explicit for readability.
 )
+// Capturing system streams is not thread-safe.
+// Even though we could declare resource locks for each test, it's not good enough.
+@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 class CapturedOutputTest {
 
 	/**
@@ -21,8 +25,6 @@ class CapturedOutputTest {
 	@Nested
 	inner class Streams {
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun exampleUsage() {
 			val captured = captureSystemStreams {
 				System.out.print("Hello")
@@ -35,8 +37,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures interleaved multiline output`() {
 			val captured = captureSystemStreams {
 				System.out.println("Hello")
@@ -66,7 +66,6 @@ class CapturedOutputTest {
 	@Nested
 	inner class Output {
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun exampleUsage() {
 			val captured = captureSystemOut {
 				print("Hello")
@@ -78,7 +77,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures single line Unit`() {
 			val captured = captureSystemOutOnly {
 				System.out.println("Hello")
@@ -87,7 +85,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures many lines Unit`() {
 			val captured = captureSystemOutOnly {
 				System.out.println("Hello")
@@ -103,7 +100,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures single line R`() {
 			val captured = captureSystemOut {
 				System.out.println("Hello")
@@ -115,7 +111,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures many lines R`() {
 			val captured = captureSystemOut {
 				System.out.println("Hello")
@@ -134,7 +129,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `ignores error stream`() {
 			val captured = captureSystemOut {
 				System.err.println("Hello")
@@ -153,7 +147,6 @@ class CapturedOutputTest {
 	@Nested
 	inner class Error {
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun exampleUsage() {
 			val captured = captureSystemErr {
 				System.err.print("Hello")
@@ -165,7 +158,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures single line Unit`() {
 			val captured = captureSystemErrOnly {
 				System.err.println("Hello")
@@ -174,7 +166,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures many lines Unit`() {
 			val captured = captureSystemErrOnly {
 				System.err.println("Hello")
@@ -190,7 +181,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures single line R`() {
 			val captured = captureSystemErr {
 				System.err.println("Hello")
@@ -202,7 +192,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures many lines R`() {
 			val captured = captureSystemErr {
 				System.err.println("Hello")
@@ -221,7 +210,6 @@ class CapturedOutputTest {
 		}
 
 		@Test
-		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `ignores output stream`() {
 			val captured = captureSystemErr {
 				System.out.println("Hello")
