@@ -9,7 +9,10 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.junit.jupiter.api.parallel.Resources
 
-@Suppress("detekt.ForbiddenMethodCall") // Testing console output.
+@Suppress(
+	"detekt.ForbiddenMethodCall", // Testing console output.
+	"ReplaceJavaStaticMethodWithKotlinAnalog", // Be explicit for readability.
+)
 class CapturedOutputTest {
 
 	/**
@@ -22,7 +25,7 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun exampleUsage() {
 			val captured = captureSystemStreams {
-				print("Hello")
+				System.out.print("Hello")
 				System.err.print("World")
 				42
 			}
@@ -36,9 +39,9 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures interleaved multiline output`() {
 			val captured = captureSystemStreams {
-				println("Hello")
+				System.out.println("Hello")
 				System.err.println("World")
-				println("GH-Lint")
+				System.out.println("GH-Lint")
 				System.err.println("Testing")
 				42
 			}
@@ -78,7 +81,7 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures single line Unit`() {
 			val captured = captureSystemOutOnly {
-				println("Hello")
+				System.out.println("Hello")
 			}
 			captured shouldBe "Hello${System.lineSeparator()}"
 		}
@@ -87,9 +90,9 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures many lines Unit`() {
 			val captured = captureSystemOutOnly {
-				println("Hello")
-				println("GH-Lint")
-				println("Testing")
+				System.out.println("Hello")
+				System.out.println("GH-Lint")
+				System.out.println("Testing")
 			}
 			captured shouldBe """
 				Hello
@@ -103,7 +106,7 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures single line R`() {
 			val captured = captureSystemOut {
-				println("Hello")
+				System.out.println("Hello")
 				"42"
 			}
 			captured.result shouldBe "42"
@@ -115,9 +118,9 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 		fun `captures many lines R`() {
 			val captured = captureSystemOut {
-				println("Hello")
-				println("GH-Lint")
-				println("Testing")
+				System.out.println("Hello")
+				System.out.println("GH-Lint")
+				System.out.println("Testing")
 				"42"
 			}
 			captured.result shouldBe "42"
@@ -221,7 +224,7 @@ class CapturedOutputTest {
 		@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 		fun `ignores output stream`() {
 			val captured = captureSystemErr {
-				println("Hello")
+				System.out.println("Hello")
 				42
 			}
 			captured.result shouldBe 42
