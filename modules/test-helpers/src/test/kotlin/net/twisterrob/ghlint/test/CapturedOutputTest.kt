@@ -5,6 +5,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.beEmpty
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceAccessMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.junit.jupiter.api.parallel.Resources
@@ -15,6 +17,8 @@ import org.junit.jupiter.api.parallel.Resources
 )
 // Capturing system streams is not thread-safe.
 // Even though we could declare resource locks for each test, it's not good enough.
+// Each test will be affected by both stdout and stderr, so they cannot be executed in parallel in any way.
+@Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
 @ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
 class CapturedOutputTest {
