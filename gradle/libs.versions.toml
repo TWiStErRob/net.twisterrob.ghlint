@@ -5,7 +5,7 @@ java-target = "11"
 java-toolchain = "11"
 java-toolchainTest = "21"
 kotlin-build = "2.0.10"
-kotlin-target = { strictly = "2.0.20" }
+kotlin-target = { strictly = "2.1.0" }
 kotlin-serialization = "1.7.3"
 
 detekt = "1.23.7"
@@ -14,7 +14,7 @@ snakeyaml2 = "2.8"
 sarif4k = "0.6.0"
 clikt = "5.0.1"
 buildConfig = "5.5.1"
-r8 = "8.5.35"
+r8 = "8.5.48"
 classgraph = "4.8.179"
 
 junit-jupiter = "5.11.3"
