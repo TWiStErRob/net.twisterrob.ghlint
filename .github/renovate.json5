@@ -13,6 +13,13 @@
 			"description": "Disable R8 upgrades until it's Renovatable: https://issuetracker.google.com/issues/329907500",
 			"matchDepNames": ["com.android.tools:r8"],
 			"enabled": false
-		}
+		},
+		{
+			"description": "Disable Kotlin updates while context parameters are being developed.",
+			"matchDepNames": ["org.jetbrains.kotlin.jvm"],
+			"matchNewValue": "/^(2.0.2[1-9]|2.1.\\d+)$/",
+			"enabled": false
+		},
+
 	]
 }
