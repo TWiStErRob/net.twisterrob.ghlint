@@ -22,7 +22,7 @@ jobs:
       # github/codeql-action/upload-sarif in private repositories / internal organizations.
       actions: read
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
 

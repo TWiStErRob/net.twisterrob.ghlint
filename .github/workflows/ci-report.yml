@@ -12,7 +12,7 @@ jobs:
     name: "Publish Test Results"
     # Only run when there's relevant result with some hope (in decreasing order) of having the artifacts necessary.
     if: ${{ contains(fromJSON('["success","failure","timed_out","cancelled"]'), github.event.workflow_run.conclusion) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
 
     permissions:
