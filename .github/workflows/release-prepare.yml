@@ -17,7 +17,7 @@ jobs:
       # https://github.com/TWiStErRob/net.twisterrob.ghlint/settings/actions
       # Allow GitHub Actions to create and approve pull requests: Enabled
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 2
     
     defaults:

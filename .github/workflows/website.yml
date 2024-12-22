@@ -8,7 +8,7 @@ on:
 jobs:
   generate:
     name: "Generate website"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     permissions:
@@ -67,7 +67,7 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     needs:
       - generate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     permissions:
