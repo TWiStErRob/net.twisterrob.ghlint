@@ -45,6 +45,41 @@ internal class SnakeYamlJsonNode private constructor(
 			key to value
 		}
 
+	override fun equals(other: Any?): Boolean {
+		if (this === other) {
+			return true
+		}
+		if (other !is SnakeYamlJsonNode) {
+			return false
+		}
+		if (getNodeType() != other.getNodeType()) {
+			return false
+		}
+		return when (getNodeType()) {
+			SimpleType.OBJECT -> asObject() == other.asObject()
+			SimpleType.STRING -> asString() == other.asString()
+			SimpleType.ARRAY -> asArray() == other.asArray()
+			SimpleType.NULL -> true
+			SimpleType.BOOLEAN -> asBoolean() == other.asBoolean()
+			SimpleType.INTEGER -> asInteger() == other.asInteger()
+			SimpleType.NUMBER -> asNumber() == other.asNumber()
+		}
+	}
+
+	override fun hashCode(): Int {
+		var result = getNodeType().hashCode()
+		result = 31 * result + when (getNodeType()) {
+			SimpleType.ARRAY -> asArray().hashCode()
+			SimpleType.OBJECT -> asObject().hashCode()
+			SimpleType.STRING -> asString().hashCode()
+			SimpleType.NULL -> 0
+			SimpleType.BOOLEAN -> asBoolean().hashCode()
+			SimpleType.INTEGER -> asInteger().hashCode()
+			SimpleType.NUMBER -> asNumber().hashCode()
+		}
+		return result
+	}
+
 	public class Factory(
 		private val parse: (String) -> Node,
 	) : JsonNodeFactory {
