@@ -15,11 +15,11 @@ public interface Reporting {
 	public fun report(finding: Finding)
 }
 
-context(Rule)
+context(rule: Rule)
 public fun Reporting.report(issue: Issue, target: Component, message: (String) -> String) {
 	report(
 		Finding(
-			rule = this@Rule,
+			rule = rule,
 			issue = issue,
 			location = target.location,
 			message = message(target.toTarget()),

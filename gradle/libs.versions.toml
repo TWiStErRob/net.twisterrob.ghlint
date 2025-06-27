@@ -4,8 +4,8 @@ java-source = "11"
 java-target = "11"
 java-toolchain = "11"
 java-toolchainTest = "21"
-kotlin-build = "2.0.10"
-kotlin-target = { strictly = "2.1.21" }
+kotlin-build = "2.2.0"
+kotlin-target = { strictly = "2.2.0" }
 kotlin-serialization = "1.8.1"
 
 detekt = "1.23.8"
