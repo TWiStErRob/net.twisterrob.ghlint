@@ -26,8 +26,45 @@ internal class CLI : CliktCommand(
 	name = "ghlint",
 ), Configuration {
 
+	// IMPORTANT: The order of properties is important, it'll define how "--help" is printed.
+
+	override val files: List<Path> by argument()
+		.path(mustExist = true, canBeDir = false)
+		.multiple(required = false)
+		.help("Workflow YML files to check for problems.")
+
+	private val inputs: InputOptions by InputOptions()
+
+	override val root: Path by option("--root")
+		.path(mustExist = true, canBeDir = true, canBeFile = false)
+		.default(Path.of("."))
+		.help("Root directory of the repository.")
+
+	override val isVerbose: Boolean by option("--verbose")
+		.flag(default = false, defaultForHelp = "off")
+		.help("Prints more information.")
+
+	private val ruleHelpId: String? by option("--help")
+		.help("Show help for a specific rule ID.")
+
 	@Suppress("detekt.ClassOrdering")
 	override fun run() {
+		ruleHelpId?.let { ruleId ->
+			val helpService = RuleHelpService()
+			val help = helpService.getRuleHelp(ruleId)
+			if (help != null) {
+				throw PrintMessage(help)
+			} else {
+				System.err.println("Unknown rule ID: $ruleId")
+				throw ProgramResult(1)
+			}
+		}
+
+		if (files.isEmpty()) {
+			System.err.println("Error: Missing argument <files>")
+			throw ProgramResult(1)
+		}
+
 		val code = GHLint().run(this)
 		throw ProgramResult(code)
 	}
@@ -44,24 +81,6 @@ internal class CLI : CliktCommand(
 			}
 		}
 	}
-
-	// IMPORTANT: The order of properties is important, it'll define how "--help" is printed.
-
-	override val files: List<Path> by argument()
-		.path(mustExist = true, canBeDir = false)
-		.multiple(required = true)
-		.help("Workflow YML files to check for problems.")
-
-	private val inputs: InputOptions by InputOptions()
-
-	override val root: Path by option("--root")
-		.path(mustExist = true, canBeDir = true, canBeFile = false)
-		.default(Path.of("."))
-		.help("Root directory of the repository.")
-
-	override val isVerbose: Boolean by option("--verbose")
-		.flag(default = false, defaultForHelp = "off")
-		.help("Prints more information.")
 
 	init {
 		eagerOption("-v", "--version", help = "Prints the version and exits.") {
