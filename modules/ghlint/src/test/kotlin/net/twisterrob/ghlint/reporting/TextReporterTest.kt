@@ -23,7 +23,7 @@ class TextReporterTest {
 		)
 		report(findings) shouldBe """
 			TestIssue at test.file:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			
 		""".trimIndent()
 	}
@@ -34,7 +34,7 @@ class TextReporterTest {
 		)
 		report(findings) shouldBe """
 			TestIssue at nested/test/path/to/file.name:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			
 		""".trimIndent()
 	}
@@ -47,11 +47,11 @@ class TextReporterTest {
 		)
 		report(findings) shouldBe """
 			TestIssue at test.file:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			TestIssue at test.file:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			TestIssue at test.file:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			
 		""".trimIndent()
 	}
@@ -64,13 +64,13 @@ class TextReporterTest {
 		)
 		report(findings) shouldBe """
 			TestIssue at test.file:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			TestIssue at test.file:1:2-3:4: foo
 			bar
 			baz
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			TestIssue at test.file:1:2-3:4: message
-			For more information about this rule, run: ghlint --rule-help TestIssue
+			For more information about this rule, run: ghlint --help TestIssue
 			
 		""".trimIndent()
 	}

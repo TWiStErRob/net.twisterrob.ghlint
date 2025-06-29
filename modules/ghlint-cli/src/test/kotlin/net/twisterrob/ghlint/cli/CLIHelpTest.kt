@@ -20,7 +20,7 @@ class CLIHelpTest {
 	fun `help with valid rule ID shows rule documentation`() {
 		val result = captureSystemStreams {
 			try {
-				main("--no-exit", "--rule-help", "MissingJobTimeout")
+				main("--no-exit", "--help", "MissingJobTimeout")
 			} catch (_: Exception) {
 				// Expected for CLI tools
 			}
@@ -39,12 +39,46 @@ class CLIHelpTest {
 	fun `help with invalid rule ID shows error`() {
 		val result = captureSystemStreams {
 			try {
-				main("--no-exit", "--rule-help", "NonExistentRule")
+				main("--no-exit", "--help", "NonExistentRule")
 			} catch (_: Exception) {
 				// Expected for CLI tools
 			}
 		}
 
 		result.stderr should contain("Unknown rule ID: NonExistentRule")
+	}
+
+	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
+	fun `help without arguments shows general help`() {
+		val result = captureSystemStreams {
+			try {
+				main("--no-exit", "--help")
+			} catch (_: Exception) {
+				// Expected for CLI tools
+			}
+		}
+
+		result.stdout should contain("GitHub Actions Linter")
+		result.stdout should contain("Usage:")
+		result.stdout should contain("Options:")
+	}
+
+	@Test
+	@ResourceLock(value = Resources.SYSTEM_OUT, mode = ResourceAccessMode.READ_WRITE)
+	@ResourceLock(value = Resources.SYSTEM_ERR, mode = ResourceAccessMode.READ_WRITE)
+	fun `help with option as next argument shows general help`() {
+		val result = captureSystemStreams {
+			try {
+				main("--no-exit", "--help", "--verbose")
+			} catch (_: Exception) {
+				// Expected for CLI tools
+			}
+		}
+
+		result.stdout should contain("GitHub Actions Linter")
+		result.stdout should contain("Usage:")
+		result.stdout should contain("Options:")
 	}
 }
