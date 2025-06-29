@@ -44,7 +44,7 @@ internal class CLI : CliktCommand(
 		.flag(default = false, defaultForHelp = "off")
 		.help("Prints more information.")
 
-	private val ruleHelpId: String? by option("--help")
+	private val ruleHelpId: String? by option("--rule-help")
 		.help("Show help for a specific rule ID.")
 
 	@Suppress("detekt.ClassOrdering")

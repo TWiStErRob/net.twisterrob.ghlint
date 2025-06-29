@@ -20,7 +20,7 @@ class CLIHelpTest {
 	fun `help with valid rule ID shows rule documentation`() {
 		val result = captureSystemStreams {
 			try {
-				main("--no-exit", "--help", "MissingJobTimeout")
+				main("--no-exit", "--rule-help", "MissingJobTimeout")
 			} catch (_: Exception) {
 				// Expected for CLI tools
 			}
@@ -39,7 +39,7 @@ class CLIHelpTest {
 	fun `help with invalid rule ID shows error`() {
 		val result = captureSystemStreams {
 			try {
-				main("--no-exit", "--help", "NonExistentRule")
+				main("--no-exit", "--rule-help", "NonExistentRule")
 			} catch (_: Exception) {
 				// Expected for CLI tools
 			}
