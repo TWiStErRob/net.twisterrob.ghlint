@@ -212,7 +212,7 @@ public class FailFastActionsRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						      - uses: EnricoMi/publish-unit-test-result-action@v2
 						        with:
 						          action_fail_on_inconclusive: true
-						          junit_files: |
+						          files: |
 						            **/build/**/TEST-*.xml
 					""".trimIndent(),
 				),
@@ -228,7 +228,7 @@ public class FailFastActionsRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 						    steps:
 						      - uses: EnricoMi/publish-unit-test-result-action@v2
 						        with:
-						          junit_files: |
+						          files: |
 						            **/build/**/TEST-*.xml
 					""".trimIndent(),
 				),

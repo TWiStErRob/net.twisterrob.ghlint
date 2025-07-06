@@ -51,5 +51,5 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
-          junit_files: |
+          files: |
             results/**/build/test-results/*/TEST-*.xml
