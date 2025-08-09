@@ -20,7 +20,7 @@ classgraph = "4.8.181"
 junit-jupiter = "5.13.4"
 kotest = "5.9.1"
 mockito-kotlin = "6.0.0"
-jsonSchema = "1.8.1"
+jsonSchema = "1.8.2"
 
 
 [libraries]
