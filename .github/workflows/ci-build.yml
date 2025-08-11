@@ -20,7 +20,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Java."
         uses: actions/setup-java@v4
@@ -71,7 +71,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Java."
         uses: actions/setup-java@v4
@@ -179,7 +179,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ github.ref }} branch in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Download 'CLI Application' artifact."
         uses: actions/download-artifact@v5
