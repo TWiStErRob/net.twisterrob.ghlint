@@ -21,5 +21,6 @@ private fun Finding.render(): String {
 			else -> "${start.line.number}:${start.column.number}-${end.line.number}:${end.column.number}"
 		}
 	}
-	return "${issue.id} at ${location.file.path}:${loc}: ${message}"
+	val hint = "For more information about this rule, run: ghlint --help ${issue.id}"
+	return "${issue.id} at ${location.file.path}:${loc}: ${message}\n${hint}"
 }
