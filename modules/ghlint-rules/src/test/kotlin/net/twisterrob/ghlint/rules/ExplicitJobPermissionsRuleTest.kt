@@ -25,7 +25,8 @@ class ExplicitJobPermissionsRuleTest {
 				+ "	location=compliant/example.yml/5:3-5:10,\n"
 				+ "	message=Job[example] should have explicit permissions.\n"
 				+ ")"
-				+ "]"
+				+ "]\n"
+				+ "expected:<0> but was:<1>"
 				+ "\\E$"
 	)
 	@Suppress("detekt.StringShouldBeRawString") // Cannot trimIndent on annotation parameters.
