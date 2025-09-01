@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.testing
 
-import io.kotest.assertions.print.Print
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.Printers
 import io.kotest.matchers.Matcher
@@ -9,12 +8,7 @@ import net.twisterrob.ghlint.results.Location
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
 private val init = run {
-	Printers.add(Location::class, object : Print<Location> {
-		override fun print(a: Location, level: Int): Printed = Printed(a.testString())
-
-		@Suppress("OVERRIDE_DEPRECATION")
-		override fun print(a: Location): Printed = error("Unused")
-	})
+	Printers.add(Location::class) { Printed(it.testString()) }
 }
 
 public fun aLocation(expected: Location): Matcher<Location> =
