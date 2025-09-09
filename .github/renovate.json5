@@ -20,7 +20,7 @@
 	},
 	"pip-compile": {
 		"managerFilePatterns": [
-			"website/requirements.in",
+			"website/requirements.txt",
 		],
 	},
 }
