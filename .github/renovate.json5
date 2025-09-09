@@ -1,18 +1,26 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-		"local>TWiStErRob/renovate-config"
+		"local>TWiStErRob/renovate-config",
 	],
 	"packageRules": [
 		{
 			"description": "Auto-merge own package, because it's still 0.x, which means each release is assumed 'breaking'.",
 			"matchDepNames": ["TWiStErRob/net.twisterrob.ghlint"],
-			"automerge": true
+			"automerge": true,
 		},
 		{
 			"description": "Disable R8 upgrades until it's Renovatable: https://issuetracker.google.com/issues/329907500",
 			"matchDepNames": ["com.android.tools:r8"],
-			"enabled": false
+			"enabled": false,
 		},
-	]
+	],
+	"pip_requirements": {
+		"enabled": false,
+	},
+	"pip-compile": {
+		"managerFilePatterns": [
+			"website/requirements.txt",
+		],
+	},
 }
