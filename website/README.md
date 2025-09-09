@@ -34,7 +34,7 @@ Useful reads:
 python -m venv .venv
 .venv\Scripts\activate
 python -m pip install pip-tools
-pip-compile --pip-args "--require-virtualenv --isolated" requirements.in --output-file=requirements.txt
+pip-compile --strip-extras --pip-args "--require-virtualenv --isolated" requirements.in --output-file=requirements.txt
 pip install -r requirements.txt
 mkdocs new .
 ```
