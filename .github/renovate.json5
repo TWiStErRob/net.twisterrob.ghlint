@@ -15,4 +15,12 @@
 			"enabled": false,
 		},
 	],
+	"pip_requirements": {
+		"enabled": false,
+	},
+	"pip-compile": {
+		"managerFilePatterns": [
+			"website/requirements.in",
+		],
+	},
 }
