@@ -8,6 +8,7 @@ Run once to set up a Python Virtual Environment:
 
 ```shell
 python -m venv .venv
+# python: No module named venv -> Use Python 3.3+.
 .venv\Scripts\activate
 pip install -r requirements.txt
 ```
