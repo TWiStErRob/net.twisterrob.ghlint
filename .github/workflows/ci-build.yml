@@ -35,7 +35,7 @@ jobs:
           dependency-graph-continue-on-failure: false
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
-      - name: "Build & Verify project."
+      - name: "Build main artifact."
         run: >
           ./gradlew
           --no-daemon
