@@ -5,7 +5,7 @@ java-target = "11"
 java-toolchain = "11"
 java-toolchainTest = "21"
 kotlin-build = "2.2.10"
-kotlin-target = { strictly = "2.2.10" }
+kotlin-target = { strictly = "2.2.20" }
 kotlin-serialization = "1.9.0"
 
 detekt = "1.23.8"
