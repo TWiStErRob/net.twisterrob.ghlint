@@ -35,7 +35,7 @@ public class SarifReporter(
 		val base = rootDir.toRealPath(LinkOption.NOFOLLOW_LINKS)
 		val sarif = SarifSchema210(
 			version = Version.The210,
-			schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+			schema = "https://json.schemastore.org/sarif-2.1.0.json",
 			runs = listOf(
 				Run(
 					tool = Tool(
