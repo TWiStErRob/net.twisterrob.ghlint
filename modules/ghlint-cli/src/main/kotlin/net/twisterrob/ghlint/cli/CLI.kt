@@ -91,7 +91,7 @@ internal class CLI : CliktCommand(
 			`$ ghlint .github/workflows/main.yml`
 			
 			**Lint all workflows in GitHub Actions CI**:  
-			`$ ghlint --verbose --sarif=report.sarif.json .github/workflows/*.yml`
+			`$ ghlint --verbose --sarif=report.sarif .github/workflows/*.yml`
 			
 			**Lint a single action in repository root.**:  
 			`$ ghlint action.yml`

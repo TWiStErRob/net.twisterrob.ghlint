@@ -63,7 +63,7 @@ class SarifReporterTest {
 
 		SarifReporter(writer, root, listOf(testRuleSet)).report(findings)
 
-		writer.toString() shouldBe sarifReport(root, "report.sarif.json")
+		writer.toString() shouldBe sarifReport(root, "report.sarif")
 	}
 }
 

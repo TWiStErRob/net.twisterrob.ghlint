@@ -204,7 +204,7 @@ jobs:
       - name: "Run validator."
         id: validate
         run: >
-          "${RUNNER_TEMP}/ghlint.jar" --exit --sarif="ghlint.sarif.json" --verbose action.yml .github/workflows/*.yml
+          "${RUNNER_TEMP}/ghlint.jar" --exit --sarif="ghlint.sarif" --verbose action.yml .github/workflows/*.yml
 
       - name: "Upload 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
@@ -213,7 +213,7 @@ jobs:
           name: 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})'
           if-no-files-found: error
           path: |
-            ghlint.sarif.json
+            ghlint.sarif
 
       - name: "Publish 'GH-Lint Snapshot' GitHub Code Scanning analysis."
         uses: github/codeql-action/upload-sarif@v3
@@ -221,4 +221,4 @@ jobs:
         with:
           category: 'GH-Lint Snapshot'
           checkout_path: ${{ github.workspace }}
-          sarif_file: ${{ github.workspace }}/ghlint.sarif.json
+          sarif_file: ${{ github.workspace }}/ghlint.sarif
