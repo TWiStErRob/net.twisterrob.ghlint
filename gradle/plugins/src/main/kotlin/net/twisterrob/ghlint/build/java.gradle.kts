@@ -9,4 +9,6 @@ plugins {
 tasks.withType<JavaCompile>().configureEach {
 	sourceCompatibility = libs.versions.java.source.get()
 	targetCompatibility = libs.versions.java.target.get()
+	options.compilerArgs.add("-Xlint:all")
+	options.compilerArgs.add("-Werror")
 }

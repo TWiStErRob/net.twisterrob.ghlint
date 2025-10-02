@@ -1,5 +1,4 @@
 import net.twisterrob.ghlint.build.dsl.libs
-import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 
 plugins {
 	id("org.gradle.application")
@@ -10,13 +9,9 @@ plugins {
 	id("net.twisterrob.ghlint.build.publishing")
 }
 
-kotlin {
-	explicitApi = ExplicitApiMode.Strict
-}
-
 tasks.named<JavaExec>("run").configure { setWorkingDir(rootProject.layout.projectDirectory) }
 
-val fatJar = tasks.register<Jar>("fatJar") {
+private val fatJar = tasks.register<Jar>("fatJar") {
 	manifest {
 		attributes(
 			"Main-Class" to application.mainClass.get()
@@ -40,17 +35,17 @@ val fatJar = tasks.register<Jar>("fatJar") {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
-val r8Deps: Configuration = @Suppress("UnstableApiUsage") configurations.dependencyScope("r8").get()
+private val r8Deps: Configuration = @Suppress("UnstableApiUsage") configurations.dependencyScope("r8").get()
 
 dependencies {
 	r8Deps(libs.r8)
 }
 
-val r8: Provider<out Configuration> = configurations.resolvable("r8RuntimeClasspath") {
+private val r8: Provider<out Configuration> = configurations.resolvable("r8RuntimeClasspath") {
 	extendsFrom(r8Deps)
 }
 
-val r8Jar = tasks.register<JavaExec>("r8Jar") {
+private val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	val r8Dir = layout.buildDirectory.dir("r8")
 	val r8File = r8Dir.map { it.file("minified.jar") }
 	val rulesFile = layout.projectDirectory.file("src/main/r8.pro")
@@ -88,7 +83,7 @@ val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	)
 }
 
-val cliJar = tasks.register<Sync>("cliJar") {
+private val cliJar = tasks.register<Sync>("cliJar") {
 	from(r8Jar)
 	into(layout.buildDirectory.dir("cli"))
 	include("*.jar")

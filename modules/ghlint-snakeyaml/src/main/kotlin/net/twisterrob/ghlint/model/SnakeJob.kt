@@ -14,7 +14,7 @@ import org.snakeyaml.engine.v2.nodes.Node
 import org.snakeyaml.engine.v2.nodes.ScalarNode
 import org.snakeyaml.engine.v2.nodes.SequenceNode
 
-public sealed class SnakeJob protected constructor(
+public sealed class SnakeJob(
 	override val factory: SnakeComponentFactory,
 ) : Job.BaseJob, HasSnakeNode<MappingNode>, SnakeElement {
 

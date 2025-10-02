@@ -26,7 +26,7 @@ subprojects {
 		}
 		tasks.detekt.configure { enabled = false }
 
-		detekt { reports.sarif.required.set(true) }
+		detekt { reports.sarif.required = true }
 		tasks.withType(io.gitlab.arturbosch.detekt.Detekt).configureEach {
 			finalizedBy(detektReportMergeSarif)
 		}
