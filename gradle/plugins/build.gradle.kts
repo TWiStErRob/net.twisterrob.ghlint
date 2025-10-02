@@ -11,6 +11,10 @@ dependencies {
 	implementation(files(libs::class.java.superclass.protectionDomain.codeSource.location))
 }
 
+kotlin {
+	explicitApi()
+}
+
 fun Provider<PluginDependency>.asDependency(): Provider<String> =
 	this.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }
 
