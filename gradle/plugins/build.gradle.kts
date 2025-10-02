@@ -15,6 +15,7 @@ kotlin {
 	explicitApi()
 	compilerOptions {
 		allWarningsAsErrors = true
+		extraWarnings = true
 	}
 }
 

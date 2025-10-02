@@ -20,24 +20,24 @@ internal class SnakeYamlJsonNode private constructor(
 	private val nodeType: SimpleType = Factory.computeNodeType(node),
 ) : JsonNode {
 
-	public constructor(factory: Factory, node: Node) : this(factory, node, "")
+	constructor(factory: Factory, node: Node) : this(factory, node, "")
 
-	public override fun getJsonPointer(): String = jsonPointer
-	public override fun getNodeType(): SimpleType = nodeType
+	override fun getJsonPointer(): String = jsonPointer
+	override fun getNodeType(): SimpleType = nodeType
 
-	public override fun asBoolean(): Boolean = asString().toBoolean()
-	public override fun asInteger(): BigInteger = asString().toBigInteger()
-	public override fun asNumber(): BigDecimal = asString().toBigDecimal()
+	override fun asBoolean(): Boolean = asString().toBoolean()
+	override fun asInteger(): BigInteger = asString().toBigInteger()
+	override fun asNumber(): BigDecimal = asString().toBigDecimal()
 
-	public override fun asString(): String =
+	override fun asString(): String =
 		(node as ScalarNode).value
 
-	public override fun asArray(): List<JsonNode> =
+	override fun asArray(): List<JsonNode> =
 		(node as SequenceNode).value.mapIndexed { index, node ->
 			SnakeYamlJsonNode(factory, node, "${jsonPointer}/${index}")
 		}
 
-	public override fun asObject(): Map<String, JsonNode> =
+	override fun asObject(): Map<String, JsonNode> =
 		(node as MappingNode).value.associate { entry ->
 			val key = (entry.keyNode!! as ScalarNode).value
 			val jsonPointer = "${jsonPointer}/${JsonNode.encodeJsonPointer(key)}"
@@ -80,11 +80,11 @@ internal class SnakeYamlJsonNode private constructor(
 		return result
 	}
 
-	public class Factory(
+	class Factory(
 		private val parse: (String) -> Node,
 	) : JsonNodeFactory {
 
-		public override fun wrap(node: Any): JsonNode =
+		override fun wrap(node: Any): JsonNode =
 			when {
 				node is SnakeYamlJsonNode -> node
 
@@ -94,7 +94,7 @@ internal class SnakeYamlJsonNode private constructor(
 				else -> error("Cannot wrap object (${node}) which is not a Sequence, Mapping or Scalar.")
 			}
 
-		public override fun create(rawJson: String): JsonNode =
+		override fun create(rawJson: String): JsonNode =
 			wrap(parse(rawJson))
 
 		internal companion object {
