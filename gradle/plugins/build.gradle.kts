@@ -13,6 +13,9 @@ dependencies {
 
 kotlin {
 	explicitApi()
+	compilerOptions {
+		allWarningsAsErrors = true
+	}
 }
 
 fun Provider<PluginDependency>.asDependency(): Provider<String> =

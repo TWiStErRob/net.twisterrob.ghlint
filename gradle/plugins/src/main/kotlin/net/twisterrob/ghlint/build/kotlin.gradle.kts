@@ -11,7 +11,6 @@ kotlin {
 	jvmToolchain(libs.versions.java.toolchain.map(String::toInt).get())
 	compilerOptions {
 		allWarningsAsErrors = true
-		verbose = true
 		freeCompilerArgs.add("-opt-in=kotlin.ExperimentalStdlibApi")
 		freeCompilerArgs.add("-Xcontext-parameters")
 		freeCompilerArgs.add("-Xjvm-default=all")
