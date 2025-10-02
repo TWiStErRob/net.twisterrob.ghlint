@@ -9,10 +9,6 @@ plugins {
 	id("net.twisterrob.ghlint.build.publishing")
 }
 
-kotlin {
-	explicitApi()
-}
-
 tasks.named<JavaExec>("run").configure { setWorkingDir(rootProject.layout.projectDirectory) }
 
 private val fatJar = tasks.register<Jar>("fatJar") {

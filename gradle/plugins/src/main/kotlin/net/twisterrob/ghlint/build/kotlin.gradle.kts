@@ -7,6 +7,7 @@ plugins {
 }
 
 kotlin {
+	explicitApi()
 	jvmToolchain(libs.versions.java.toolchain.map(String::toInt).get())
 	compilerOptions {
 		allWarningsAsErrors = true

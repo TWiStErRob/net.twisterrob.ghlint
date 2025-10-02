@@ -6,7 +6,3 @@ plugins {
 	id("net.twisterrob.ghlint.build.detekt")
 	id("net.twisterrob.ghlint.build.publishing")
 }
-
-kotlin {
-	explicitApi()
-}
