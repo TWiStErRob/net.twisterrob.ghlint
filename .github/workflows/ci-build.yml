@@ -29,7 +29,7 @@ jobs:
           distribution: temurin
 
       - name: "Set up Gradle."
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           dependency-graph: ${{ github.ref == 'refs/heads/main' && 'generate-and-submit' || 'disabled' }}
           dependency-graph-continue-on-failure: false
@@ -80,7 +80,7 @@ jobs:
           distribution: temurin
 
       - name: "Set up Gradle."
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
