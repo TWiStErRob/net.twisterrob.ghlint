@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.build
 
 import net.twisterrob.ghlint.build.dsl.libs
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
 	id("org.jetbrains.kotlin.jvm")
@@ -11,6 +12,7 @@ kotlin {
 	explicitApi()
 	jvmToolchain(libs.versions.java.toolchain.map(String::toInt).get())
 	compilerOptions {
+		jvmTarget = libs.versions.java.target.map(JvmTarget::fromTarget)
 		jvmDefault = JvmDefaultMode.ENABLE
 		allWarningsAsErrors = true
 		extraWarnings = true
