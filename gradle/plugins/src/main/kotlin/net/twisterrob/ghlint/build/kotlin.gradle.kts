@@ -1,6 +1,7 @@
 package net.twisterrob.ghlint.build
 
 import net.twisterrob.ghlint.build.dsl.libs
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -9,6 +10,9 @@ plugins {
 
 kotlin {
 	jvmToolchain(libs.versions.java.toolchain.get().toInt())
+	compilerOptions {
+		jvmTarget = libs.versions.java.target.map(JvmTarget::fromTarget)
+	}
 }
 
 dependencies {
