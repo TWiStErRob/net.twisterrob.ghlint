@@ -2,8 +2,8 @@
 
 java-source = "11"
 java-target = "11"
-java-toolchain = "11"
-java-toolchainTest = "21"
+java-toolchain = "17"
+java-toolchainTest = "25"
 kotlin-build = "2.2.20"
 kotlin-target = { strictly = "2.2.20" }
 kotlin-serialization = "1.9.0"
