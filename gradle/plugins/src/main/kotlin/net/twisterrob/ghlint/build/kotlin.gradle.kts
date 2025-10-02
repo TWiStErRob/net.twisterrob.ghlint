@@ -8,7 +8,7 @@ plugins {
 }
 
 kotlin {
-	jvmToolchain(libs.versions.java.toolchain.get().toInt())
+	jvmToolchain(libs.versions.java.toolchain.map(String::toInt).get())
 }
 
 dependencies {
