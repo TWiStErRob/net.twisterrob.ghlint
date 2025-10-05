@@ -6,9 +6,13 @@ plugins {
 	id("org.gradle.java")
 }
 
+java {
+	sourceCompatibility = libs.versions.java.target.map(JavaVersion::toVersion).get()
+	targetCompatibility = libs.versions.java.target.map(JavaVersion::toVersion).get()
+}
+
 tasks.withType<JavaCompile>().configureEach {
-	sourceCompatibility = libs.versions.java.source.get()
-	targetCompatibility = libs.versions.java.target.get()
+	options.release = libs.versions.java.target.map(String::toInt)
 	options.compilerArgs.add("-Xlint:all")
 	options.compilerArgs.add("-Werror")
 }
