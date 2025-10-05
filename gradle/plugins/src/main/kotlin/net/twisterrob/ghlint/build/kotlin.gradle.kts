@@ -13,6 +13,7 @@ kotlin {
 	jvmToolchain(libs.versions.java.toolchain.map(String::toInt).get())
 	compilerOptions {
 		jvmTarget = libs.versions.java.target.map(JvmTarget::fromTarget)
+		freeCompilerArgs.add(jvmTarget.map { "-Xjdk-release=${it.target}" })
 		jvmDefault = JvmDefaultMode.ENABLE
 		allWarningsAsErrors = true
 		extraWarnings = true
