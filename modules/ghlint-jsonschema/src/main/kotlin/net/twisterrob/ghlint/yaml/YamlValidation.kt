@@ -7,7 +7,6 @@ import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import org.snakeyaml.engine.v2.nodes.Node
 import java.net.URI
-import java.net.URL
 
 public object YamlValidation {
 
@@ -26,7 +25,7 @@ public object YamlValidation {
 
 		override fun resolve(uri: String): SchemaResolver.Result =
 			cache.getOrPut(uri) {
-				SchemaResolver.Result.fromString(URL(uri).readText())
+				SchemaResolver.Result.fromString(URI(uri).toURL().readText())
 			}
 	}
 
