@@ -49,7 +49,7 @@ private val overriddenFunctions: List<String>
 		.sorted()
 
 private fun KFunction<*>.isObjectMethod(): Boolean =
-	this.javaMethod?.declaringClass == Object::class.java
+	this.javaMethod?.declaringClass == @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN") Object::class.java
 
 @Suppress("RedundantOverride")
 private class OverrideEverythingVisitorRule

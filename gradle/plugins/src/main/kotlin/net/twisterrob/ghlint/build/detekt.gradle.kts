@@ -20,11 +20,11 @@ detekt {
 		// Target version of the generated JVM bytecode. It is used for type resolution.
 		jvmTarget = libs.versions.java.target.get()
 		reports {
-			html.required.set(true) // human
-			xml.required.set(true) // checkstyle
-			txt.required.set(true) // console
+			html.required = true // human
+			xml.required = true // checkstyle
+			txt.required = true // console
 			// https://sarifweb.azurewebsites.net
-			sarif.required.set(true) // Github Code Scanning
+			sarif.required = true // Github Code Scanning
 		}
 	}
 }

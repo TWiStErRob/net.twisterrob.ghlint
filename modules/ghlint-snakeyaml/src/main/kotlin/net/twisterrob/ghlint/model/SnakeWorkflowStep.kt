@@ -8,7 +8,7 @@ import net.twisterrob.ghlint.yaml.toTextMap
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.Node
 
-public sealed class SnakeWorkflowStep protected constructor(
+public sealed class SnakeWorkflowStep(
 	override val factory: SnakeComponentFactory,
 ) : WorkflowStep.BaseStep, HasSnakeNode<MappingNode>, SnakeElement {
 
