@@ -45,7 +45,7 @@ jobs:
 
       - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         if: ${{ success() || failure() }}
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ steps.ghlint.outputs.sarif-report }}
