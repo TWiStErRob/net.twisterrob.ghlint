@@ -51,6 +51,9 @@ def generateCliHelp = tasks.register("generateCliHelp", JavaExec.class) {
 	group = "documentation"
 	description = "Generates the CLI help for the website."
 	mainClass = "net.twisterrob.ghlint.docs.cli.MainKt"
+	// https://docs.oracle.com/en/java/javase/24/core/restricted-methods.html
+	// For https://github.com/java-native-access/jna/issues/1665
+	jvmArgs("--enable-native-access=ALL-UNNAMED")
 	def generatedCliHelp = layout.buildDirectory.dir("generated/cli-help")
 	classpath(sourceSets.main.runtimeClasspath)
 	outputs.dir(generatedCliHelp).withPropertyName("generatedFiles")
