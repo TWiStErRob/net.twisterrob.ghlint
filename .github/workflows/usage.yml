@@ -37,7 +37,7 @@ jobs:
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'GH-Lint Results'
           if-no-files-found: error
