@@ -1,26 +1,25 @@
 [versions]
 
-java-source = "11"
-java-target = "11"
-java-toolchain = "11"
-java-toolchainTest = "21"
-kotlin-build = "2.2.0"
-kotlin-target = { strictly = "2.2.0" }
+java-target = "17"
+java-toolchain = "25"
+java-toolchainTest = "25"
+kotlin-build = "2.2.21"
+kotlin-target = { strictly = "2.2.21" }
 kotlin-serialization = "1.9.0"
 
 detekt = "1.23.8"
 jsr305 = "3.0.2"
-snakeyaml2 = "2.9"
+snakeyaml2 = "2.10"
 sarif4k = "0.6.0"
 clikt = "5.0.3"
-buildConfig = "5.6.7"
+buildConfig = "5.7.0"
 r8 = "8.5.48"
-classgraph = "4.8.180"
+classgraph = "4.8.184"
 
-junit-jupiter = "5.13.2"
-kotest = "5.9.1"
-mockito-kotlin = "5.4.0"
-jsonSchema = "1.8.1"
+junit-jupiter = "6.0.0"
+kotest = "6.0.4"
+mockito-kotlin = "6.1.0"
+jsonSchema = "1.8.2"
 
 
 [libraries]
@@ -37,9 +36,7 @@ clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 r8 = { module = "com.android.tools:r8", version.ref = "r8" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 
-test-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
-test-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
-test-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+test-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 
 test-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }

@@ -35,8 +35,8 @@ class WorkflowVisitorTest {
 
 	@Test fun `visitWorkflow delegates jobs`() {
 		val target: Workflow = mock()
-		val child1: Job = mock()
-		val child2: Job = mock()
+		val child1: Job = mock<Job.BaseJob>()
+		val child2: Job = mock<Job.BaseJob>()
 		whenever(target.jobs).thenReturn(mapOf("child1" to child1, "child2" to child2))
 		doNothing().whenever(subject).visitJob(reporting, child1)
 		doNothing().whenever(subject).visitJob(reporting, child2)
@@ -74,8 +74,8 @@ class WorkflowVisitorTest {
 
 	@Test fun `visitNormalJob delegates steps`() {
 		val target: Job.NormalJob = mock()
-		val child1: WorkflowStep = mock()
-		val child2: WorkflowStep = mock()
+		val child1: WorkflowStep = mock<WorkflowStep.BaseStep>()
+		val child2: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(target.steps).thenReturn(listOf(child1, child2))
 		doNothing().whenever(subject).visitWorkflowStep(reporting, child1)
 		doNothing().whenever(subject).visitWorkflowStep(reporting, child2)

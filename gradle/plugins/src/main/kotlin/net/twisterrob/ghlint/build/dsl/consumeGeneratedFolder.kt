@@ -8,7 +8,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 
-fun Project.consumeGeneratedFolder(
+public fun Project.consumeGeneratedFolder(
 	fromProject: ProjectDependency,
 	fromConfiguration: String,
 	intoFolder: String,

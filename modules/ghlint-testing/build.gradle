@@ -7,7 +7,7 @@ dependencies {
 	implementation(projects.ghlintSnakeyaml)
 	implementation(projects.ghlint)
 	api(libs.test.kotest.assertions)
-	api(libs.test.jupiter.api)
+	api(libs.test.jupiter)
 	implementation(libs.classgraph)
 	implementation(libs.kotlin.reflection)
 }

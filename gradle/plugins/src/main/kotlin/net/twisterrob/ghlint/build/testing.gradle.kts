@@ -19,9 +19,9 @@ testing.suites.withType<JvmTestSuite>().configureEach {
 
 	targets.configureEach {
 		testTask.configure {
-			javaLauncher.set(javaToolchains.launcherFor {
-				languageVersion.set(JavaLanguageVersion.of(libs.versions.java.toolchainTest.get()))
-			})
+			javaLauncher = javaToolchains.launcherFor {
+				languageVersion = libs.versions.java.toolchainTest.map(JavaLanguageVersion::of)
+			}
 			ignoreFailures = isCI.get()
 			systemProperties(
 				rootProject.file("config/junit/junit-platform.properties")

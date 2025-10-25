@@ -27,7 +27,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Run GH-Lint validation."
         id: ghlint
@@ -37,7 +37,7 @@ jobs:
 
       - name: "Upload 'GH-Lint Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'GH-Lint Results'
           if-no-files-found: error
@@ -45,7 +45,7 @@ jobs:
 
       - name: "Publish 'GH-Lint' GitHub Code Scanning analysis."
         if: ${{ success() || failure() }}
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           checkout_path: ${{ github.workspace }}
           sarif_file: ${{ steps.ghlint.outputs.sarif-report }}

@@ -86,7 +86,7 @@ class FailFastActionsRuleTest {
 					      - uses: EnricoMi/publish-unit-test-result-action@v2
 					        with:
 					          action_fail_on_inconclusive: ${value}
-					          junit_files: |
+					          files: |
 					            **/build/**/TEST-*.xml
 				""".trimIndent(),
 			)
@@ -106,7 +106,7 @@ class FailFastActionsRuleTest {
 					    steps:
 					      - uses: EnricoMi/publish-unit-test-result-action@v2
 					        with:
-					          junit_files: |
+					          files: |
 					            **/build/**/TEST-*.xml
 				""".trimIndent(),
 			)

@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: "Upload 'Event File' artifact."
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Event File'
           if-no-files-found: error
@@ -28,7 +28,7 @@ jobs:
 
   validate:
     name: "🦺 Validation"
-    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@399b8cdc4ab5bcde5fd32dde5da0ccc57a244107 # v3
+    uses: TWiStErRob/github-workflows/.github/workflows/validate.yml@cb91b4b05800bd3de29bc0e63900f304a45fbf06 # v3
     permissions:
       contents: read
       security-events: write

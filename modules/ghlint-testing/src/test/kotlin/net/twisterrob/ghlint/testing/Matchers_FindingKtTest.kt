@@ -39,6 +39,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<0> but was:<1>
 				""".trimIndent()
 			}
 
@@ -64,6 +65,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message2
 					)]
+					expected:<0> but was:<2>
 				""".trimIndent()
 			}
 		}
@@ -167,6 +169,7 @@ class Matchers_FindingKtTest {
 
 				failure shouldHaveMessage """
 					Collection should have size 1 but has size 0. Values: []
+					expected:<1> but was:<0>
 				""".trimIndent()
 			}
 
@@ -195,6 +198,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 
@@ -223,6 +227,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 
@@ -251,6 +256,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 		}
@@ -383,6 +389,7 @@ class Matchers_FindingKtTest {
 
 				failure shouldHaveMessage """
 					Collection should have size 1 but has size 0. Values: []
+					expected:<1> but was:<0>
 				""".trimIndent()
 			}
 
@@ -412,6 +419,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 
@@ -441,6 +449,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 
@@ -470,6 +479,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 		}
@@ -581,6 +591,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=extra finding
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 
@@ -619,6 +630,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message3
 					)]
+					expected:<3> but was:<2>
 				""".trimIndent()
 			}
 
@@ -685,6 +697,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message2
 					)]
+					expected:<1> but was:<2>
 				""".trimIndent()
 			}
 
@@ -713,6 +726,7 @@ class Matchers_FindingKtTest {
 						location=test.file/1:2-3:4,
 						message=message1
 					)]
+					expected:<2> but was:<1>
 				""".trimIndent()
 			}
 		}

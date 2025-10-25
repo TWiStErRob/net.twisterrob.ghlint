@@ -15,7 +15,7 @@ internal class AcceptFailingDynamicTestExtension : InvocationInterceptor {
 
 	override fun interceptDynamicTest(
 		@Suppress("detekt.ForbiddenVoid") // REPORT false positive: overridden method cannot be Unit.
-		invocation: InvocationInterceptor.Invocation<Void>,
+		invocation: InvocationInterceptor.Invocation<Void?>,
 		invocationContext: DynamicTestInvocationContext,
 		extensionContext: ExtensionContext,
 	) {

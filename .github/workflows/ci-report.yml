@@ -24,7 +24,7 @@ jobs:
     steps:
 
       - name: "Download 'Event File' artifact."
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: 'Event File'
           run-id: ${{ github.event.workflow_run.id }}
@@ -32,7 +32,7 @@ jobs:
           path: .
 
       - name: "Download 'Unit Test Results' artifact."
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: 'Unit Test Results'
           run-id: ${{ github.event.workflow_run.id }}
@@ -51,5 +51,5 @@ jobs:
           report_individual_runs: true
           test_changes_limit: 0
           action_fail_on_inconclusive: true
-          junit_files: |
+          files: |
             results/**/build/test-results/*/TEST-*.xml

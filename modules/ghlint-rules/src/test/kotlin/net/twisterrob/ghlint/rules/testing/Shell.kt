@@ -20,7 +20,7 @@ object Shell {
 	fun redirects(prefix: String): Map<String, String> {
 		@Suppress("detekt.StringShouldBeRawString") // All whitespace is significant.
 		val nl = "\n\t\t\t\t\t\t\t\t\t          "
-		@Suppress("RemoveSingleExpressionStringTemplate")
+		@Suppress("RemoveSingleExpressionStringTemplate", "REDUNDANT_SINGLE_EXPRESSION_STRING_TEMPLATE") // Consistency.
 		return mapOf(
 			"immediate" to """${prefix}""",
 			"separated" to """${prefix} """,

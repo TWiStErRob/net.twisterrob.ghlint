@@ -28,7 +28,7 @@ class Component_toTargetTest {
 	}
 
 	@Test fun `job as target`() {
-		val component: Job = mock()
+		val component: Job = mock<Job.BaseJob>()
 		whenever(component.id).thenReturn("job-id")
 
 		val result = component.toTarget()
@@ -58,7 +58,7 @@ class Component_toTargetTest {
 	@Test fun `workflow step with id as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: WorkflowStep = mock()
+		val component: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.id).thenReturn("step-id")
 
@@ -70,7 +70,7 @@ class Component_toTargetTest {
 	@Test fun `workflow step with name as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: WorkflowStep = mock()
+		val component: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.name).thenReturn("Step Name")
 
@@ -96,7 +96,7 @@ class Component_toTargetTest {
 	@Test fun `workflow step with index as target`() {
 		val parent: Job.NormalJob = mock()
 		whenever(parent.id).thenReturn("job-id")
-		val component: WorkflowStep = mock()
+		val component: WorkflowStep = mock<WorkflowStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.index).thenReturn(Step.Index(42))
 
@@ -109,7 +109,7 @@ class Component_toTargetTest {
 		val action = actionWithName("Action Name")
 		val parent: Action.Runs.CompositeRuns = mock()
 		whenever(parent.parent).thenReturn(action)
-		val component: ActionStep = mock()
+		val component: ActionStep = mock<ActionStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.id).thenReturn("step-id")
 
@@ -122,7 +122,7 @@ class Component_toTargetTest {
 		val action = actionWithName("Action Name")
 		val parent: Action.Runs.CompositeRuns = mock()
 		whenever(parent.parent).thenReturn(action)
-		val component: ActionStep = mock()
+		val component: ActionStep = mock<ActionStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.name).thenReturn("Step Name")
 
@@ -150,7 +150,7 @@ class Component_toTargetTest {
 		val action = actionWithName("Action Name")
 		val parent: Action.Runs.CompositeRuns = mock()
 		whenever(parent.parent).thenReturn(action)
-		val component: ActionStep = mock()
+		val component: ActionStep = mock<ActionStep.BaseStep>()
 		whenever(component.parent).thenReturn(parent)
 		whenever(component.index).thenReturn(Step.Index(42))
 
