@@ -27,7 +27,7 @@ jobs:
     steps:
 
       - name: "Checkout ${{ github.ref }} in ${{ github.repository }} repository."
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: "Run GH-Lint validation."
         id: ghlint
