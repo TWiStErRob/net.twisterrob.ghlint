@@ -12,7 +12,7 @@ jsr305 = "3.0.2"
 snakeyaml2 = "3.0.1"
 sarif4k = "0.6.0"
 clikt = "5.0.3"
-buildConfig = "6.0.4"
+buildConfig = "6.0.5"
 r8 = "8.5.48"
 classgraph = "4.8.184"
 
