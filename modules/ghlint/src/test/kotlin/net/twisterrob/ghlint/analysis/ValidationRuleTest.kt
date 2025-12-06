@@ -27,7 +27,7 @@ class ValidationRuleTest {
 				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
 				+ "\tissue=JsonSchemaValidation,\n"
 				+ "\tlocation=non-compliant/example.yml/1:1-1:9,\n"
-				+ "\tmessage=Object does not have some of the required properties [[jobs]] ()\n"
+				+ "\tmessage=Object does not have some of the required properties [jobs] ()\n"
 				+ ")\n"
 				+ "Finding(\n"
 				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
@@ -42,7 +42,7 @@ class ValidationRuleTest {
 				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
 				+ "\tissue=JsonSchemaValidation,\n"
 				+ "\tlocation=non-compliant/example.yml/1:1-1:9,\n"
-				+ "\tmessage=Object does not have some of the required properties [[jobs]] ()\n"
+				+ "\tmessage=Object does not have some of the required properties [jobs] ()\n"
 				+ ")\n"
 				+ "Finding(\n"
 				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
@@ -96,7 +96,7 @@ class ValidationRuleTest {
 			aFinding(
 				issue = "JsonSchemaValidation",
 				message = """
-					Object does not have some of the required properties [[jobs, on]] ()
+					Object does not have some of the required properties [jobs, on] ()
 				""".trimIndent(),
 				location = file(file.content),
 			),
@@ -126,7 +126,7 @@ class ValidationRuleTest {
 			aFinding(
 				issue = "JsonSchemaValidation",
 				message = """
-					Object does not have some of the required properties [[name, description, runs]] ()
+					Object does not have some of the required properties [name, description, runs] ()
 				""".trimIndent(),
 				location = file(file.content),
 			),

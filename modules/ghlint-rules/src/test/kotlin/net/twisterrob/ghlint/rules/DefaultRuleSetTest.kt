@@ -32,7 +32,7 @@ class DefaultRuleSetTest {
 				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"
 				+ "\tissue=JsonSchemaValidation,\n"
 				+ "\tlocation=non-compliant/example.yml/1:1-6:50,\n"
-				+ "\tmessage=Object does not have some of the required properties [[jobs, on]] ()\n"
+				+ "\tmessage=Object does not have some of the required properties [jobs, on] ()\n"
 				+ ")\n"
 				+ "Finding(\n"
 				+ "\trule=net.twisterrob.ghlint.analysis.ValidationRule@\\E[0-9a-f]+\\Q,\n"

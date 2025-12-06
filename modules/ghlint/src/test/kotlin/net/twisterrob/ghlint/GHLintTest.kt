@@ -193,7 +193,7 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
-						Object does not have some of the required properties [[jobs]] ()
+						Object does not have some of the required properties [jobs] ()
 					""".trimIndent(),
 					location = invalidFile1(invalidFile1.content),
 				),
@@ -229,7 +229,7 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
-						Object does not have some of the required properties [[jobs]] ()
+						Object does not have some of the required properties [jobs] ()
 					""".trimIndent(),
 					location = invalidFile1(invalidFile1.content),
 				),
@@ -294,7 +294,7 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
-						Object does not have some of the required properties [[jobs, on]] ()
+						Object does not have some of the required properties [jobs, on] ()
 					""".trimIndent(),
 					location = "newline.yml/1:1-1:1",
 				),
@@ -333,7 +333,7 @@ class GHLintTest {
 				aFinding(
 					issue = "JsonSchemaValidation",
 					message = """
-						Object does not have some of the required properties [[jobs]] ()
+						Object does not have some of the required properties [jobs] ()
 					""".trimIndent(),
 					location = invalidFile1(invalidFile1.content),
 				),
