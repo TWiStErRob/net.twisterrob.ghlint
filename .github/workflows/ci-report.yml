@@ -24,7 +24,7 @@ jobs:
     steps:
 
       - name: "Download 'Event File' artifact."
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: 'Event File'
           run-id: ${{ github.event.workflow_run.id }}
@@ -32,7 +32,7 @@ jobs:
           path: .
 
       - name: "Download 'Unit Test Results' artifact."
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: 'Unit Test Results'
           run-id: ${{ github.event.workflow_run.id }}
