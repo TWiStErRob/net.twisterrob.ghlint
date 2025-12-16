@@ -46,6 +46,8 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
   is a JSON schema validator for GitHub Actions including some additional checks, like glob validation.
 * [yamllint](https://github.com/adrienverge/yamllint)
   is a syntax and formatting checker for YAML files.
+* [zizmor]([https://docs.zizmor.sh/audits/](https://zizmor.sh/))
+  TODO what does it do?
 * _If you know any others, feel free to PR._
 
 [schemastore-workflow]: https://json.schemastore.org/github-workflow.json
