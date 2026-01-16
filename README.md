@@ -47,7 +47,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
 * [yamllint](https://github.com/adrienverge/yamllint)
   is a syntax and formatting checker for YAML files.
 * [zizmor]([https://docs.zizmor.sh/audits/](https://zizmor.sh/))
-  TODO what does it do?
+  is a static analysis tool for GitHub Actions. It can find and fix many common security issues in typical GitHub Actions CI/CD setups.
 * _If you know any others, feel free to PR._
 
 [schemastore-workflow]: https://json.schemastore.org/github-workflow.json
