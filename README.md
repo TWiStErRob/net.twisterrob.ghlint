@@ -46,7 +46,7 @@ and [Object Calisthenics](https://www.google.com/?q=Object%20Calisthenics).
   is a JSON schema validator for GitHub Actions including some additional checks, like glob validation.
 * [yamllint](https://github.com/adrienverge/yamllint)
   is a syntax and formatting checker for YAML files.
-* [zizmor]([https://docs.zizmor.sh/audits/](https://zizmor.sh/))
+* [zizmor](https://zizmor.sh/) ([rules](https://docs.zizmor.sh/audits/))
   is a static analysis tool for GitHub Actions. It can find and fix many common security issues in typical GitHub Actions CI/CD setups.
 * _If you know any others, feel free to PR._
 
