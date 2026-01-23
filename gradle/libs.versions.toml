@@ -17,7 +17,7 @@ r8 = "8.5.48"
 classgraph = "4.8.184"
 
 junit-jupiter = "6.0.2"
-kotest = "6.1.0"
+kotest = "6.1.1"
 mockito-kotlin = "6.2.2"
 jsonSchema = "1.9.0"
 
