@@ -4,7 +4,7 @@ java-target = "17"
 java-toolchain = "25"
 java-toolchainTest = "25"
 kotlin-build = "2.3.0"
-kotlin-target = { strictly = "2.3.0" }
+kotlin-target = { strictly = "2.3.10" }
 kotlin-serialization = "1.10.0"
 
 detekt = "1.23.8"
