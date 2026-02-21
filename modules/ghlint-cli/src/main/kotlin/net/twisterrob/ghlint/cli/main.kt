@@ -5,11 +5,11 @@ import com.github.ajalt.clikt.core.main
 public fun main(vararg args: String) {
 	val command = CLI()
 	val actualArgs: List<String> =
-		if (args.firstOrNull() == "--no-exit") {
+		if ("--no-exit" in args) {
 			command.configureContext {
 				exitProcess = { }
 			}
-			args.drop(1)
+			args.toList() - "--no-exit"
 		} else {
 			args.toList()
 		}

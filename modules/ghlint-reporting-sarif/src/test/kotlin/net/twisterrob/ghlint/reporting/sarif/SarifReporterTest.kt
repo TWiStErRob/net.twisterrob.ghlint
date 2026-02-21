@@ -2,6 +2,7 @@ package net.twisterrob.ghlint.reporting.sarif
 
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.GHLINT_VERSION
+import net.twisterrob.ghlint.test.readResourceText
 import net.twisterrob.ghlint.model.File
 import net.twisterrob.ghlint.model.Workflow
 import net.twisterrob.ghlint.results.Finding
@@ -67,13 +68,8 @@ class SarifReporterTest {
 	}
 }
 
-private fun testResource(path: String): String {
-	val stream = SarifReporterTest::class.java.getResourceAsStream(path) ?: error("Cannot find ${path}")
-	return stream.use { it.reader().readText() }
-}
-
 private fun sarifReport(root: Path, resourcePath: String): String =
-	testResource(resourcePath)
+	SarifReporterTest::class.java.readResourceText(resourcePath)
 		.replace("<version>", GHLINT_VERSION)
 		.replace("<root>", root.toUri().toString())
 

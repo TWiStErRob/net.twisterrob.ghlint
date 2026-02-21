@@ -1,0 +1,32 @@
+Usage: ghlint [<options>] <files>...
+
+  GitHub Actions Linter (GH-Lint). A tool to lint GitHub Actions workflows and
+  actions. See https://ghlint.twisterrob.net for more information.
+
+Reporting:
+  --exit / --ignore-failures  Exit with non-zero code if there are findings.
+                              (default: --ignore-failures)
+  --console / --silent        Output to console. --silent does not affect
+                              --verbose, only findings. (default: --console)
+  --ghcommands                Output GitHub Commands (warnings). (default: off)
+  --sarif=<path>              Output a SARIF file.
+
+Options:
+  --root=<path>  Root directory of the repository. (default: .)
+  --verbose      Prints more information. (default: off)
+  -v, --version  Prints the version and exits.
+  -h, --help     Show this message and exit
+
+Arguments:
+  <files>  Workflow YML files to check for problems.
+
+Example usages:
+
+**Lint a single workflow**: `$ ghlint .github/workflows/main.yml`
+
+**Lint all workflows in GitHub Actions CI**: `$ ghlint --verbose
+--sarif=report.sarif.json .github/workflows/*.yml`
+
+**Lint a single action in repository root.**: `$ ghlint action.yml`
+
+**Lint for CI actions in a directory**: `$ ghlint actions/my-action/action.yml`
