@@ -17,6 +17,7 @@ import net.twisterrob.ghlint.model.RawFile
 import net.twisterrob.ghlint.model.name
 import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.test.captureSystemStreams
+import net.twisterrob.ghlint.test.normalizeLineEndings
 import net.twisterrob.ghlint.testing.aFinding
 import net.twisterrob.ghlint.testing.exactFindings
 import net.twisterrob.ghlint.testing.file
@@ -429,7 +430,7 @@ class GHLintTest {
 	}
 }
 
-private infix fun <A : CharSequence> A?.shouldMatchEntire(regex: String): A {
-	this should match("""\Q${regex.replace("\n", System.lineSeparator())}\E""")
+private infix fun String?.shouldMatchEntire(regex: String): String {
+	this?.normalizeLineEndings() should match("""\Q${regex}\E""")
 	return this!!
 }
