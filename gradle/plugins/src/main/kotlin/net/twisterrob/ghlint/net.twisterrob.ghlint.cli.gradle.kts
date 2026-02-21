@@ -72,7 +72,7 @@ private val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	classpath(r8)
 	mainClass = "com.android.tools.r8.R8"
 	args = listOf(
-		"--release",
+		"--debug",
 		"--no-minification",
 		"--classfile",
 		"--pg-conf", rulesFile.asFile.absolutePath,
