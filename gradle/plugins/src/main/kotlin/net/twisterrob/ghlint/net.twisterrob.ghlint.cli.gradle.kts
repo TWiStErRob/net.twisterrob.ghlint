@@ -72,13 +72,23 @@ private val r8Jar = tasks.register<JavaExec>("r8Jar") {
 	classpath(r8)
 	mainClass = "com.android.tools.r8.R8"
 	args = listOf(
-		"--release",
+		// Keep debug information like line numbers and class file names.
+		// If it crashes, we have clean stack trace.
+		"--debug",
+		// Do not obfuscate the names.
+		// (--debug turns this off automatically, keep it in case we switch to --release.)
 		"--no-minification",
+		// Output a .jar with .class files, not .dex (default).
 		"--classfile",
+		// Input config to define app-specific rules.
 		"--pg-conf", rulesFile.asFile.absolutePath,
+		// Write full config in case we need to look at what rules were merged from external .jar files.
 		"--pg-conf-output", configFile.get().asFile.absolutePath,
-		"--output", r8File.get().asFile.absolutePath,
+		// JDK jar for resolving Java classes.
 		"--lib", javaLauncher.get().metadata.installationPath.asFile.absolutePath,
+		// Output .jar file.
+		"--output", r8File.get().asFile.absolutePath,
+		// Input .jar file.
 		fatJarFile.get().asFile.absolutePath,
 	)
 }
