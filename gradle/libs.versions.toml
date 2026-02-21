@@ -7,7 +7,7 @@ kotlin-build = "2.3.10"
 kotlin-target = { strictly = "2.3.10" }
 kotlin-serialization = "1.10.0"
 
-detekt = "1.23.8"
+detekt = "2.0.0-alpha.2"
 jsr305 = "3.0.2"
 snakeyaml2 = "3.0.1"
 sarif4k = "0.6.0"
@@ -27,7 +27,7 @@ jsonSchema = "1.9.0"
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-target" }
 kotlin-reflection = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-target" }
 kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
-detekt-rules-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
+detekt-rules-libraries = { module = "dev.detekt:detekt-rules-libraries", version.ref = "detekt" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 snakeyaml2 = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml2" }
 sarif4k = { module = "io.github.detekt.sarif4k:sarif4k", version.ref = "sarif4k" }
@@ -43,5 +43,5 @@ test-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.re
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-build" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }

@@ -14,16 +14,16 @@ console-reports:
     # Disabled because I don't want to see what kind of reports are generate every time I run detekt.
     - 'NotificationReport'
     # Disabled because it's very verbose. 
-    - 'FindingsReport'
-    # Disabled because it's very verbose, even more so than FindingsReport.
-    - 'FileBasedFindingsReport'
+    - 'IssuesReport'
+    # Disabled because it's very verbose, even more so than IssuesReport.
+    - 'FileBasedIssuesReport'
     # Enabled, because this gives enough context to see the problems.
-    #- 'LiteFindingsReport'
+    #- 'LiteIssuesReport'
 
 
 naming:
 
-  FunctionMaxLength:
+  FunctionNameMaxLength:
     ignoreAnnotated:
       # Test names in JUnit 5 are ok to be long as they're likely sentences.
       - 'org.junit.jupiter.api.Test'
@@ -46,7 +46,7 @@ style:
     ignoreAnnotated:
       - 'org.junit.jupiter.api.Nested'
 
-  RedundantVisibilityModifierRule:
+  RedundantVisibilityModifier:
     # It's not redundant with Kotlin's strict explicit API mode.
     active: false
 
@@ -61,10 +61,10 @@ comments:
     active: false # STOPSHIP review for library
   UndocumentedPublicProperty:
     active: false # STOPSHIP review for library
-  CommentOverPrivateProperty:
+  DocumentationOverPrivateProperty:
     # I want to be able to write comments for private properties if they're needed.
     active: false
-  CommentOverPrivateFunction:
+  DocumentationOverPrivateFunction:
     # I want to be able to write comments for private functions if they're needed.
     active: false
 
