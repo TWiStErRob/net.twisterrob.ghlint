@@ -1,12 +1,18 @@
 # Hide the following message:
-# > Info in ....jar:META-INF/com.android.tools/r8/kotlinx-serialization-common.pro at line 17, column 1:
-# > Proguard configuration rule does not match anything: `-if @kotlinx.serialization.Serializable class ** {
-# >   public static ** INSTANCE;
-# > }
-# > -keepclassmembers class <1> {
-# >   public static <1> INSTANCE;
-# >   kotlinx.serialization.KSerializer serializer(...);
+# > > Task :ghlint-cli:r8Jar
+# > Info in ....jar:META-INF/com.android.tools/r8/kotlinx-serialization-common.pro at line 9, column 1:
+# > Proguard configuration rule does not match anything:
+# > `-if @kotlinx.serialization.internal.NamedCompanion class *
+# > -keepclassmembers class * {
+# >   static <1> *;
 # > }`
+# > Info in ....jar:META-INF/com.android.tools/r8/kotlinx-serialization-r8.pro at line 16, column 1:
+# > Proguard configuration rule does not match anything:
+# > `-if @kotlinx.serialization.internal.NamedCompanion class *
+# > -keep,allowaccessmodification,allowrepackaging,allowobfuscation,allowshrinking,allowoptimization class <1> {
+# >   <init>();
+# > }`
+# @NamedCompanion is added by the compiler plugin to companions with a non-default name.
+# The class is manually annotated, so the `if` can match.
 # The ProguardWorkaround class is not used anywhere, but here.
-# Need to keep it so that the `if` can match.
--keep class net.twisterrob.ghlint.reporting.sarif.ProguardWorkaround
+-keep class net.twisterrob.ghlint.reporting.sarif.internal.ProguardWorkaroundForNamedCompanion
