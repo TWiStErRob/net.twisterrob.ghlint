@@ -23,7 +23,7 @@ console-reports:
 
 naming:
 
-  FunctionMaxLength:
+  FunctionNameMaxLength:
     ignoreAnnotated:
       # Test names in JUnit 5 are ok to be long as they're likely sentences.
       - 'org.junit.jupiter.api.Test'
@@ -46,7 +46,7 @@ style:
     ignoreAnnotated:
       - 'org.junit.jupiter.api.Nested'
 
-  RedundantVisibilityModifierRule:
+  RedundantVisibilityModifier:
     # It's not redundant with Kotlin's strict explicit API mode.
     active: false
 
@@ -61,10 +61,10 @@ comments:
     active: false # STOPSHIP review for library
   UndocumentedPublicProperty:
     active: false # STOPSHIP review for library
-  CommentOverPrivateProperty:
+  DocumentationOverPrivateProperty:
     # I want to be able to write comments for private properties if they're needed.
     active: false
-  CommentOverPrivateFunction:
+  DocumentationOverPrivateFunction:
     # I want to be able to write comments for private functions if they're needed.
     active: false
 

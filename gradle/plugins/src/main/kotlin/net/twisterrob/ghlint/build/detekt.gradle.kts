@@ -1,17 +1,17 @@
 package net.twisterrob.ghlint.build
 
-import io.gitlab.arturbosch.detekt.Detekt
+import dev.detekt.gradle.Detekt
 import net.twisterrob.ghlint.build.dsl.isCI
 import net.twisterrob.ghlint.build.dsl.libs
 
 plugins {
-	id("io.gitlab.arturbosch.detekt")
+	id("dev.detekt")
 }
 
 detekt {
 	ignoreFailures = isCI.get()
 	allRules = true
-	basePath = rootProject.projectDir.absolutePath
+	basePath = rootProject.projectDir
 
 	parallel = true
 	config.from(rootProject.file("config/detekt/detekt.yml"))
@@ -21,8 +21,8 @@ detekt {
 		jvmTarget = libs.versions.java.target.get()
 		reports {
 			html.required = true // human
-			xml.required = true // checkstyle
-			txt.required = true // console
+			checkstyle.required = true // checkstyle
+			markdown.required = true // console
 			// https://sarifweb.azurewebsites.net
 			sarif.required = true // Github Code Scanning
 		}
