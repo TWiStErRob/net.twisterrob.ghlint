@@ -46,7 +46,7 @@ jobs:
 
       - name: "Upload 'CLI Application' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'CLI Application'
           if-no-files-found: error
@@ -95,7 +95,7 @@ jobs:
 
       - name: "Upload 'Unit Test Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'Unit Test Results'
           if-no-files-found: error
@@ -104,7 +104,7 @@ jobs:
 
       - name: "Upload 'Unit Test Reports' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'Unit Test Reports'
           if-no-files-found: error
@@ -126,7 +126,7 @@ jobs:
 
       - name: "Upload 'Detekt Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'Detekt Results'
           if-no-files-found: error
@@ -135,7 +135,7 @@ jobs:
 
       - name: "Upload 'Detekt Merged Results' artifact."
         if: ${{ success() || failure() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'Detekt Merged Results'
           if-no-files-found: error
@@ -180,7 +180,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: "Download 'CLI Application' artifact."
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: 'CLI Application'
           path: ${{ runner.temp }}
@@ -206,7 +206,7 @@ jobs:
 
       - name: "Upload 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})' artifact."
         if: ${{ steps.validate.outcome != 'skipped' && (success() || failure()) }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'GH-Lint Snapshot Results (Java ${{ matrix.java-version }})'
           if-no-files-found: error
