@@ -95,7 +95,7 @@ public class IdNamingRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "Workflow has non-lower-kebab-case IDs.",
+					explanation = "Workflow has non-lower-kebab-case IDs. Specifically note the uppercase \"CI\" and the space in the file name.",
 					path = "CI build.yml",
 					content = """
 						on: push
@@ -211,7 +211,7 @@ public class IdNamingRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 			),
 			nonCompliant = listOf(
 				Example(
-					explanation = "Step has non-lower-kebab-case ID.",
+					explanation = "Step has non-lower-kebab-case ID. Note the use of a space and an underscore separator.",
 					content = """
 						on: push
 						jobs:
