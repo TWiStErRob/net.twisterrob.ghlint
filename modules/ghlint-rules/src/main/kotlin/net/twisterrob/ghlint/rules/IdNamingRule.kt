@@ -97,7 +97,7 @@ public class IdNamingRule : VisitorRule, WorkflowVisitor, ActionVisitor {
 				Example(
 					explanation = """
 						Workflow has non-lower-kebab-case IDs.
-						Specifically note the uppercase \"CI\" and the space in the file name.
+						Specifically note the uppercase "CI" and the space in the file name.
 					""".trimIndent(),
 					path = "CI build.yml",
 					content = """
