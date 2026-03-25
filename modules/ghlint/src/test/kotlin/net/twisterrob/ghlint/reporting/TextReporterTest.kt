@@ -24,6 +24,8 @@ class TextReporterTest {
 		report(findings) shouldBe """
 			TestIssue at test.file:1:2-3:4: message
 			
+			For more information about this rule, run: ghlint --help TestIssue
+			
 		""".trimIndent()
 	}
 
@@ -34,10 +36,12 @@ class TextReporterTest {
 		report(findings) shouldBe """
 			TestIssue at nested/test/path/to/file.name:1:2-3:4: message
 			
+			For more information about this rule, run: ghlint --help TestIssue
+			
 		""".trimIndent()
 	}
 
-	@Test fun `multiple findings`() {
+	@Test fun `multiple findings same issue`() {
 		val findings = listOf(
 			testFinding(TestRule(), TestRule.TestIssue),
 			testFinding(TestRule(), TestRule.TestIssue),
@@ -47,6 +51,22 @@ class TextReporterTest {
 			TestIssue at test.file:1:2-3:4: message
 			TestIssue at test.file:1:2-3:4: message
 			TestIssue at test.file:1:2-3:4: message
+			
+			For more information about this rule, run: ghlint --help TestIssue
+			
+		""".trimIndent()
+	}
+
+	@Test fun `multiple findings different issues`() {
+		val findings = listOf(
+			testFinding(TestRule(), TestRule.TestIssue),
+			testFinding(TestRule(), TestRule.OtherIssue),
+		)
+		report(findings) shouldBe """
+			TestIssue at test.file:1:2-3:4: message
+			OtherIssue at test.file:1:2-3:4: message
+			
+			For more information about these rules, run: ghlint --help <RuleId>
 			
 		""".trimIndent()
 	}
@@ -64,12 +84,19 @@ class TextReporterTest {
 			baz
 			TestIssue at test.file:1:2-3:4: message
 			
+			For more information about this rule, run: ghlint --help TestIssue
+			
 		""".trimIndent()
+	}
+
+	@Test fun `no findings`() {
+		val findings = emptyList<Finding>()
+		report(findings) shouldBe ""
 	}
 
 	private class TestRule : Rule {
 
-		override val issues: List<Issue> = listOf(TestIssue)
+		override val issues: List<Issue> = listOf(TestIssue, OtherIssue)
 
 		override fun check(file: File): List<Finding> =
 			error("Should never be called.")
@@ -80,6 +107,14 @@ class TextReporterTest {
 				id = "TestIssue",
 				title = "title",
 				description = "description",
+				compliant = emptyList(),
+				nonCompliant = emptyList()
+			)
+
+			val OtherIssue = Issue(
+				id = "OtherIssue",
+				title = "other title",
+				description = "other description",
 				compliant = emptyList(),
 				nonCompliant = emptyList()
 			)
