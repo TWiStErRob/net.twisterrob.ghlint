@@ -19,7 +19,6 @@ kotlin {
 		extraWarnings = true
 		progressiveMode = true
 		freeCompilerArgs.add("-opt-in=kotlin.ExperimentalStdlibApi")
-		freeCompilerArgs.add("-Xcontext-parameters")
 		// Kotlin 2.1: Make it easier to suppress warnings locally in the code by providing a name in logs.
 		// See https://youtrack.jetbrains.com/issue/KT-8087
 		freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
