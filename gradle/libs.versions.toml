@@ -7,17 +7,17 @@ kotlin-build = "2.3.21"
 kotlin-target = { strictly = "2.3.21" }
 kotlin-serialization = "1.11.0"
 
-detekt = "2.0.0-alpha.3"
+detekt = "2.0.0-alpha.5"
 jsr305 = "3.0.2"
 snakeyaml2 = "3.0.1"
 sarif4k = "0.7.0"
 clikt = "5.1.0"
-buildConfig = "6.0.9"
+buildConfig = "6.0.10"
 r8 = "9.1.31"
 classgraph = "4.8.184"
 
-junit-jupiter = "6.1.0"
-kotest = "6.1.11"
+junit-jupiter = "6.1.2"
+kotest = "6.2.2"
 mockito-kotlin = "6.3.0"
 jsonSchema = "1.9.1"
 
