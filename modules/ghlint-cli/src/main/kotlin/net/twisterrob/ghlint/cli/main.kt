@@ -13,5 +13,11 @@ public fun main(vararg args: String) {
 		} else {
 			args.toList()
 		}
+
+	// Store original arguments in context data for custom help processing
+	command.configureContext {
+		data["originalArgs"] = actualArgs
+	}
+
 	command.main(actualArgs)
 }

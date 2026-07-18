@@ -5,6 +5,7 @@ plugins {
 dependencies {
 	api(projects.ghlint)
 	implementation(projects.ghlintApi)
+	implementation(projects.ghlintRules)
 	api(libs.clikt)
 }
 
