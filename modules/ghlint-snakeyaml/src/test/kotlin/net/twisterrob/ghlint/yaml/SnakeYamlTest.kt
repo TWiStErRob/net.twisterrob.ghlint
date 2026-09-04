@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
+import org.junit.jupiter.api.assertThrows
 import org.snakeyaml.engine.v2.nodes.MappingNode
 import org.snakeyaml.engine.v2.nodes.NodeTuple
 import org.snakeyaml.engine.v2.nodes.ScalarNode
@@ -149,6 +150,22 @@ class SnakeYamlTest {
 			val node = SnakeYaml.loadRaw(yaml("\t\t", "test.yml"))
 			assertInstanceOf<ScalarNode>(node)
 			assertEquals("", node.value)
+		}
+
+		@Test fun `tab indentation is invalid`() {
+			val invalidIndentation = "\tvalue"
+			val ex = assertThrows<IllegalArgumentException> {
+				SnakeYaml.loadRaw(yaml("key:\n${invalidIndentation}", "test.yml"))
+			}
+			val error = """
+				Failed to parse YAML: while scanning for the next token
+				found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
+				 in reader, line 2, column 1:
+				    ${invalidIndentation}
+				    ^
+				
+			""".trimIndent()
+			assertEquals(error, ex.message)
 		}
 	}
 
