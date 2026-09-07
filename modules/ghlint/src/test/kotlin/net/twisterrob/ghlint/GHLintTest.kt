@@ -318,7 +318,7 @@ class GHLintTest {
 			results shouldHave singleFinding(
 				issue = "YamlSyntaxError",
 				message = errorFileMessage,
-				location = errorFile("\t\t"),
+				location = errorFile(errorFile.content),
 			)
 		}
 
@@ -329,7 +329,7 @@ class GHLintTest {
 				aFinding(
 					issue = "YamlSyntaxError",
 					message = errorFileMessage,
-					location = errorFile("\t\t"),
+					location = errorFile(errorFile.content),
 				),
 				aFinding(
 					issue = "JsonSchemaValidation",
@@ -413,7 +413,10 @@ class GHLintTest {
 
 		val errorFile = yaml(
 			fileName = "tabs.yml",
-			content = "\t\t",
+			content = """
+				key:
+					value
+			""".trimIndent(),
 		)
 
 		val errorFileMessage = """
@@ -421,8 +424,8 @@ class GHLintTest {
 			```
 			java.lang.IllegalArgumentException: Failed to parse YAML: while scanning for the next token
 			found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
-			 in reader, line 1, column 1:
-			    ${errorFile.content}
+			 in reader, line 2, column 1:
+			    	value
 			    ^
 			
 			```
