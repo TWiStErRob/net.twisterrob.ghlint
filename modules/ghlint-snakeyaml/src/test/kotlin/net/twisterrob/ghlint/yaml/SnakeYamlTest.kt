@@ -153,15 +153,22 @@ class SnakeYamlTest {
 		}
 
 		@Test fun `tab indentation is invalid`() {
-			val invalidIndentation = "\tvalue"
 			val ex = assertThrows<IllegalArgumentException> {
-				SnakeYaml.loadRaw(yaml("key:\n${invalidIndentation}", "test.yml"))
+				SnakeYaml.loadRaw(
+					yaml(
+						"""
+							key:
+								value
+						""".trimIndent(),
+						"test.yml",
+					),
+				)
 			}
 			val error = """
 				Failed to parse YAML: while scanning for the next token
 				found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
 				 in reader, line 2, column 1:
-				    ${invalidIndentation}
+				    	value
 				    ^
 				
 			""".trimIndent()
