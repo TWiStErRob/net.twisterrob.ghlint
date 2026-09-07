@@ -3,8 +3,8 @@
 java-target = "17"
 java-toolchain = "25"
 java-toolchainTest = "25"
-kotlin-build = "2.4.10"
-kotlin-target = { strictly = "2.4.10" }
+kotlin-build = "2.4.20"
+kotlin-target = { strictly = "2.4.20" }
 kotlin-serialization = "1.11.0"
 
 detekt = "2.0.0-alpha.6"
