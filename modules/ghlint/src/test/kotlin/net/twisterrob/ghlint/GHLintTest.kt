@@ -411,11 +411,12 @@ class GHLintTest {
 			""".trimIndent(),
 		)
 
-		private const val errorLine = "\tvalue"
-
 		val errorFile = yaml(
 			fileName = "tabs.yml",
-			content = "key:\n${errorLine}",
+			content = """
+				key:
+					value
+			""".trimIndent(),
 		)
 
 		val errorFileMessage = """
@@ -424,7 +425,7 @@ class GHLintTest {
 			java.lang.IllegalArgumentException: Failed to parse YAML: while scanning for the next token
 			found character '\t(TAB)' that cannot start any token. (Do not use \t(TAB) for indentation)
 			 in reader, line 2, column 1:
-			    ${errorLine}
+			    	value
 			    ^
 			
 			```
