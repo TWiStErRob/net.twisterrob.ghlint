@@ -10,6 +10,10 @@ public class TextReporter(
 		findings.forEach {
 			output.appendLine(it.render())
 		}
+		if (findings.isNotEmpty()) {
+			output.appendLine()
+			output.appendLine(buildHelpHint(findings))
+		}
 	}
 }
 
@@ -22,4 +26,13 @@ private fun Finding.render(): String {
 		}
 	}
 	return "${issue.id} at ${location.file.path}:${loc}: ${message}"
+}
+
+private fun buildHelpHint(findings: List<Finding>): String {
+	val uniqueIssueIds = findings.map { it.issue.id }.distinct()
+	return if (uniqueIssueIds.size == 1) {
+		"For more information about this rule, run: ghlint --help ${uniqueIssueIds.single()}"
+	} else {
+		"For more information about these rules, run: ghlint --help <RuleId>"
+	}
 }
