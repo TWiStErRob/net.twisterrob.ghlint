@@ -57,7 +57,17 @@ runs:
         GH_TOKEN: ${{ github.token }}
       shell: bash
       run: |
-        gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"
+        for attempt in {1..3}; do
+          rm -f ghlint.jar
+          if gh release download --repo "TWiStErRob/net.twisterrob.ghlint" "v${GHLINT_VERSION}" --pattern "ghlint.jar"; then
+            break
+          fi
+          if (( attempt == 3 )); then
+            echo "::error::Failed to download GH-Lint after ${attempt} attempts."
+            exit 1
+          fi
+          sleep $((attempt * 10))
+        done
         chmod +x ghlint.jar
 
     - name: "Calculate files to check"
