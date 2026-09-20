@@ -14,8 +14,8 @@ pluginManagement {
 }
 
 plugins {
-	id("net.twisterrob.gradle.plugin.settings") version "0.19"
-	id("net.twisterrob.gradle.plugin.nagging") version "0.19"
+	id("net.twisterrob.gradle.plugin.settings") version "0.20"
+	id("net.twisterrob.gradle.plugin.nagging") version "0.20"
 	id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
