@@ -42,7 +42,6 @@ class SnakePermissionsTest {
 				  checks: ${accessString}
 				  contents: ${accessString}
 				  deployments: ${accessString}
-				  id-token: ${accessString}
 				  issues: ${accessString}
 				  packages: ${accessString}
 				  pages: ${accessString}
@@ -65,7 +64,6 @@ class SnakePermissionsTest {
 		workflow.permissions?.checks shouldBe access
 		workflow.permissions?.contents shouldBe access
 		workflow.permissions?.deployments shouldBe access
-		workflow.permissions?.idToken shouldBe access
 		workflow.permissions?.issues shouldBe access
 		workflow.permissions?.packages shouldBe access
 		workflow.permissions?.pages shouldBe access
@@ -93,7 +91,6 @@ class SnakePermissionsTest {
 				      checks: ${accessString}
 				      contents: ${accessString}
 				      deployments: ${accessString}
-				      id-token: ${accessString}
 				      issues: ${accessString}
 				      packages: ${accessString}
 				      pages: ${accessString}
@@ -114,7 +111,6 @@ class SnakePermissionsTest {
 		job.permissions?.checks shouldBe access
 		job.permissions?.contents shouldBe access
 		job.permissions?.deployments shouldBe access
-		job.permissions?.idToken shouldBe access
 		job.permissions?.issues shouldBe access
 		job.permissions?.packages shouldBe access
 		job.permissions?.pages shouldBe access
@@ -122,6 +118,52 @@ class SnakePermissionsTest {
 		job.permissions?.repositoryProjects shouldBe access
 		job.permissions?.securityEvents shouldBe access
 		job.permissions?.statuses shouldBe access
+	}
+
+	@CsvSource(
+		"write, WRITE",
+		"none, NONE",
+	)
+	@ParameterizedTest
+	fun `workflow has id-token permission with correct values`(accessString: String, access: Access) {
+		val workflow = load(
+			"""
+				on: push
+				permissions:
+				  id-token: ${accessString}
+				jobs:
+				  test:
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/deploy-pages@v4
+			""".trimIndent()
+		).theWorkflow
+
+		workflow.permissions?.idToken shouldBe access
+		workflow.permissions.verifyTheRestOf(Permission.ID_TOKEN)
+	}
+
+	@CsvSource(
+		"write, WRITE",
+		"none, NONE",
+	)
+	@ParameterizedTest
+	fun `job has id-token permission with correct values`(accessString: String, access: Access) {
+		val job = load(
+			"""
+				on: push
+				jobs:
+				  test:
+				    permissions:
+				      id-token: ${accessString}
+				    runs-on: ubuntu-latest
+				    steps:
+				      - uses: actions/deploy-pages@v4
+			""".trimIndent()
+		).theJob
+
+		job.permissions?.idToken shouldBe access
+		job.permissions.verifyTheRestOf(Permission.ID_TOKEN)
 	}
 
 	@Test fun `workflow with no permissions is null`() {
