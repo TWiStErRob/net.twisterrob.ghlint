@@ -57,7 +57,7 @@ internal class ValidationRule(
 					FileType.UNKNOWN -> null
 				}
 				if (type != null) {
-						validation.validate(content.node, type).toFindings(content.node, file)
+					validation.validate(content.node, type).toFindings(content.node, file)
 						.forEach(reporting::report)
 				}
 				reporting.report(content.toFinding(YamlLoadError, "loaded"))
