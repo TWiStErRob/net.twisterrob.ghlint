@@ -20,6 +20,7 @@ import com.github.ajalt.clikt.parameters.types.path
 import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
+import net.twisterrob.ghlint.SchemaSource
 import java.nio.file.Path
 
 internal class CLI : CliktCommand(
@@ -53,6 +54,7 @@ internal class CLI : CliktCommand(
 		.help("Workflow YML files to check for problems.")
 
 	private val reporting: ReportingOptions by ReportingOptions()
+	private val schemas: SchemaOptions by SchemaOptions()
 
 	override val root: Path by option("--root")
 		.path(mustExist = true, canBeDir = true, canBeFile = false)
@@ -75,6 +77,8 @@ internal class CLI : CliktCommand(
 	override val isReportConsole: Boolean get() = reporting.isConsoleLog
 	override val isReportGitHubCommands: Boolean get() = reporting.isGitHubCommands
 	override val sarifReportLocation: Path? get() = reporting.sarifLocation
+	val workflowSchema: SchemaSource get() = schemas.workflow
+	val actionSchema: SchemaSource get() = schemas.action
 
 	override fun help(context: Context): String =
 		"""

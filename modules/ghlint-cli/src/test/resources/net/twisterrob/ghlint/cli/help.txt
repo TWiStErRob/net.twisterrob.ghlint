@@ -14,6 +14,12 @@ Reporting:
   --ghcommands                Output GitHub Commands (warnings). (default: off)
   --sarif=<report-path>       Output a SARIF file.
 
+Schemas:
+  --workflow-schema=<schema>  Workflow schema: :latest, :embedded (offline), or
+                              a local file (offline). (default: :latest)
+  --action-schema=<schema>    Action schema: :latest, :embedded (offline), or a
+                              local file (offline). (default: :latest)
+
 Options:
   --root=<path>  Root directory of the repository. (default: .)
   --verbose      Prints more information. (default: off)
