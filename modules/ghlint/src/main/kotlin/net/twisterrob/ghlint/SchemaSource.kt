@@ -1,5 +1,6 @@
 package net.twisterrob.ghlint
 
+import net.twisterrob.ghlint.yaml.YamlValidation
 import java.net.URI
 import java.nio.file.Path
 
@@ -17,6 +18,8 @@ public sealed interface SchemaSource {
 
 internal fun SchemaSource.toUri(name: String): URI = when (this) {
 	SchemaSource.Latest -> URI("https://json.schemastore.org/$name")
-	SchemaSource.Embedded -> URI("embedded:/$name")
+	SchemaSource.Embedded -> checkNotNull(YamlValidation::class.java.getResource("schemas/$name")) {
+		"Embedded schema not found: $name"
+	}.toURI()
 	is SchemaSource.LocalFile -> path.toAbsolutePath().normalize().toUri()
 }

@@ -7,9 +7,7 @@ import net.twisterrob.ghlint.model.FileLocation
 import net.twisterrob.ghlint.model.RawFile
 import org.snakeyaml.engine.v2.nodes.Node
 import java.net.URI
-import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.io.path.readText
 
 public class YamlValidation(
 	workflowSchema: URI = URI("https://json.schemastore.org/github-workflow.json"),
@@ -42,21 +40,15 @@ public class YamlValidation(
 
 		override fun resolve(uri: String): SchemaResolver.Result = cache.computeIfAbsent(uri) {
 			val requested = URI(uri)
-			val content = when {
-				requested.scheme == "embedded" ->
-					checkNotNull(YamlValidation::class.java.getResourceAsStream("schemas${requested.path}")) {
-						"Embedded schema not found: $requested"
-					}.bufferedReader().use { it.readText() }
-				requested.scheme == "file" -> Path.of(requested).readText()
-				this.uri.scheme in setOf("http", "https") -> {
-					val connection = requested.toURL().openConnection().apply {
-						connectTimeout = 10_000
-						readTimeout = 30_000
-					}
-					connection.getInputStream().bufferedReader().use { it.readText() }
-				}
-				else -> error("Cannot resolve schema $uri: network access is disabled for this schema source.")
+			check(requested.isLocalSchema() || this.uri.scheme in setOf("http", "https")) {
+				"Cannot resolve schema $uri: network access is disabled for this schema source."
 			}
+			val connection = requested.toURL().openConnection().apply {
+				useCaches = false
+				connectTimeout = 10_000
+				readTimeout = 30_000
+			}
+			val content = connection.getInputStream().bufferedReader().use { it.readText() }
 			SchemaResolver.Result.fromString(content)
 		}
 	}
@@ -68,6 +60,12 @@ public class YamlValidation(
 		public fun validate(node: Node, type: YamlValidationType): List<YamlValidationProblem> =
 			default.validate(node, type)
 	}
+}
+
+private fun URI.isLocalSchema(): Boolean = when (scheme) {
+	"file" -> true
+	"jar" -> URI(schemeSpecificPart.substringBefore("!/")).isLocalSchema()
+	else -> false
 }
 
 internal fun Error.toDisplayString(): String =
