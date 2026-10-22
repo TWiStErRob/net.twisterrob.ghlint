@@ -7,7 +7,7 @@ import net.twisterrob.ghlint.results.Location
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
 private val init = run {
-	Printers.safeAdd<Location> { it.testString() }
+	Printers.safeAdd(Location::testString)
 }
 
 public fun aLocation(expected: Location): Matcher<Location> =
