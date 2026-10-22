@@ -1,7 +1,5 @@
 package net.twisterrob.ghlint.testing
 
-import io.kotest.assertions.print.Printed
-import io.kotest.assertions.print.Printers
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
@@ -9,13 +7,9 @@ import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.shouldHave
 import net.twisterrob.ghlint.results.Finding
-import net.twisterrob.ghlint.rule.Issue
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
-private val init = run {
-	Printers.add(Finding::class) { Printed(it.testString()) }
-	Printers.add(Issue::class) { Printed(it.testString()) }
-}
+private val init = MatcherPrinters.ensureInitialized()
 
 /**
  * Matches findings that have no findings.
