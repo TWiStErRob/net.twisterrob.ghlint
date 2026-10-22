@@ -77,8 +77,8 @@ internal class CLI : CliktCommand(
 	override val isReportConsole: Boolean get() = reporting.isConsoleLog
 	override val isReportGitHubCommands: Boolean get() = reporting.isGitHubCommands
 	override val sarifReportLocation: Path? get() = reporting.sarifLocation
-	val workflowSchema: SchemaSource get() = schemas.workflow
-	val actionSchema: SchemaSource get() = schemas.action
+	override val workflowSchema: SchemaSource get() = schemas.workflow
+	override val actionSchema: SchemaSource get() = schemas.action
 
 	override fun help(context: Context): String =
 		"""

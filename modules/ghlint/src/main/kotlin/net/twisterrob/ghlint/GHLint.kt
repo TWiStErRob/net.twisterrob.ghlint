@@ -10,6 +10,7 @@ import net.twisterrob.ghlint.results.Finding
 import net.twisterrob.ghlint.rules.DefaultRuleSet
 import net.twisterrob.ghlint.ruleset.RuleSet
 import net.twisterrob.ghlint.yaml.SnakeYaml
+import net.twisterrob.ghlint.yaml.YamlValidation
 import org.jetbrains.annotations.TestOnly
 import kotlin.io.path.readText
 import kotlin.time.measureTimedValue
@@ -31,7 +32,11 @@ public class GHLint {
 		}
 
 		val files = config.files.map { RawFile(FileLocation(it.toString()), it.readText()) }
-		val ruleSets = listOf(BuiltInRuleSet(), DefaultRuleSet())
+		val validation = YamlValidation(
+			workflowSchema = config.workflowSchema.toUri("github-workflow.json"),
+			actionSchema = config.actionSchema.toUri("github-action.json"),
+		)
+		val ruleSets = listOf(BuiltInRuleSet(validation), DefaultRuleSet())
 		val result = measureTimedValue { analyze(files, ruleSets, config.isVerbose) }
 		val findings = result.value
 
