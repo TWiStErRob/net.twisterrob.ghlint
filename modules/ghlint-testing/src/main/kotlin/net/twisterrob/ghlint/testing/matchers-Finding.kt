@@ -13,8 +13,8 @@ import net.twisterrob.ghlint.rule.Issue
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
 private val init = run {
-	Printers.safeAdd(Finding::class) { Printed(it.testString()) }
-	Printers.safeAdd(Issue::class) { Printed(it.testString()) }
+	Printers.safeAdd<Finding> { Printed(it.testString()) }
+	Printers.safeAdd<Issue> { Printed(it.testString()) }
 }
 
 /**
