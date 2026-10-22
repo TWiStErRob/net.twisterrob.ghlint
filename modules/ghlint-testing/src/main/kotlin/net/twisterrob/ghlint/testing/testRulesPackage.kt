@@ -30,16 +30,16 @@ public fun testRulesPackage(ruleSet: KClass<out RuleSet>, rulesPackage: Package 
 private fun ClassLoader.getRulesFrom(rulesPackage: Package): List<Class<Rule>> =
 	ClassGraph()
 		.enableClassInfo()
-		.overrideClassLoaders(this)
+		.enableClassLoaders(this)
 		.ignoreParentClassLoaders()
 		.acceptPackages(rulesPackage.name) // Includes subpackages.
 		.scan()
 		.use { scanResult ->
-			scanResult.getClassesImplementing(Rule::class.java)
+			scanResult.getAllClassesImplementing(Rule::class.java)
 				.filterNot { it.isAbstract }
-				.map { it.loadClass<Rule>() }
+				.map { it.loadClass<Rule>(this) }
 		}
 
-@Suppress("UNCHECKED_CAST", "EXTENSION_SHADOWED_BY_MEMBER")
-private inline fun <reified T> ClassInfo.loadClass(): Class<T> =
-	(this.loadClass() ?: error("Class not found: ${this.name}")) as Class<T>
+@Suppress("UNCHECKED_CAST")
+private inline fun <reified T> ClassInfo.loadClass(loader: ClassLoader): Class<T> =
+	Class.forName(this.name, false, loader) as Class<T>
