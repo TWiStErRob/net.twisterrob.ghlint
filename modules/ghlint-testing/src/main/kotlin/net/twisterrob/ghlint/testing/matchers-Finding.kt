@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.testing
 
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.Printers
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -13,8 +12,8 @@ import net.twisterrob.ghlint.rule.Issue
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
 private val init = run {
-	Printers.add(Finding::class) { Printed(it.testString()) }
-	Printers.add(Issue::class) { Printed(it.testString()) }
+	Printers.safeAdd(Finding::testString)
+	Printers.safeAdd(Issue::testString)
 }
 
 /**
