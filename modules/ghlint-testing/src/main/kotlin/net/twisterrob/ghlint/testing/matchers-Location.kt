@@ -1,6 +1,5 @@
 package net.twisterrob.ghlint.testing
 
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.Printers
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -8,7 +7,7 @@ import net.twisterrob.ghlint.results.Location
 
 @Suppress("unused") // Initialize static framework when these assertions are used.
 private val init = run {
-	Printers.safeAdd<Location> { Printed(it.testString()) }
+	Printers.safeAdd<Location> { it.testString() }
 }
 
 public fun aLocation(expected: Location): Matcher<Location> =
