@@ -5,5 +5,6 @@
 at commit `5dca3c49acfef00e2d94e73493a5259b0940f834` (retrieved 2026-10-22).
 They are distributed under the Apache License 2.0; see the adjacent `LICENSE` file.
 
-To update, copy both files from `src/schemas/json/` at a new SchemaStore commit,
-check their external `$ref` dependencies, and update this provenance record.
+To update manually, run `bash .github/scripts/update-schemas.sh SCHEMASTORE_COMMIT_SHA`
+from the repository root. The script validates both files, rejects external schema references,
+and updates this provenance record only when the schema contents change.
