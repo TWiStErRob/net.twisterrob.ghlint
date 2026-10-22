@@ -26,20 +26,22 @@ import net.twisterrob.ghlint.yaml.resolve
 import net.twisterrob.ghlint.yaml.toLocation
 import org.snakeyaml.engine.v2.nodes.Node
 
-internal class ValidationRule : VisitorRule, ActionVisitor, WorkflowVisitor, InvalidContentVisitor {
+internal class ValidationRule(
+	private val validation: YamlValidation = YamlValidation.default,
+) : VisitorRule, ActionVisitor, WorkflowVisitor, InvalidContentVisitor {
 
 	override val issues: List<Issue> = listOf(YamlSyntaxError, YamlLoadError, JsonSchemaValidation)
 
 	override fun visitWorkflow(reporting: Reporting, workflow: Workflow) {
 		workflow as SnakeWorkflow
-		YamlValidation.validate(workflow.node, YamlValidationType.WORKFLOW)
+		validation.validate(workflow.node, YamlValidationType.WORKFLOW)
 			.toFindings(workflow.node, workflow.parent)
 			.forEach(reporting::report)
 	}
 
 	override fun visitAction(reporting: Reporting, action: Action) {
 		action as SnakeAction
-		YamlValidation.validate(action.node, YamlValidationType.ACTION)
+		validation.validate(action.node, YamlValidationType.ACTION)
 			.toFindings(action.node, action.parent)
 			.forEach(reporting::report)
 	}
@@ -55,7 +57,7 @@ internal class ValidationRule : VisitorRule, ActionVisitor, WorkflowVisitor, Inv
 					FileType.UNKNOWN -> null
 				}
 				if (type != null) {
-					YamlValidation.validate(content.node, type).toFindings(content.node, file)
+						validation.validate(content.node, type).toFindings(content.node, file)
 						.forEach(reporting::report)
 				}
 				reporting.report(content.toFinding(YamlLoadError, "loaded"))
