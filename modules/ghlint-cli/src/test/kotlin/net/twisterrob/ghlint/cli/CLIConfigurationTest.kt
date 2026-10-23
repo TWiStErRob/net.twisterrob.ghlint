@@ -76,7 +76,7 @@ class CLIConfigurationTest {
 
 			val error = shouldThrow<UsageError> { parse(file.toString()) }
 
-			error.plainMessage shouldBe "invalid value for FILES: file \"$file\" does not exist."
+			error.plainMessage shouldBe "invalid value for FILES: file \"${file}\" does not exist."
 		}
 
 		@Test fun `rejects a directory`() {
@@ -84,7 +84,7 @@ class CLIConfigurationTest {
 
 			val error = shouldThrow<UsageError> { parse(folder.toString()) }
 
-			error.plainMessage shouldBe "invalid value for FILES: file \"$folder\" is a directory."
+			error.plainMessage shouldBe "invalid value for FILES: file \"${folder}\" is a directory."
 		}
 
 		@Test fun `accepts options before files`() {
@@ -122,7 +122,7 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `accepts equals separated value`() {
-			val configuration = parse(workflow.toString(), "--root=$temp")
+			val configuration = parse(workflow.toString(), "--root=${temp}")
 
 			configuration.root shouldBe temp
 		}
@@ -146,7 +146,7 @@ class CLIConfigurationTest {
 
 			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--root", root.toString()) }
 
-			error.plainMessage shouldBe "invalid value for --root: directory \"$root\" is a file."
+			error.plainMessage shouldBe "invalid value for --root: directory \"${root}\" is a file."
 		}
 
 		@Test fun `requires a value`() {
@@ -272,7 +272,7 @@ class CLIConfigurationTest {
 		@Test fun `accepts equals separated value`() {
 			val report = temp.resolve("report.sarif.json")
 
-			val configuration = parse(workflow.toString(), "--sarif=$report")
+			val configuration = parse(workflow.toString(), "--sarif=${report}")
 
 			configuration.sarifReportLocation shouldBe report
 		}
@@ -296,7 +296,7 @@ class CLIConfigurationTest {
 		@Test fun `rejects a directory`() {
 			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--sarif", temp.toString()) }
 
-			error.plainMessage shouldBe "invalid value for --sarif: file \"$temp\" is a directory."
+			error.plainMessage shouldBe "invalid value for --sarif: file \"${temp}\" is a directory."
 		}
 
 		@Test fun `requires a value`() {
@@ -328,13 +328,13 @@ class CLIConfigurationTest {
 		@Test fun `accepts --version without files`() {
 			val result = shouldThrow<PrintMessage> { parse("--version") }
 
-			result.message shouldBe "GH-Lint (ghlint) version $GHLINT_VERSION"
+			result.message shouldBe "GH-Lint (ghlint) version ${GHLINT_VERSION}"
 		}
 
 		@Test fun `accepts -v without files`() {
 			val result = shouldThrow<PrintMessage> { parse("-v") }
 
-			result.message shouldBe "GH-Lint (ghlint) version $GHLINT_VERSION"
+			result.message shouldBe "GH-Lint (ghlint) version ${GHLINT_VERSION}"
 		}
 	}
 
