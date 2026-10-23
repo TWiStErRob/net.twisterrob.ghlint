@@ -81,10 +81,7 @@ class CLITest {
 			val configuration = parse(*files, "--silent")
 
 			mockConstruction(GHLint::class.java).use { linters ->
-				val result = shouldThrow<ProgramResult> {
-					configuration.run()
-				}
-
+				val result = shouldThrow<ProgramResult> { configuration.run() }
 				result.statusCode shouldBe 0
 				verify(linters.constructed().single()).run(configuration)
 			}
@@ -93,13 +90,10 @@ class CLITest {
 		@Test fun `propagates nonzero linter exit code`() {
 			val configuration = parse(*files, "--exit")
 
-			mockConstruction(GHLint::class.java, { linter, _ ->
+			mockConstruction(GHLint::class.java) { linter, _ ->
 				whenever(linter.run(any())).thenReturn(42)
-			}).use { linters ->
-				val result = shouldThrow<ProgramResult> {
-					configuration.run()
-				}
-
+			}.use { linters ->
+				val result = shouldThrow<ProgramResult> { configuration.run() }
 				result.statusCode shouldBe 42
 				verify(linters.constructed().single()).run(configuration)
 			}
