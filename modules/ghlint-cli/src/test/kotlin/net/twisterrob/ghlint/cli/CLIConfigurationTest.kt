@@ -24,6 +24,7 @@ class CLIConfigurationTest {
 
 	private val workflow: Path by lazy { file("workflow.yml") }
 	private val action: Path by lazy { file("action.yml") }
+	private val files: Array<String> by lazy { arrayOf(workflow.toString(), action.toString()) }
 
 	@Test fun defaults() {
 		val configuration = parse(workflow.toString())
@@ -122,13 +123,13 @@ class CLIConfigurationTest {
 	inner class Root {
 
 		@Test fun `accepts space separated value`() {
-			val configuration = parse(workflow.toString(), "--root", temp.toString())
+			val configuration = parse(*files, "--root", temp.toString())
 
 			configuration.root shouldBe temp
 		}
 
 		@Test fun `accepts equals separated value`() {
-			val configuration = parse(workflow.toString(), "--root=${temp}")
+			val configuration = parse(*files, "--root=${temp}")
 
 			configuration.root shouldBe temp
 		}
@@ -136,7 +137,7 @@ class CLIConfigurationTest {
 		@Test fun `accepts directory with spaces in its path`() {
 			val root = temp.resolve("repository with spaces").createDirectory()
 
-			val configuration = parse(workflow.toString(), "--root", root.toString())
+			val configuration = parse(*files, "--root", root.toString())
 
 			configuration.root shouldBe root
 		}
@@ -145,7 +146,7 @@ class CLIConfigurationTest {
 			val root = temp.resolve("missing")
 
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--root", root.toString())
+				parse(*files, "--root", root.toString())
 			}
 
 			error.plainMessage shouldBe """invalid value for --root: directory "${root}" does not exist."""
@@ -155,7 +156,7 @@ class CLIConfigurationTest {
 			val root = file("not-a-directory")
 
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--root", root.toString())
+				parse(*files, "--root", root.toString())
 			}
 
 			error.plainMessage shouldBe """invalid value for --root: directory "${root}" is a file."""
@@ -163,7 +164,7 @@ class CLIConfigurationTest {
 
 		@Test fun `requires a value`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--root")
+				parse(*files, "--root")
 			}
 
 			error.plainMessage shouldBe """option --root requires a value"""
@@ -174,14 +175,14 @@ class CLIConfigurationTest {
 	inner class Verbose {
 
 		@Test fun `accepts --verbose`() {
-			val configuration = parse(workflow.toString(), "--verbose")
+			val configuration = parse(*files, "--verbose")
 
 			configuration.isVerbose shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--verbose=true")
+				parse(*files, "--verbose=true")
 			}
 
 			error.plainMessage shouldBe """option --verbose does not take a value"""
@@ -192,32 +193,32 @@ class CLIConfigurationTest {
 	inner class ExitCode {
 
 		@Test fun `accepts --exit`() {
-			val configuration = parse(workflow.toString(), "--exit")
+			val configuration = parse(*files, "--exit")
 
 			configuration.isReportExitCode shouldBe true
 		}
 
 		@Test fun `accepts --ignore-failures`() {
-			val configuration = parse(workflow.toString(), "--ignore-failures")
+			val configuration = parse(*files, "--ignore-failures")
 
 			configuration.isReportExitCode shouldBe false
 		}
 
 		@Test fun `ignore failures overrides exit`() {
-			val configuration = parse(workflow.toString(), "--exit", "--ignore-failures")
+			val configuration = parse(*files, "--exit", "--ignore-failures")
 
 			configuration.isReportExitCode shouldBe false
 		}
 
 		@Test fun `exit overrides ignore failures`() {
-			val configuration = parse(workflow.toString(), "--ignore-failures", "--exit")
+			val configuration = parse(*files, "--ignore-failures", "--exit")
 
 			configuration.isReportExitCode shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--exit=true")
+				parse(*files, "--exit=true")
 			}
 
 			error.plainMessage shouldBe """option --exit does not take a value"""
@@ -228,32 +229,32 @@ class CLIConfigurationTest {
 	inner class Console {
 
 		@Test fun `accepts --console`() {
-			val configuration = parse(workflow.toString(), "--console")
+			val configuration = parse(*files, "--console")
 
 			configuration.isReportConsole shouldBe true
 		}
 
 		@Test fun `accepts --silent`() {
-			val configuration = parse(workflow.toString(), "--silent")
+			val configuration = parse(*files, "--silent")
 
 			configuration.isReportConsole shouldBe false
 		}
 
 		@Test fun `silent overrides console`() {
-			val configuration = parse(workflow.toString(), "--console", "--silent")
+			val configuration = parse(*files, "--console", "--silent")
 
 			configuration.isReportConsole shouldBe false
 		}
 
 		@Test fun `console overrides silent`() {
-			val configuration = parse(workflow.toString(), "--silent", "--console")
+			val configuration = parse(*files, "--silent", "--console")
 
 			configuration.isReportConsole shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--console=true")
+				parse(*files, "--console=true")
 			}
 
 			error.plainMessage shouldBe """option --console does not take a value"""
@@ -264,14 +265,14 @@ class CLIConfigurationTest {
 	inner class GitHubCommands {
 
 		@Test fun `accepts --ghcommands`() {
-			val configuration = parse(workflow.toString(), "--ghcommands")
+			val configuration = parse(*files, "--ghcommands")
 
 			configuration.isReportGitHubCommands shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--ghcommands=true")
+				parse(*files, "--ghcommands=true")
 			}
 
 			error.plainMessage shouldBe """option --ghcommands does not take a value"""
@@ -284,7 +285,7 @@ class CLIConfigurationTest {
 		@Test fun `accepts space separated value`() {
 			val report = temp.resolve("report.sarif.json")
 
-			val configuration = parse(workflow.toString(), "--sarif", report.toString())
+			val configuration = parse(*files, "--sarif", report.toString())
 
 			configuration.sarifReportLocation shouldBe report
 
@@ -294,7 +295,7 @@ class CLIConfigurationTest {
 		@Test fun `accepts equals separated value`() {
 			val report = temp.resolve("report.sarif.json")
 
-			val configuration = parse(workflow.toString(), "--sarif=${report}")
+			val configuration = parse(*files, "--sarif=${report}")
 
 			configuration.sarifReportLocation shouldBe report
 		}
@@ -302,7 +303,7 @@ class CLIConfigurationTest {
 		@Test fun `accepts an existing file`() {
 			val report = file("report.sarif.json")
 
-			val configuration = parse(workflow.toString(), "--sarif", report.toString())
+			val configuration = parse(*files, "--sarif", report.toString())
 
 			configuration.sarifReportLocation shouldBe report
 		}
@@ -310,14 +311,14 @@ class CLIConfigurationTest {
 		@Test fun `accepts path with spaces`() {
 			val report = temp.resolve("report with spaces.sarif.json")
 
-			val configuration = parse(workflow.toString(), "--sarif", report.toString())
+			val configuration = parse(*files, "--sarif", report.toString())
 
 			configuration.sarifReportLocation shouldBe report
 		}
 
 		@Test fun `rejects a directory`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--sarif", temp.toString())
+				parse(*files, "--sarif", temp.toString())
 			}
 
 			error.plainMessage shouldBe """invalid value for --sarif: file "${temp}" is a directory."""
@@ -325,7 +326,7 @@ class CLIConfigurationTest {
 
 		@Test fun `requires a value`() {
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--sarif")
+				parse(*files, "--sarif")
 			}
 
 			error.plainMessage shouldBe """option --sarif requires a value"""
