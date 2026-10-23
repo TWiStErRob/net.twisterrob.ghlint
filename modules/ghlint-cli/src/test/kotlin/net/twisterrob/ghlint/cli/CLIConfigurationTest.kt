@@ -41,7 +41,9 @@ class CLIConfigurationTest {
 	inner class Files {
 
 		@Test fun `files are required`() {
-			val error = shouldThrow<UsageError> { parse("--verbose") }
+			val error = shouldThrow<UsageError> {
+				parse("--verbose")
+			}
 
 			error.plainMessage shouldBe """missing argument FILES"""
 		}
@@ -74,7 +76,9 @@ class CLIConfigurationTest {
 		@Test fun `rejects a missing file`() {
 			val file = temp.resolve("missing.yml")
 
-			val error = shouldThrow<UsageError> { parse(file.toString()) }
+			val error = shouldThrow<UsageError> {
+				parse(file.toString())
+			}
 
 			error.plainMessage shouldBe """invalid value for FILES: file "${file}" does not exist."""
 		}
@@ -82,7 +86,9 @@ class CLIConfigurationTest {
 		@Test fun `rejects a directory`() {
 			val folder = temp
 
-			val error = shouldThrow<UsageError> { parse(folder.toString()) }
+			val error = shouldThrow<UsageError> {
+				parse(folder.toString())
+			}
 
 			error.plainMessage shouldBe """invalid value for FILES: file "${folder}" is a directory."""
 		}
@@ -136,7 +142,9 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects a missing directory`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--root", temp.resolve("missing").toString()) }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--root", temp.resolve("missing").toString())
+			}
 
 			error.plainMessage shouldBe """invalid value for --root: directory "${temp.resolve("missing")}" does not exist."""
 		}
@@ -144,13 +152,17 @@ class CLIConfigurationTest {
 		@Test fun `rejects a file`() {
 			val root = file("not-a-directory")
 
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--root", root.toString()) }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--root", root.toString())
+			}
 
 			error.plainMessage shouldBe """invalid value for --root: directory "${root}" is a file."""
 		}
 
 		@Test fun `requires a value`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--root") }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--root")
+			}
 
 			error.plainMessage shouldBe """option --root requires a value"""
 		}
@@ -166,7 +178,9 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects an attached value`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--verbose=true") }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--verbose=true")
+			}
 
 			error.plainMessage shouldBe """option --verbose does not take a value"""
 		}
@@ -200,7 +214,9 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects an attached value`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--exit=true") }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--exit=true")
+			}
 
 			error.plainMessage shouldBe """option --exit does not take a value"""
 		}
@@ -234,7 +250,9 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects an attached value`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--console=true") }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--console=true")
+			}
 
 			error.plainMessage shouldBe """option --console does not take a value"""
 		}
@@ -250,7 +268,9 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects an attached value`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--ghcommands=true") }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--ghcommands=true")
+			}
 
 			error.plainMessage shouldBe """option --ghcommands does not take a value"""
 		}
@@ -294,13 +314,17 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects a directory`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--sarif", temp.toString()) }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--sarif", temp.toString())
+			}
 
 			error.plainMessage shouldBe """invalid value for --sarif: file "${temp}" is a directory."""
 		}
 
 		@Test fun `requires a value`() {
-			val error = shouldThrow<UsageError> { parse(workflow.toString(), "--sarif") }
+			val error = shouldThrow<UsageError> {
+				parse(workflow.toString(), "--sarif")
+			}
 
 			error.plainMessage shouldBe """option --sarif requires a value"""
 		}
