@@ -2,19 +2,25 @@ package net.twisterrob.ghlint.cli
 
 import com.github.ajalt.clikt.core.PrintHelpMessage
 import com.github.ajalt.clikt.core.PrintMessage
+import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.output.ParameterFormatter
 import com.github.ajalt.clikt.parsers.CommandLineParser
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
+import net.twisterrob.ghlint.GHLint
+import net.twisterrob.ghlint.test.readResourceText
+import net.twisterrob.ghlint.test.shouldEqualIgnoringEOL
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.mockito.Mockito.mockConstruction
 import org.mockito.Mockito.mockStatic
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.nio.file.FileSystem
 import java.nio.file.FileSystems
@@ -31,6 +37,7 @@ class CLITest {
 	private val workflow: Path by lazy { file("workflow.yml") }
 	private val action: Path by lazy { file("action.yml") }
 	private val files: Array<String> by lazy { arrayOf(workflow.toString(), action.toString()) }
+	private val expectedHelp: String by lazy { CLITest::class.java.readResourceText("help.txt").trimEnd() }
 
 	@Test fun defaults() {
 		val configuration = parse(workflow.toString())
@@ -62,21 +69,77 @@ class CLITest {
 		}
 
 		error.plainMessage shouldBe """no such option --unknown"""
+		error.statusCode shouldBe 1
+		error.printError shouldBe true
+	}
+
+	@Nested
+	inner class Run {
+
+		@Test fun `passes parsed configuration to linter and exits successfully`() {
+			val configuration = parse(*files, "--silent")
+
+			mockConstruction(GHLint::class.java).use { linters ->
+				val result = shouldThrow<ProgramResult> {
+					configuration.run()
+				}
+
+				result.statusCode shouldBe 0
+				verify(linters.constructed().single()).run(configuration)
+			}
+		}
+
+		@Test fun `propagates nonzero linter exit code`() {
+			val configuration = parse(*files, "--exit")
+
+			mockConstruction(GHLint::class.java, { linter, _ ->
+				whenever(linter.run(any())).thenReturn(42)
+			}).use { linters ->
+				val result = shouldThrow<ProgramResult> {
+					configuration.run()
+				}
+
+				result.statusCode shouldBe 42
+				verify(linters.constructed().single()).run(configuration)
+			}
+		}
 	}
 
 	@Nested
 	inner class Help {
 
 		@Test fun `accepts --help without files`() {
-			shouldThrow<PrintHelpMessage> { parse("--help") }
+			val result = shouldThrow<PrintHelpMessage> { parse("--help") }
+
+			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
 		}
 
 		@Test fun `accepts -h without files`() {
-			shouldThrow<PrintHelpMessage> { parse("-h") }
+			val result = shouldThrow<PrintHelpMessage> { parse("-h") }
+
+			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
 		}
 
 		@Test fun `empty arguments print help`() {
-			shouldThrow<PrintHelpMessage> { parse() }
+			val result = shouldThrow<PrintHelpMessage> { parse() }
+
+			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
+		}
+
+		@Test fun `help skips file validation`() {
+			val missing = temp.resolve("missing.yml")
+
+			val result = shouldThrow<PrintHelpMessage> { parse(missing.toString(), "--help") }
+
+			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
 		}
 	}
 
@@ -87,12 +150,26 @@ class CLITest {
 			val result = shouldThrow<PrintMessage> { parse("--version") }
 
 			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
 		}
 
 		@Test fun `accepts -v without files`() {
 			val result = shouldThrow<PrintMessage> { parse("-v") }
 
 			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
+		}
+
+		@Test fun `version skips file validation`() {
+			val missing = temp.resolve("missing.yml")
+
+			val result = shouldThrow<PrintMessage> { parse(missing.toString(), "--version") }
+
+			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
+			result.statusCode shouldBe 0
+			result.printError shouldBe false
 		}
 	}
 
@@ -105,6 +182,8 @@ class CLITest {
 			}
 
 			error.plainMessage shouldBe """missing argument FILES"""
+			error.statusCode shouldBe 1
+			error.printError shouldBe true
 		}
 
 		@Test fun `accepts one file`() {
@@ -307,6 +386,14 @@ class CLITest {
 
 			error.plainMessage shouldBe """option --exit does not take a value"""
 		}
+
+		@Test fun `ignore failures rejects an attached value`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--ignore-failures=true")
+			}
+
+			error.plainMessage shouldBe """option --ignore-failures does not take a value"""
+		}
 	}
 
 	@Nested
@@ -342,6 +429,14 @@ class CLITest {
 			}
 
 			error.plainMessage shouldBe """option --console does not take a value"""
+		}
+
+		@Test fun `silent rejects an attached value`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--silent=true")
+			}
+
+			error.plainMessage shouldBe """option --silent does not take a value"""
 		}
 	}
 
@@ -431,10 +526,13 @@ class CLITest {
 
 	companion object {
 
+		private val PrintHelpMessage.helpText: String
+			get() = checkNotNull(checkNotNull(context).command.getFormattedHelp(this)).trimEnd()
+
 		private val UsageError.plainMessage: String
 			get() = formatMessage(checkNotNull(context).localization, ParameterFormatter.Plain)
 
-		private fun parse(vararg argv: String): Configuration {
+		private fun parse(vararg argv: String): CLI {
 			val cli = CLI()
 			CommandLineParser.parseAndRun(cli, argv.toList()) { /* no it.run() */ }
 			return cli
