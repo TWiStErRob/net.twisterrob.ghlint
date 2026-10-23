@@ -11,10 +11,13 @@ import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.AnnotatedElementContext
-import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.io.TempDir
-import org.junit.jupiter.api.io.TempDirFactory
+import org.mockito.Mockito.mockStatic
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
 import java.nio.file.Path
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
@@ -172,15 +175,22 @@ class CLITest {
 			configuration.isVerbose shouldBe true
 		}
 
-		@Test fun `accepts files after option terminator`(
-			@TempDir(factory = OptionLikeTempDirFactory::class) directory: Path,
-		) {
-			val file = directory.resolve("workflow.yml").createFile()
-			val input = Path.of("").toAbsolutePath().relativize(file)
+		@Test fun `accepts files after option terminator`() {
+			val cwd = temp.resolve("cwd").createDirectory()
+			val file = cwd.resolve("--verbose").createFile()
+			val fileSystem = mock<FileSystem> {
+				on { getPath("--verbose") } doReturn file
+				on { getPath(".") } doReturn cwd
+			}
 
-			val configuration = parse("--", input.toString())
+			mockStatic(FileSystems::class.java).use { fileSystems ->
+				fileSystems.whenever { FileSystems.getDefault() }.thenReturn(fileSystem)
 
-			configuration.files shouldBe listOf(input)
+				val configuration = parse("--", "--verbose")
+
+				configuration.files shouldBe listOf(file)
+				configuration.isVerbose shouldBe false
+			}
 		}
 	}
 
@@ -414,15 +424,6 @@ class CLITest {
 
 			error.plainMessage shouldBe """invalid value for --sarif: cannot be repeated"""
 		}
-	}
-
-	private class OptionLikeTempDirFactory : TempDirFactory {
-		override fun createTempDirectory(
-			elementContext: AnnotatedElementContext,
-			extensionContext: ExtensionContext,
-		): Path =
-			// Keep the fixture on the working directory's drive so its relative path can start with --.
-			java.nio.file.Files.createTempDirectory(Path.of("").toAbsolutePath(), "--ghlint-")
 	}
 
 	private fun file(name: String): Path =
