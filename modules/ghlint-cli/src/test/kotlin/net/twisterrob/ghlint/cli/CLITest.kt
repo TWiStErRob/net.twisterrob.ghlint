@@ -10,7 +10,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
-import net.twisterrob.ghlint.test.readResourceText
 import net.twisterrob.ghlint.test.shouldEqualIgnoringEOL
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -37,7 +36,6 @@ class CLITest {
 	private val workflow: Path by lazy { file("workflow.yml") }
 	private val action: Path by lazy { file("action.yml") }
 	private val files: Array<String> by lazy { arrayOf(workflow.toString(), action.toString()) }
-	private val expectedHelp: String by lazy { CLITest::class.java.readResourceText("help.txt").trimEnd() }
 
 	@Test fun defaults() {
 		val configuration = parse(workflow.toString())
@@ -111,7 +109,7 @@ class CLITest {
 		@Test fun `accepts --help without files`() {
 			val result = shouldThrow<PrintHelpMessage> { parse("--help") }
 
-			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.helpText shouldEqualIgnoringEOL HELP_TEXT.trimEnd()
 			result.statusCode shouldBe 0
 			result.printError shouldBe false
 		}
@@ -119,7 +117,7 @@ class CLITest {
 		@Test fun `accepts -h without files`() {
 			val result = shouldThrow<PrintHelpMessage> { parse("-h") }
 
-			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.helpText shouldEqualIgnoringEOL HELP_TEXT.trimEnd()
 			result.statusCode shouldBe 0
 			result.printError shouldBe false
 		}
@@ -127,7 +125,7 @@ class CLITest {
 		@Test fun `empty arguments print help`() {
 			val result = shouldThrow<PrintHelpMessage> { parse() }
 
-			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.helpText shouldEqualIgnoringEOL HELP_TEXT.trimEnd()
 			result.statusCode shouldBe 0
 			result.printError shouldBe false
 		}
@@ -137,7 +135,7 @@ class CLITest {
 
 			val result = shouldThrow<PrintHelpMessage> { parse(missing.toString(), "--help") }
 
-			result.helpText shouldEqualIgnoringEOL expectedHelp
+			result.helpText shouldEqualIgnoringEOL HELP_TEXT.trimEnd()
 			result.statusCode shouldBe 0
 			result.printError shouldBe false
 		}
@@ -527,10 +525,10 @@ class CLITest {
 	companion object {
 
 		private val PrintHelpMessage.helpText: String
-			get() = checkNotNull(checkNotNull(context).command.getFormattedHelp(this)).trimEnd()
+			get() = this.context!!.command.getFormattedHelp(this)!!.trimEnd()
 
 		private val UsageError.plainMessage: String
-			get() = formatMessage(checkNotNull(context).localization, ParameterFormatter.Plain)
+			get() = this.formatMessage(this.context!!.localization, ParameterFormatter.Plain)
 
 		private fun parse(vararg argv: String): CLI {
 			val cli = CLI()

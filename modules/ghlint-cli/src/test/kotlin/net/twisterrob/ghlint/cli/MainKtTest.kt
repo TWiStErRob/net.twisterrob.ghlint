@@ -3,7 +3,6 @@ package net.twisterrob.ghlint.cli
 import io.kotest.matchers.should
 import io.kotest.matchers.string.beEmpty
 import net.twisterrob.ghlint.test.captureSystemStreams
-import net.twisterrob.ghlint.test.readResourceText
 import net.twisterrob.ghlint.test.shouldEqualIgnoringEOL
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceAccessMode
@@ -24,7 +23,7 @@ class MainKtTest {
 		}
 
 		result.stderr should beEmpty()
-		result.stdout shouldEqualIgnoringEOL MainKtTest::class.java.readResourceText("help.txt")
+		result.stdout shouldEqualIgnoringEOL HELP_TEXT
 	}
 
 	@Test
@@ -36,6 +35,6 @@ class MainKtTest {
 		}
 
 		result.stderr should beEmpty()
-		result.stdout shouldEqualIgnoringEOL MainKtTest::class.java.readResourceText("help.txt")
+		result.stdout shouldEqualIgnoringEOL HELP_TEXT
 	}
 }
