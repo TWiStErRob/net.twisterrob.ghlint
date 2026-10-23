@@ -142,11 +142,13 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `rejects a missing directory`() {
+			val root = temp.resolve("missing")
+
 			val error = shouldThrow<UsageError> {
-				parse(workflow.toString(), "--root", temp.resolve("missing").toString())
+				parse(workflow.toString(), "--root", root.toString())
 			}
 
-			error.plainMessage shouldBe """invalid value for --root: directory "${temp.resolve("missing")}" does not exist."""
+			error.plainMessage shouldBe """invalid value for --root: directory "${root}" does not exist."""
 		}
 
 		@Test fun `rejects a file`() {
