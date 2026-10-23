@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.io.path.createDirectory
+import kotlin.io.path.createFile
 import kotlin.io.path.exists
-import kotlin.io.path.writeText
 
 class CLIConfigurationTest {
 
@@ -367,12 +367,12 @@ class CLIConfigurationTest {
 	private val UsageError.plainMessage: String
 		get() = formatMessage(checkNotNull(context).localization, ParameterFormatter.Plain)
 
-	private fun file(name: String): Path = temp.resolve(name).apply { writeText("{}") }
+	private fun file(name: String): Path =
+		temp.resolve(name).apply { createFile() }
 
 	private fun parse(vararg argv: String): Configuration {
 		val cli = CLI()
-		// Finalize the real CLI parameters without running the linter.
-		CommandLineParser.parseAndRun(cli, argv.toList()) { }
+		CommandLineParser.parseAndRun(cli, argv.toList()) { /* no it.run() */ }
 		return cli
 	}
 }
