@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.groups.OptionGroup
 import com.github.ajalt.clikt.parameters.groups.provideDelegate
+import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.eagerOption
 import com.github.ajalt.clikt.parameters.options.flag
@@ -22,6 +23,8 @@ import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
 import net.twisterrob.ghlint.SchemaSource
 import java.nio.file.Path
+import kotlin.io.path.isReadable
+import kotlin.io.path.isRegularFile
 
 internal class CLI : CliktCommand(
 	name = "ghlint",
@@ -126,4 +129,34 @@ internal class CLI : CliktCommand(
 			.path(canBeDir = false)
 			.help("Output a SARIF file.")
 	}
+
+	private class SchemaOptions : OptionGroup(
+		name = "Schemas",
+		help = "Schemas used for validating GitHub Actions workflow and action files.",
+	) {
+		val workflow: SchemaSource by option("--workflow-schema", metavar = "schema")
+			.convert { parseSchemaSource(it) }
+			.default(SchemaSource.Latest, defaultForHelp = ":latest")
+			.help("Workflow schema: :latest, :embedded (offline), or a local file (offline).")
+
+		val action: SchemaSource by option("--action-schema", metavar = "schema")
+			.convert { parseSchemaSource(it) }
+			.default(SchemaSource.Latest, defaultForHelp = ":latest")
+			.help("Action schema: :latest, :embedded (offline), or a local file (offline).")
+		
+		companion object {
+			private fun parseSchemaSource(value: String): SchemaSource = when (value) {
+				":latest" -> SchemaSource.Latest
+				":embedded" -> SchemaSource.Embedded
+				else -> {
+					val path = Path.of(value)
+					require(path.isRegularFile() && path.isReadable()) {
+						"Schema must be :latest, :embedded, or a readable file: $value"
+					}
+					SchemaSource.LocalFile(path)
+				}
+			}
+		}
+	}
+
 }

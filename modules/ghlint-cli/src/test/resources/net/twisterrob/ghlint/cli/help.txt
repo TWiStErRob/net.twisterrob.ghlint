@@ -15,6 +15,9 @@ Reporting:
   --sarif=<report-path>       Output a SARIF file.
 
 Schemas:
+
+  Schemas used for validating GitHub Actions workflow and action files.
+
   --workflow-schema=<schema>  Workflow schema: :latest, :embedded (offline), or
                               a local file (offline). (default: :latest)
   --action-schema=<schema>    Action schema: :latest, :embedded (offline), or a
