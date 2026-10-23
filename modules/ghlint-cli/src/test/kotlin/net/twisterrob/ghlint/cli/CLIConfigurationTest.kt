@@ -25,6 +25,18 @@ class CLIConfigurationTest {
 	private val workflow: Path by lazy { file("workflow.yml") }
 	private val action: Path by lazy { file("action.yml") }
 
+	@Test fun defaults() {
+		val configuration = parse(workflow.toString())
+
+		configuration.files shouldBe listOf(workflow)
+		configuration.root shouldBe Path.of(".")
+		configuration.isVerbose shouldBe false
+		configuration.isReportExitCode shouldBe false
+		configuration.isReportConsole shouldBe true
+		configuration.isReportGitHubCommands shouldBe false
+		configuration.sarifReportLocation shouldBe null
+	}
+
 	@Nested
 	inner class Files {
 
@@ -103,12 +115,6 @@ class CLIConfigurationTest {
 	@Nested
 	inner class Root {
 
-		@Test fun `defaults to current directory`() {
-			val configuration = parse(workflow.toString())
-
-			configuration.root shouldBe Path.of(".")
-		}
-
 		@Test fun `accepts space separated value`() {
 			val configuration = parse(workflow.toString(), "--root", temp.toString())
 
@@ -153,12 +159,6 @@ class CLIConfigurationTest {
 	@Nested
 	inner class Verbose {
 
-		@Test fun `defaults to false`() {
-			val configuration = parse(workflow.toString())
-
-			configuration.isVerbose shouldBe false
-		}
-
 		@Test fun `accepts --verbose`() {
 			val configuration = parse(workflow.toString(), "--verbose")
 
@@ -174,12 +174,6 @@ class CLIConfigurationTest {
 
 	@Nested
 	inner class ExitCode {
-
-		@Test fun `defaults to false`() {
-			val configuration = parse(workflow.toString())
-
-			configuration.isReportExitCode shouldBe false
-		}
 
 		@Test fun `accepts --exit`() {
 			val configuration = parse(workflow.toString(), "--exit")
@@ -215,12 +209,6 @@ class CLIConfigurationTest {
 	@Nested
 	inner class Console {
 
-		@Test fun `defaults to true`() {
-			val configuration = parse(workflow.toString())
-
-			configuration.isReportConsole shouldBe true
-		}
-
 		@Test fun `accepts --console`() {
 			val configuration = parse(workflow.toString(), "--console")
 
@@ -255,12 +243,6 @@ class CLIConfigurationTest {
 	@Nested
 	inner class GitHubCommands {
 
-		@Test fun `defaults to false`() {
-			val configuration = parse(workflow.toString())
-
-			configuration.isReportGitHubCommands shouldBe false
-		}
-
 		@Test fun `accepts --ghcommands`() {
 			val configuration = parse(workflow.toString(), "--ghcommands")
 
@@ -276,12 +258,6 @@ class CLIConfigurationTest {
 
 	@Nested
 	inner class Sarif {
-
-		@Test fun `defaults to no report`() {
-			val configuration = parse(workflow.toString())
-
-			configuration.sarifReportLocation shouldBe null
-		}
 
 		@Test fun `accepts space separated value`() {
 			val report = temp.resolve("report.sarif.json")
