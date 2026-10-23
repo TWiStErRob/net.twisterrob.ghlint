@@ -10,6 +10,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
+import net.twisterrob.ghlint.SchemaSource
 import net.twisterrob.ghlint.test.shouldEqualIgnoringEOL
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -50,6 +51,8 @@ class CLITest {
 		configuration.isReportConsole shouldBe true
 		configuration.isReportGitHubCommands shouldBe false
 		configuration.sarifReportLocation shouldBe null
+		configuration.workflowSchema shouldBe SchemaSource.Latest
+		configuration.actionSchema shouldBe SchemaSource.Latest
 	}
 
 	@Test fun `reporting options are independent`() {
@@ -513,6 +516,202 @@ class CLITest {
 			val configuration = parse(*files, "--sarif", first.toString(), "--sarif=${second}")
 
 			configuration.sarifReportLocation shouldBe second
+		}
+	}
+
+	@Nested
+	inner class WorkflowSchema {
+
+		@Test fun `accepts explicit latest`() {
+			val configuration = parse(*files, "--workflow-schema", ":latest")
+
+			configuration.workflowSchema shouldBe SchemaSource.Latest
+		}
+
+		@Test fun `accepts embedded with space separated value`() {
+			val configuration = parse(*files, "--workflow-schema", ":embedded")
+
+			configuration.workflowSchema shouldBe SchemaSource.Embedded
+		}
+
+		@Test fun `accepts embedded with equals separated value`() {
+			val configuration = parse(*files, "--workflow-schema=:embedded")
+
+			configuration.workflowSchema shouldBe SchemaSource.Embedded
+		}
+
+		@Test fun `accepts local file with space separated value`() {
+			val schema = file("schema.json")
+
+			val configuration = parse(*files, "--workflow-schema", schema.toString())
+
+			configuration.workflowSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `accepts local file with equals separated value`() {
+			val schema = file("schema.json")
+
+			val configuration = parse(*files, "--workflow-schema=${schema}")
+
+			configuration.workflowSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `accepts local file with spaces`() {
+			val schema = file("schema with spaces.json")
+
+			val configuration = parse(*files, "--workflow-schema", schema.toString())
+
+			configuration.workflowSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `accepts local file named embedded`() {
+			val schema = file("embedded")
+
+			val configuration = parse(*files, "--workflow-schema", schema.toString())
+
+			configuration.workflowSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `rejects a missing file`() {
+			val schema = temp.resolve("missing.json")
+
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--workflow-schema", schema.toString())
+			}
+
+			error.plainMessage shouldBe """invalid value for --workflow-schema: Schema must be :latest, :embedded, or a readable file: ${schema}"""
+		}
+
+		@Test fun `rejects a directory`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--workflow-schema", temp.toString())
+			}
+
+			error.plainMessage shouldBe """invalid value for --workflow-schema: Schema must be :latest, :embedded, or a readable file: ${temp}"""
+		}
+
+		@Test fun `rejects an unknown reserved value`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--workflow-schema", ":unknown")
+			}
+
+			error.plainMessage shouldBe if (temp.fileSystem.separator == "\\") {
+				"""invalid value for --workflow-schema: Illegal char <:> at index 0: :unknown"""
+			} else {
+				"""invalid value for --workflow-schema: Schema must be :latest, :embedded, or a readable file: :unknown"""
+			}
+		}
+
+		@Test fun `requires a value`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--workflow-schema")
+			}
+
+			error.plainMessage shouldBe """option --workflow-schema requires a value"""
+		}
+
+		@Test fun `does not change the other schema default`() {
+			val configuration = parse(*files, "--workflow-schema", ":embedded")
+
+			configuration.actionSchema shouldBe SchemaSource.Latest
+		}
+	}
+
+	@Nested
+	inner class ActionSchema {
+
+		@Test fun `accepts explicit latest`() {
+			val configuration = parse(*files, "--action-schema", ":latest")
+
+			configuration.actionSchema shouldBe SchemaSource.Latest
+		}
+
+		@Test fun `accepts embedded with space separated value`() {
+			val configuration = parse(*files, "--action-schema", ":embedded")
+
+			configuration.actionSchema shouldBe SchemaSource.Embedded
+		}
+
+		@Test fun `accepts embedded with equals separated value`() {
+			val configuration = parse(*files, "--action-schema=:embedded")
+
+			configuration.actionSchema shouldBe SchemaSource.Embedded
+		}
+
+		@Test fun `accepts local file with space separated value`() {
+			val schema = file("schema.json")
+
+			val configuration = parse(*files, "--action-schema", schema.toString())
+
+			configuration.actionSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `accepts local file with equals separated value`() {
+			val schema = file("schema.json")
+
+			val configuration = parse(*files, "--action-schema=${schema}")
+
+			configuration.actionSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `accepts local file with spaces`() {
+			val schema = file("schema with spaces.json")
+
+			val configuration = parse(*files, "--action-schema", schema.toString())
+
+			configuration.actionSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `accepts local file named embedded`() {
+			val schema = file("embedded")
+
+			val configuration = parse(*files, "--action-schema", schema.toString())
+
+			configuration.actionSchema shouldBe SchemaSource.LocalFile(schema)
+		}
+
+		@Test fun `rejects a missing file`() {
+			val schema = temp.resolve("missing.json")
+
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--action-schema", schema.toString())
+			}
+
+			error.plainMessage shouldBe """invalid value for --action-schema: Schema must be :latest, :embedded, or a readable file: ${schema}"""
+		}
+
+		@Test fun `rejects a directory`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--action-schema", temp.toString())
+			}
+
+			error.plainMessage shouldBe """invalid value for --action-schema: Schema must be :latest, :embedded, or a readable file: ${temp}"""
+		}
+
+		@Test fun `rejects an unknown reserved value`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--action-schema", ":unknown")
+			}
+
+			error.plainMessage shouldBe if (temp.fileSystem.separator == "\\") {
+				"""invalid value for --action-schema: Illegal char <:> at index 0: :unknown"""
+			} else {
+				"""invalid value for --action-schema: Schema must be :latest, :embedded, or a readable file: :unknown"""
+			}
+		}
+
+		@Test fun `requires a value`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--action-schema")
+			}
+
+			error.plainMessage shouldBe """option --action-schema requires a value"""
+		}
+
+		@Test fun `does not change the other schema default`() {
+			val configuration = parse(*files, "--action-schema", ":embedded")
+
+			configuration.workflowSchema shouldBe SchemaSource.Latest
 		}
 	}
 

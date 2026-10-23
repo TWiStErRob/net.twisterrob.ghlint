@@ -93,16 +93,16 @@ internal class CLI : CliktCommand(
 	override fun helpEpilog(context: Context): String =
 		"""
 			Example usages:
-			
+
 			**Lint a single workflow**:  
 			`$ ghlint .github/workflows/main.yml`
-			
+
 			**Lint all workflows in GitHub Actions CI**:  
 			`$ ghlint --verbose --sarif=report.sarif.json .github/workflows/*.yml`
-			
+
 			**Lint a single action in repository root.**:  
 			`$ ghlint action.yml`
-			
+
 			**Lint for CI actions in a directory**:  
 			`$ ghlint actions/my-action/action.yml`
 		""".trimIndent()
@@ -143,7 +143,7 @@ internal class CLI : CliktCommand(
 			.convert { parseSchemaSource(it) }
 			.default(SchemaSource.Latest, defaultForHelp = ":latest")
 			.help("Action schema: :latest, :embedded (offline), or a local file (offline).")
-		
+
 		companion object {
 			private fun parseSchemaSource(value: String): SchemaSource = when (value) {
 				":latest" -> SchemaSource.Latest
@@ -151,7 +151,7 @@ internal class CLI : CliktCommand(
 				else -> {
 					val path = Path.of(value)
 					require(path.isRegularFile() && path.isReadable()) {
-						"Schema must be :latest, :embedded, or a readable file: $value"
+						"Schema must be :latest, :embedded, or a readable file: ${value}"
 					}
 					SchemaSource.LocalFile(path)
 				}
