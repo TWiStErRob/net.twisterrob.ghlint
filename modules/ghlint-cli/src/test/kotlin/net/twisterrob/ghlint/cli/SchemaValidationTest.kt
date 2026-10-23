@@ -76,9 +76,10 @@ class SchemaValidationTest {
 
 	@Test fun `missing local schema produces an option error`(@TempDir dir: Path) {
 		val workflow = dir.resolve("workflow.yml").apply { writeText("on: push\njobs: {}") }
+		val schema = dir.resolve("missing.json")
 
 		val result = captureSystemStreams {
-			main("--no-exit", "--workflow-schema", dir.resolve("missing.json").toString(), workflow.toString())
+			main("--no-exit", "--workflow-schema", schema.toString(), workflow.toString())
 		}
 
 		result.stderr shouldContain "readable file"
