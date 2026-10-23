@@ -28,6 +28,9 @@ import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
 
+/**
+ * @see CLI
+ */
 class CLITest {
 
 	@TempDir
