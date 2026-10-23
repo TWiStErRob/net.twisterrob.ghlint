@@ -11,11 +11,11 @@ import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.groups.OptionGroup
 import com.github.ajalt.clikt.parameters.groups.provideDelegate
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.eagerOption
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.transformAll
 import com.github.ajalt.clikt.parameters.types.path
 import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
@@ -56,10 +56,7 @@ internal class CLI : CliktCommand(
 
 	override val root: Path by option("--root")
 		.path(mustExist = true, canBeDir = true, canBeFile = false)
-		.transformAll(defaultForHelp = ".") {
-			require(it.size <= 1) { "cannot be repeated" }
-			it.singleOrNull() ?: Path.of(".")
-		}
+		.default(Path.of("."))
 		.help("Root directory of the repository.")
 
 	override val isVerbose: Boolean by option("--verbose")
@@ -123,10 +120,6 @@ internal class CLI : CliktCommand(
 		val sarifLocation: Path? by option("--sarif", metavar = "report-path")
 			// Theoretically mustBeWritable = true, but Java requires the file to exists, which is silly.
 			.path(canBeDir = false)
-			.transformAll {
-				require(it.size <= 1) { "cannot be repeated" }
-				it.singleOrNull()
-			}
 			.help("Output a SARIF file.")
 	}
 }

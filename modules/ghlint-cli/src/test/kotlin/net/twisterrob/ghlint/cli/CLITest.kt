@@ -245,12 +245,13 @@ class CLITest {
 			error.plainMessage shouldBe """option --root requires a value"""
 		}
 
-		@Test fun `rejects repeated values`() {
-			val error = shouldThrow<UsageError> {
-				parse(*files, "--root", temp.toString(), "--root=${temp}")
-			}
+		@Test fun `last value wins`() {
+			val first = temp.resolve("first").createDirectory()
+			val second = temp.resolve("second").createDirectory()
 
-			error.plainMessage shouldBe """invalid value for --root: cannot be repeated"""
+			val configuration = parse(*files, "--root", first.toString(), "--root=${second}")
+
+			configuration.root shouldBe second
 		}
 	}
 
@@ -415,14 +416,13 @@ class CLITest {
 			error.plainMessage shouldBe """option --sarif requires a value"""
 		}
 
-		@Test fun `rejects repeated values`() {
-			val report = temp.resolve("report.sarif.json")
+		@Test fun `last value wins`() {
+			val first = temp.resolve("first.sarif.json")
+			val second = temp.resolve("second.sarif.json")
 
-			val error = shouldThrow<UsageError> {
-				parse(*files, "--sarif", report.toString(), "--sarif=${report}")
-			}
+			val configuration = parse(*files, "--sarif", first.toString(), "--sarif=${second}")
 
-			error.plainMessage shouldBe """invalid value for --sarif: cannot be repeated"""
+			configuration.sarifReportLocation shouldBe second
 		}
 	}
 
