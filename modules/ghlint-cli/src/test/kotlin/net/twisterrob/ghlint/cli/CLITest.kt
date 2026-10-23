@@ -17,7 +17,7 @@ import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
 
-class CLIConfigurationTest {
+class CLITest {
 
 	@TempDir
 	lateinit var temp: Path
