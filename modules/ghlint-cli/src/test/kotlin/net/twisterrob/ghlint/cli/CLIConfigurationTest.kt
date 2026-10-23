@@ -39,6 +39,38 @@ class CLIConfigurationTest {
 	}
 
 	@Nested
+	inner class Help {
+
+		@Test fun `accepts --help without files`() {
+			shouldThrow<PrintHelpMessage> { parse("--help") }
+		}
+
+		@Test fun `accepts -h without files`() {
+			shouldThrow<PrintHelpMessage> { parse("-h") }
+		}
+
+		@Test fun `empty arguments print help`() {
+			shouldThrow<PrintHelpMessage> { parse() }
+		}
+	}
+
+	@Nested
+	inner class Version {
+
+		@Test fun `accepts --version without files`() {
+			val result = shouldThrow<PrintMessage> { parse("--version") }
+
+			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
+		}
+
+		@Test fun `accepts -v without files`() {
+			val result = shouldThrow<PrintMessage> { parse("-v") }
+
+			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
+		}
+	}
+
+	@Nested
 	inner class Files {
 
 		@Test fun `files are required`() {
@@ -333,47 +365,18 @@ class CLIConfigurationTest {
 		}
 	}
 
-	@Nested
-	inner class Help {
-
-		@Test fun `accepts --help without files`() {
-			shouldThrow<PrintHelpMessage> { parse("--help") }
-		}
-
-		@Test fun `accepts -h without files`() {
-			shouldThrow<PrintHelpMessage> { parse("-h") }
-		}
-
-		@Test fun `empty arguments print help`() {
-			shouldThrow<PrintHelpMessage> { parse() }
-		}
-	}
-
-	@Nested
-	inner class Version {
-
-		@Test fun `accepts --version without files`() {
-			val result = shouldThrow<PrintMessage> { parse("--version") }
-
-			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
-		}
-
-		@Test fun `accepts -v without files`() {
-			val result = shouldThrow<PrintMessage> { parse("-v") }
-
-			result.message shouldBe """GH-Lint (ghlint) version ${GHLINT_VERSION}"""
-		}
-	}
-
-	private val UsageError.plainMessage: String
-		get() = formatMessage(checkNotNull(context).localization, ParameterFormatter.Plain)
-
 	private fun file(name: String): Path =
 		temp.resolve(name).apply { createFile() }
 
-	private fun parse(vararg argv: String): Configuration {
-		val cli = CLI()
-		CommandLineParser.parseAndRun(cli, argv.toList()) { /* no it.run() */ }
-		return cli
+	companion object {
+
+		private val UsageError.plainMessage: String
+			get() = formatMessage(checkNotNull(context).localization, ParameterFormatter.Plain)
+
+		private fun parse(vararg argv: String): Configuration {
+			val cli = CLI()
+			CommandLineParser.parseAndRun(cli, argv.toList()) { /* no it.run() */ }
+			return cli
+		}
 	}
 }
