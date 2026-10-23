@@ -52,23 +52,35 @@ class CLIConfigurationTest {
 		}
 
 		@Test fun `accepts a file with spaces in its path`() {
-			val input = file("workflow with spaces.yml")
+			val file = file("workflow with spaces.yml")
 
-			val configuration = parse(input.toString())
+			val configuration = parse(file.toString())
 
-			configuration.files shouldBe listOf(input)
+			configuration.files shouldBe listOf(file)
 		}
 
 		@Test fun `rejects a missing file`() {
-			val error = shouldThrow<UsageError> { parse(temp.resolve("missing.yml").toString()) }
+			val file = temp.resolve("missing.yml")
 
-			error.plainMessage shouldBe "invalid value for FILES: file \"${temp.resolve("missing.yml")}\" does not exist."
+			val error = shouldThrow<UsageError> { parse(file.toString()) }
+
+			error.plainMessage shouldBe "invalid value for FILES: file \"$file\" does not exist."
 		}
 
 		@Test fun `rejects a directory`() {
-			val error = shouldThrow<UsageError> { parse(temp.toString()) }
+			val folder = temp
 
-			error.plainMessage shouldBe "invalid value for FILES: file \"$temp\" is a directory."
+			val error = shouldThrow<UsageError> { parse(folder.toString()) }
+
+			error.plainMessage shouldBe "invalid value for FILES: file \"$folder\" is a directory."
+		}
+
+		@Test fun `accepts options before files`() {
+			val input = workflow
+			val configuration = parse("--verbose", input.toString())
+
+			configuration.files shouldBe listOf(input)
+			configuration.isVerbose shouldBe true
 		}
 
 		@Test fun `accepts options after files`() {
