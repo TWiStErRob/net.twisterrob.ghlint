@@ -11,7 +11,10 @@ import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.AnnotatedElementContext
+import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.api.io.TempDirFactory
 import java.nio.file.Path
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createFile
@@ -36,6 +39,26 @@ class CLITest {
 		configuration.isReportConsole shouldBe true
 		configuration.isReportGitHubCommands shouldBe false
 		configuration.sarifReportLocation shouldBe null
+	}
+
+	@Test fun `reporting options are independent`() {
+		val report = temp.resolve("report.sarif.json")
+
+		val configuration = parse(*files, "--exit", "--silent", "--verbose", "--ghcommands", "--sarif", report.toString())
+
+		configuration.isReportExitCode shouldBe true
+		configuration.isReportConsole shouldBe false
+		configuration.isVerbose shouldBe true
+		configuration.isReportGitHubCommands shouldBe true
+		configuration.sarifReportLocation shouldBe report
+	}
+
+	@Test fun `rejects unknown options`() {
+		val error = shouldThrow<UsageError> {
+			parse(*files, "--unknown")
+		}
+
+		error.plainMessage shouldBe """no such option --unknown"""
 	}
 
 	@Nested
@@ -142,8 +165,18 @@ class CLITest {
 			configuration.isVerbose shouldBe true
 		}
 
-		@Test fun `accepts files after option terminator`() {
-			val input = file("--verbose")
+		@Test fun `accepts options between files`() {
+			val configuration = parse(workflow.toString(), "--verbose", action.toString())
+
+			configuration.files shouldBe listOf(workflow, action)
+			configuration.isVerbose shouldBe true
+		}
+
+		@Test fun `accepts files after option terminator`(
+			@TempDir(factory = OptionLikeTempDirFactory::class) directory: Path,
+		) {
+			val file = directory.resolve("workflow.yml").createFile()
+			val input = Path.of("").toAbsolutePath().relativize(file)
 
 			val configuration = parse("--", input.toString())
 
@@ -200,6 +233,14 @@ class CLITest {
 			}
 
 			error.plainMessage shouldBe """option --root requires a value"""
+		}
+
+		@Test fun `rejects repeated values`() {
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--root", temp.toString(), "--root=${temp}")
+			}
+
+			error.plainMessage shouldBe """invalid value for --root: cannot be repeated"""
 		}
 	}
 
@@ -363,6 +404,25 @@ class CLITest {
 
 			error.plainMessage shouldBe """option --sarif requires a value"""
 		}
+
+		@Test fun `rejects repeated values`() {
+			val report = temp.resolve("report.sarif.json")
+
+			val error = shouldThrow<UsageError> {
+				parse(*files, "--sarif", report.toString(), "--sarif=${report}")
+			}
+
+			error.plainMessage shouldBe """invalid value for --sarif: cannot be repeated"""
+		}
+	}
+
+	private class OptionLikeTempDirFactory : TempDirFactory {
+		override fun createTempDirectory(
+			elementContext: AnnotatedElementContext,
+			extensionContext: ExtensionContext,
+		): Path =
+			// Keep the fixture on the working directory's drive so its relative path can start with --.
+			java.nio.file.Files.createTempDirectory(Path.of("").toAbsolutePath(), "--ghlint-")
 	}
 
 	private fun file(name: String): Path =
