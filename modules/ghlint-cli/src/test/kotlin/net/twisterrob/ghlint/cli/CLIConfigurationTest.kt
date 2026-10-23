@@ -37,20 +37,26 @@ class CLIConfigurationTest {
 		@Test fun `accepts one file`() {
 			val input = workflow
 
-			parse(input.toString()).files shouldBe listOf(input)
+			val configuration = parse(input.toString())
+
+			configuration.files shouldBe listOf(input)
 		}
 
 		@Test fun `accepts multiple files in order`() {
 			val first = workflow
 			val second = action
 
-			parse(first.toString(), second.toString()).files shouldBe listOf(first, second)
+			val configuration = parse(first.toString(), second.toString())
+
+			configuration.files shouldBe listOf(first, second)
 		}
 
 		@Test fun `accepts a file with spaces in its path`() {
 			val input = file("workflow with spaces.yml")
 
-			parse(input.toString()).files shouldBe listOf(input)
+			val configuration = parse(input.toString())
+
+			configuration.files shouldBe listOf(input)
 		}
 
 		@Test fun `rejects a missing file`() {
@@ -76,7 +82,9 @@ class CLIConfigurationTest {
 		@Test fun `accepts files after option terminator`() {
 			val input = file("--verbose")
 
-			parse("--", input.toString()).files shouldBe listOf(input)
+			val configuration = parse("--", input.toString())
+
+			configuration.files shouldBe listOf(input)
 		}
 	}
 
@@ -84,21 +92,29 @@ class CLIConfigurationTest {
 	inner class Root {
 
 		@Test fun `defaults to current directory`() {
-			parse(workflow.toString()).root shouldBe Path.of(".")
+			val configuration = parse(workflow.toString())
+
+			configuration.root shouldBe Path.of(".")
 		}
 
 		@Test fun `accepts space separated value`() {
-			parse(workflow.toString(), "--root", temp.toString()).root shouldBe temp
+			val configuration = parse(workflow.toString(), "--root", temp.toString())
+
+			configuration.root shouldBe temp
 		}
 
 		@Test fun `accepts equals separated value`() {
-			parse(workflow.toString(), "--root=$temp").root shouldBe temp
+			val configuration = parse(workflow.toString(), "--root=$temp")
+
+			configuration.root shouldBe temp
 		}
 
 		@Test fun `accepts directory with spaces in its path`() {
 			val root = temp.resolve("repository with spaces").createDirectory()
 
-			parse(workflow.toString(), "--root", root.toString()).root shouldBe root
+			val configuration = parse(workflow.toString(), "--root", root.toString())
+
+			configuration.root shouldBe root
 		}
 
 		@Test fun `rejects a missing directory`() {
@@ -126,11 +142,15 @@ class CLIConfigurationTest {
 	inner class Verbose {
 
 		@Test fun `defaults to false`() {
-			parse(workflow.toString()).isVerbose shouldBe false
+			val configuration = parse(workflow.toString())
+
+			configuration.isVerbose shouldBe false
 		}
 
 		@Test fun `accepts --verbose`() {
-			parse(workflow.toString(), "--verbose").isVerbose shouldBe true
+			val configuration = parse(workflow.toString(), "--verbose")
+
+			configuration.isVerbose shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
@@ -144,20 +164,33 @@ class CLIConfigurationTest {
 	inner class ExitCode {
 
 		@Test fun `defaults to false`() {
-			parse(workflow.toString()).isReportExitCode shouldBe false
+			val configuration = parse(workflow.toString())
+
+			configuration.isReportExitCode shouldBe false
 		}
 
 		@Test fun `accepts --exit`() {
-			parse(workflow.toString(), "--exit").isReportExitCode shouldBe true
+			val configuration = parse(workflow.toString(), "--exit")
+
+			configuration.isReportExitCode shouldBe true
 		}
 
 		@Test fun `accepts --ignore-failures`() {
-			parse(workflow.toString(), "--ignore-failures").isReportExitCode shouldBe false
+			val configuration = parse(workflow.toString(), "--ignore-failures")
+
+			configuration.isReportExitCode shouldBe false
 		}
 
-		@Test fun `last flag wins`() {
-			parse(workflow.toString(), "--exit", "--ignore-failures").isReportExitCode shouldBe false
-			parse(workflow.toString(), "--ignore-failures", "--exit").isReportExitCode shouldBe true
+		@Test fun `ignore failures overrides exit`() {
+			val configuration = parse(workflow.toString(), "--exit", "--ignore-failures")
+
+			configuration.isReportExitCode shouldBe false
+		}
+
+		@Test fun `exit overrides ignore failures`() {
+			val configuration = parse(workflow.toString(), "--ignore-failures", "--exit")
+
+			configuration.isReportExitCode shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
@@ -171,20 +204,33 @@ class CLIConfigurationTest {
 	inner class Console {
 
 		@Test fun `defaults to true`() {
-			parse(workflow.toString()).isReportConsole shouldBe true
+			val configuration = parse(workflow.toString())
+
+			configuration.isReportConsole shouldBe true
 		}
 
 		@Test fun `accepts --console`() {
-			parse(workflow.toString(), "--console").isReportConsole shouldBe true
+			val configuration = parse(workflow.toString(), "--console")
+
+			configuration.isReportConsole shouldBe true
 		}
 
 		@Test fun `accepts --silent`() {
-			parse(workflow.toString(), "--silent").isReportConsole shouldBe false
+			val configuration = parse(workflow.toString(), "--silent")
+
+			configuration.isReportConsole shouldBe false
 		}
 
-		@Test fun `last flag wins`() {
-			parse(workflow.toString(), "--console", "--silent").isReportConsole shouldBe false
-			parse(workflow.toString(), "--silent", "--console").isReportConsole shouldBe true
+		@Test fun `silent overrides console`() {
+			val configuration = parse(workflow.toString(), "--console", "--silent")
+
+			configuration.isReportConsole shouldBe false
+		}
+
+		@Test fun `console overrides silent`() {
+			val configuration = parse(workflow.toString(), "--silent", "--console")
+
+			configuration.isReportConsole shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
@@ -198,11 +244,15 @@ class CLIConfigurationTest {
 	inner class GitHubCommands {
 
 		@Test fun `defaults to false`() {
-			parse(workflow.toString()).isReportGitHubCommands shouldBe false
+			val configuration = parse(workflow.toString())
+
+			configuration.isReportGitHubCommands shouldBe false
 		}
 
 		@Test fun `accepts --ghcommands`() {
-			parse(workflow.toString(), "--ghcommands").isReportGitHubCommands shouldBe true
+			val configuration = parse(workflow.toString(), "--ghcommands")
+
+			configuration.isReportGitHubCommands shouldBe true
 		}
 
 		@Test fun `rejects an attached value`() {
@@ -216,13 +266,17 @@ class CLIConfigurationTest {
 	inner class Sarif {
 
 		@Test fun `defaults to no report`() {
-			parse(workflow.toString()).sarifReportLocation shouldBe null
+			val configuration = parse(workflow.toString())
+
+			configuration.sarifReportLocation shouldBe null
 		}
 
 		@Test fun `accepts space separated value`() {
 			val report = temp.resolve("report.sarif.json")
 
-			parse(workflow.toString(), "--sarif", report.toString()).sarifReportLocation shouldBe report
+			val configuration = parse(workflow.toString(), "--sarif", report.toString())
+
+			configuration.sarifReportLocation shouldBe report
 
 			report.exists() shouldBe false
 		}
@@ -230,19 +284,25 @@ class CLIConfigurationTest {
 		@Test fun `accepts equals separated value`() {
 			val report = temp.resolve("report.sarif.json")
 
-			parse(workflow.toString(), "--sarif=$report").sarifReportLocation shouldBe report
+			val configuration = parse(workflow.toString(), "--sarif=$report")
+
+			configuration.sarifReportLocation shouldBe report
 		}
 
 		@Test fun `accepts an existing file`() {
 			val report = file("report.sarif.json")
 
-			parse(workflow.toString(), "--sarif", report.toString()).sarifReportLocation shouldBe report
+			val configuration = parse(workflow.toString(), "--sarif", report.toString())
+
+			configuration.sarifReportLocation shouldBe report
 		}
 
 		@Test fun `accepts path with spaces`() {
 			val report = temp.resolve("report with spaces.sarif.json")
 
-			parse(workflow.toString(), "--sarif", report.toString()).sarifReportLocation shouldBe report
+			val configuration = parse(workflow.toString(), "--sarif", report.toString())
+
+			configuration.sarifReportLocation shouldBe report
 		}
 
 		@Test fun `rejects a directory`() {
