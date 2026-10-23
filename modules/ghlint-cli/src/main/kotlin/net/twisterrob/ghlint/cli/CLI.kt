@@ -93,16 +93,16 @@ internal class CLI : CliktCommand(
 	override fun helpEpilog(context: Context): String =
 		"""
 			Example usages:
-
+			
 			**Lint a single workflow**:  
 			`$ ghlint .github/workflows/main.yml`
-
+			
 			**Lint all workflows in GitHub Actions CI**:  
 			`$ ghlint --verbose --sarif=report.sarif.json .github/workflows/*.yml`
-
+			
 			**Lint a single action in repository root.**:  
 			`$ ghlint action.yml`
-
+			
 			**Lint for CI actions in a directory**:  
 			`$ ghlint actions/my-action/action.yml`
 		""".trimIndent()
