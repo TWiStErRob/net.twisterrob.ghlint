@@ -14,6 +14,7 @@ import net.twisterrob.ghlint.SchemaSource
 import net.twisterrob.ghlint.test.shouldEqualIgnoringEOL
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.Mockito.mockConstruction
 import org.mockito.Mockito.mockStatic
@@ -595,7 +596,7 @@ class CLITest {
 				parse(*files, "--workflow-schema", ":unknown")
 			}
 
-			error.plainMessage shouldBe if (temp.fileSystem.separator == "\\") {
+			error.plainMessage shouldBe if (OS.WINDOWS.isCurrentOs) {
 				"""invalid value for --workflow-schema: Illegal char <:> at index 0: :unknown"""
 			} else {
 				"""invalid value for --workflow-schema: Schema must be :latest, :embedded, or a readable file: :unknown"""
@@ -693,7 +694,7 @@ class CLITest {
 				parse(*files, "--action-schema", ":unknown")
 			}
 
-			error.plainMessage shouldBe if (temp.fileSystem.separator == "\\") {
+			error.plainMessage shouldBe if (OS.WINDOWS.isCurrentOs) {
 				"""invalid value for --action-schema: Illegal char <:> at index 0: :unknown"""
 			} else {
 				"""invalid value for --action-schema: Schema must be :latest, :embedded, or a readable file: :unknown"""
