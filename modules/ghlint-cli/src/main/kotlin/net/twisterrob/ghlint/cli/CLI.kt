@@ -52,7 +52,7 @@ internal class CLI : CliktCommand(
 		.multiple(required = true)
 		.help("Workflow YML files to check for problems.")
 
-	private val inputs: InputOptions by InputOptions()
+	private val reporting: ReportingOptions by ReportingOptions()
 
 	override val root: Path by option("--root")
 		.path(mustExist = true, canBeDir = true, canBeFile = false)
@@ -71,10 +71,10 @@ internal class CLI : CliktCommand(
 
 	override val printHelpOnEmptyArgs: Boolean = true
 
-	override val isReportExitCode: Boolean get() = inputs.isReportExitCode
-	override val isReportConsole: Boolean get() = inputs.isReportConsole
-	override val isReportGitHubCommands: Boolean get() = inputs.isReportGitHubCommands
-	override val sarifReportLocation: Path? get() = inputs.sarifReportLocation
+	override val isReportExitCode: Boolean get() = reporting.isExitCode
+	override val isReportConsole: Boolean get() = reporting.isConsoleLog
+	override val isReportGitHubCommands: Boolean get() = reporting.isGitHubCommands
+	override val sarifReportLocation: Path? get() = reporting.sarifLocation
 
 	override fun help(context: Context): String =
 		"""
@@ -100,21 +100,24 @@ internal class CLI : CliktCommand(
 			`$ ghlint actions/my-action/action.yml`
 		""".trimIndent()
 
-	private class InputOptions : OptionGroup("Reporting") {
+	private class ReportingOptions : OptionGroup(
+		name = "Reporting",
+		help = "How GH-Lint reports the results.",
+	) {
 
-		val isReportExitCode: Boolean by option("--exit")
+		val isExitCode: Boolean by option("--exit")
 			.flag("--ignore-failures", default = false, defaultForHelp = "--ignore-failures")
 			.help("Exit with non-zero code if there are findings.")
 
-		val isReportConsole: Boolean by option("--console")
+		val isConsoleLog: Boolean by option("--console")
 			.flag("--silent", default = true, defaultForHelp = "--console")
 			.help("Output to console. --silent does not affect --verbose, only findings.")
 
-		val isReportGitHubCommands: Boolean by option("--ghcommands")
+		val isGitHubCommands: Boolean by option("--ghcommands")
 			.flag(defaultForHelp = "off")
 			.help("Output GitHub Commands (warnings).")
 
-		val sarifReportLocation: Path? by option("--sarif")
+		val sarifLocation: Path? by option("--sarif", metavar = "report-path")
 			// Theoretically mustBeWritable = true, but Java requires the file to exists, which is silly.
 			.path(canBeDir = false)
 			.help("Output a SARIF file.")

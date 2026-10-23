@@ -4,12 +4,15 @@ Usage: ghlint [<options>] <files>...
   actions. See https://ghlint.twisterrob.net for more information.
 
 Reporting:
+
+  How GH-Lint reports the results.
+
   --exit / --ignore-failures  Exit with non-zero code if there are findings.
                               (default: --ignore-failures)
   --console / --silent        Output to console. --silent does not affect
                               --verbose, only findings. (default: --console)
   --ghcommands                Output GitHub Commands (warnings). (default: off)
-  --sarif=<path>              Output a SARIF file.
+  --sarif=<report-path>       Output a SARIF file.
 
 Options:
   --root=<path>  Root directory of the repository. (default: .)
