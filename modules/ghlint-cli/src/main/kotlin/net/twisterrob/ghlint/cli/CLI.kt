@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.groups.OptionGroup
 import com.github.ajalt.clikt.parameters.groups.provideDelegate
+import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.eagerOption
 import com.github.ajalt.clikt.parameters.options.flag
@@ -20,7 +21,10 @@ import com.github.ajalt.clikt.parameters.types.path
 import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
+import net.twisterrob.ghlint.SchemaSource
 import java.nio.file.Path
+import kotlin.io.path.isReadable
+import kotlin.io.path.isRegularFile
 
 internal class CLI : CliktCommand(
 	name = "ghlint",
@@ -53,6 +57,7 @@ internal class CLI : CliktCommand(
 		.help("Workflow YML files to check for problems.")
 
 	private val reporting: ReportingOptions by ReportingOptions()
+	private val schemas: SchemaOptions by SchemaOptions()
 
 	override val root: Path by option("--root")
 		.path(mustExist = true, canBeDir = true, canBeFile = false)
@@ -75,6 +80,8 @@ internal class CLI : CliktCommand(
 	override val isReportConsole: Boolean get() = reporting.isConsoleLog
 	override val isReportGitHubCommands: Boolean get() = reporting.isGitHubCommands
 	override val sarifReportLocation: Path? get() = reporting.sarifLocation
+	override val workflowSchema: SchemaSource get() = schemas.workflow
+	override val actionSchema: SchemaSource get() = schemas.action
 
 	override fun help(context: Context): String =
 		"""
@@ -122,4 +129,34 @@ internal class CLI : CliktCommand(
 			.path(canBeDir = false)
 			.help("Output a SARIF file.")
 	}
+
+	private class SchemaOptions : OptionGroup(
+		name = "Schemas",
+		help = "Schemas used for validating GitHub Actions workflow and action files.",
+	) {
+		val workflow: SchemaSource by option("--workflow-schema", metavar = "schema")
+			.convert { parseSchemaSource(it) }
+			.default(SchemaSource.Latest, defaultForHelp = ":latest")
+			.help("Workflow schema: :latest, :embedded (offline), or a local file (offline).")
+
+		val action: SchemaSource by option("--action-schema", metavar = "schema")
+			.convert { parseSchemaSource(it) }
+			.default(SchemaSource.Latest, defaultForHelp = ":latest")
+			.help("Action schema: :latest, :embedded (offline), or a local file (offline).")
+
+		companion object {
+			private fun parseSchemaSource(value: String): SchemaSource = when (value) {
+				":latest" -> SchemaSource.Latest
+				":embedded" -> SchemaSource.Embedded
+				else -> {
+					val path = Path.of(value)
+					require(path.isRegularFile() && path.isReadable()) {
+						"Schema must be :latest, :embedded, or a readable file: ${value}"
+					}
+					SchemaSource.LocalFile(path)
+				}
+			}
+		}
+	}
+
 }
