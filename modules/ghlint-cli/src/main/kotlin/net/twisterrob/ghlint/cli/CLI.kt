@@ -17,6 +17,8 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
+import com.github.ajalt.mordant.rendering.Whitespace
+import com.github.ajalt.mordant.widgets.Text
 import net.twisterrob.ghlint.Configuration
 import net.twisterrob.ghlint.GHLINT_VERSION
 import net.twisterrob.ghlint.GHLint
@@ -35,12 +37,15 @@ internal class CLI : CliktCommand(
 	init {
 		context {
 			helpFormatter = { context ->
-				MordantHelpFormatter(
+				object : MordantHelpFormatter(
 					context = context,
 					showRequiredTag = true,
 					showDefaultValues = true,
 					requiredOptionMarker = "*",
-				)
+				) {
+					override fun renderWrappedText(text: String): Text =
+						Text(text, whitespace = Whitespace.PRE_WRAP)
+				}
 			}
 		}
 	}
