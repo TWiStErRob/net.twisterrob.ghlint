@@ -24,6 +24,20 @@ $ ghlint my-workflow.yml
 
 See [CLI documentation](cli.md) for more details.
 
+By default, GH-Lint downloads the latest workflow and action schemas from SchemaStore.
+Select schemas independently with `--workflow-schema` and `--action-schema`:
+
+```console
+$ ghlint --workflow-schema :embedded --action-schema :embedded .github/workflows/main.yml action.yml
+$ ghlint --workflow-schema ./custom-workflow.json .github/workflows/main.yml
+```
+
+Each option accepts `:latest` (the default), `:embedded`, or a readable local file.
+Embedded and local schemas never access the network, including through external schema references.
+Local relative references resolve against the schema file's location.
+Use `./:embedded` to select a file literally named `:embedded`.
+Downloaded schemas are cached in memory for the invocation; GH-Lint writes no schema cache to disk.
+
 ## [GitHub Actions](gha.md)
 
 GH-Lint can be used as a GitHub Action which downloads and runs the CLI.

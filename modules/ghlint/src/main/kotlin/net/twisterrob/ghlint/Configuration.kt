@@ -9,6 +9,9 @@ public interface Configuration {
 
 	public val isVerbose: Boolean
 
+	public val workflowSchema: SchemaSource
+	public val actionSchema: SchemaSource
+
 	public val isReportConsole: Boolean
 	public val sarifReportLocation: Path?
 	public val isReportGitHubCommands: Boolean
